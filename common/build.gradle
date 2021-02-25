@@ -20,7 +20,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 /**
- * I don't think we will need this as these classes will just be imported by client and server
+ * We will need to update this so that we can make a working pipeline in gitlab
  */
 // mainClassName = ''
 
