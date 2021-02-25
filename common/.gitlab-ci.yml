@@ -22,7 +22,7 @@ common-build:
 
 common-checkstyle:
   stage: validate
-  script: ./gradlew :common:checkstyleMain
+  script: ./gradlew :common:checkstyleMain :common:checkstyleTest
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
