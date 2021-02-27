@@ -8,7 +8,6 @@ import java.util.UUID;
 public class LectureEntity {
 
 
-
     @Id
     @Column(name = "uuid")
     private String uuid;
