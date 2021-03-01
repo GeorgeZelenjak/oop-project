@@ -10,16 +10,15 @@ public class LectureEntity {
 
     @Id
     @Column(name = "uuid")
-    private String uuid;
+    private final String uuid;
 
     @Column(name = "modkey")
-    private String modkey;
+    private final String modkey;
 
     public LectureEntity() {
         this.uuid = generateUUID();
         this.modkey = generateUUID();
     }
-
 
     public static String generateUUID(){
         UUID generated = UUID.randomUUID();
