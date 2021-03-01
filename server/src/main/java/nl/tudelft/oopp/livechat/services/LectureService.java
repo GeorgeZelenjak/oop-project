@@ -9,16 +9,21 @@ import org.springframework.stereotype.Service;
 public class LectureService {
 
     @Autowired
-    LectureRepository repository;
+    LectureRepository lectureRepository;
 
     public LectureEntity getLectureById(String id) {
-        return repository.findLectureEntityByUuid(id);
+        return lectureRepository.findLectureEntityByUuid(id);
     }
 
     public LectureEntity newLecture(){
         LectureEntity n = new LectureEntity();
-        repository.save(n);
+        lectureRepository.save(n);
         return n;
     }
+
+    public void delete(String id){
+        lectureRepository.deleteById(id);
+    }
+
 
 }
