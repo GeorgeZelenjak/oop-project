@@ -1,4 +1,5 @@
-package nl.tudelft.oopp.Lecture;
+package nl.tudelft.oopp.lecture;
+
 import java.util.UUID;
 
 public class Lecture {
@@ -13,7 +14,7 @@ public class Lecture {
     }
 
 
-    public static String generateUUID(){
+    public static String generateUUID() {
         UUID generated = UUID.randomUUID();
         return generated.toString();
     }

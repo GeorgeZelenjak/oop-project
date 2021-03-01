@@ -1,7 +1,11 @@
 package nl.tudelft.oopp.livechat.entities;
 
-import javax.persistence.*;
 import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 
 @Entity
 @Table(name = "lectures")
@@ -20,7 +24,7 @@ public class LectureEntity {
         this.modkey = generateUUID();
     }
 
-    public static String generateUUID(){
+    public static String generateUUID() {
         UUID generated = UUID.randomUUID();
         return generated.toString();
     }

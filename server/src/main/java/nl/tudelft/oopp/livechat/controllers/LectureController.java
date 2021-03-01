@@ -23,14 +23,20 @@ public class LectureController {
     }
 
     @PostMapping("/post")
-    public LectureEntity newLecture(){
+    public LectureEntity newLecture() {
         return service.newLecture();
     }
 
+    /**
+     * Deletes a lecture with UUID id iff the modkey key is correct.
+     * @param key the modkey to authenticate
+     * @param id uuid of lecture
+     * @return 0 if deleted, -1 if not
+     */
     @DeleteMapping("/del/{id}/{modkey}")
-    public int delete(@PathVariable("modkey") String key, @PathVariable("id") String id){
+    public int delete(@PathVariable("modkey") String key, @PathVariable("id") String id) {
         LectureEntity toDelete = service.getLectureById(id);
-        if (toDelete.getModkey().equals(key)){
+        if (toDelete.getModkey().equals(key)) {
             service.delete(id);
             return 0;
         }

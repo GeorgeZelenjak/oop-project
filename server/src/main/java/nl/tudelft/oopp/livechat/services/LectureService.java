@@ -5,6 +5,8 @@ import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+
 @Service
 public class LectureService {
 
@@ -15,13 +17,16 @@ public class LectureService {
         return lectureRepository.findLectureEntityByUuid(id);
     }
 
-    public LectureEntity newLecture(){
+    /**
+     * Method that creates a new general lecture in the DB.
+     */
+    public LectureEntity newLecture() {
         LectureEntity n = new LectureEntity();
         lectureRepository.save(n);
         return n;
     }
 
-    public void delete(String id){
+    public void delete(String id) {
         lectureRepository.deleteById(id);
     }
 
