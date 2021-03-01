@@ -13,8 +13,4 @@ public class MainApplicationTest {
     public void contextLoads() {
     }
 
-    @Test
-    public void failedTest(){
-        fail();
-    }
 }
