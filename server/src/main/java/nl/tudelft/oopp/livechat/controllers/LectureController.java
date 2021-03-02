@@ -31,6 +31,8 @@ public class LectureController {
         //these are placeholders
     }
 
+
+
     /**
      * Deletes a lecture with UUID id iff the modkey key is correct.
      * @param modkey the modkey to authenticate
