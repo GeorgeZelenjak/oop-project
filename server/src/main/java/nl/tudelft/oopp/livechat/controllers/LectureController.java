@@ -41,11 +41,6 @@ public class LectureController {
      */
     @DeleteMapping("/api/delete/{id}/{modkey}")
     public int delete(@PathVariable("modkey") String modkey, @PathVariable("id") String id) {
-        LectureEntity toDelete = service.getLectureById(id);
-        if (toDelete != null && toDelete.getModkey().equals(modkey)) {
-            service.delete(id);
-            return 0;
-        }
-        return -1;
+        return service.delete(id, modkey);
     }
 }

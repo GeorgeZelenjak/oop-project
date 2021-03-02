@@ -40,8 +40,8 @@ public class LectureEntity {
     private LocalDateTime startTime;
 
     public LectureEntity() {
-        this.uuid = generateUUID();
-        this.modkey = generateUUID();
+        this.uuid = UUID.randomUUID();
+        this.modkey = UUID.randomUUID();
     }
 
 
@@ -53,8 +53,8 @@ public class LectureEntity {
      * @param startTime   the start time
      */
     public LectureEntity(String name, String creatorName, LocalDateTime startTime) {
-        this.uuid = generateUUID();
-        this.modkey = generateUUID();
+        this.uuid = UUID.randomUUID();
+        this.modkey = UUID.randomUUID();
         this.name = name;
         this.creatorName = creatorName;
         this.fasterCount = 0;
@@ -68,7 +68,7 @@ public class LectureEntity {
      *
      * @return the uuid
      */
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
@@ -77,7 +77,7 @@ public class LectureEntity {
      *
      * @return the modkey
      */
-    public String getModkey() {
+    public UUID getModkey() {
         return modkey;
     }
 

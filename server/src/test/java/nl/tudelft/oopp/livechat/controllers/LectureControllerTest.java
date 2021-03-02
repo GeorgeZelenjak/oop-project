@@ -60,8 +60,8 @@ class LectureControllerTest {
                 .andReturn();
         String json = result.getResponse().getContentAsString();
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
-        String uuid = lectureEntity.getUuid();
-        String modkey = lectureEntity.getModkey();
+        String uuid = lectureEntity.getUuid().toString();
+        String modkey = lectureEntity.getModkey().toString();
         String m = this.mockMvc.perform(delete("/api/delete/" + uuid + "/" + modkey))
                 .andExpect(status().isOk())
                 .andReturn()
