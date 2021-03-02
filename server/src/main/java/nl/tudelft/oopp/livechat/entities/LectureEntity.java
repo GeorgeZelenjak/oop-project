@@ -1,6 +1,7 @@
 package nl.tudelft.oopp.livechat.entities;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.*;
 
@@ -24,19 +25,19 @@ public class LectureEntity {
     private String name;
 
     @Column(name = "creator_name")
-    private String creator_name;
+    private String creatorName;
 
     @Column(name = "faster_count")
-    private int faster_count;
+    private int fasterCount;
 
     @Column(name = "slower_count")
-    private int slower_count;
+    private int slowerCount;
 
     @Column(name = "frequency")
     private int frequency;
 
     @Column(name = "start_time")
-    private LocalDateTime start_time;
+    private LocalDateTime startTime;
 
     public LectureEntity() {
         this.uuid = generateUUID();
@@ -55,11 +56,11 @@ public class LectureEntity {
         this.uuid = generateUUID();
         this.modkey = generateUUID();
         this.name = name;
-        this.creator_name = creatorName;
-        this.faster_count = 0;
-        this.slower_count = 0;
+        this.creatorName = creatorName;
+        this.fasterCount = 0;
+        this.slowerCount = 0;
         this.frequency = 60;
-        this.start_time = startTime;
+        this.startTime = startTime;
     }
 
     /**
@@ -185,5 +186,11 @@ public class LectureEntity {
             return uuid.equals(l.uuid);
         }
         return false;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, modkey, name, creatorName);
     }
 }
