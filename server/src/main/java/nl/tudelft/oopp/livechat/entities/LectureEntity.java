@@ -1,12 +1,14 @@
 package nl.tudelft.oopp.livechat.entities;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
+/**
+ * The type Lecture entity.
+ */
 @Entity
 @Table(name = "lectures")
 public class LectureEntity {
@@ -19,22 +21,140 @@ public class LectureEntity {
     @Column(name = "modkey")
     private final String modkey;
 
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "creatorName")
+    private String creatorName;
+
+    @Column(name = "fasterCount")
+    private int fasterCount;
+
+    @Column(name = "slowerCount")
+    private int slowerCount;
+
+    @Column(name = "frequency")
+    private int frequency;
+
+    @Column(name = "startTime")
+    private LocalDateTime startTime;
+
     public LectureEntity() {
         this.uuid = generateUUID();
         this.modkey = generateUUID();
     }
 
+
+    /**
+     * Instantiates a new Lecture entity.
+     *
+     * @param name        the name
+     * @param creatorName the creator name
+     * @param startTime   the start time
+     */
+    public LectureEntity(String name, String creatorName, LocalDateTime startTime) {
+        this.uuid = generateUUID();
+        this.modkey = generateUUID();
+        this.name = name;
+        this.creatorName = creatorName;
+        this.fasterCount = 0;
+        this.slowerCount = 0;
+        this.frequency = 60;
+        this.startTime = startTime.withNano(0);
+    }
+
+    /**
+     * Generate uuid string.
+     *
+     * @return the string
+     */
     public static String generateUUID() {
         UUID generated = UUID.randomUUID();
         return generated.toString();
     }
 
+    /**
+     * Gets uuid.
+     *
+     * @return the uuid
+     */
     public String getUuid() {
         return uuid;
     }
 
+    /**
+     * Gets modkey.
+     *
+     * @return the modkey
+     */
     public String getModkey() {
         return modkey;
+    }
+
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Gets creator name.
+     *
+     * @return the creator name
+     */
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public int getFasterCount() {
+        return fasterCount;
+    }
+
+    public int getSlowerCount() {
+        return slowerCount;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Gets frequency.
+     *
+     * @return the frequency
+     */
+    public int getFrequency() {
+        return frequency;
+    }
+
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    /**
+     * Sets frequency.
+     *
+     * @param frequency the frequency
+     */
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
+
+    /**
+     * Reset speed counts.
+     */
+    public void resetSpeedCounts() {
+        this.fasterCount = 0;
+        this.slowerCount = 0;
     }
 
     @Override
@@ -42,12 +162,16 @@ public class LectureEntity {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
+        if (o instanceof LectureEntity) {
+            LectureEntity l = (LectureEntity) o;
+            return uuid.equals(l.uuid);
         }
+        return false;
+    }
 
-        LectureEntity l = (LectureEntity) o;
 
-        return uuid.equals(l.uuid);
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, modkey, name, creatorName);
     }
 }

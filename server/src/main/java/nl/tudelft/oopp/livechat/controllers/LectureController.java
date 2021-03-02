@@ -1,9 +1,12 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import java.time.LocalDateTime;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.services.LectureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+
 
 @RestController
 public class LectureController {
@@ -17,15 +20,18 @@ public class LectureController {
      *
      * @return selected {@link nl.tudelft.oopp.livechat.entities.LectureEntity}.
      */
-    @GetMapping("/get/{id}")
+    @GetMapping("/api/get/{id}")
     public LectureEntity getLecturesByID(@PathVariable("id") String id) {
         return service.getLectureById(id);
     }
 
-    @PostMapping("/post")
-    public LectureEntity newLecture() {
-        return service.newLecture();
+    @PostMapping("/api/newLecture")
+    public LectureEntity newLecture(@RequestParam String name) {
+        return service.newLecture(name, "placeholder", LocalDateTime.now().withNano(0));
+        //these are placeholders
     }
+
+
 
     /**
      * Deletes a lecture with UUID id iff the modkey key is correct.
@@ -33,10 +39,10 @@ public class LectureController {
      * @param id uuid of lecture
      * @return 0 if deleted, -1 if not
      */
-    @DeleteMapping("/del/{id}/{modkey}")
+    @DeleteMapping("/api/delete/{id}/{modkey}")
     public int delete(@PathVariable("modkey") String modkey, @PathVariable("id") String id) {
         LectureEntity toDelete = service.getLectureById(id);
-        if (toDelete.getModkey().equals(modkey)) {
+        if (toDelete != null && toDelete.getModkey().equals(modkey)) {
             service.delete(id);
             return 0;
         }
