@@ -1,6 +1,5 @@
 package nl.tudelft.oopp.livechat.controllers;
 
-
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.services.QuestionService;
 import org.springframework.web.bind.annotation.*;

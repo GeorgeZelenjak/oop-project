@@ -21,9 +21,10 @@ public class QuestionEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "lectureId", nullable = false)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
+    //  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    //  @JoinColumn(name = "lectureId", nullable = false)
+    //  @OnDelete(action = OnDeleteAction.CASCADE)
+
     private UUID lectureId;
 
     @Column(name = "time")
