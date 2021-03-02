@@ -1,0 +1,35 @@
+
+    .mainSceneButton {
+
+        -fx-background-color: #1a75ff;
+        -fx-background-radius: 10px;
+        -fx-font: 18px Arial;
+        -fx-text-fill: white;
+    }
+
+    .mainSceneButton:hover{
+        -fx-background-color:  #6699ff;
+    }
+
+    .mainSceneEnterRoomCode{
+        -fx-background-color: Transparent;
+        -fx-background-radius: 10px;
+        -fx-border-radius: 10px;
+        -fx-border-width: 2px;
+        -fx-border-color: black;
+        -fx-font: 18px Arial;
+        -fx-text-fill: Black;
+    }
+
+    .settingsButton{
+        -fx-background-image: url(/Gear.png) ;
+    }
+    .settingsButton:hover{
+        -fx-background-image: url( Gear_gray.png);
+    }
+
+
+
+
+
+
