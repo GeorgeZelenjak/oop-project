@@ -1,9 +1,12 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import java.time.LocalDateTime;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.services.LectureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+
 
 @RestController
 public class LectureController {
@@ -23,8 +26,9 @@ public class LectureController {
     }
 
     @PostMapping("/post")
-    public LectureEntity newLecture() {
-        return service.newLecture();
+    public LectureEntity newLecture(@RequestParam String name) {
+        return service.newLecture(name, "placeholder", LocalDateTime.now());
+        //these are placeholders
     }
 
     /**
