@@ -42,12 +42,10 @@ public class LectureEntity {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
+        if (o instanceof LectureEntity) {
+            LectureEntity l = (LectureEntity) o;
+            return uuid.equals(l.uuid);
         }
-
-        LectureEntity l = (LectureEntity) o;
-
-        return uuid.equals(l.uuid);
+        return false;
     }
 }

@@ -32,12 +32,10 @@ public class Lecture {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
+        if (o instanceof Lecture) {
+            Lecture l = (Lecture) o;
+            return uuid.equals(l.uuid);
         }
-
-        Lecture l = (Lecture) o;
-
-        return uuid.equals(l.uuid);
+        return false;
     }
 }
