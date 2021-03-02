@@ -24,19 +24,19 @@ public class LectureEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "creator_name")
+    @Column(name = "creatorName")
     private String creatorName;
 
-    @Column(name = "faster_count")
+    @Column(name = "fasterCount")
     private int fasterCount;
 
-    @Column(name = "slower_count")
+    @Column(name = "slowerCount")
     private int slowerCount;
 
     @Column(name = "frequency")
     private int frequency;
 
-    @Column(name = "start_time")
+    @Column(name = "startTime")
     private LocalDateTime startTime;
 
     public LectureEntity() {
@@ -105,26 +105,20 @@ public class LectureEntity {
      *
      * @return the creator name
      */
-    public String getCreator_name() {
-        return creator_name;
+    public String getCreatorName() {
+        return creatorName;
     }
 
-    /**
-     * Gets faster count.
-     *
-     * @return the faster count
-     */
-    public int getFaster_count() {
-        return faster_count;
+    public int getFasterCount() {
+        return fasterCount;
     }
 
-    /**
-     * Gets slower count.
-     *
-     * @return the slower count
-     */
-    public int getSlower_count() {
-        return slower_count;
+    public int getSlowerCount() {
+        return slowerCount;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
     /**
@@ -145,19 +139,6 @@ public class LectureEntity {
         this.name = name;
     }
 
-    /**
-     * Increase faster count.
-     */
-    public void increaseFaster_count() {
-        this.faster_count++;
-    }
-
-    /**
-     * Increase slower count.
-     */
-    public void increaseSlower_count() {
-        this.slower_count++;
-    }
 
     /**
      * Sets frequency.
@@ -172,8 +153,8 @@ public class LectureEntity {
      * Reset speed counts.
      */
     public void resetSpeedCounts() {
-        this.faster_count = 0;
-        this.slower_count = 0;
+        this.fasterCount = 0;
+        this.slowerCount = 0;
     }
 
     @Override

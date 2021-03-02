@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,19 +23,25 @@ class LectureControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
     void getLecturesByID() throws Exception {
+        objectMapper.registerModule(new JavaTimeModule());
         MvcResult result = this.mockMvc.perform(post("/post?name=test1"))
                 .andExpect(status().isOk())
                 .andReturn();
         String json = result.getResponse().getContentAsString();
-        LectureEntity lectureEntity = new ObjectMapper().readValue(json, LectureEntity.class);
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid();
         String m = this.mockMvc.perform(get("/get/" + uuid)).andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
         assertEquals(json, m);
+        assertEquals(lectureEntity.getName(), "test1");
+        assertEquals(lectureEntity.getCreatorName(), "placeholder");
     }
 
     @Test
@@ -46,4 +53,7 @@ class LectureControllerTest {
     void whenGetting_returns404() throws Exception {
         this.mockMvc.perform(get("/get")).andExpect(status().is4xxClientError());
     }
+
+
 }
+

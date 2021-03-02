@@ -27,7 +27,7 @@ public class LectureController {
 
     @PostMapping("/post")
     public LectureEntity newLecture(@RequestParam String name) {
-        return service.newLecture(name, "placeholder", LocalDateTime.now());
+        return service.newLecture(name, "placeholder", LocalDateTime.now().withNano(0));
         //these are placeholders
     }
 
