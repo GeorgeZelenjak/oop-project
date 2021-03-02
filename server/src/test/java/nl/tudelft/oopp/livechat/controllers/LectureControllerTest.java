@@ -24,19 +24,26 @@ class LectureControllerTest {
 
     @Test
     void getLecturesByID() throws Exception {
-        MvcResult result = this.mockMvc.perform(post("/post")).andExpect(status().isOk())
+        MvcResult result = this.mockMvc.perform(post("/post"))
+                .andExpect(status().isOk())
                 .andReturn();
-        String l = result.getResponse().getContentAsString();
-        LectureEntity lectureEntity = new ObjectMapper().readValue(l, LectureEntity.class);
+        String json = result.getResponse().getContentAsString();
+        LectureEntity lectureEntity = new ObjectMapper().readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid();
         String m = this.mockMvc.perform(get("/get/" + uuid)).andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        assertEquals(l, m);
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertEquals(json, m);
     }
 
     @Test
-    void whenValidInput_thenReturns200() throws Exception {
+    void whenPosting_thenReturns200() throws Exception {
         this.mockMvc.perform(post("/post")).andExpect(status().isOk());
+    }
+
+    @Test
+    void whenGetting_returns404() throws Exception {
         this.mockMvc.perform(get("/get")).andExpect(status().is4xxClientError());
     }
 }
