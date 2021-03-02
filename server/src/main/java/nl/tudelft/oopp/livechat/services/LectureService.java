@@ -21,8 +21,8 @@ public class LectureService {
     /**
      * Method that creates a new general lecture in the DB.
      */
-    public LectureEntity newLecture(String name, String creatorName, LocalDateTime startTime) {
-        LectureEntity n = new LectureEntity(name, creatorName, startTime);
+    public LectureEntity newLecture(String name, String creatorName) {
+        LectureEntity n = new LectureEntity(name, creatorName);
         lectureRepository.save(n);
         return n;
     }

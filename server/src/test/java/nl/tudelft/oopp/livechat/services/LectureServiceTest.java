@@ -22,7 +22,7 @@ class LectureServiceTest {
 
     @Test
     void getLectureById() {
-        LectureEntity l = new LectureEntity("name", "creator_name", LocalDateTime.now());
+        LectureEntity l = new LectureEntity("name", "creator_name");
         repository.save(l);
         LectureEntity m = lectureService.getLectureById(l.getUuid());
         assertEquals(l, m);
@@ -31,12 +31,12 @@ class LectureServiceTest {
     @Test
     void newLecture() {
         assertNotNull(lectureService
-                .newLecture("name", "creator_name", LocalDateTime.now().withNano(0)));
+                .newLecture("name", "creator_name"));
     }
 
     @Test
     void delete() {
-        LectureEntity l = new LectureEntity("name", "creator_name", LocalDateTime.now());
+        LectureEntity l = new LectureEntity("name", "creator_name");
         repository.save(l);
         lectureService.delete(l.getUuid());
         LectureEntity m = lectureService.getLectureById(l.getUuid());

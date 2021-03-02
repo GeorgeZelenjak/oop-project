@@ -1,5 +1,6 @@
 package nl.tudelft.oopp.livechat.entities;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -37,7 +38,7 @@ public class LectureEntity {
     private int frequency;
 
     @Column(name = "startTime")
-    private LocalDateTime startTime;
+    private Timestamp startTime;
 
     public LectureEntity() {
         this.uuid = generateUUID();
@@ -50,9 +51,8 @@ public class LectureEntity {
      *
      * @param name        the name
      * @param creatorName the creator name
-     * @param startTime   the start time
      */
-    public LectureEntity(String name, String creatorName, LocalDateTime startTime) {
+    public LectureEntity(String name, String creatorName) {
         this.uuid = generateUUID();
         this.modkey = generateUUID();
         this.name = name;
@@ -60,7 +60,7 @@ public class LectureEntity {
         this.fasterCount = 0;
         this.slowerCount = 0;
         this.frequency = 60;
-        this.startTime = startTime.withNano(0);
+        this.startTime = new Timestamp(System.currentTimeMillis());
     }
 
     /**
@@ -117,7 +117,7 @@ public class LectureEntity {
         return slowerCount;
     }
 
-    public LocalDateTime getStartTime() {
+    public Timestamp getStartTime() {
         return startTime;
     }
 
