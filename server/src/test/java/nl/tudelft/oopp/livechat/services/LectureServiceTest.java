@@ -23,7 +23,7 @@ class LectureServiceTest {
     void getLectureById() {
         LectureEntity l = new LectureEntity("name", "creator_name", LocalDateTime.now());
         repository.save(l);
-        LectureEntity m = lectureService.getLectureById(l.getUuid());
+        LectureEntity m = lectureService.getLectureById(l.getUuid().toString());
         assertEquals(l, m);
     }
 
@@ -37,8 +37,8 @@ class LectureServiceTest {
     void delete() {
         LectureEntity l = new LectureEntity("name", "creator_name", LocalDateTime.now());
         repository.save(l);
-        lectureService.delete(l.getUuid());
-        LectureEntity m = lectureService.getLectureById(l.getUuid());
+        lectureService.delete(l.getUuid().toString(), l.getModkey().toString());
+        LectureEntity m = lectureService.getLectureById(l.getUuid().toString());
         assertNull(m);
 
     }

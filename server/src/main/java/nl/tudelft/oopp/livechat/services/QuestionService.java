@@ -12,11 +12,10 @@ import java.util.List;
 public class QuestionService {
     QuestionRepository questionRepository;
 
-    public QuestionService(QuestionRepository questionRepository) {
-        this.questionRepository = questionRepository;
-    }
+    @Autowired
+    LectureRepository lectureRepository;
 
-    public List<QuestionEntity> getQuestionsByLectureId(String lectureId) {
+    public List<QuestionEntity> getQuestionsByLectureId(UUID lectureId) {
         return questionRepository.findAllByLectureId(lectureId);
     }
 

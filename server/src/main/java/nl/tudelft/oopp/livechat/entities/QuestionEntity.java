@@ -55,7 +55,7 @@ public class QuestionEntity {
     /**
      * Instantiates a new Question entity.
      *
-     * @param lecture    the lecture
+     * @param lectureId    the lecture
      * @param text       the text
      * @param answerText the answer text
      * @param time       the time
@@ -81,8 +81,8 @@ public class QuestionEntity {
         this.id = id;
     }
 
-    public LectureEntity getLecture() {
-        return lecture;
+    public UUID getLecture() {
+        return lectureId;
     }
 
     public LocalDateTime getTime() {
