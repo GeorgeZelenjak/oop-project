@@ -1,16 +1,20 @@
 package nl.tudelft.oopp.livechat.entities;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+import javax.persistence.*;
+
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Objects;
 
+/**
+ * The type Question entity.
+ */
 @Entity(name = "question")
 @Table(name = "questions")
 public class QuestionEntity {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,9 +48,21 @@ public class QuestionEntity {
     @Column(name = "ownerId")
     private String ownerId;
 
-    public QuestionEntity(){}
+    public QuestionEntity() {
 
-    public QuestionEntity(LectureEntity lecture, String text, String answerText, LocalDateTime time, String ownerId) {
+    }
+
+    /**
+     * Instantiates a new Question entity.
+     *
+     * @param lecture    the lecture
+     * @param text       the text
+     * @param answerText the answer text
+     * @param time       the time
+     * @param ownerId    the owner id
+     */
+    public QuestionEntity(LectureEntity lecture, String text, String answerText,
+                          LocalDateTime time, String ownerId) {
         this.lecture = lecture;
         this.time = time;
         this.votes = 0;
@@ -57,38 +73,69 @@ public class QuestionEntity {
         this.ownerId = ownerId;
     }
 
-    public long getId() { return id; }
+    public long getId() {
+        return id;
+    }
 
-    public void setId(int id) { this.id = id; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public LectureEntity getLecture() { return lecture; }
+    public LectureEntity getLecture() {
+        return lecture;
+    }
 
+    public LocalDateTime getTime() {
+        return time;
+    }
 
-    public LocalDateTime getTime() { return time; }
+    public int getVotes() {
+        return votes;
+    }
 
-    public int getVotes() { return votes; }
+    public void vote() {
+        ++this.votes;
+    }
 
-    public void vote() { ++this.votes; }
+    public String getText() {
+        return text;
+    }
 
-    public String getText() { return text; }
+    public void setText(String text) {
+        this.text = text;
+    }
 
-    public void setText(String text) { this.text = text; }
+    public boolean isAnswered() {
+        return answered;
+    }
 
-    public boolean isAnswered() { return answered; }
+    public void setAnswered(boolean answered) {
+        this.answered = answered;
+    }
 
-    public void setAnswered(boolean answered) { this.answered = answered; }
+    public String getAnswerText() {
+        return answerText;
+    }
 
-    public String getAnswerText() { return answerText; }
+    public void setAnswerText(String answerText) {
+        this.answerText = answerText;
+    }
 
-    public void setAnswerText(String answerText) { this.answerText = answerText; }
+    public LocalDateTime getAnswerTime() {
+        return answerTime;
+    }
 
-    public LocalDateTime getAnswerTime() { return answerTime; }
+    public void setAnswerTime(LocalDateTime answerTime) {
+        this.answerTime = answerTime;
+    }
 
-    public void setAnswerTime(LocalDateTime answerTime) { this.answerTime = answerTime; }
+    public String getOwnerId() {
+        return ownerId;
+    }
 
-    public String getOwnerId() { return ownerId; }
-
-    public void setOwnerId(String ownerId) { this.ownerId = ownerId; }
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
 
     @Override
     public boolean equals(Object o) {
