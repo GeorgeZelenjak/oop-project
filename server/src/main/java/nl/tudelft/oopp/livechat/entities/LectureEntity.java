@@ -38,6 +38,11 @@ public class LectureEntity {
     @Column(name = "start_time")
     private LocalDateTime start_time;
 
+    public LectureEntity() {
+        this.uuid = generateUUID();
+        this.modkey = generateUUID();
+    }
+
 
     /**
      * Instantiates a new Lecture entity.

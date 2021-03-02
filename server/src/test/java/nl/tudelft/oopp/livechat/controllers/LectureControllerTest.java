@@ -24,7 +24,7 @@ class LectureControllerTest {
 
     @Test
     void getLecturesByID() throws Exception {
-        MvcResult result = this.mockMvc.perform(post("/post"))
+        MvcResult result = this.mockMvc.perform(post("/post?name=test1"))
                 .andExpect(status().isOk())
                 .andReturn();
         String json = result.getResponse().getContentAsString();
@@ -39,7 +39,7 @@ class LectureControllerTest {
 
     @Test
     void whenPosting_thenReturns200() throws Exception {
-        this.mockMvc.perform(post("/post")).andExpect(status().isOk());
+        this.mockMvc.perform(post("/post?name=test2")).andExpect(status().isOk());
     }
 
     @Test
