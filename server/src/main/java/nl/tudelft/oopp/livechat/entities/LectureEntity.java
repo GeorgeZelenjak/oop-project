@@ -60,7 +60,7 @@ public class LectureEntity {
         this.fasterCount = 0;
         this.slowerCount = 0;
         this.frequency = 60;
-        this.startTime = startTime;
+        this.startTime = startTime.withNano(0);
     }
 
     /**
