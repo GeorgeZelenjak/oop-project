@@ -22,7 +22,7 @@ dependencies {
 /**
  * We will need to update this so that we can make a working pipeline in gitlab
  */
-// mainClassName = ''
+mainClassName = 'nl.tudelf.oopp.lecture.Lecture'
 
 
 test {

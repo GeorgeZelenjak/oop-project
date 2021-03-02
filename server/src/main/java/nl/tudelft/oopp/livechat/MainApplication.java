@@ -1,13 +1,13 @@
-package nl.tudelft.oopp.demo;
+package nl.tudelft.oopp.livechat;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoApplication {
+public class MainApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(MainApplication.class, args);
     }
 
 }
