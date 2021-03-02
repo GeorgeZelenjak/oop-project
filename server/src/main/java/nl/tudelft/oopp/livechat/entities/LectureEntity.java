@@ -16,10 +16,10 @@ public class LectureEntity {
 
     @Id
     @Column(name = "uuid")
-    private final String uuid;
+    private final UUID uuid;
 
     @Column(name = "modkey")
-    private final String modkey;
+    private final UUID modkey;
 
     @Column(name = "name")
     private String name;
@@ -61,16 +61,6 @@ public class LectureEntity {
         this.slowerCount = 0;
         this.frequency = 60;
         this.startTime = startTime.withNano(0);
-    }
-
-    /**
-     * Generate uuid string.
-     *
-     * @return the string
-     */
-    public static String generateUUID() {
-        UUID generated = UUID.randomUUID();
-        return generated.toString();
     }
 
     /**

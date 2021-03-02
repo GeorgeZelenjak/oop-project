@@ -1,7 +1,7 @@
 package nl.tudelft.oopp.livechat.services;
 
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,8 @@ public class LectureService {
     LectureRepository lectureRepository;
 
     public LectureEntity getLectureById(String id) {
-        return lectureRepository.findLectureEntityByUuid(id);
+        UUID ID = UUID.fromString(id);
+        return lectureRepository.findLectureEntityByUuid(ID);
     }
 
     /**
@@ -27,8 +28,15 @@ public class LectureService {
         return n;
     }
 
-    public void delete(String id) {
-        lectureRepository.deleteById(id);
+    public int delete(String id, String modkey) {
+        UUID ID = UUID.fromString(id);
+        LectureEntity toDelete = getLectureById(id);
+        UUID modk = UUID.fromString(modkey);
+        if (toDelete != null && toDelete.getModkey().equals(modk)) {
+            lectureRepository.deleteById(ID);
+            return 0;
+        }
+        return -1;
     }
 
 

@@ -2,6 +2,7 @@ package nl.tudelft.oopp.livechat.entities;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 import javax.persistence.*;
 
 import org.hibernate.annotations.OnDelete;
@@ -20,10 +21,10 @@ public class QuestionEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "lectureId", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private LectureEntity lecture;
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "lectureId", nullable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+    private UUID lectureId;
 
     @Column(name = "time")
     private LocalDateTime time;
@@ -46,7 +47,7 @@ public class QuestionEntity {
     private LocalDateTime answerTime;
 
     @Column(name = "ownerId")
-    private String ownerId;
+    private long ownerId;
 
     public QuestionEntity() {
 
@@ -61,9 +62,9 @@ public class QuestionEntity {
      * @param time       the time
      * @param ownerId    the owner id
      */
-    public QuestionEntity(LectureEntity lecture, String text, String answerText,
-                          LocalDateTime time, String ownerId) {
-        this.lecture = lecture;
+    public QuestionEntity(UUID lectureId, String text, String answerText,
+                          LocalDateTime time, long ownerId) {
+        this.lectureId = lectureId;
         this.time = time;
         this.votes = 0;
         this.text = text;
@@ -129,11 +130,11 @@ public class QuestionEntity {
         this.answerTime = answerTime;
     }
 
-    public String getOwnerId() {
+    public long getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(String ownerId) {
+    public void setOwnerId(long ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -151,6 +152,6 @@ public class QuestionEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.lecture.getUuid(), this.time);
+        return Objects.hash(this.id, this.lectureId, this.time);
     }
 }
