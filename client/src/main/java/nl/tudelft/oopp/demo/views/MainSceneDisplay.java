@@ -9,7 +9,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class QuoteDisplay extends Application {
+
+/**
+ * Loads the MainScene.fxml file
+ */
+public class MainSceneDisplay extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
