@@ -9,10 +9,10 @@ variables:
   # Disable the Gradle daemon to ensure isolated runs of the CI pipeline.
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
-client-build:
+common-build:
   stage: build
   script:
-    ./gradlew --build-cache :client:assemble
+    ./gradlew --build-cache :common:assemble
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: push
@@ -20,9 +20,9 @@ client-build:
       - build/
       - .gradle/
 
-client-checkstyle:
+common-checkstyle:
   stage: validate
-  script: ./gradlew :client:checkstyleMain :client:checkstyleTest
+  script: ./gradlew :common:checkstyleMain :common:checkstyleTest
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
@@ -31,9 +31,9 @@ client-checkstyle:
       - .gradle/
   allow_failure: true
 
-client-test:
+common-test:
   stage: test
   script:
-    - ./gradlew :client:test :client:jacocoTestReport
-    - cat client/build/reports/jacoco/html/index.html | grep -Po "Total.*?([0-9]{1,3})%"
+    - ./gradlew :common:test :server:jacocoTestReport
+    - cat common/build/reports/jacoco/html/index.html | grep -Po "Total.*?([0-9]{1,3})%"
   coverage: /([0-9]{1,3})%/
