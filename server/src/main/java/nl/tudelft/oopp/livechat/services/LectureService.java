@@ -14,13 +14,24 @@ public class LectureService {
     @Autowired
     LectureRepository lectureRepository;
 
+    /**
+     * Gets lecture by id.
+     *
+     * @param id the id
+     * @return the lecture by id
+     */
     public LectureEntity getLectureById(String id) {
-        UUID ID = UUID.fromString(id);
-        return lectureRepository.findLectureEntityByUuid(ID);
+        UUID uuid = UUID.fromString(id);
+        return lectureRepository.findLectureEntityByUuid(uuid);
     }
 
     /**
      * Method that creates a new general lecture in the DB.
+     *
+     * @param name        the name
+     * @param creatorName the creator name
+     * @param startTime   the start time
+     * @return the lecture entity
      */
     public LectureEntity newLecture(String name, String creatorName, LocalDateTime startTime) {
         LectureEntity n = new LectureEntity(name, creatorName, startTime);
@@ -28,12 +39,19 @@ public class LectureService {
         return n;
     }
 
+    /**
+     * Delete a lecture if correct modkey is supplied.
+     *
+     * @param id     the id
+     * @param modkey the modkey
+     * @return 0 if success, -1 otherwise
+     */
     public int delete(String id, String modkey) {
-        UUID ID = UUID.fromString(id);
+        UUID uuid = UUID.fromString(id);
         LectureEntity toDelete = getLectureById(id);
         UUID modk = UUID.fromString(modkey);
         if (toDelete != null && toDelete.getModkey().equals(modk)) {
-            lectureRepository.deleteById(ID);
+            lectureRepository.deleteById(uuid);
             return 0;
         }
         return -1;
