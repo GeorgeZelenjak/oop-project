@@ -40,6 +40,12 @@ public class LectureEntity {
     @Column(name = "startTime")
     private Timestamp startTime;
 
+    @Column(name = "open")
+    private boolean open = true;
+
+    /**
+     * Instantiates a new Lecture entity.
+     */
     public LectureEntity() {
         this.uuid = generateUUID();
         this.modkey = generateUUID();
@@ -109,14 +115,29 @@ public class LectureEntity {
         return creatorName;
     }
 
+    /**
+     * Gets faster count.
+     *
+     * @return the faster count
+     */
     public int getFasterCount() {
         return fasterCount;
     }
 
+    /**
+     * Gets slower count.
+     *
+     * @return the slower count
+     */
     public int getSlowerCount() {
         return slowerCount;
     }
 
+    /**
+     * Gets start time.
+     *
+     * @return the start time
+     */
     public Timestamp getStartTime() {
         return startTime;
     }
@@ -155,6 +176,29 @@ public class LectureEntity {
     public void resetSpeedCounts() {
         this.fasterCount = 0;
         this.slowerCount = 0;
+    }
+
+    /**
+     * Close.
+     */
+    public void close() {
+        this.open = false;
+    }
+
+    /**
+     * Re open.
+     */
+    public void reOpen() {
+        this.open = true;
+    }
+
+    /**
+     * Is open .
+     *
+     * @return boolean
+     */
+    public boolean isOpen() {
+        return this.open;
     }
 
     @Override
