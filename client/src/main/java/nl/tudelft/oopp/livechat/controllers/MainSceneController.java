@@ -11,7 +11,7 @@ import nl.tudelft.oopp.livechat.communication.ServerCommunication;
 public class MainSceneController {
 
     @FXML
-    private TextField enterRoomCode;
+    private TextField EnterRoomCode;
 
 
     /**
@@ -23,7 +23,7 @@ public class MainSceneController {
         alert.setTitle("Creating lecture");
         alert.setHeaderText(null);
         alert.setContentText(ServerCommunication
-                .createLecture(enterRoomCode.getCharacters().toString()).toString());
+                .createLecture(EnterRoomCode.getCharacters().toString()).toString());
         alert.showAndWait();
 
         System.out.println("Button worked!");
