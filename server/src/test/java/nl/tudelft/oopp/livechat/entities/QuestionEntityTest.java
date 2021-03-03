@@ -1,13 +1,12 @@
 package nl.tudelft.oopp.livechat.entities;
 
-import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.*;
 
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 class QuestionEntityTest {
@@ -18,7 +17,9 @@ class QuestionEntityTest {
 
     @BeforeAll
     static void setUp() {
-        questionEntity = new QuestionEntity(lectureId, "What is the answer to the Ultimate Question of Life, the Universe, and Everything?",
+        questionEntity = new QuestionEntity(lectureId,
+                "What is the answer to the Ultimate "
+                        + "Question of Life, the Universe, and Everything?",
                 "42", time, ownerId);
     }
 
@@ -53,18 +54,20 @@ class QuestionEntityTest {
     void voteTest() {
         int oldVotes = questionEntity.getVotes();
         questionEntity.vote();
-        assertEquals(oldVotes+1, questionEntity.getVotes());
+        assertEquals(oldVotes + 1, questionEntity.getVotes());
     }
 
     @Test
     void getTextTest() {
-        String text = new String("What is the answer to the Ultimate Question of Life, the Universe, and Everything?");
+        String text = new String("What is the answer to the Ultimate Question of Life,"
+                + " the Universe, and Everything?");
         assertEquals(text, questionEntity.getText());
     }
 
     @Test
     void setTextTest() {
-        String newText = new String("What is the answer to the ultimate question of Life, the Universe, and Everything?");
+        String newText = new String("What is the answer to the ultimate question of Life, "
+                + "the Universe, and Everything?");
         questionEntity.setText(newText);
         assertEquals(new String(newText), questionEntity.getText());
     }
@@ -127,7 +130,8 @@ class QuestionEntityTest {
 
     /*@Test
     void testEqualsDifferent() {
-        QuestionEntity q = new QuestionEntity(lectureId, "What is the answer to the Ultimate Question of Life, the Universe, and Everything?",
+        QuestionEntity q = new QuestionEntity(lectureId, "What is the answer to the "
+        + "Ultimate Question of Life,the Universe, and Everything?",
                 "42", time, ownerId);
         assertNotEquals(questionEntity, q);
     }*/

@@ -2,13 +2,13 @@ package nl.tudelft.oopp.livechat.entities;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
 
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 public class LectureEntityTest {
@@ -17,7 +17,8 @@ public class LectureEntityTest {
 
     @BeforeAll
     static void setUp() {
-        lectureEntity = new LectureEntity("Algorithms and Data Structures: Red-black trees", "Ivo van Kreveld", time);
+        lectureEntity = new LectureEntity("Algorithms and Data Structures: Red-black trees",
+                "Ivo van Kreveld", time);
     }
 
     @Test
@@ -73,7 +74,8 @@ public class LectureEntityTest {
     void setNameTest() {
         String newName = new String("Algorithms and Data Structures: AVL trees");
         lectureEntity.setName(newName);
-        assertEquals(new String("Algorithms and Data Structures: AVL trees"), lectureEntity.getName());
+        assertEquals(new String("Algorithms and Data Structures: AVL trees"),
+                lectureEntity.getName());
     }
 
     @Test
@@ -87,7 +89,8 @@ public class LectureEntityTest {
         int oldFaster = lectureEntity.getFasterCount();
         int oldSlower = lectureEntity.getSlowerCount();
         lectureEntity.incrementFasterCount();
-        assertTrue(lectureEntity.getFasterCount() == oldFaster+1 && oldSlower == lectureEntity.getSlowerCount());
+        assertTrue(lectureEntity.getFasterCount() == oldFaster + 1
+                && oldSlower == lectureEntity.getSlowerCount());
     }
 
     @Test
@@ -95,7 +98,8 @@ public class LectureEntityTest {
         int oldFaster = lectureEntity.getFasterCount();
         int oldSlower = lectureEntity.getSlowerCount();
         lectureEntity.incrementSlowerCount();
-        assertTrue(lectureEntity.getSlowerCount() == oldSlower + 1 && lectureEntity.getFasterCount() == oldFaster);
+        assertTrue(lectureEntity.getSlowerCount() == oldSlower + 1
+                && lectureEntity.getFasterCount() == oldFaster);
     }
 
     @Test
@@ -103,7 +107,8 @@ public class LectureEntityTest {
         lectureEntity.incrementFasterCount();
         lectureEntity.incrementSlowerCount();
         lectureEntity.resetSpeedCounts();
-        assertTrue(lectureEntity.getSlowerCount() == 0 && lectureEntity.getFasterCount() == 0);
+        assertTrue(lectureEntity.getSlowerCount() == 0
+                && lectureEntity.getFasterCount() == 0);
     }
 
     @Test
@@ -116,18 +121,22 @@ public class LectureEntityTest {
         assertEquals(lectureEntity, lectureEntity);
     }
 
-    //cannot test equals with different object, because I have no access to the uuid, which is randomly generated
+    //cannot test equals with different object,
+    //because I have no access to the uuid, which is randomly generated
 
     @Test
     void testEqualsDifferentTest() {
-        LectureEntity other = new LectureEntity("Algorithms and Data Structures: Red-black trees", "Ivo van Kreveld", time);
+        LectureEntity other = new LectureEntity("Algorithms and Data Structures: Red-black trees",
+                "Ivo van Kreveld", time);
         assertNotEquals(lectureEntity, other);
     }
 
     @Test
     void testHashCodeTest() {
         int hash = Objects.hash(lectureEntity.getUuid(), lectureEntity.getModkey(),
-                lectureEntity.getName(), lectureEntity.getCreatorName(), lectureEntity.getStartTime());
+                lectureEntity.getName(),
+                lectureEntity.getCreatorName(),
+                lectureEntity.getStartTime());
         assertEquals(hash, lectureEntity.hashCode());
     }
 }
