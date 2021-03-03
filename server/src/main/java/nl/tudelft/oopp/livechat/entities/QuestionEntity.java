@@ -63,6 +63,7 @@ public class QuestionEntity {
      * @param time       the time
      * @param ownerId    the owner id
      */
+    //remove answer text
     public QuestionEntity(UUID lectureId, String text, String answerText,
                           LocalDateTime time, long ownerId) {
         this.lectureId = lectureId;
@@ -77,10 +78,6 @@ public class QuestionEntity {
 
     public long getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public UUID getLecture() {

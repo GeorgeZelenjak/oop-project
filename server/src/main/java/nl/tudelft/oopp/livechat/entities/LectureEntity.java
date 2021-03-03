@@ -130,6 +130,15 @@ public class LectureEntity {
     }
 
 
+    public void incrementFasterCount() {
+        ++this.fasterCount;
+    }
+
+    public void incrementSlowerCount() {
+        ++this.slowerCount;
+    }
+
+
     /**
      * Sets frequency.
      *
@@ -162,6 +171,6 @@ public class LectureEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, modkey, name, creatorName);
+        return Objects.hash(uuid, modkey, name, creatorName, startTime);
     }
 }
