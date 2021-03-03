@@ -1,10 +1,9 @@
-package nl.tudelft.oopp.demo.controllers;
+package nl.tudelft.oopp.livechat.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import nl.tudelft.oopp.demo.communication.ServerCommunication;
+import nl.tudelft.oopp.livechat.communication.ServerCommunication;
 
 /**
  * Class for controlling events happening from the main scene.
@@ -12,7 +11,7 @@ import nl.tudelft.oopp.demo.communication.ServerCommunication;
 public class MainSceneController {
 
     @FXML
-    private TextField EnterRoomCode;
+    private TextField enterRoomCode;
 
 
     /**
@@ -23,7 +22,8 @@ public class MainSceneController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Creating lecture");
         alert.setHeaderText(null);
-        alert.setContentText(ServerCommunication.createLecture(EnterRoomCode.getCharacters().toString()).toString());
+        alert.setContentText(ServerCommunication
+                .createLecture(enterRoomCode.getCharacters().toString()).toString());
         alert.showAndWait();
 
         System.out.println("Button worked!");

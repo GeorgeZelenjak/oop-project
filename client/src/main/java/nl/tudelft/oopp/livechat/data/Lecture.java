@@ -1,10 +1,9 @@
-package nl.tudelft.oopp.demo.data;
+package nl.tudelft.oopp.livechat.data;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
- * Lecture class
+ * Lecture class.
  */
 public class Lecture {
 
@@ -29,7 +28,7 @@ public class Lecture {
 
 
     /**
-     * Instantiates a new Lecture .
+     * Instantiates a new Lecture.
      * @param uuid        the lecture's id
      * @param modkey      the moderator key
      * @param name        the name
@@ -45,7 +44,8 @@ public class Lecture {
         this.frequency = 60;
         this.startTime = new Timestamp(System.currentTimeMillis());
     }
-    public Lecture(){
+
+    public Lecture() {
 
     }
 

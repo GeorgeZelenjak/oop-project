@@ -6,7 +6,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="400.0" prefWidth="600.0" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.demo.controllers.MainSceneController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.MainSceneController">
    <children>
       <Button fx:id="JoinRoom" layoutX="187.0" layoutY="152.0" mnemonicParsing="false" onAction="#createALecture" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Join Room" />
       <Text layoutX="210.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="mainPageAppName" text="App Name" textAlignment="CENTER" wrappingWidth="180.0">

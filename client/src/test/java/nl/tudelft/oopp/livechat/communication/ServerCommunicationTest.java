@@ -1,10 +1,7 @@
-package nl.tudelft.oopp.demo.communication;
+package nl.tudelft.oopp.livechat.communication;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import nl.tudelft.oopp.demo.data.Lecture;
-import org.junit.jupiter.api.Test;
 
 
 public class ServerCommunicationTest {
