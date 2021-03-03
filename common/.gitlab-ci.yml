@@ -9,7 +9,7 @@ variables:
   # Disable the Gradle daemon to ensure isolated runs of the CI pipeline.
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
-client-build:
+common-build:
   stage: build
   script:
     ./gradlew --build-cache :common:assemble
