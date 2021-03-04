@@ -23,7 +23,6 @@ public class MainSceneController {
     @FXML
     private TextField enterRoomCode;
 
-
     /**
      * Navigates to lecture creation scene.
      */
@@ -35,6 +34,45 @@ public class MainSceneController {
         window.setScene(new Scene(root, 600,400));
 
     }
+    public void goToLecture() throws IOException {
+
+        Lecture currentLecture = Lecture.getCurrentLecture();
+
+        if(currentLecture == null)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error: 404");
+            alert.setHeaderText(null);
+
+            alert.setContentText("Invalid Lecture! (404)");
+            alert.showAndWait();
+        }
+        else if(!currentLecture.isOpen())
+        {
+            //Creating lecture and translating it to String
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Lecture not open yet!");
+            alert.setHeaderText(null);
+
+            alert.setContentText("This lecture has not started yet!");
+            alert.showAndWait();
+        }
+        else
+        {
+            //Navigating to the scene
+            Parent root = FXMLLoader.load(getClass().getResource("/userChatPage.fxml"));
+            Stage window = (Stage) enterRoomCode.getScene().getWindow();
+            window.setScene(new Scene(root, 1200,675));
+
+            UserChatPageController.setLectureNameUserPage();
+        }
+
+
+
+
+    }
+
+
 
 
 }
