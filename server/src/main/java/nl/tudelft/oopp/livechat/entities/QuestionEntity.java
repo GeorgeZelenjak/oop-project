@@ -7,8 +7,8 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.*;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+//import org.hibernate.annotations.OnDelete;
+//import org.hibernate.annotations.OnDeleteAction;
 
 
 /**
@@ -27,21 +27,24 @@ public class QuestionEntity {
     //  @JoinColumn(name = "lectureId", nullable = false)
     //  @OnDelete(action = OnDeleteAction.CASCADE)
 
+    @Column(name = "lectureId")
     private UUID lectureId;
 
     @Column(name = "time")
     private Timestamp time;
 
     @Column(name = "votes")
-    private int votes = 0;
+    private int votes;
 
     @Column(name = "text")
     private String text;
 
-    //private String status
+    @Column(name = "status")
+    //new, edited, ?deleted?
+    private String status = new String("new");
 
     @Column(name = "answered")
-    private boolean answered = false;
+    private boolean answered;
 
     @Column(name = "answerText")
     private String answerText;
@@ -69,6 +72,15 @@ public class QuestionEntity {
         this.time = time;
         this.text = text;
         this.ownerId = ownerId;
+    }
+
+    public static QuestionEntity create(UUID lectureId, String text, Timestamp time, long ownerId) {
+        QuestionEntity q = new QuestionEntity();
+        q.lectureId = lectureId;
+        q.time = time;
+        q.text = text;
+        q.ownerId = ownerId;
+        return q;
     }
 
     public long getId() {

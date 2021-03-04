@@ -34,7 +34,6 @@ class QuestionEntityTest {
         assertNotNull(questionEntity.getId());
     }
 
-
     @Test
     void getLectureTest() {
         assertEquals(lectureId, questionEntity.getLecture());
