@@ -30,8 +30,12 @@
         -fx-background-color: Transparent;
     }
     .settingsButton:hover{
-        -fx-background-image: url( Gear_gray.png);
+        -fx-background-image: url(Gear_gray.png);
     }
+    .sideBarButton:hover{
+        -fx-background-image: url(threeLines.png);
+    }
+
 
 
 
