@@ -7,6 +7,7 @@ import java.sql.Timestamp;
  */
 public class Lecture {
 
+    private static Lecture currentLecture;
 
     private String uuid;
 
@@ -146,6 +147,25 @@ public class Lecture {
      */
     public void reOpen() {
         this.open = true;
+    }
+
+
+    /**
+     * Sets current lecture.
+     *
+     * @param lecture the lecture
+     */
+    public static void setCurrentLecture(Lecture lecture) {
+        Lecture.currentLecture = lecture;
+    }
+
+    /**
+     * Gets current lecture.
+     *
+     * @return the current lecture
+     */
+    public static Lecture getCurrentLecture() {
+        return Lecture.currentLecture;
     }
 
     @Override
