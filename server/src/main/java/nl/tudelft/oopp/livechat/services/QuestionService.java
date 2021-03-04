@@ -1,8 +1,9 @@
 package nl.tudelft.oopp.livechat.services;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
@@ -20,6 +21,8 @@ public class QuestionService {
     @Autowired
     LectureRepository lectureRepository;
 
+    Map<QuestionEntity, Set<Long>> upvoted = new HashMap<>();
+
     /**
      * Gets questions by lecture id.
      *
@@ -34,18 +37,12 @@ public class QuestionService {
     /**
      * New question entity.
      *
-     * @param lectureId  the lecture id
-     * @param text       the text
-     * @param answerText the answer text
-     * @param time       the start time
-     * @param ownerId    the owner id
+     * @param q the question entity
      * @return the question entity created
      */
-    public QuestionEntity newQuestionEntity(UUID lectureId, String text,
-                                            String answerText, LocalDateTime time, long ownerId) {
-        QuestionEntity q = new QuestionEntity(lectureId, text, answerText, time, ownerId);
+    public int newQuestionEntity(QuestionEntity q) {
         questionRepository.save(q);
-        return q;
+        return 0;
     }
 
     /**
@@ -61,6 +58,7 @@ public class QuestionService {
             return -1;
         }
         questionRepository.deleteById(id);
+        upvoted.remove(q);
         return 0;
     }
 
@@ -80,6 +78,7 @@ public class QuestionService {
         UUID modk = UUID.fromString(modkey);
         if (l.getModkey().equals(modk)) {
             questionRepository.deleteById(id);
+            upvoted.remove(q);
             return 0;
         }
         return -1;
@@ -104,6 +103,25 @@ public class QuestionService {
         if (lecture.getModkey().equals(modk)) {
             q.setText(newText);
             q.setOwnerId(newOwnerId);
+            return 0;
+        }
+        return -1;
+    }
+
+    /**
+     * Upvote int.
+     *
+     * @param id     the id
+     * @param userId the user id
+     * @return the int
+     */
+    public int upvote(long id, long userId) {
+        QuestionEntity q = questionRepository.findById(id).orElse(null);
+        if (q == null) return -1;
+        Set<Long> voters = this.upvoted.get(q);
+        if (!voters.contains(userId)) {
+            q.vote();
+            voters.add(userId);
             return 0;
         }
         return -1;

@@ -1,5 +1,7 @@
 package nl.tudelft.oopp.livechat.entities;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -28,7 +30,7 @@ public class QuestionEntity {
     private UUID lectureId;
 
     @Column(name = "time")
-    private LocalDateTime time;
+    private Timestamp time;
 
     @Column(name = "votes")
     private int votes = 0;
@@ -45,7 +47,7 @@ public class QuestionEntity {
     private String answerText;
 
     @Column(name = "answerTime")
-    private LocalDateTime answerTime;
+    private Timestamp answerTime;
 
     @Column(name = "ownerId")
     private long ownerId;
@@ -59,20 +61,13 @@ public class QuestionEntity {
      *
      * @param lectureId    the lecture
      * @param text       the text
-     * @param answerText the answer text
      * @param time       the time
      * @param ownerId    the owner id
      */
-    //remove answer text
-    public QuestionEntity(UUID lectureId, String text, String answerText,
-                          LocalDateTime time, long ownerId) {
+    public QuestionEntity(UUID lectureId, String text, Timestamp time, long ownerId) {
         this.lectureId = lectureId;
         this.time = time;
-        this.votes = 0;
         this.text = text;
-        this.answered = false;
-        this.answerText = answerText;
-        this.answerTime = null;
         this.ownerId = ownerId;
     }
 
@@ -84,7 +79,7 @@ public class QuestionEntity {
         return lectureId;
     }
 
-    public LocalDateTime getTime() {
+    public Timestamp getTime() {
         return time;
     }
 
@@ -120,11 +115,11 @@ public class QuestionEntity {
         this.answerText = answerText;
     }
 
-    public LocalDateTime getAnswerTime() {
+    public Timestamp getAnswerTime() {
         return answerTime;
     }
 
-    public void setAnswerTime(LocalDateTime answerTime) {
+    public void setAnswerTime(Timestamp answerTime) {
         this.answerTime = answerTime;
     }
 

@@ -2,7 +2,7 @@ package nl.tudelft.oopp.livechat.entities;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -12,15 +12,15 @@ import org.junit.jupiter.api.*;
 class QuestionEntityTest {
     private static UUID lectureId = UUID.randomUUID();
     private static Long ownerId = ThreadLocalRandom.current().nextLong(1000000000000L);
-    private static LocalDateTime time = LocalDateTime.now();
     private static QuestionEntity questionEntity;
+    private static Timestamp time = new Timestamp(System.currentTimeMillis());
 
     @BeforeAll
     static void setUp() {
         questionEntity = new QuestionEntity(lectureId,
                 "What is the answer to the Ultimate "
                         + "Question of Life, the Universe, and Everything?",
-                "42", time, ownerId);
+                new Timestamp(System.currentTimeMillis()), ownerId);
     }
 
     @Test
@@ -85,6 +85,7 @@ class QuestionEntityTest {
 
     @Test
     void getAnswerTextTest() {
+        questionEntity.setAnswerText("42");
         assertEquals(new String("42"), questionEntity.getAnswerText());
     }
 
@@ -101,7 +102,7 @@ class QuestionEntityTest {
 
     @Test
     void setAnswerTimeTest() {
-        LocalDateTime t = time.now();
+        Timestamp t = time;
         questionEntity.setAnswerTime(t);
         assertEquals(t, questionEntity.getAnswerTime());
     }
