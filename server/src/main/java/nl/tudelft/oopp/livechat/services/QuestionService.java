@@ -26,8 +26,9 @@ public class QuestionService {
      * @param lectureId the lecture id
      * @return the questions by lecture id
      */
-    public List<QuestionEntity> getQuestionsByLectureId(UUID lectureId) {
-        return questionRepository.findAllByLectureId(lectureId);
+    public List<QuestionEntity> getQuestionsByLectureId(String lectureId) {
+        UUID uuid = UUID.fromString(lectureId);
+        return questionRepository.findAllByLectureId(uuid);
     }
 
     /**
