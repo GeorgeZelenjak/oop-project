@@ -21,8 +21,13 @@
         -fx-text-fill: Black;
     }
 
+    .headerText{
+        -fx-font-size: 36;
+    }
+
     .settingsButton{
         -fx-background-image: url(/Gear.png) ;
+        -fx-background-color: Transparent;
     }
     .settingsButton:hover{
         -fx-background-image: url( Gear_gray.png);

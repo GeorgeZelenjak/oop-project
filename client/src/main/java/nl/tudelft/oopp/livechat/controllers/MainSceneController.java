@@ -1,9 +1,19 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import java.io.IOException;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.communication.ServerCommunication;
+import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.views.CreateRoomDisplay;
+
+
 
 /**
  * Class for controlling events happening from the main scene.
@@ -11,21 +21,20 @@ import nl.tudelft.oopp.livechat.communication.ServerCommunication;
 public class MainSceneController {
 
     @FXML
-    private TextField EnterRoomCode;
+    private TextField enterRoomCode;
 
 
     /**
-     * Creates a lecture and shows a popup.
+     * Navigates to lecture creation scene.
      */
-    public void createALecture() {
+    public void goToCreateLecture() throws IOException {
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Creating lecture");
-        alert.setHeaderText(null);
-        alert.setContentText(ServerCommunication
-                .createLecture(EnterRoomCode.getCharacters().toString()).toString());
-        alert.showAndWait();
+        //Navigating to the scene
+        Parent root = FXMLLoader.load(getClass().getResource("/inputLectureParameters.fxml"));
+        Stage window = (Stage) enterRoomCode.getScene().getWindow();
+        window.setScene(new Scene(root, 600,400));
 
-        System.out.println("Button worked!");
     }
+
+
 }
