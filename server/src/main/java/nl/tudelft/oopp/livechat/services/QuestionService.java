@@ -42,6 +42,7 @@ public class QuestionService {
      */
     public int newQuestionEntity(QuestionEntity q) {
         questionRepository.save(q);
+        upvoted.put(q, new HashSet<>());
         return 0;
     }
 

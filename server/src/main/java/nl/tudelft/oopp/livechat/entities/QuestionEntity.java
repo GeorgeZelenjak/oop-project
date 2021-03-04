@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import javax.persistence.*;
 
 //import org.hibernate.annotations.OnDelete;
@@ -20,8 +21,7 @@ public class QuestionEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private long id = ThreadLocalRandom.current().nextLong(1000000000000L);
 
     //  @ManyToOne(fetch = FetchType.LAZY, optional = false)
     //  @JoinColumn(name = "lectureId", nullable = false)
@@ -74,6 +74,14 @@ public class QuestionEntity {
         this.ownerId = ownerId;
     }
 
+    /**
+     * Instantiates creates new Question entity.
+     *
+     * @param lectureId    the lecture
+     * @param text       the text
+     * @param time       the time
+     * @param ownerId    the owner id
+     */
     public static QuestionEntity create(UUID lectureId, String text, Timestamp time, long ownerId) {
         QuestionEntity q = new QuestionEntity();
         q.lectureId = lectureId;
@@ -84,27 +92,27 @@ public class QuestionEntity {
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public UUID getLecture() {
-        return lectureId;
+        return this.lectureId;
     }
 
     public Timestamp getTime() {
-        return time;
+        return this.time;
     }
 
     public int getVotes() {
-        return votes;
+        return this.votes;
     }
 
     public void vote() {
-        ++this.votes;
+        this.votes += 1;
     }
 
     public String getText() {
-        return text;
+        return this.text;
     }
 
     public void setText(String text) {
@@ -112,7 +120,7 @@ public class QuestionEntity {
     }
 
     public boolean isAnswered() {
-        return answered;
+        return this.answered;
     }
 
     public void setAnswered(boolean answered) {
@@ -120,7 +128,7 @@ public class QuestionEntity {
     }
 
     public String getAnswerText() {
-        return answerText;
+        return this.answerText;
     }
 
     public void setAnswerText(String answerText) {
@@ -128,7 +136,7 @@ public class QuestionEntity {
     }
 
     public Timestamp getAnswerTime() {
-        return answerTime;
+        return this.answerTime;
     }
 
     public void setAnswerTime(Timestamp answerTime) {

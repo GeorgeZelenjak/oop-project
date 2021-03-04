@@ -30,7 +30,6 @@ public class LectureService {
      *
      * @param name        the name
      * @param creatorName the creator name
-     * @param startTime   the start time
      * @return the lecture entity
      */
     public LectureEntity newLecture(String name, String creatorName) {
