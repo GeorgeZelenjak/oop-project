@@ -59,8 +59,8 @@ public class LectureEntity {
      * @param creatorName the creator name
      */
     public LectureEntity(String name, String creatorName) {
-        this.uuid = generateUUID();
-        this.modkey = generateUUID();
+        this.uuid = UUID.randomUUID();
+        this.modkey = UUID.randomUUID();
         this.name = name;
         this.creatorName = creatorName;
         this.fasterCount = 0;
