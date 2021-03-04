@@ -24,7 +24,8 @@ public class ServerCommunication {
     */
     //  TODO: I AM PASSING A BLANK STRING IN THE POST METHOD, THIS SHOULD BE CHANGED
     public static Lecture createLecture(String name) {
-        HttpRequest request = HttpRequest.newBuilder().POST(HttpRequest.BodyPublishers.ofString("")).uri(URI.create("http://localhost:8080//api/newLecture?name=" + name)).build();
+        HttpRequest request = HttpRequest.newBuilder().POST(HttpRequest.BodyPublishers
+                .ofString("")).uri(URI.create("http://localhost:8080//api/newLecture?name=" + name)).build();
         HttpResponse<String> response;
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
