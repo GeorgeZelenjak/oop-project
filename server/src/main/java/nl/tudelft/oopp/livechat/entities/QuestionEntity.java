@@ -167,4 +167,20 @@ public class QuestionEntity {
     public int hashCode() {
         return Objects.hash(this.id, this.lectureId, this.time);
     }
+
+    @Override
+    public String toString() {
+        return "QuestionEntity{" +
+                "id=" + id +
+                ", lectureId=" + lectureId +
+                ", time=" + time +
+                ", votes=" + votes +
+                ", text='" + text + '\'' +
+                ", status='" + status + '\'' +
+                ", answered=" + answered +
+                ", answerText='" + answerText + '\'' +
+                ", answerTime=" + answerTime +
+                ", ownerId=" + ownerId +
+                '}';
+    }
 }

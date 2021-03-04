@@ -104,6 +104,7 @@ public class QuestionService {
         if (lecture.getModkey().equals(modk)) {
             q.setText(newText);
             q.setOwnerId(newOwnerId);
+            questionRepository.save(q);
             return 0;
         }
         return -1;
@@ -123,6 +124,7 @@ public class QuestionService {
         if (!voters.contains(userId)) {
             q.vote();
             voters.add(userId);
+            questionRepository.save(q);
             return 0;
         }
         return -1;
