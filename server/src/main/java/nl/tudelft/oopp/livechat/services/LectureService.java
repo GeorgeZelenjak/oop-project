@@ -33,8 +33,8 @@ public class LectureService {
      * @param startTime   the start time
      * @return the lecture entity
      */
-    public LectureEntity newLecture(String name, String creatorName, LocalDateTime startTime) {
-        LectureEntity n = new LectureEntity(name, creatorName, startTime);
+    public LectureEntity newLecture(String name, String creatorName) {
+        LectureEntity n = new LectureEntity(name, creatorName);
         lectureRepository.save(n);
         return n;
     }

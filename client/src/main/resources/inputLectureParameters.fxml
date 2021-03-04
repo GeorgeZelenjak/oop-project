@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.CreateRoomController">
+    <children>
+        <TextField fx:id="enterRoomName" alignment="CENTER" layoutX="32.0" layoutY="109.0" prefHeight="25.0" prefWidth="227.0" promptText="Enter Room Name" styleClass="mainSceneEnterRoomCode"  />
+        <Button fx:id="createRoom" layoutX="32.0" layoutY="286.0" mnemonicParsing="false" onAction="#createLecture" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Create" />
+        <Button fx:id="settingsButton" layoutX="57.0" layoutY="353.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="33.0"  styleClass="settingsButton" />
+        <Button fx:id="helpButton" layoutX="14.0" layoutY="353.0" mnemonicParsing="false" styleClass="mainSceneButton" text="?" />
+      <Text layoutX="147.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="Creating Lecture" textAlignment="CENTER" wrappingWidth="306.0">
+         <font>
+            <Font size="36.0" />
+         </font></Text>
+    </children>
+</AnchorPane>
