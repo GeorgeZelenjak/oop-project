@@ -12,13 +12,12 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 public class LectureEntityTest {
-    private static LocalDateTime time = LocalDateTime.of(2020, 12, 31, 10, 0, 0, 0);
     private static LectureEntity lectureEntity;
 
     @BeforeAll
     static void setUp() {
         lectureEntity = new LectureEntity("Algorithms and Data Structures: Red-black trees",
-                "Ivo van Kreveld", time);
+                "Ivo van Kreveld");
     }
 
     @Test
@@ -58,11 +57,6 @@ public class LectureEntityTest {
     @Test
     void getSlowerCountTest() {
         assertEquals(0, lectureEntity.getSlowerCount());
-    }
-
-    @Test
-    void getStartTimeTest() {
-        assertEquals(time, lectureEntity.getStartTime());
     }
 
     @Test
@@ -127,7 +121,7 @@ public class LectureEntityTest {
     @Test
     void testEqualsDifferentTest() {
         LectureEntity other = new LectureEntity("Algorithms and Data Structures: Red-black trees",
-                "Ivo van Kreveld", time);
+                "Ivo van Kreveld");
         assertNotEquals(lectureEntity, other);
     }
 
