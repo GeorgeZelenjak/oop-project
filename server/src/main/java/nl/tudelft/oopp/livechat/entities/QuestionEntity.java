@@ -23,8 +23,7 @@ public class QuestionEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue
-    private long id;
+    private long id = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
 
     //  @ManyToOne(fetch = FetchType.LAZY, optional = false)
     //  @JoinColumn(name = "lectureId", nullable = false)

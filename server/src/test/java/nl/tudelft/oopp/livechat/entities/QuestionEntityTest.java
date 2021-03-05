@@ -11,7 +11,7 @@ import org.junit.jupiter.api.*;
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 class QuestionEntityTest {
     private static UUID lectureId = UUID.randomUUID();
-    private static Long ownerId = ThreadLocalRandom.current().nextLong(1000000000000L);
+    private static Long ownerId = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
     private static QuestionEntity questionEntity;
     private static Timestamp time = new Timestamp(System.currentTimeMillis());
 
@@ -26,12 +26,6 @@ class QuestionEntityTest {
     @Test
     void constructorTest() {
         assertNotNull(questionEntity);
-    }
-
-    @Test
-    void getIdTest() {
-        //cannot test id, because I have no access to it and it is randomly generated
-        assertNotNull(questionEntity.getId());
     }
 
     @Test

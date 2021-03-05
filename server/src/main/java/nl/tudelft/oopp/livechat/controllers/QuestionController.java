@@ -48,8 +48,8 @@ public class QuestionController {
     /*
     * This endpoint is used to upvote a specific question
      */
-    @PostMapping("/upvote")
-    public int vote(@RequestParam long id, @RequestParam long uid) {
-        return questionService.upvote(id, uid);
+    @PutMapping("/upvote")
+    public int vote(@RequestParam long qid, @RequestParam long uid) {
+        return questionService.upvote(qid, uid);
     }
 }
