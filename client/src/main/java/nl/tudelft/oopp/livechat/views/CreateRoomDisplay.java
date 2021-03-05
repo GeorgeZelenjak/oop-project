@@ -1,20 +1,27 @@
-package nl.tudelft.oopp.demo.views;
+package nl.tudelft.oopp.livechat.views;
 
 import java.io.IOException;
+
 import java.net.URL;
 
 import javafx.application.Application;
+
 import javafx.fxml.FXMLLoader;
+
 import javafx.scene.Parent;
+
 import javafx.scene.Scene;
+
 import javafx.stage.Stage;
 
-public class QuoteDisplay extends Application {
+
+
+public class CreateRoomDisplay extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        URL xmlUrl = getClass().getResource("/mainScene.fxml");
+        URL xmlUrl = getClass().getResource("/inputLectureParameters.fxml");
         loader.setLocation(xmlUrl);
         Parent root = loader.load();
 
@@ -25,4 +32,5 @@ public class QuoteDisplay extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
 }

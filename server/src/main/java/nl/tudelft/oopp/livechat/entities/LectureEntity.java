@@ -1,5 +1,6 @@
 package nl.tudelft.oopp.livechat.entities;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -37,8 +38,14 @@ public class LectureEntity {
     private int frequency;
 
     @Column(name = "startTime")
-    private LocalDateTime startTime;
+    private Timestamp startTime;
 
+    @Column(name = "open")
+    private boolean open = true;
+
+    /**
+     * Instantiates a new Lecture entity.
+     */
     public LectureEntity() {
         this.uuid = generateUUID();
         this.modkey = generateUUID();
@@ -50,9 +57,8 @@ public class LectureEntity {
      *
      * @param name        the name
      * @param creatorName the creator name
-     * @param startTime   the start time
      */
-    public LectureEntity(String name, String creatorName, LocalDateTime startTime) {
+    public LectureEntity(String name, String creatorName) {
         this.uuid = generateUUID();
         this.modkey = generateUUID();
         this.name = name;
@@ -60,7 +66,7 @@ public class LectureEntity {
         this.fasterCount = 0;
         this.slowerCount = 0;
         this.frequency = 60;
-        this.startTime = startTime.withNano(0);
+        this.startTime = new Timestamp(System.currentTimeMillis());
     }
 
     /**
@@ -109,15 +115,30 @@ public class LectureEntity {
         return creatorName;
     }
 
+    /**
+     * Gets faster count.
+     *
+     * @return the faster count
+     */
     public int getFasterCount() {
         return fasterCount;
     }
 
+    /**
+     * Gets slower count.
+     *
+     * @return the slower count
+     */
     public int getSlowerCount() {
         return slowerCount;
     }
 
-    public LocalDateTime getStartTime() {
+    /**
+     * Gets start time.
+     *
+     * @return the start time
+     */
+    public Timestamp getStartTime() {
         return startTime;
     }
 
@@ -155,6 +176,29 @@ public class LectureEntity {
     public void resetSpeedCounts() {
         this.fasterCount = 0;
         this.slowerCount = 0;
+    }
+
+    /**
+     * Close.
+     */
+    public void close() {
+        this.open = false;
+    }
+
+    /**
+     * Re open.
+     */
+    public void reOpen() {
+        this.open = true;
+    }
+
+    /**
+     * Is open .
+     *
+     * @return boolean
+     */
+    public boolean isOpen() {
+        return this.open;
     }
 
     @Override

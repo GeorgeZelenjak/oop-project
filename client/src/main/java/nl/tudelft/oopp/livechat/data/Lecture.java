@@ -1,17 +1,17 @@
-package nl.tudelft.oopp.lecture;
+package nl.tudelft.oopp.livechat.data;
 
 import java.sql.Timestamp;
-import java.util.Objects;
-import java.util.UUID;
 
 /**
- * The type Lecture.
+ * Lecture class.
  */
 public class Lecture {
 
-    private final String uuid;
+    private static Lecture currentLecture;
 
-    private final String modkey;
+    private String uuid;
+
+    private String modkey;
 
     private String name;
 
@@ -27,24 +27,18 @@ public class Lecture {
 
     private boolean open = true;
 
-    /**
-     * Instantiates a new Lecture entity.
-     */
-    public Lecture() {
-        this.uuid = generateUUID();
-        this.modkey = generateUUID();
-    }
-
 
     /**
      * Instantiates a new Lecture.
      *
+     * @param uuid        the lecture's id
+     * @param modkey      the moderator key
      * @param name        the name
      * @param creatorName the creator name
      */
-    public Lecture(String name, String creatorName) {
-        this.uuid = generateUUID();
-        this.modkey = generateUUID();
+    public Lecture(String uuid, String modkey, String name, String creatorName) {
+        this.uuid = uuid;
+        this.modkey = modkey;
         this.name = name;
         this.creatorName = creatorName;
         this.fasterCount = 0;
@@ -54,13 +48,10 @@ public class Lecture {
     }
 
     /**
-     * Generate uuid string.
-     *
-     * @return the string
+     * Instantiates a new Lecture.
      */
-    public static String generateUUID() {
-        UUID generated = UUID.randomUUID();
-        return generated.toString();
+    public Lecture() {
+
     }
 
     /**
@@ -118,15 +109,6 @@ public class Lecture {
     }
 
     /**
-     * Gets start time.
-     *
-     * @return the start time
-     */
-    public Timestamp getStartTime() {
-        return startTime;
-    }
-
-    /**
      * Gets frequency.
      *
      * @return the frequency
@@ -136,30 +118,21 @@ public class Lecture {
     }
 
     /**
-     * Sets name.
+     * Gets start time.
      *
-     * @param name the name
+     * @return the start time
      */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    /**
-     * Sets frequency.
-     *
-     * @param frequency the frequency
-     */
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
+    public Timestamp getStartTime() {
+        return startTime;
     }
 
     /**
-     * Reset speed counts.
+     * Is open boolean.
+     *
+     * @return boolean
      */
-    public void resetSpeedCounts() {
-        this.fasterCount = 0;
-        this.slowerCount = 0;
+    public boolean isOpen() {
+        return this.open;
     }
 
     /**
@@ -176,30 +149,30 @@ public class Lecture {
         this.open = true;
     }
 
+
     /**
-     * Is open .
+     * Sets current lecture.
      *
-     * @return boolean
+     * @param lecture the lecture
      */
-    public boolean isOpen() {
-        return this.open;
+    public static void setCurrentLecture(Lecture lecture) {
+        Lecture.currentLecture = lecture;
+    }
+
+    /**
+     * Gets current lecture.
+     *
+     * @return the current lecture
+     */
+    public static Lecture getCurrentLecture() {
+        return Lecture.currentLecture;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o instanceof Lecture) {
-            Lecture l = (Lecture) o;
-            return uuid.equals(l.uuid);
-        }
-        return false;
+    public String toString() {
+        return "You created the lecture " + name + " by " + creatorName;
     }
 
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(uuid, modkey, name, creatorName);
-    }
+
 }
