@@ -20,10 +20,11 @@ import nl.tudelft.oopp.livechat.data.Lecture;
  */
 public class UserChatPageController {
 
+
     @FXML
-    private Button joinRoom;
+    private Button backButton;
     @FXML
-    private static Text lectureName;
+    private Button userManual;
 
 
     /**
@@ -41,13 +42,11 @@ public class UserChatPageController {
 
         alert.setContentText("Are you sure do you want to quit this lecture?");
 
-
-        //TODO doesnt work-> throws InvocationTargetException && NullPointerException
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
 
             Parent root = FXMLLoader.load(getClass().getResource("/mainScene.fxml"));
-            Stage window = (Stage) lectureName.getScene().getWindow();
+            Stage window = (Stage) backButton.getScene().getWindow();
             window.setScene(new Scene(root, 600,400));
         }
 
@@ -55,10 +54,17 @@ public class UserChatPageController {
 
     }
 
-    @FXML
-    public static void setLectureNameUserPage() {
 
-        lectureName.setText(Lecture.getCurrentLecture().getName());
+    /**
+     * Go to user manual.
+     *
+     * @throws IOException the io exception
+     */
+    public void goToUserManual() throws IOException {
+
+        Parent root = FXMLLoader.load(getClass().getResource("/userManual.fxml"));
+        Stage window = (Stage) backButton.getScene().getWindow();
+        window.setScene(new Scene(root, 1000,650));
     }
 
 
