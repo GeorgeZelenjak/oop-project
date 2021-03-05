@@ -36,7 +36,7 @@ class QuestionEntityTest {
 
     @Test
     void getLectureTest() {
-        assertEquals(lectureId, questionEntity.getLecture());
+        assertEquals(lectureId, questionEntity.getLectureId());
     }
 
     @Test

@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.persistence.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 //import org.hibernate.annotations.OnDelete;
 //import org.hibernate.annotations.OnDeleteAction;
@@ -17,11 +18,13 @@ import javax.persistence.*;
  */
 @Entity(name = "question")
 @Table(name = "questions")
+@DynamicUpdate
 public class QuestionEntity {
 
     @Id
     @Column(name = "id")
-    private long id = ThreadLocalRandom.current().nextLong(1000000000000L);
+    @GeneratedValue
+    private long id;
 
     //  @ManyToOne(fetch = FetchType.LAZY, optional = false)
     //  @JoinColumn(name = "lectureId", nullable = false)
@@ -59,6 +62,7 @@ public class QuestionEntity {
 
     }
 
+
     /**
      * Instantiates a new Question entity.
      *
@@ -95,8 +99,12 @@ public class QuestionEntity {
         return this.id;
     }
 
-    public UUID getLecture() {
+    public UUID getLectureId() {
         return this.lectureId;
+    }
+
+    public void setLectureId(UUID lectureId) {
+        this.lectureId = lectureId;
     }
 
     public Timestamp getTime() {

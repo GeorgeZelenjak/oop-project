@@ -48,7 +48,6 @@ class QuestionServiceTest {
                 new Timestamp(System.currentTimeMillis()), 2L);
         q3 = new QuestionEntity(l1.getUuid(), "how old?",
                 new Timestamp(System.currentTimeMillis()), 3L);
-        System.out.println(q1.getId() + " " + q2.getId());
         questionService.newQuestionEntity(q1);
         questionService.newQuestionEntity(q2);
     }
@@ -56,14 +55,14 @@ class QuestionServiceTest {
     @Test
     @Order(1)
     void newQuestionEntityTest() {
-        int result = questionService.newQuestionEntity(q3);
-        assertEquals(0, result);
+        long result = questionService.newQuestionEntity(q3);
+        assertTrue(result > 0);
     }
 
     @Test
     @Order(2)
     void getQuestionsByLectureId() {
-        String lid = q1.getLecture().toString();
+        String lid = q1.getLectureId().toString();
         questionService.newQuestionEntity(q3);
         List<QuestionEntity> qs = questionService.getQuestionsByLectureId(lid);
         System.out.println(qs.size());

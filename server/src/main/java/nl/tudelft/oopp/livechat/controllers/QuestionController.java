@@ -25,7 +25,7 @@ public class QuestionController {
     * This endpoint will be used to ask a question
     */
     @PostMapping("/ask")
-    public int askQuestion(@RequestBody QuestionEntity question) {
+    public long askQuestion(@RequestBody QuestionEntity question) {
         return questionService.newQuestionEntity(question);
     }
 

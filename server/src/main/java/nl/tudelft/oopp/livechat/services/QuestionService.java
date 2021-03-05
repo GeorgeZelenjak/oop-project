@@ -40,10 +40,10 @@ public class QuestionService {
      * @param q the question entity
      * @return the question entity created
      */
-    public int newQuestionEntity(QuestionEntity q) {
+    public long newQuestionEntity(QuestionEntity q) {
         questionRepository.save(q);
         upvoted.put(q, new HashSet<>());
-        return 0;
+        return q.getId();
     }
 
     /**
@@ -75,7 +75,7 @@ public class QuestionService {
         if (q == null) {
             return -1;
         }
-        LectureEntity l = lectureRepository.findLectureEntityByUuid(q.getLecture());
+        LectureEntity l = lectureRepository.findLectureEntityByUuid(q.getLectureId());
         UUID modk = UUID.fromString(modkey);
         if (l.getModkey().equals(modk)) {
             questionRepository.deleteById(id);
@@ -99,7 +99,7 @@ public class QuestionService {
         if (q == null) {
             return -1;
         }
-        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLecture());
+        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
         UUID modk = UUID.fromString(moderatorKey);
         if (lecture.getModkey().equals(modk)) {
             q.setText(newText);
