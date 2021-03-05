@@ -170,17 +170,17 @@ public class QuestionEntity {
 
     @Override
     public String toString() {
-        return "QuestionEntity{" +
-                "id=" + id +
-                ", lectureId=" + lectureId +
-                ", time=" + time +
-                ", votes=" + votes +
-                ", text='" + text + '\'' +
-                ", status='" + status + '\'' +
-                ", answered=" + answered +
-                ", answerText='" + answerText + '\'' +
-                ", answerTime=" + answerTime +
-                ", ownerId=" + ownerId +
-                '}';
+        return "QuestionEntity{"
+                + "id=" + id
+                + ", lectureId=" + lectureId
+                + ", time=" + time
+                + ", votes=" + votes
+                + ", text='" + text + '\''
+                + ", status='" + status + '\''
+                + ", answered=" + answered
+                + ", answerText='" + answerText + '\''
+                + ", answerTime=" + answerTime
+                + ", ownerId=" + ownerId
+                + '}';
     }
 }

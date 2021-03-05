@@ -1,5 +1,10 @@
 package nl.tudelft.oopp.livechat.services;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.sql.Timestamp;
+import java.util.List;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
@@ -9,11 +14,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Timestamp;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 //@TestInstance(Lifecycle.PER_CLASS)
@@ -42,9 +42,12 @@ class QuestionServiceTest {
     void setup() {
         l1 = lectureService.newLecture("Lecture Name 1", "Ivo van Kreveld");
         l2 = lectureService.newLecture("Lecture Name 2", "Professor Y");
-        q1 = new QuestionEntity(l1.getUuid(), "name?", new Timestamp(System.currentTimeMillis()), 1L);
-        q2 = new QuestionEntity(l2.getUuid(), "surname?", new Timestamp(System.currentTimeMillis()), 2L);
-        q3 = new QuestionEntity(l1.getUuid(), "how old?", new Timestamp(System.currentTimeMillis()), 3L);
+        q1 = new QuestionEntity(l1.getUuid(), "name?",
+                new Timestamp(System.currentTimeMillis()), 1L);
+        q2 = new QuestionEntity(l2.getUuid(), "surname?",
+                new Timestamp(System.currentTimeMillis()), 2L);
+        q3 = new QuestionEntity(l1.getUuid(), "how old?",
+                new Timestamp(System.currentTimeMillis()), 3L);
         System.out.println(q1.getId() + " " + q2.getId());
         questionService.newQuestionEntity(q1);
         questionService.newQuestionEntity(q2);
@@ -78,7 +81,7 @@ class QuestionServiceTest {
         long pid = 1L;
         long qid = q1.getId();
         int result = questionService.deleteQuestion(qid, pid);
-        assertTrue(result == 0);
+        assertEquals(result, 0);
     }
 
     @Test
@@ -87,7 +90,7 @@ class QuestionServiceTest {
         long pid = 2L;
         long qid = q1.getId();
         int result = questionService.deleteQuestion(qid, pid);
-        assertFalse(result == 0);
+        assertNotEquals(result, 0);
     }
 
     @Test
