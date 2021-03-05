@@ -66,12 +66,24 @@ public class MainSceneController {
             //Navigating to the scene
             Parent root = FXMLLoader.load(getClass().getResource("/userChatPage.fxml"));
             Stage window = (Stage) enterRoomCode.getScene().getWindow();
-            window.setScene(new Scene(root, 1200,675));
+            window.setScene(new Scene(root, 1000,650));
         }
 
 
 
 
+    }
+
+    /**
+     * Go to user manual.
+     *
+     * @throws IOException the io exception
+     */
+    public void goToUserManual() throws IOException {
+
+        Parent root = FXMLLoader.load(getClass().getResource("/userManual.fxml"));
+        Stage window = (Stage) enterRoomCode.getScene().getWindow();
+        window.setScene(new Scene(root, 1000,650));
     }
 
 
