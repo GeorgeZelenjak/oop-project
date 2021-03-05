@@ -4,21 +4,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="400.0" prefWidth="600.0" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.MainSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.MainSceneController">
    <children>
-      <Button fx:id="joinRoom" layoutX="187.0" layoutY="152.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Join Room" />
-      <Text layoutX="210.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="App Name" textAlignment="CENTER" wrappingWidth="180.0" >
+      <Button fx:id="joinRoom" layoutX="187.0" layoutY="152.0" mnemonicParsing="false" onAction="#goToLecture" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Join Room" />
+      <Text layoutX="210.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="App Name" textAlignment="CENTER" wrappingWidth="180.0">
          <font>
 
          </font>
       </Text>
       <TextField fx:id="enterRoomCode" alignment="CENTER" layoutX="187.0" layoutY="103.0" prefHeight="25.0" prefWidth="227.0" promptText="Enter Room Code" styleClass="mainSceneEnterRoomCode" />
-      <Button fx:id="goToCreateRoom" layoutX="187.0" layoutY="200.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Create Room" onAction="#goToCreateLecture"/>
+      <Button fx:id="goToCreateRoom" layoutX="187.0" layoutY="200.0" mnemonicParsing="false" onAction="#goToCreateLecture" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Create Room" />
       <Button fx:id="restoreLecture" layoutX="187.0" layoutY="277.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Restore Lecture" />
       <Button fx:id="exportQAFromLecture" layoutX="187.0" layoutY="324.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Export Q&amp;A from Lecture" />
       <Button fx:id="settingsButton" layoutX="57.0" layoutY="353.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
-      <Button fx:id="helpButton" layoutX="14.0" layoutY="353.0" mnemonicParsing="false" styleClass="mainSceneButton" text="?" />
+      <Button fx:id="helpButton" layoutX="14.0" layoutY="353.0" mnemonicParsing="false" onAction="#goToUserManual" styleClass="mainSceneButton" text="?" />
    </children>
 </AnchorPane>

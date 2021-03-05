@@ -25,13 +25,36 @@
         -fx-font-size: 36;
     }
 
+    .leaveLecture{
+        -fx-background-color: #1a75ff;
+        -fx-background-radius: 10px;
+        -fx-font: 18px Arial;
+        -fx-text-fill: white;
+    }
+
+    .leaveLecture:hover{
+        -fx-background-color:  #6699ff;
+    }
+
     .settingsButton{
         -fx-background-image: url(/Gear.png) ;
         -fx-background-color: Transparent;
     }
+
     .settingsButton:hover{
-        -fx-background-image: url( Gear_gray.png);
+        -fx-background-image: url(Gear_gray.png);
     }
+
+    .sidebarButton{
+        -fx-background-image: url(/threeLines.png);
+        -fx-background-color: Transparent;
+    }
+
+    .sidebar{
+        -fx-background-color: rgba(14, 114, 237, 0.45);
+    }
+
+
 
 
 
