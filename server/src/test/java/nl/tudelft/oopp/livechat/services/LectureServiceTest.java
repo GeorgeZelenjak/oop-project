@@ -2,7 +2,7 @@ package nl.tudelft.oopp.livechat.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDateTime;
+import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import org.junit.jupiter.api.Test;
@@ -19,27 +19,40 @@ class LectureServiceTest {
     @Autowired
     private LectureRepository repository;
 
+
     @Test
-    void getLectureById() {
+    void getLectureByIdTest() {
         LectureEntity l = new LectureEntity("name", "creator_name");
         repository.save(l);
+
         LectureEntity m = lectureService.getLectureById(l.getUuid().toString());
         assertEquals(l, m);
     }
 
     @Test
-    void newLecture() {
-        assertNotNull(lectureService
-                .newLecture("name", "creator_name"));
+    void newLectureTest() {
+        assertNotNull(lectureService.newLecture("name", "creator_name"));
     }
 
     @Test
-    void delete() {
+    void deleteSuccessfulTest() {
         LectureEntity l = new LectureEntity("name", "creator_name");
         repository.save(l);
+
         lectureService.delete(l.getUuid().toString(), l.getModkey().toString());
+
         LectureEntity m = lectureService.getLectureById(l.getUuid().toString());
         assertNull(m);
+    }
 
+    @Test
+    void deleteUnsuccessfulTest() {
+        LectureEntity l = new LectureEntity("name", "creator_name");
+        repository.save(l);
+
+        lectureService.delete(l.getUuid().toString(), UUID.randomUUID().toString());
+
+        LectureEntity m = lectureService.getLectureById(l.getUuid().toString());
+        assertNotNull(m);
     }
 }

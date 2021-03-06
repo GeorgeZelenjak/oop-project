@@ -1,6 +1,5 @@
 package nl.tudelft.oopp.livechat.controllers;
 
-import java.time.LocalDateTime;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.services.LectureService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +29,6 @@ public class LectureController {
         return service.newLecture(name, "placeholder");
         //these are placeholders
     }
-
-
 
     /**
      * Deletes a lecture with UUID id iff the modkey key is correct.

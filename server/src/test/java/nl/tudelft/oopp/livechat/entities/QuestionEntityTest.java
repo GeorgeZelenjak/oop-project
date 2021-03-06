@@ -10,10 +10,10 @@ import org.junit.jupiter.api.*;
 
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 class QuestionEntityTest {
-    private static UUID lectureId = UUID.randomUUID();
-    private static Long ownerId = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
+    private static final UUID lectureId = UUID.randomUUID();
+    private static final Long ownerId = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
     private static QuestionEntity questionEntity;
-    private static Timestamp time = new Timestamp(System.currentTimeMillis());
+    private static final Timestamp time = new Timestamp(System.currentTimeMillis());
 
     @BeforeAll
     static void setUp() {
@@ -26,6 +26,15 @@ class QuestionEntityTest {
     @Test
     void constructorTest() {
         assertNotNull(questionEntity);
+    }
+
+    @Test
+    void staticConstructorTest() {
+        QuestionEntity question = QuestionEntity.create(lectureId,
+                "What is the answer to the Ultimate "
+                        + "Question of Life, the Universe, and Everything?",
+                new Timestamp(System.currentTimeMillis()), ownerId);
+        assertNotNull(question);
     }
 
     @Test
@@ -52,17 +61,17 @@ class QuestionEntityTest {
 
     @Test
     void getTextTest() {
-        String text = new String("What is the answer to the Ultimate Question of Life,"
-                + " the Universe, and Everything?");
+        String text = "What is the answer to the Ultimate Question of Life,"
+                + " the Universe, and Everything?";
         assertEquals(text, questionEntity.getText());
     }
 
     @Test
     void setTextTest() {
-        String newText = new String("What is the answer to the ultimate question of Life, "
-                + "the Universe, and Everything?");
+        String newText = "What is the answer to the ultimate question of Life, "
+                + "the Universe, and Everything?";
         questionEntity.setText(newText);
-        assertEquals(new String(newText), questionEntity.getText());
+        assertEquals(newText, questionEntity.getText());
     }
 
     @Test
@@ -79,13 +88,13 @@ class QuestionEntityTest {
     @Test
     void getAnswerTextTest() {
         questionEntity.setAnswerText("42");
-        assertEquals(new String("42"), questionEntity.getAnswerText());
+        assertEquals("42", questionEntity.getAnswerText());
     }
 
     @Test
     void setAnswerTextTest() {
         questionEntity.setAnswerText("forty-two");
-        assertEquals(new String("forty-two"), questionEntity.getAnswerText());
+        assertEquals("forty-two", questionEntity.getAnswerText());
     }
 
     @Test
@@ -113,25 +122,24 @@ class QuestionEntityTest {
     }
 
     @Test
-    void testEqualsNullTest() {
+    void equalsNullTest() {
         assertNotEquals(questionEntity, null);
     }
 
     @Test
-    void testEqualsSameTest() {
+    void equalsSameTest() {
         assertEquals(questionEntity, questionEntity);
     }
 
-    /*@Test
-    void testEqualsDifferent() {
+    @Test
+    void equalsDifferentTest() {
         QuestionEntity q = new QuestionEntity(lectureId, "What is the answer to the "
-        + "Ultimate Question of Life,the Universe, and Everything?",
-                "42", time, ownerId);
+                + "Ultimate Question of Life,the Universe, and Everything?", time, ownerId);
         assertNotEquals(questionEntity, q);
-    }*/
+    }
 
     @Test
-    void testHashCodeTest() {
+    void hashCodeTest() {
         int hash = Objects.hash(questionEntity.getId(), lectureId, time);
         assertEquals(hash, questionEntity.hashCode());
     }

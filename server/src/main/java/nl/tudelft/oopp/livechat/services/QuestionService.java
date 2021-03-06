@@ -1,7 +1,5 @@
 package nl.tudelft.oopp.livechat.services;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import nl.tudelft.oopp.livechat.entities.LectureEntity;

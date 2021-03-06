@@ -1,6 +1,5 @@
 package nl.tudelft.oopp.livechat.services;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;

@@ -122,20 +122,16 @@ class QuestionControllerTest {
     }
 
     @Test
-    void askQuestion() throws Exception {
+    void askQuestionTest() throws Exception {
         String qid1string = postQuestions(q1Json);
         long qid1 = Long.parseLong(qid1string);
         assertTrue(qid1 > 0);
     }
 
     @Test
-    void fetchQuestions() throws Exception {
-
-        String qid1string = postQuestions(q1Json);
-        final long qid1 = Long.parseLong(qid1string);
-
-        String qid2string = postQuestions(q2Json);
-        final long qid2 = Long.parseLong(qid2string);
+    void fetchQuestionsTest() throws Exception {
+        final long qid1 = Long.parseLong(postQuestions(q1Json));
+        final long qid2 = Long.parseLong(postQuestions(q2Json));
 
         List<QuestionEntity> listLecture1 = getQuestions(lectureEntity1.getUuid().toString());
         List<QuestionEntity> listLecture2 = getQuestions(lectureEntity2.getUuid().toString());
@@ -148,29 +144,28 @@ class QuestionControllerTest {
     }
 
     @Test
-    void deleteQuestionSuccessful() throws Exception {
-        String qid1string = postQuestions(q1Json);
-        long qid1 = Long.parseLong(qid1string);
-
+    void deleteQuestionSuccessfulTest() throws Exception {
+        long qid1 = Long.parseLong(postQuestions(q1Json));
         postQuestions(q2Json);
 
-        int result = deleteQuestion("/api/question/delete?qid=" + qid1 + "&uid=" + q1.getOwnerId());
+        int result = deleteQuestion("/api/question/delete?qid=" + qid1
+                                                + "&uid=" + q1.getOwnerId());
         assertEquals(0, result);
 
         List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
         List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+
         assertEquals(0, listLecture1after.size());
         assertEquals(1, listLecture2after.size());
     }
 
     @Test
-    void deleteQuestionUnsuccessful() throws Exception {
-        String qid1string = postQuestions(q1Json);
-        long qid1 = Long.parseLong(qid1string);
-
+    void deleteQuestionUnsuccessfulTest() throws Exception {
+        long qid1 = Long.parseLong(postQuestions(q1Json));
         postQuestions(q2Json);
 
-        int result = deleteQuestion("/api/question/delete?qid=" + qid1 + "&uid=" + q2.getOwnerId());
+        int result = deleteQuestion("/api/question/delete?qid=" + qid1
+                                                + "&uid=" + q2.getOwnerId());
         assertEquals(-1, result);
 
         List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
@@ -180,12 +175,9 @@ class QuestionControllerTest {
         assertEquals(1, listLecture2after.size());
     }
 
-
     @Test
-    void modDeleteSuccessful() throws Exception {
-        String qid1string = postQuestions(q1Json);
-        long qid1 = Long.parseLong(qid1string);
-
+    void modDeleteSuccessfulTest() throws Exception {
+        long qid1 = Long.parseLong(postQuestions(q1Json));
         postQuestions(q2Json);
 
         int result = deleteQuestion("/api/question/moderator/delete?qid="
@@ -200,13 +192,11 @@ class QuestionControllerTest {
     }
 
     @Test
-    void modDeleteUnsuccessful() throws Exception {
-        String qid1string = postQuestions(q1Json);
-        long qid1 = Long.parseLong(qid1string);
-
+    void modDeleteUnsuccessfulTest() throws Exception {
+        long qid1 = Long.parseLong(postQuestions(q1Json));
         postQuestions(q2Json);
 
-        int result = deleteQuestion("/api/question/moderator/delete?qid=" + qid1
+        final int result = deleteQuestion("/api/question/moderator/delete?qid=" + qid1
                 + "&modkey=" + lectureEntity2.getModkey().toString());
         assertEquals(-1, result);
 
@@ -219,9 +209,7 @@ class QuestionControllerTest {
 
     @Test
     void upvoteSuccessfulTest() throws Exception {
-        String qid1string = postQuestions(q1Json);
-        long qid1 = Long.parseLong(qid1string);
-
+        final long qid1 = Long.parseLong(postQuestions(q1Json));
         postQuestions(q2Json);
 
         List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
@@ -230,7 +218,7 @@ class QuestionControllerTest {
         final int oldVotes1 = listLecture1after.get(0).getVotes();
         final int oldVotes2 = listLecture2after.get(0).getVotes();
 
-        int result = upvote(qid1, q1.getOwnerId());
+        final int result = upvote(qid1, q1.getOwnerId());
         assertEquals(0, result);
 
         listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
@@ -245,9 +233,7 @@ class QuestionControllerTest {
 
     @Test
     void upvoteUnsuccessfulTest() throws Exception {
-        String qid1string = postQuestions(q1Json);
-        long qid1 = Long.parseLong(qid1string);
-
+        long qid1 = Long.parseLong(postQuestions(q1Json));
         postQuestions(q2Json);
 
         List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
@@ -257,7 +243,7 @@ class QuestionControllerTest {
         final int oldVotes2 = listLecture2after.get(0).getVotes();
 
         upvote(qid1, q1.getOwnerId());
-        int result = upvote(qid1, q1.getOwnerId());
+        final int result = upvote(qid1, q1.getOwnerId());
         assertEquals(-1, result);
 
         listLecture1after = getQuestions(lectureEntity1.getUuid().toString());

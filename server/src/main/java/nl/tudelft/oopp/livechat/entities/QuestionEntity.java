@@ -1,8 +1,6 @@
 package nl.tudelft.oopp.livechat.entities;
 
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -43,7 +41,7 @@ public class QuestionEntity {
 
     @Column(name = "status")
     //new, edited, ?deleted?
-    private String status = new String("new");
+    private final String status = "new";
 
     @Column(name = "answered")
     private boolean answered;

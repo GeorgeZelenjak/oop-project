@@ -2,7 +2,6 @@ package nl.tudelft.oopp.livechat.entities;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -39,13 +38,13 @@ public class LectureEntityTest {
 
     @Test
     void getNameTest() {
-        String expected = new String("Algorithms and Data Structures: Red-black trees");
+        String expected = "Algorithms and Data Structures: Red-black trees";
         assertEquals(expected, lectureEntity.getName());
     }
 
     @Test
     void getCreatorNameTest() {
-        String expected = new String("Ivo van Kreveld");
+        String expected = "Ivo van Kreveld";
         assertEquals(expected, lectureEntity.getCreatorName());
     }
 
@@ -66,10 +65,9 @@ public class LectureEntityTest {
 
     @Test
     void setNameTest() {
-        String newName = new String("Algorithms and Data Structures: AVL trees");
+        String newName = "Algorithms and Data Structures: AVL trees";
         lectureEntity.setName(newName);
-        assertEquals(new String("Algorithms and Data Structures: AVL trees"),
-                lectureEntity.getName());
+        assertEquals("Algorithms and Data Structures: AVL trees", lectureEntity.getName());
     }
 
     @Test
@@ -114,9 +112,6 @@ public class LectureEntityTest {
     void testEqualsSameTest() {
         assertEquals(lectureEntity, lectureEntity);
     }
-
-    //cannot test equals with different object,
-    //because I have no access to the uuid, which is randomly generated
 
     @Test
     void testEqualsDifferentTest() {

@@ -39,7 +39,7 @@ class QuestionServiceTest {
     @BeforeEach
     void setup() {
         l1 = lectureService.newLecture("Lecture Name 1", "Ivo van Kreveld");
-        l2 = lectureService.newLecture("Lecture Name 2", "Professor Y");
+        l2 = lectureService.newLecture("Lecture Name 2", "Stefan Hugtenburg");
         q1 = new QuestionEntity(l1.getUuid(), "name?",
                 new Timestamp(System.currentTimeMillis()), 1L);
         q2 = new QuestionEntity(l2.getUuid(), "surname?",
@@ -59,11 +59,10 @@ class QuestionServiceTest {
 
     @Test
     @Order(2)
-    void getQuestionsByLectureId() {
+    void getQuestionsByLectureIdTest() {
         String lid = q1.getLectureId().toString();
         questionService.newQuestionEntity(q3);
         List<QuestionEntity> qs = questionService.getQuestionsByLectureId(lid);
-        System.out.println(qs.size());
         assertEquals(2, qs.size());
         if (qs.get(0).equals(q1)) {
             if (!qs.get(1).equals(q3)) fail();
@@ -74,7 +73,7 @@ class QuestionServiceTest {
 
     @Test
     @Order(3)
-    void deleteQuestionSuccessful() {
+    void deleteQuestionSuccessfulTest() {
         long pid = 1L;
         long qid = q1.getId();
         int result = questionService.deleteQuestion(qid, pid);
@@ -83,7 +82,7 @@ class QuestionServiceTest {
 
     @Test
     @Order(4)
-    void deleteQuestionUnsuccessful() {
+    void deleteQuestionUnsuccessfulTest() {
         long pid = 2L;
         long qid = q1.getId();
         int result = questionService.deleteQuestion(qid, pid);
@@ -92,7 +91,7 @@ class QuestionServiceTest {
 
     @Test
     @Order(5)
-    void deleteModeratorQuestionSuccessful() {
+    void deleteModeratorQuestionSuccessfulTest() {
         String modKey = l1.getModkey().toString();
         long qid = q1.getId();
         int result = questionService.deleteModeratorQuestion(qid, modKey);
@@ -101,7 +100,7 @@ class QuestionServiceTest {
 
     @Test
     @Order(6)
-    void deleteModeratorQuestionUnsuccessful() {
+    void deleteModeratorQuestionUnsuccessfulTest() {
         String modKey = l2.getModkey().toString();
         long qid = q1.getId();
         int result = questionService.deleteModeratorQuestion(qid, modKey);
@@ -110,20 +109,20 @@ class QuestionServiceTest {
 
     @Test
     @Order(7)
-    void editQuestionSuccessful() {
+    void editQuestionSuccessfulTest() {
         long qid = q1.getId();
         long newOwnerId = 42L;
         String modKey = l1.getModkey().toString();
         String newText = "new text)))";
         int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
-        q1 = questionRepository.findById(qid).get();
+        q1 = questionRepository.findById(qid).orElse(null);
         assertEquals(0, result);
         assertEquals(newText, q1.getText());
     }
 
     @Test
     @Order(8)
-    void editQuestionUnsuccessful() {
+    void editQuestionUnsuccessfulTest() {
         long qid = q1.getId();
         long newOwnerId = 42L;
         String modKey = l2.getModkey().toString();
@@ -134,25 +133,28 @@ class QuestionServiceTest {
 
     @Test
     @Order(9)
-    void upvoteSuccessful() {
-        //questionService.newQuestionEntity(q1);
+    void upvoteSuccessfulTest() {
         long qid = q1.getId();
         long uid = 27L;
-        int oldVotes = q1.getVotes();
-        int result = questionService.upvote(qid, uid);
-        q1 = questionRepository.findById(qid).get();
-        assertEquals(oldVotes + 1, q1.getVotes()); //0 == result
+        final int oldVotes = q1.getVotes();
+        final int result = questionService.upvote(qid, uid);
+        q1 = questionRepository.findById(qid).orElse(null);
+        if (q1 == null) fail();
+        assertEquals(0, result);
+        assertEquals(oldVotes + 1, q1.getVotes());
     }
 
     @Test
     @Order(10)
-    void upvoteUnsuccessful() {
+    void upvoteUnsuccessfulTest() {
         long qid = q1.getId();
         long uid = 27L;
-        int oldVotes = q1.getVotes();
+        final int oldVotes = q1.getVotes();
         questionService.upvote(qid, uid);
-        int result = questionService.upvote(qid, uid);
-        q1 = questionRepository.findById(qid).get();
-        assertTrue(-1 == result && q1.getVotes() == oldVotes + 1);
+        final int result = questionService.upvote(qid, uid);
+        q1 = questionRepository.findById(qid).orElse(null);
+        if (q1 == null) fail();
+        assertEquals(-1, result);
+        assertEquals(oldVotes + 1, q1.getVotes());
     }
 }

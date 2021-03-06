@@ -1,7 +1,6 @@
 package nl.tudelft.oopp.livechat.entities;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.*;
