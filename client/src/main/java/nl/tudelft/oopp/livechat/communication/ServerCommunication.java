@@ -3,9 +3,12 @@ package nl.tudelft.oopp.livechat.communication;
 import com.google.gson.*;
 
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+
 import nl.tudelft.oopp.livechat.data.Lecture;
 
 /**
@@ -24,6 +27,7 @@ public class ServerCommunication {
     */
     //  TODO: I AM PASSING A BLANK STRING IN THE POST METHOD, THIS SHOULD BE CHANGED
     public static Lecture createLecture(String name) {
+        name = URLEncoder.encode(name, StandardCharsets.UTF_8);
         HttpRequest request = HttpRequest.newBuilder().POST(HttpRequest.BodyPublishers
                 .ofString("")).uri(URI.create("http://localhost:8080//api/newLecture?name=" + name)).build();
         HttpResponse<String> response;
@@ -37,6 +41,31 @@ public class ServerCommunication {
             System.out.println("Status: " + response.statusCode());
         }
 
+        return gson.fromJson(response.body(), Lecture.class);
+
+    }
+
+    /**
+     * Sends an HTTP request to get lecture
+     * by uuid.
+     *
+     * @param lectureId The uuid of the lecture
+     * @return Lecture if the lecture exists on server or null if it doesn't
+     */
+    public static Lecture joinLectureById(String lectureId) {
+        lectureId = URLEncoder.encode(lectureId, StandardCharsets.UTF_8);
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("http://localhost:8080/api/get/" + lectureId)).build();
+        HttpResponse<String> response;
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        if (response.statusCode() != 200) {
+            System.out.println("Status: " + response.statusCode());
+            return null;
+        }
 
         return gson.fromJson(response.body(), Lecture.class);
 

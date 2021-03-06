@@ -26,14 +26,14 @@
     }
 
     .leaveLecture{
-        -fx-background-color: #1a75ff;
+        -fx-background-color: #C3312F;
         -fx-background-radius: 10px;
         -fx-font: 18px Arial;
         -fx-text-fill: white;
     }
 
     .leaveLecture:hover{
-        -fx-background-color:  #6699ff;
+        -fx-background-color:  #fa6866;
     }
 
     .settingsButton{

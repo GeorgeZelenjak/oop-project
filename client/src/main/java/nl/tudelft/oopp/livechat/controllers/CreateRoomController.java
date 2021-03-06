@@ -1,6 +1,8 @@
 package nl.tudelft.oopp.livechat.controllers;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.communication.ServerCommunication;
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.views.MainSceneDisplay;
 
 
 public class CreateRoomController {
@@ -33,18 +36,16 @@ public class CreateRoomController {
         alert.setTitle("Creating lecture");
         alert.setHeaderText(null);
         Lecture lecture = ServerCommunication
-                .createLecture(enterRoomName.getCharacters().toString());
-        Lecture.setCurrentLecture(lecture); //Sets static current lecture object
+                .createLecture(URLEncoder.encode(
+                        enterRoomName.getCharacters().toString(), StandardCharsets.UTF_8));
+        //Lecture.setCurrentLecture(lecture); //Sets static current lecture object
         alert.setContentText(lecture.toString());
         alert.showAndWait();
 
         //Navigation back to the main scene
-        Parent root = FXMLLoader.load(getClass().getResource("/mainScene.fxml"));
-        Stage window = (Stage) enterRoomName.getScene().getWindow();
-        window.setScene(new Scene(root, 600,400));
+        NavigationController.getCurrentController().goToMainScene();
 
-        System.out.println("Button worked!");
-
+        System.out.println(lecture.toString());
 
     }
 
