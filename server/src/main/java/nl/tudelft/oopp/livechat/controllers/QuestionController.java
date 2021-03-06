@@ -26,6 +26,8 @@ public class QuestionController {
 
     /**.
      * GET Endpoint to retrieve all the questions for the particular lecture.
+     * @param lid id of the lecture
+     * @return the list of questions associated with a particular lecture, or empty list
      */
     @GetMapping("/fetch")
     public List<QuestionEntity> fetchQuestions(@RequestParam String lid) {
@@ -40,8 +42,11 @@ public class QuestionController {
         return questionService.newQuestionEntity(question);
     }
 
-    /**
+    /**.
      * DELETE Endpoint to delete a question from the database (done by the author of the question).
+     * @param qid the id of the question
+     * @param uid the id of the user
+     * @return 0 if successful, -1 otherwise
      */
     @DeleteMapping("/delete")
     public int deleteQuestion(@RequestParam long qid, @RequestParam long uid) {
@@ -50,6 +55,9 @@ public class QuestionController {
 
     /**.
      * DELETE Endpoint to delete any question from the database (done by a moderator).
+     * @param qid the id of the question
+     * @param modkey the moderator key
+     * @return 0 if successful, -1 otherwise
      */
     @DeleteMapping("/moderator/delete")
     public int modDelete(@RequestParam long qid, @RequestParam String modkey) {
@@ -58,6 +66,9 @@ public class QuestionController {
 
     /**.
      * PUT Endpoint to upvote a specific question.
+     * @param qid the id of the question
+     * @param uid the id of the user
+     * @return 0 if successful, -1 otherwise
      */
     @PutMapping("/upvote")
     public int vote(@RequestParam long qid, @RequestParam long uid) {

@@ -99,10 +99,11 @@ public class QuestionService {
      * @return 0 if question is edited successfully, -1 otherwise
      */
     public int editQuestion(long id, String moderatorKey, String newText, long newOwnerId) {
-        QuestionEntity q = questionRepository.findById(id).orElse(null);
-        if (q == null) {
+        Optional<QuestionEntity> optQuestion = questionRepository.findById(id);
+        if (optQuestion.isEmpty()) {
             return -1;
         }
+        QuestionEntity q = optQuestion.get();
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
         if (lecture == null) {
             return -1;
