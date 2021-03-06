@@ -1,5 +1,8 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.services.QuestionService;
@@ -8,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/question")
 public class QuestionController {
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     private final QuestionService questionService;
 
@@ -57,5 +62,18 @@ public class QuestionController {
     @PutMapping("/upvote")
     public int vote(@RequestParam long qid, @RequestParam long uid) {
         return questionService.upvote(qid, uid);
+    }
+
+    /**.
+     * PUT Endpoint to edit a specific question if you are a moderator.
+     */
+    @PutMapping("/edit")
+    public int edit(@RequestBody String newQuestion) throws JsonProcessingException {
+        JsonNode jsonNode = objectMapper.readTree(newQuestion);
+        long id = jsonNode.get("id").asLong();
+        String modkey = jsonNode.get("modkey").asText();
+        String newText = jsonNode.get("text").asText();
+        long uid = jsonNode.get("uid").asLong();
+        return questionService.editQuestion(id, modkey, newText, uid);
     }
 }
