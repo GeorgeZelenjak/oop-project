@@ -1,14 +1,12 @@
 package nl.tudelft.oopp.livechat.entities;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.*;
 
-
-/**
- * The type Lecture entity.
+/**.
+ * The class that represents a lecture entity.
  */
 @Entity
 @Table(name = "lectures")
@@ -17,10 +15,10 @@ public class LectureEntity {
 
     @Id
     @Column(name = "uuid")
-    private final String uuid;
+    private final UUID uuid;
 
     @Column(name = "modkey")
-    private final String modkey;
+    private final UUID modkey;
 
     @Column(name = "name")
     private String name;
@@ -43,24 +41,22 @@ public class LectureEntity {
     @Column(name = "open")
     private boolean open = true;
 
-    /**
-     * Instantiates a new Lecture entity.
+    /**.
+     * Empty constructor to create a lecture entity.
      */
     public LectureEntity() {
-        this.uuid = generateUUID();
-        this.modkey = generateUUID();
+        this.uuid = UUID.randomUUID();
+        this.modkey = UUID.randomUUID();
     }
 
-
-    /**
-     * Instantiates a new Lecture entity.
-     *
-     * @param name        the name
-     * @param creatorName the creator name
+    /**.
+     * Constructor to create a lecture entity.
+     * @param name the name of the lecture
+     * @param creatorName the name of the creator of the lecture
      */
     public LectureEntity(String name, String creatorName) {
-        this.uuid = generateUUID();
-        this.modkey = generateUUID();
+        this.uuid = UUID.randomUUID();
+        this.modkey = UUID.randomUUID();
         this.name = name;
         this.creatorName = creatorName;
         this.fasterCount = 0;
@@ -69,138 +65,155 @@ public class LectureEntity {
         this.startTime = new Timestamp(System.currentTimeMillis());
     }
 
-    /**
-     * Generate uuid string.
-     *
-     * @return the string
+    /**.
+     * Static constructor to create a lecture entity.
+     * @param name the name of the lecture
+     * @param creatorName the name of the creator of the lecture
+     * @return a new lecture entity
      */
-    public static String generateUUID() {
-        UUID generated = UUID.randomUUID();
-        return generated.toString();
+    public static LectureEntity create(String name, String creatorName) {
+        LectureEntity l = new LectureEntity();
+        l.name = name;
+        l.creatorName = creatorName;
+        l.fasterCount = 0;
+        l.slowerCount = 0;
+        l.frequency = 60;
+        l.startTime = new Timestamp(System.currentTimeMillis());
+        return l;
     }
 
-    /**
-     * Gets uuid.
-     *
-     * @return the uuid
+    /**.
+     * Gets the uuid of the lecture.
+     * @return the uuid of the lecture
      */
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
-    /**
-     * Gets modkey.
-     *
-     * @return the modkey
+    /**.
+     * Gets modkey of the lecture.
+     * @return the modkey of the lecture
      */
-    public String getModkey() {
+    public UUID getModkey() {
         return modkey;
     }
 
-    /**
-     * Gets name.
-     *
-     * @return the name
+    /**.
+     * Gets name of the lecture.
+     * @return the name of the lecture
      */
     public String getName() {
         return name;
     }
 
-    /**
-     * Gets creator name.
-     *
-     * @return the creator name
+    /**.
+     * Gets the name of the creator of the lecture.
+     * @return the name of the creator of the lecture
      */
     public String getCreatorName() {
         return creatorName;
     }
 
-    /**
-     * Gets faster count.
-     *
-     * @return the faster count
+    /**.
+     * Gets "faster" count.
+     * @return the "faster" count
      */
     public int getFasterCount() {
         return fasterCount;
     }
 
-    /**
-     * Gets slower count.
-     *
-     * @return the slower count
+    /**.
+     * Gets "slower" count.
+     * @return the "slower" count
      */
     public int getSlowerCount() {
         return slowerCount;
     }
 
-    /**
-     * Gets start time.
-     *
-     * @return the start time
+    /**.
+     * Gets the start time of the lecture.
+     * @return the start time of the lecture
      */
     public Timestamp getStartTime() {
         return startTime;
     }
 
-    /**
-     * Gets frequency.
-     *
-     * @return the frequency
+    /**.
+     * Gets the frequency of asking questions.
+     * @return the frequency of asking questions
      */
     public int getFrequency() {
         return frequency;
     }
 
-    /**
-     * Sets name.
-     *
-     * @param name the name
+    /**.
+     * Sets the name of the lecture.
+     * @param name the name of the lecture
      */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**.
+     * Increases the "faster" count by 1.
+     */
+    public void incrementFasterCount() {
+        ++this.fasterCount;
+    }
 
-    /**
-     * Sets frequency.
-     *
-     * @param frequency the frequency
+    /**.
+     * Increases the "slower" count by 1.
+     */
+    public void incrementSlowerCount() {
+        ++this.slowerCount;
+    }
+
+    /**.
+     * Sets the frequency of asking questions.
+     * @param frequency the frequency of asking questions
      */
     public void setFrequency(int frequency) {
         this.frequency = frequency;
     }
 
-    /**
-     * Reset speed counts.
+    /**.
+     * Resets speed counts.
      */
     public void resetSpeedCounts() {
         this.fasterCount = 0;
         this.slowerCount = 0;
     }
 
-    /**
-     * Close.
+    /**.
+     * Closes the lecture.
      */
+    @SuppressWarnings("unused")
     public void close() {
         this.open = false;
     }
 
-    /**
-     * Re open.
+    /**.
+     * Re-opens the lecture.
      */
+    @SuppressWarnings("unused")
     public void reOpen() {
         this.open = true;
     }
 
-    /**
-     * Is open .
-     *
-     * @return boolean
+    /**.
+     * Checks whether the lecture is open.
+     * @return whether the lecture is open
      */
+    @SuppressWarnings("unused")
     public boolean isOpen() {
         return this.open;
     }
 
+    /**.
+     * Compares the lecture to another object.
+     * @param o object to compare to
+     * @return true iff the other object is also a Lecture and has the same id. False otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -213,9 +226,12 @@ public class LectureEntity {
         return false;
     }
 
-
+    /**.
+     * The hash code of the Lecture object.
+     * @return the hash code of the Lecture object
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, modkey, name, creatorName);
+        return Objects.hash(uuid, modkey, name, creatorName, startTime);
     }
 }
