@@ -34,9 +34,8 @@ public class QuestionService {
      * @param lectureId the lecture id
      * @return the questions associated with the lecture id if found
      */
-    public List<QuestionEntity> getQuestionsByLectureId(String lectureId) {
-        UUID uuid = UUID.fromString(lectureId);
-        return questionRepository.findAllByLectureId(uuid);
+    public List<QuestionEntity> getQuestionsByLectureId(UUID lectureId) {
+        return questionRepository.findAllByLectureId(lectureId);
     }
 
     /**.
@@ -72,17 +71,16 @@ public class QuestionService {
      * @param modkey the moderator key
      * @return 0 if the question is deleted successfully, -1 otherwise
      */
-    public int deleteModeratorQuestion(long id, String modkey) {
+    public int deleteModeratorQuestion(long id, UUID modkey) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
         if (q == null) {
             return -1;
         }
         LectureEntity l = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        UUID modk = UUID.fromString(modkey);
         if (l == null) {
             return -1;
         }
-        if (l.getModkey().equals(modk)) {
+        if (l.getModkey().equals(modkey)) {
             questionRepository.deleteById(id);
             upvoted.remove(q.getId());
             return 0;
@@ -108,8 +106,13 @@ public class QuestionService {
         if (lecture == null) {
             return -1;
         }
-        UUID modk = UUID.fromString(moderatorKey);
-        if (lecture.getModkey().equals(modk)) {
+        UUID modkey;
+        try {
+            modkey = UUID.fromString(moderatorKey);
+        } catch (IllegalArgumentException e) {
+            return 400;
+        }
+        if (lecture.getModkey().equals(modkey)) {
             q.setText(newText);
             q.setOwnerId(newOwnerId);
             questionRepository.save(q);

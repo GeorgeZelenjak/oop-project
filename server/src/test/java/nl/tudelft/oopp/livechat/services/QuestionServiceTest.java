@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
+
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
@@ -62,7 +64,7 @@ class QuestionServiceTest {
     void getQuestionsByLectureIdTest() {
         String lid = q1.getLectureId().toString();
         questionService.newQuestionEntity(q3);
-        List<QuestionEntity> qs = questionService.getQuestionsByLectureId(lid);
+        List<QuestionEntity> qs = questionService.getQuestionsByLectureId(UUID.fromString(lid));
         assertEquals(2, qs.size());
         if (qs.get(0).equals(q1)) {
             if (!qs.get(1).equals(q3)) fail();
@@ -94,7 +96,7 @@ class QuestionServiceTest {
     void deleteModeratorQuestionSuccessfulTest() {
         String modKey = l1.getModkey().toString();
         long qid = q1.getId();
-        int result = questionService.deleteModeratorQuestion(qid, modKey);
+        int result = questionService.deleteModeratorQuestion(qid, UUID.fromString(modKey));
         assertEquals(0, result);
     }
 
@@ -103,7 +105,7 @@ class QuestionServiceTest {
     void deleteModeratorQuestionUnsuccessfulTest() {
         String modKey = l2.getModkey().toString();
         long qid = q1.getId();
-        int result = questionService.deleteModeratorQuestion(qid, modKey);
+        int result = questionService.deleteModeratorQuestion(qid, UUID.fromString(modKey));
         assertNotEquals(0, result);
     }
 
@@ -125,14 +127,25 @@ class QuestionServiceTest {
     void editQuestionUnsuccessfulTest() {
         long qid = q1.getId();
         long newOwnerId = 42L;
-        String modKey = l2.getModkey().toString();
+        String modKey = "l2.getModkey().toString()";
         String newText = "new text)))";
         int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
-        assertNotEquals(0, result);
+        assertEquals(400, result);
     }
 
     @Test
     @Order(9)
+    void editQuestionUnsuccessful2Test() {
+        long qid = q1.getId();
+        long newOwnerId = 42L;
+        String modKey = l2.getModkey().toString();
+        String newText = "new text)))";
+        int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
+        assertEquals(-1, result);
+    }
+
+    @Test
+    @Order(10)
     void upvoteSuccessfulTest() {
         long qid = q1.getId();
         long uid = 27L;
@@ -145,7 +158,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(10)
+    @Order(11)
     void upvoteUnsuccessfulTest() {
         long qid = q1.getId();
         long uid = 27L;
