@@ -16,7 +16,7 @@ public class QuestionService {
 
     final LectureRepository lectureRepository;
 
-    Map<QuestionEntity, Set<Long>> upvoted = new HashMap<>();
+    Map<Long, Set<Long>> upvoted = new HashMap<>();
 
     /**.
      * Constructor for the question service.
@@ -46,7 +46,7 @@ public class QuestionService {
      */
     public long newQuestionEntity(QuestionEntity q) {
         questionRepository.save(q);
-        upvoted.put(q, new HashSet<>());
+        upvoted.put(q.getId(), new HashSet<>());
         return q.getId();
     }
 
@@ -62,7 +62,7 @@ public class QuestionService {
             return -1;
         }
         questionRepository.deleteById(id);
-        upvoted.remove(q);
+        upvoted.remove(q.getId());
         return 0;
     }
 
@@ -84,7 +84,7 @@ public class QuestionService {
         }
         if (l.getModkey().equals(modk)) {
             questionRepository.deleteById(id);
-            upvoted.remove(q);
+            upvoted.remove(q.getId());
             return 0;
         }
         return -1;
@@ -126,7 +126,7 @@ public class QuestionService {
     public int upvote(long id, long userId) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
         if (q == null) return -1;
-        Set<Long> voters = this.upvoted.get(q);
+        Set<Long> voters = this.upvoted.get(q.getId());
         if (!voters.contains(userId)) {
             q.vote();
             voters.add(userId);
