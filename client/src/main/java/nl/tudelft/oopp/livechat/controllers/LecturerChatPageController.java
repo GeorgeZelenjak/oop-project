@@ -1,7 +1,5 @@
 package nl.tudelft.oopp.livechat.controllers;
 
-import java.io.IOException;
-import java.util.Optional;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,17 +7,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import nl.tudelft.oopp.livechat.communication.ServerCommunication;
-import nl.tudelft.oopp.livechat.data.Lecture;
 
+import java.io.IOException;
+import java.util.Optional;
 
-/**
- * The type User chat page controller.
- */
-public class UserChatPageController {
-
+public class LecturerChatPageController {
 
     @FXML
     private Button backButton;
@@ -80,7 +73,5 @@ public class UserChatPageController {
         Stage window = (Stage) settings.getScene().getWindow();
         window.setScene(new Scene(root, 1000,650));
     }
-
-
 
 }

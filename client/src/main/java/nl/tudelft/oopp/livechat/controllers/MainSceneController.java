@@ -86,6 +86,18 @@ public class MainSceneController {
         window.setScene(new Scene(root, 1000,650));
     }
 
+    /**
+     * Go to settings.
+     *
+     * @throws IOException the io exception
+     */
+    public void goToSettings() throws IOException {
+
+        Parent root = FXMLLoader.load(getClass().getResource("/settingsPage.fxml"));
+        Stage window = (Stage) enterRoomCode.getScene().getWindow();
+        window.setScene(new Scene(root, 1000,650));
+    }
+
 
 
 
