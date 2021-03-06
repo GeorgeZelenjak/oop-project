@@ -170,7 +170,9 @@ public class Lecture {
 
     @Override
     public String toString() {
-        return "You created the lecture " + name + " by " + creatorName;
+        return "You created the lecture " + name + " by " + creatorName
+                + " with ID: " + uuid + ". Share this id with students,"
+                + " so they could join your lecture.";
     }
 
 

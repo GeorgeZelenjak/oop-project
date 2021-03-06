@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
@@ -13,11 +12,7 @@
             <Button layoutX="16.0" layoutY="217.0" mnemonicParsing="false" styleClass="mainSceneButton" text="Show Participants" />
             <Button fx:id="settings" layoutX="16.0" layoutY="292.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Settings" />
             <Button fx:id="userManual" layoutX="16.0" layoutY="337.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="User Manual" />
-            <Button id="leaveLecture" layoutX="16.0" layoutY="564.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" style="-fx-background-color: rgba(255, 6, 6, 1); -fx-background-color: rgba(255, 6, 6, 0.5);" stylesheets="@Styles.css" text="Leave Lecture">
-               <styleClass>
-                  <String fx:value="mainSceneButton" />
-                  <String fx:value="leaveLecture" />
-               </styleClass></Button>
+            <Button id="leaveLecture" layoutX="16.0" layoutY="564.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@Styles.css" text="Leave Lecture" />
             <Line endX="100.0" layoutX="100.0" layoutY="72.0" opacity="0.5" startX="-100.0" stroke="#1a75ff" />
             <Text layoutX="16.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Name" wrappingWidth="168.0703125">
                <font>
@@ -35,7 +30,7 @@
                   <Font size="10.0" />
                </font>
             </Button>
-            <Button fx:id="lectureModeButton" layoutX="16.0" layoutY="154.0" mnemonicParsing="false"  prefHeight="33.0" prefWidth="168.0" style="-fx-background-color: #3DFF1E;" styleClass="mainSceneButton" text="Lecturer Mode" />
+            <Button fx:id="lectureModeButton" layoutX="16.0" layoutY="154.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="168.0" style="-fx-background-color: #3DFF1E;" styleClass="mainSceneButton" text="Lecturer Mode" />
          </children></Pane>
       <ScrollBar layoutX="716.0" layoutY="51.0" orientation="VERTICAL" prefHeight="490.0" prefWidth="14.0" />
       <TextFlow layoutX="208.0" layoutY="51.0" prefHeight="490.0" prefWidth="501.0" />

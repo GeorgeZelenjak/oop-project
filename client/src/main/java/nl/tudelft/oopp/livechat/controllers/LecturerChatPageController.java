@@ -39,10 +39,7 @@ public class LecturerChatPageController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-
-            Parent root = FXMLLoader.load(getClass().getResource("/mainScene.fxml"));
-            Stage window = (Stage) backButton.getScene().getWindow();
-            window.setScene(new Scene(root, 600,400));
+            NavigationController.getCurrentController().goToMainScene();
         }
 
 
@@ -57,9 +54,7 @@ public class LecturerChatPageController {
      */
     public void goToUserManual() throws IOException {
 
-        Parent root = FXMLLoader.load(getClass().getResource("/userManual.fxml"));
-        Stage window = (Stage) userManual.getScene().getWindow();
-        window.setScene(new Scene(root, 1000,650));
+        NavigationController.getCurrentController().goToUserManual();
     }
 
     /**
@@ -68,10 +63,7 @@ public class LecturerChatPageController {
      * @throws IOException the io exception
      */
     public void goToSettings() throws IOException {
-
-        Parent root = FXMLLoader.load(getClass().getResource("/settingsPage.fxml"));
-        Stage window = (Stage) settings.getScene().getWindow();
-        window.setScene(new Scene(root, 1000,650));
+        NavigationController.getCurrentController().goToSettings();
     }
 
 }
