@@ -106,6 +106,23 @@ class QuestionControllerTest {
     }
 
     /**.
+     * A method to edit questions.
+     * @param bodyJson JSON representation of parameters used to edit
+     * @return 0 if successful, -1 otherwise
+     * @throws Exception if something goes wrong
+     */
+    int editQuestion(String bodyJson) throws  Exception {
+        String result = this.mockMvc
+                .perform(put("/api/question/edit")
+                        .contentType(APPLICATION_JSON)
+                        .content(bodyJson)
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        return Integer.parseInt(result);
+    }
+
+    /**.
      * A method to upvote a question.
      * @param qid id of the question
      * @param uid id of the user
@@ -252,5 +269,42 @@ class QuestionControllerTest {
 
         assertEquals(oldVotes1 + 1, newVotes1);
         assertEquals(oldVotes2, newVotes2);
+    }
+
+    @Test
+    void editSuccesfulTest() throws Exception {
+        long qid1 = Long.parseLong(postQuestions(q1Json));
+
+        String json = "{\n"
+                        + "\"id\":" + qid1 + ",\n"
+                        + "\"modkey\":" + "\"" +  lectureEntity1.getModkey().toString() + "\",\n"
+                        + "\"text\":" + "\"this is the new text\"" + ",\n"
+                        + "\"uid\":" + "12" + "\n"
+                        + "}";
+        int result = editQuestion(json);
+        assertEquals(0, result);
+        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        assertNotNull(question1after);
+        assertEquals(question1after.getText(), "this is the new text");
+        assertEquals(question1after.getOwnerId(), 12);
+    }
+
+    @Test
+    void editUnsuccesfulTest() throws Exception {
+        long qid1 = Long.parseLong(postQuestions(q1Json));
+
+        String json = "{\n"
+                + "\"id\":" + qid1 + ",\n"
+                + "\"modkey\":" + "\"" + lectureEntity2.getModkey().toString() + "\",\n"
+                + "\"text\":" + "\"this is the new text\"" + ",\n"
+                + "\"uid\":" + "12" + "\n"
+                + "}";
+        int result = editQuestion(json);
+        assertEquals(-1, result);
+        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        assertNotNull(question1after);
+        assertEquals(question1after.getText(),
+                "What would you do if a seagull entered in your house?");
+        assertNotEquals(question1after.getOwnerId(), 12);
     }
 }
