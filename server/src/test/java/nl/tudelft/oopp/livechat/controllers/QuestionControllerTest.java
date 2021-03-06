@@ -29,8 +29,6 @@ class QuestionControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private QuestionController questionController;
 
     QuestionEntity q1;
     QuestionEntity q2;
