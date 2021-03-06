@@ -2,18 +2,10 @@ package nl.tudelft.oopp.livechat.controllers;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.communication.ServerCommunication;
 import nl.tudelft.oopp.livechat.data.Lecture;
-import nl.tudelft.oopp.livechat.views.CreateRoomDisplay;
-
 
 
 /**
@@ -22,7 +14,8 @@ import nl.tudelft.oopp.livechat.views.CreateRoomDisplay;
 public class MainSceneController {
 
     @FXML
-    private TextField enterRoomCode;
+    TextField enterRoomCode;
+
     /**
      * Navigates to lecture creation scene.
      */
@@ -30,9 +23,7 @@ public class MainSceneController {
     public void goToCreateLecture() throws IOException {
 
         //Navigating to the scene
-        Parent root = FXMLLoader.load(getClass().getResource("/inputLectureParameters.fxml"));
-        Stage window = (Stage) enterRoomCode.getScene().getWindow();
-        window.setScene(new Scene(root, 600,400));
+        NavigationController.getCurrentController().goToCreateRoomScene();
 
     }
 
@@ -42,6 +33,7 @@ public class MainSceneController {
      */
     public void goToLecture() throws IOException {
 
+        Lecture.setCurrentLecture(ServerCommunication.joinLectureById(enterRoomCode.getText()));
         Lecture currentLecture = Lecture.getCurrentLecture();
 
         if (currentLecture == null) {
@@ -64,14 +56,9 @@ public class MainSceneController {
         } else {
 
             //Navigating to the scene
-            Parent root = FXMLLoader.load(getClass().getResource("/userChatPage.fxml"));
-            Stage window = (Stage) enterRoomCode.getScene().getWindow();
-            window.setScene(new Scene(root, 1000,650));
+            NavigationController.getCurrentController().goToUserChatPage();
+
         }
-
-
-
-
     }
 
     /**
@@ -81,9 +68,8 @@ public class MainSceneController {
      */
     public void goToUserManual() throws IOException {
 
-        Parent root = FXMLLoader.load(getClass().getResource("/userManual.fxml"));
-        Stage window = (Stage) enterRoomCode.getScene().getWindow();
-        window.setScene(new Scene(root, 1000,650));
+        NavigationController.getCurrentController().goToUserManual();
+
     }
 
 

@@ -21,10 +21,6 @@ import nl.tudelft.oopp.livechat.data.Lecture;
 public class UserChatPageController {
 
 
-    @FXML
-    private Button backButton;
-    @FXML
-    private Button userManual;
 
 
     /**
@@ -44,14 +40,8 @@ public class UserChatPageController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-
-            Parent root = FXMLLoader.load(getClass().getResource("/mainScene.fxml"));
-            Stage window = (Stage) backButton.getScene().getWindow();
-            window.setScene(new Scene(root, 600,400));
+            NavigationController.getCurrentController().goToMainScene();
         }
-
-
-
     }
 
 
@@ -62,9 +52,8 @@ public class UserChatPageController {
      */
     public void goToUserManual() throws IOException {
 
-        Parent root = FXMLLoader.load(getClass().getResource("/userManual.fxml"));
-        Stage window = (Stage) backButton.getScene().getWindow();
-        window.setScene(new Scene(root, 1000,650));
+        NavigationController.getCurrentController().goToUserManual();
+
     }
 
 

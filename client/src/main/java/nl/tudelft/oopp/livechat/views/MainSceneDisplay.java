@@ -8,10 +8,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import nl.tudelft.oopp.livechat.controllers.NavigationController;
 
 
 /**
  * Loads the MainScene.fxml file
+ * And initializes the NavigationController
  */
 public class MainSceneDisplay extends Application {
 
@@ -24,6 +26,8 @@ public class MainSceneDisplay extends Application {
 
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+        NavigationController.setCurrentController(
+                new NavigationController(primaryStage.getScene()));
     }
 
     public static void main(String[] args) {
