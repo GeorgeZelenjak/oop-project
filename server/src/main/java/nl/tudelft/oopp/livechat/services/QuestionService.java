@@ -6,35 +6,41 @@ import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class QuestionService {
 
-    @Autowired
-    QuestionRepository questionRepository;
+    final QuestionRepository questionRepository;
 
-    @Autowired
-    LectureRepository lectureRepository;
+    final LectureRepository lectureRepository;
 
     Map<QuestionEntity, Set<Long>> upvoted = new HashMap<>();
 
-    /**
+    /**.
+     * Constructor for the question service.
+     * @param questionRepository question repository
+     * @param lectureRepository lecture repository
+     */
+    public QuestionService(QuestionRepository questionRepository,
+                           LectureRepository lectureRepository) {
+        this.questionRepository = questionRepository;
+        this.lectureRepository = lectureRepository;
+    }
+
+    /**.
      * Gets questions by lecture id.
-     *
      * @param lectureId the lecture id
-     * @return the questions by lecture id
+     * @return the questions associated with the lecture id if found
      */
     public List<QuestionEntity> getQuestionsByLectureId(String lectureId) {
         UUID uuid = UUID.fromString(lectureId);
         return questionRepository.findAllByLectureId(uuid);
     }
 
-    /**
-     * New question entity.
-     *
+    /**.
+     * Creates new question entity in the database.
      * @param q the question entity
      * @return the question entity created
      */
@@ -44,12 +50,11 @@ public class QuestionService {
         return q.getId();
     }
 
-    /**
-     * Delete question int.
-     *
-     * @param id       the id
-     * @param personId the person id
-     * @return the int
+    /**.
+     * Delete question from the database.
+     * @param id the id of the question
+     * @param personId the id of the person
+     * @return 0 if the question is deleted successfully, -1 otherwise
      */
     public int deleteQuestion(long id, long personId) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
@@ -62,11 +67,10 @@ public class QuestionService {
     }
 
     /**
-     * Delete moderator question int.
-     *
-     * @param id     the id
-     * @param modkey the modkey
-     * @return the int
+     * Delete any question (done by a moderator).
+     * @param id the id of the question
+     * @param modkey the moderator key
+     * @return 0 if the question is deleted successfully, -1 otherwise
      */
     public int deleteModeratorQuestion(long id, String modkey) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
@@ -75,6 +79,9 @@ public class QuestionService {
         }
         LectureEntity l = lectureRepository.findLectureEntityByUuid(q.getLectureId());
         UUID modk = UUID.fromString(modkey);
+        if (l == null) {
+            return -1;
+        }
         if (l.getModkey().equals(modk)) {
             questionRepository.deleteById(id);
             upvoted.remove(q);
@@ -83,14 +90,13 @@ public class QuestionService {
         return -1;
     }
 
-    /**
-     * Edit question.
-     *
-     * @param id           the id
+    /**.
+     * Edit any question (done by a moderator).
+     * @param id the id of the question
      * @param moderatorKey the moderator key
-     * @param newText     the new text
-     * @param newOwnerId  the new owner id
-     * @return 0 if success, -1 otherwise
+     * @param newText the new question text
+     * @param newOwnerId the id of the new owner of the question
+     * @return 0 if question is edited successfully, -1 otherwise
      */
     public int editQuestion(long id, String moderatorKey, String newText, long newOwnerId) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
@@ -98,6 +104,9 @@ public class QuestionService {
             return -1;
         }
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
+        if (lecture == null) {
+            return -1;
+        }
         UUID modk = UUID.fromString(moderatorKey);
         if (lecture.getModkey().equals(modk)) {
             q.setText(newText);
@@ -109,11 +118,10 @@ public class QuestionService {
     }
 
     /**
-     * Upvote int.
-     *
-     * @param id     the id
-     * @param userId the user id
-     * @return the int
+     * Upvote question.
+     * @param id the id of the question
+     * @param userId the id of the user
+     * @return 0 if question is upvoted successfully, -1 otherwise
      */
     public int upvote(long id, long userId) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);

@@ -27,7 +27,7 @@ class LectureControllerTest {
     private ObjectMapper objectMapper;
 
     /**.
-     * A method to create a lecture
+     * A method to create a lecture.
      * @param url url with lecture name
      * @return JSON representation of the new lecture entity
      * @throws Exception if something goes wrong
@@ -41,7 +41,7 @@ class LectureControllerTest {
     }
 
     /**.
-     * A method to get a lecture
+     * A method to get a lecture.
      * @param url url with lecture id
      * @return JSON representation of the new lecture entity
      * @throws Exception if something goes wrong
@@ -55,7 +55,7 @@ class LectureControllerTest {
     }
 
     /**.
-     * A method to delete a lecture
+     * A method to delete a lecture.
      * @param url url with lecture id and moderator id values
      * @return 0 if successful, otherwise -1
      * @throws Exception if something goes wrong

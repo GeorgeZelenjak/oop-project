@@ -25,6 +25,12 @@ public class LectureEntityTest {
     }
 
     @Test
+    void staticConstructorTest() {
+        assertNotNull(LectureEntity.create("Algorithms and Data Structures: Red-black trees",
+                "Ivo van Kreveld"));
+    }
+
+    @Test
     void getUuidTest() {
         //cannot test the uuid, since I have no access to it and it is generated randomly
         assertNotNull(lectureEntity.getUuid());

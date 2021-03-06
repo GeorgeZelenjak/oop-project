@@ -3,33 +3,37 @@ package nl.tudelft.oopp.livechat.services;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class LectureService {
 
-    @Autowired
-    LectureRepository lectureRepository;
+    final LectureRepository lectureRepository;
 
-    /**
+    /**.
+     * Constructor for the lecture service.
+     * @param lectureRepository lecture repository
+     */
+    public LectureService(LectureRepository lectureRepository) {
+        this.lectureRepository = lectureRepository;
+    }
+
+    /**.
      * Gets lecture by id.
-     *
-     * @param id the id
-     * @return the lecture by id
+     * @param id the id of the lecture
+     * @return the lecture if the id is found in the database
      */
     public LectureEntity getLectureById(String id) {
         UUID uuid = UUID.fromString(id);
         return lectureRepository.findLectureEntityByUuid(uuid);
     }
 
-    /**
-     * Method that creates a new general lecture in the DB.
-     *
-     * @param name        the name
-     * @param creatorName the creator name
-     * @return the lecture entity
+    /**.
+     * Creates a new lecture in the database.
+     * @param name the name of the lecture
+     * @param creatorName the name of the creator
+     * @return the new lecture entity
      */
     public LectureEntity newLecture(String name, String creatorName) {
         LectureEntity n = new LectureEntity(name, creatorName);
@@ -37,12 +41,11 @@ public class LectureService {
         return n;
     }
 
-    /**
-     * Delete a lecture if correct modkey is supplied.
-     *
-     * @param id     the id
-     * @param modkey the modkey
-     * @return 0 if success, -1 otherwise
+    /**.
+     * Deletes a lecture if the moderator key is found in the database.
+     * @param id the id of the lecture
+     * @param modkey the moderator key
+     * @return 0 if successful, -1 otherwise
      */
     public int delete(String id, String modkey) {
         UUID uuid = UUID.fromString(id);
@@ -54,6 +57,4 @@ public class LectureService {
         }
         return -1;
     }
-
-
 }

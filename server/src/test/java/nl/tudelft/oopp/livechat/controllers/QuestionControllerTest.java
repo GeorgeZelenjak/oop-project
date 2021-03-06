@@ -64,7 +64,7 @@ class QuestionControllerTest {
 
 
     /**.
-     * A method to post questions
+     * A method to post questions.
      * @param question JSON representation of question entity
      * @return id of the new question
      * @throws Exception if something goes wrong
@@ -80,7 +80,7 @@ class QuestionControllerTest {
     }
 
     /**.
-     * A method to get all the questions associated with the lecture
+     * A method to get all the questions associated with the lecture.
      * @param lectureId id of the lecture
      * @return list of question entities associated with the lecture
      * @throws Exception if something goes wrong
@@ -95,7 +95,7 @@ class QuestionControllerTest {
     }
 
     /**.
-     * A method to delete a question
+     * A method to delete a question.
      * @param url url with question id and owner id/moderator id values
      * @return 0 if successful, otherwise -1
      * @throws Exception if something goes wrong
@@ -108,7 +108,7 @@ class QuestionControllerTest {
     }
 
     /**.
-     * A method to upvote a question
+     * A method to upvote a question.
      * @param qid id of the question
      * @param uid id of the user
      * @return 0 if successful, otherwise -1
