@@ -159,6 +159,13 @@ class QuestionControllerTest {
     }
 
     @Test
+    void fetchQuestionsFakeIdTest() throws Exception {
+        this.mockMvc
+                .perform(get("/api/question/fetch?lid=" + "something_wrong"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
     void deleteQuestionSuccessfulTest() throws Exception {
         long qid1 = Long.parseLong(postQuestions(q1Json));
         postQuestions(q2Json);
@@ -290,7 +297,7 @@ class QuestionControllerTest {
     }
 
     @Test
-    void editUnsuccesfulTest() throws Exception {
+    void editUnsuccessfulUnauthorizedTest() throws Exception {
         long qid1 = Long.parseLong(postQuestions(q1Json));
 
         String json = "{\n"
@@ -301,6 +308,25 @@ class QuestionControllerTest {
                 + "}";
         int result = editQuestion(json);
         assertEquals(-1, result);
+        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        assertNotNull(question1after);
+        assertEquals(question1after.getText(),
+                "What would you do if a seagull entered in your house?");
+        assertNotEquals(question1after.getOwnerId(), 12);
+    }
+
+    @Test
+    void editUnsuccessfulBadRequestTest() throws Exception {
+        long qid1 = Long.parseLong(postQuestions(q1Json));
+
+        String json = "{\n"
+                + "\"id\":" + qid1 + ",\n"
+                + "\"modkey\":" + "\"" + "oh yes i know this uuid" + "\",\n"
+                + "\"text\":" + "\"this is the new text\"" + ",\n"
+                + "\"uid\":" + "12" + "\n"
+                + "}";
+        int result = editQuestion(json);
+        assertEquals(400, result);
         QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
         assertNotNull(question1after);
         assertEquals(question1after.getText(),

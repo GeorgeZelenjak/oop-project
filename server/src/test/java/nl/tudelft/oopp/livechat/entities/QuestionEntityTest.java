@@ -38,6 +38,12 @@ class QuestionEntityTest {
     }
 
     @Test
+    void setLectureIdTest() {
+        questionEntity.setLectureId(lectureId);
+        assertEquals(lectureId, questionEntity.getLectureId());
+    }
+
+    @Test
     void getLectureTest() {
         assertEquals(lectureId, questionEntity.getLectureId());
     }
