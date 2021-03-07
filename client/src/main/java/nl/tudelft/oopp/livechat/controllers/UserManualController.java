@@ -16,7 +16,10 @@ public class UserManualController {
     @FXML
     private Button backButton;
 
-    //private Scene previous = new Scene();
+    public void goBack() {
+        NavigationController.getCurrentController().goBack();
+        System.out.println("Button was pressed!");
+    }
 
 
 }

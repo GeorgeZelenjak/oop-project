@@ -7,7 +7,7 @@
 
 <AnchorPane prefHeight="650.0" prefWidth="1000.0" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.UserManualController">
    <children>
-      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" styleClass="mainSceneButton" text="←Go Back" />
+      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" styleClass="mainSceneButton" text="←Go Back" />
       <Text layoutX="322.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Manual Page " textAlignment="CENTER" wrappingWidth="356.0">
          <font>
             <Font name="Arial Bold" size="40.0" />
