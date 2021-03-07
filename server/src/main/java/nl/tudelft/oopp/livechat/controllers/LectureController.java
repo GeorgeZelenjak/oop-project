@@ -4,6 +4,7 @@ import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.services.LectureService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
 
 
 @RestController
@@ -24,7 +25,7 @@ public class LectureController {
      * @return selected lecture
      */
     @GetMapping("/api/get/{id}")
-    public LectureEntity getLecturesByID(@PathVariable("id") String id) {
+    public LectureEntity getLecturesByID(@PathVariable("id") UUID id) {
         return service.getLectureById(id);
     }
 
@@ -45,7 +46,7 @@ public class LectureController {
      * @return 0 if lecture is deleted successfully, -1 if not
      */
     @DeleteMapping("/api/delete/{id}/{modkey}")
-    public int delete(@PathVariable("modkey") String modkey, @PathVariable("id") String id) {
+    public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) {
         return service.delete(id, modkey);
     }
 }

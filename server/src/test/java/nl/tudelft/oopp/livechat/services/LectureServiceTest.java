@@ -25,7 +25,7 @@ class LectureServiceTest {
         LectureEntity l = new LectureEntity("name", "creator_name");
         repository.save(l);
 
-        LectureEntity m = lectureService.getLectureById(l.getUuid().toString());
+        LectureEntity m = lectureService.getLectureById(l.getUuid());
         assertEquals(l, m);
     }
 
@@ -39,9 +39,9 @@ class LectureServiceTest {
         LectureEntity l = new LectureEntity("name", "creator_name");
         repository.save(l);
 
-        lectureService.delete(l.getUuid().toString(), l.getModkey().toString());
+        lectureService.delete(l.getUuid(), l.getModkey());
 
-        LectureEntity m = lectureService.getLectureById(l.getUuid().toString());
+        LectureEntity m = lectureService.getLectureById(l.getUuid());
         assertNull(m);
     }
 
@@ -50,9 +50,9 @@ class LectureServiceTest {
         LectureEntity l = new LectureEntity("name", "creator_name");
         repository.save(l);
 
-        lectureService.delete(l.getUuid().toString(), UUID.randomUUID().toString());
+        lectureService.delete(l.getUuid(), UUID.randomUUID());
 
-        LectureEntity m = lectureService.getLectureById(l.getUuid().toString());
+        LectureEntity m = lectureService.getLectureById(l.getUuid());
         assertNotNull(m);
     }
 }

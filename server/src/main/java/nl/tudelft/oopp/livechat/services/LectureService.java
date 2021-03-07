@@ -24,9 +24,8 @@ public class LectureService {
      * @param id the id of the lecture
      * @return the lecture if the id is found in the database
      */
-    public LectureEntity getLectureById(String id) {
-        UUID uuid = UUID.fromString(id);
-        return lectureRepository.findLectureEntityByUuid(uuid);
+    public LectureEntity getLectureById(UUID id) {
+        return lectureRepository.findLectureEntityByUuid(id);
     }
 
     /**.
@@ -47,12 +46,10 @@ public class LectureService {
      * @param modkey the moderator key
      * @return 0 if successful, -1 otherwise
      */
-    public int delete(String id, String modkey) {
-        UUID uuid = UUID.fromString(id);
+    public int delete(UUID id, UUID modkey) {
         LectureEntity toDelete = getLectureById(id);
-        UUID modk = UUID.fromString(modkey);
-        if (toDelete != null && toDelete.getModkey().equals(modk)) {
-            lectureRepository.deleteById(uuid);
+        if (toDelete != null && toDelete.getModkey().equals(modkey)) {
+            lectureRepository.deleteById(id);
             return 0;
         }
         return -1;
