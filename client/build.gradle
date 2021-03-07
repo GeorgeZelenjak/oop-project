@@ -15,6 +15,12 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mock-server/mockserver-testing
     //testImplementation group: 'org.mock-server', name: 'mockserver-testing', version: '5.11.2'
 
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '3.8.0'
+
+    // https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.8.0'
+
     testCompile("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.6.0")
     implementation project(":common")
