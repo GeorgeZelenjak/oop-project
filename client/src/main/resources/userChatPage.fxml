@@ -31,13 +31,12 @@
                </font>
             </Button>
          </children></Pane>
-      <TextField layoutX="209.0" layoutY="543.0" prefHeight="93.0" prefWidth="522.0" promptText="Type your question..." styleClass="mainSceneEnterRoomCode">
+      <TextField fx:id="inputQuestion" layoutX="209.0" layoutY="543.0" onAction="#askQuestion" prefHeight="93.0" prefWidth="522.0" promptText="Type your question..." styleClass="mainSceneEnterRoomCode">
          <font>
             <Font name="Arial" size="36.0" />
          </font>
       </TextField>
       <ScrollBar layoutX="716.0" layoutY="51.0" orientation="VERTICAL" prefHeight="490.0" prefWidth="14.0" />
-      <TextFlow layoutX="208.0" layoutY="51.0" prefHeight="490.0" prefWidth="501.0" />
       <Pane layoutX="744.0" layoutY="24.0" prefHeight="154.0" prefWidth="247.0" styleClass="sidebar">
          <children>
             <Text layoutX="7.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vote on the lecture speed" textAlignment="CENTER" wrappingWidth="232.20000000000005">
@@ -71,5 +70,6 @@
             </Text>
          </children>
       </Pane>
+      <ListView layoutX="209.0" layoutY="14.0" prefHeight="523.0" prefWidth="502.0" />
    </children>
 </AnchorPane>

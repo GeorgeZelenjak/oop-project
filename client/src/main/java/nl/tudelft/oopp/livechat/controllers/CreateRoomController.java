@@ -39,7 +39,13 @@ public class CreateRoomController {
                 .createLecture(URLEncoder.encode(
                         enterRoomName.getCharacters().toString(), StandardCharsets.UTF_8));
         //Lecture.setCurrentLecture(lecture); //Sets static current lecture object
-        alert.setContentText(lecture.toString());
+        String ret = "";
+        try {
+            ret = lecture.toString();
+        } catch (Exception e) {
+            ret = "";
+        }
+        alert.setContentText(ret);
         alert.showAndWait();
 
         //Navigation back to the main scene

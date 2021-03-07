@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Stack;
 
 /**
  * Class for navigation between scenes.
@@ -18,6 +19,8 @@ public class NavigationController {
     //TODO Stack for the back button
     private static NavigationController currentController;
 
+    private Stack<Scene> backStack;
+
     /**
      * Instantiates a new Navigation controller.
      *
@@ -25,6 +28,7 @@ public class NavigationController {
      */
     public NavigationController(Scene main) {
         this.main = main;
+        this.backStack = new Stack<>();
     }
 
     /**
@@ -84,6 +88,7 @@ public class NavigationController {
 
     private void goToSceneHelper(String javaFxFile) throws IOException {
 
+        backStack.push(this.main);
         Parent root = FXMLLoader.load(getClass().getResource(javaFxFile));
         Stage window = (Stage) main.getWindow();
         Scene main = new Scene(root, 1000,650);
@@ -96,6 +101,15 @@ public class NavigationController {
         goToSceneHelper("/settingsPage.fxml");
     }
 
+    /**
+     * Navigates to the previous scene.
+     */
+    public void goBack() {
 
+        Stage window = (Stage) main.getWindow();
+        this.main = backStack.pop();
+        window.setScene(main);
+
+    }
 
 }

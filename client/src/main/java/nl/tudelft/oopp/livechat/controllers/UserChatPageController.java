@@ -2,6 +2,8 @@ package nl.tudelft.oopp.livechat.controllers;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.communication.ServerCommunication;
@@ -22,6 +25,8 @@ public class UserChatPageController {
 
 
 
+    @FXML
+    private TextField inputQuestion;
 
     /**
      * Go back to main.
@@ -64,6 +69,31 @@ public class UserChatPageController {
         NavigationController.getCurrentController().goToSettings();
     }
 
+    /**
+     * Send a question to the server.
+     *
+     * @param ae the enter button
+     * @return Integer showing status of the action
+     *      1- Everything is good
+     *      -1 -Lecture has not been initialized
+     *      -2/ -3 -Server error.
+     */
+    @FXML
+    public int askQuestion(ActionEvent ae) {
+        int ret = ServerCommunication.askQuestion(inputQuestion.getText());
+        inputQuestion.setText("");
 
+        if (ret <= 0) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("ERROR");
+            alert.setHeaderText(null);
+
+            alert.setContentText("There was a problem with asking question!");
+            alert.showAndWait();
+        }
+
+        return (ret);
+
+    }
 
 }

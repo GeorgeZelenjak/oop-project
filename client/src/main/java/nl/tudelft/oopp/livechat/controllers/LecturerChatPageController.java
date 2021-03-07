@@ -1,5 +1,6 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,7 +8,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import nl.tudelft.oopp.livechat.communication.ServerCommunication;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -25,9 +29,8 @@ public class LecturerChatPageController {
     /**
      * Go back to main.
      *
-     * @throws IOException the io exception
      */
-    public void goBackToMain() throws IOException {
+    public void goBackToMain() {
 
         //Navigating back to Main Page
 
@@ -39,7 +42,7 @@ public class LecturerChatPageController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            NavigationController.getCurrentController().goToMainScene();
+            NavigationController.getCurrentController().goBack();
         }
 
 
@@ -65,5 +68,7 @@ public class LecturerChatPageController {
     public void goToSettings() throws IOException {
         NavigationController.getCurrentController().goToSettings();
     }
+
+
 
 }

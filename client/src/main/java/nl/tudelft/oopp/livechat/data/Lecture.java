@@ -1,30 +1,43 @@
 package nl.tudelft.oopp.livechat.data;
 
+import com.google.gson.annotations.Expose;
+
 import java.sql.Timestamp;
+import java.util.UUID;
 
 /**
  * Lecture class.
  */
 public class Lecture {
 
+    @Expose(serialize = true, deserialize = true)
     private static Lecture currentLecture;
 
-    private String uuid;
+    @Expose(serialize = true, deserialize = true)
+    private UUID uuid;
 
+    @Expose(serialize = true, deserialize = true)
     private String modkey;
 
+    @Expose(serialize = true, deserialize = true)
     private String name;
 
+    @Expose(serialize = true, deserialize = true)
     private String creatorName;
 
+    @Expose(serialize = true, deserialize = true)
     private int fasterCount;
 
+    @Expose(serialize = true, deserialize = true)
     private int slowerCount;
 
+    @Expose(serialize = true, deserialize = true)
     private int frequency;
 
+    @Expose(serialize = true, deserialize = true)
     private Timestamp startTime;
 
+    @Expose(serialize = true, deserialize = true)
     private boolean open = true;
 
 
@@ -36,7 +49,7 @@ public class Lecture {
      * @param name        the name
      * @param creatorName the creator name
      */
-    public Lecture(String uuid, String modkey, String name, String creatorName) {
+    public Lecture(UUID uuid, String modkey, String name, String creatorName) {
         this.uuid = uuid;
         this.modkey = modkey;
         this.name = name;
@@ -59,7 +72,7 @@ public class Lecture {
      *
      * @return the uuid
      */
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
