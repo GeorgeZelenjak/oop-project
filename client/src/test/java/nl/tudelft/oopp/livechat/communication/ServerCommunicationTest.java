@@ -11,8 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.mock.Expectation;
+import org.mockserver.model.Body;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.Parameter;
+
+import java.sql.SQLOutput;
 
 
 public class ServerCommunicationTest {
@@ -26,7 +29,9 @@ public class ServerCommunicationTest {
     @BeforeAll
     public static void startServer() {
 
-        String jsonResponse = "{\"uuid\":\"0ee81155-96fc-4045-bfe9-dd7ca714b5e8\",\"modkey\""
+
+
+        String jsonResponseLecture = "{\"uuid\":\"0ee81155-96fc-4045-bfe9-dd7ca714b5e8\",\"modkey\""
                 + ":\"08843278-e8b8-4d51-992f-48c6aee44e27\""
                 + ",\"name\":\"name\",\"creatorName\""
                 + ":\"placeholder\",\"fasterCount\":0,"
@@ -34,18 +39,30 @@ public class ServerCommunicationTest {
                 + ":60,\"startTime\":\"2021-03-04T15:49:"
                 + "27.962+0000\",\"open\":true}";
 
+        final String  responseQuestionBody = "5397545054934456486";
+
+
         mockServer = ClientAndServer.startClientAndServer(8080);
         mockServer.when(request().withMethod("POST").withPath("/newLecture")
                 .withQueryStringParameter("name","name"))
                 .respond(HttpResponse.response().withStatusCode(200)
-                        .withBody(jsonResponse)
+                        .withBody(jsonResponseLecture)
                         .withHeader("Content-Type","application/json"));
 
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/get/0ee81155-96fc-4045-bfe9-dd7ca714b5e8"))
                 .respond(HttpResponse.response().withStatusCode(200)
-                        .withBody(jsonResponse)
+                        .withBody(jsonResponseLecture)
                         .withHeader("Content-Type","application/json"));
+
+
+        mockServer.when(request().withMethod("POST").withPath("/api/question/ask"))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody(responseQuestionBody)
+                        .withHeader("Content-Type","application/json"));
+
+
+
 
 
     }
@@ -62,9 +79,27 @@ public class ServerCommunicationTest {
     }
 
     @Test
+    public void testAskQuestionLectureExists() {
+
+        Lecture res = ServerCommunication.createLecture("name");
+        Lecture.setCurrentLecture(res);
+
+        assertEquals(1,ServerCommunication.askQuestion("Is there anybody?"));
+
+    }
+
+    @Test
+    public void testAskQuestionLectureNotExists() {
+
+        Lecture.setCurrentLecture(null);
+        assertEquals(-1,ServerCommunication.askQuestion("Is there anybody?"));
+
+    }
+
+    @Test
     public void joinLectureByIdLectureExists() {
         Lecture res = ServerCommunication.joinLectureById("0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
-        assertEquals("0ee81155-96fc-4045-bfe9-dd7ca714b5e8",res.getUuid());
+        assertEquals("0ee81155-96fc-4045-bfe9-dd7ca714b5e8",res.getUuid().toString());
 
     }
 
@@ -73,7 +108,6 @@ public class ServerCommunicationTest {
         Lecture res = ServerCommunication
                 .joinLectureById("zebra");
         assertNull(res);
-
     }
 
 
@@ -86,4 +120,6 @@ public class ServerCommunicationTest {
         mockServer.stop();
 
     }
+
+
 }
