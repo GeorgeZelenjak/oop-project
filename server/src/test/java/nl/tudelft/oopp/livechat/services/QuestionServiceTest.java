@@ -60,6 +60,17 @@ class QuestionServiceTest {
     }
 
     @Test
+    @Order(12)
+    void newQuestionEntityUnsuccesfulTest() {
+        long result = questionService.newQuestionEntity(q3);
+        assertTrue(result > 0);
+        q2.setId(q3.getId());
+        long result2 = questionService.newQuestionEntity(q2);
+        assertEquals(-1, result2);
+        assertEquals(q3, questionRepository.findById(q2.getId()).get());
+    }
+
+    @Test
     @Order(2)
     void getQuestionsByLectureIdTest() {
         String lid = q1.getLectureId().toString();
