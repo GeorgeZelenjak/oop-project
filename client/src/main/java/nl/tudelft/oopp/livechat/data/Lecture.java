@@ -149,21 +149,6 @@ public class Lecture {
     }
 
     /**
-     * Close.
-     */
-    public void close() {
-        this.open = false;
-    }
-
-    /**
-     * Re open.
-     */
-    public void reOpen() {
-        this.open = true;
-    }
-
-
-    /**
      * Sets current lecture.
      *
      * @param lecture the lecture
