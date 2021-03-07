@@ -2,6 +2,8 @@ package nl.tudelft.oopp.livechat.controllers;
 
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.services.LectureService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -48,5 +50,12 @@ public class LectureController {
     @DeleteMapping("/api/delete/{id}/{modkey}")
     public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) {
         return service.delete(id, modkey);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid "
+                + "UUID");
     }
 }

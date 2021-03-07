@@ -140,8 +140,8 @@ class QuestionServiceTest {
         long newOwnerId = 42L;
         String modKey = "l2.getModkey().toString()";
         String newText = "new text)))";
-        int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
-        assertEquals(400, result);
+        assertThrows(IllegalArgumentException.class,
+            () -> questionService.editQuestion(qid, modKey, newText, newOwnerId));
     }
 
     @Test

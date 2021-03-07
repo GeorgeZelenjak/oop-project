@@ -101,6 +101,12 @@ class LectureControllerTest {
     }
 
     @Test
+    void whenGettingReturns400Test() throws Exception {
+        this.mockMvc.perform(get("/api/get/notauuid"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
     void deleteLectureSuccessfulTest() throws Exception {
         String json = createLecture("/api/newLecture?name=test3");
 

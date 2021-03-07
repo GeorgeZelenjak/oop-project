@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.services.QuestionService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -92,5 +94,12 @@ public class QuestionController {
         String newText = jsonNode.get("text").asText();
         long uid = jsonNode.get("uid").asLong();
         return questionService.editQuestion(id, modkey, newText, uid);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid "
+                + "UUID");
     }
 }
