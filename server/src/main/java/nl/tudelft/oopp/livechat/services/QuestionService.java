@@ -41,9 +41,12 @@ public class QuestionService {
     /**.
      * Creates new question entity in the database.
      * @param q the question entity
-     * @return the question entity created
+     * @return the question entity created, -1 if question with same id already existed
      */
     public long newQuestionEntity(QuestionEntity q) {
+        if (questionRepository.findById(q.getId()).isPresent()) {
+            return -1;
+        }
         questionRepository.save(q);
         upvoted.put(q.getId(), new HashSet<>());
         return q.getId();

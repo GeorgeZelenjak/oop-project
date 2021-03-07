@@ -24,7 +24,7 @@ public class QuestionEntity {
     private UUID lectureId;
 
     @Column(name = "time")
-    private Timestamp time;
+    private Timestamp time = new Timestamp(System.currentTimeMillis());
 
     @Column(name = "votes")
     private int votes;

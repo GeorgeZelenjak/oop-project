@@ -144,6 +144,17 @@ class QuestionControllerTest {
     }
 
     @Test
+    void askQuestionUnsuccessfulTest() throws Exception {
+        String qid1string = postQuestions(q1Json);
+        long qid1 = Long.parseLong(qid1string);
+        assertTrue(qid1 > 0);
+        q2.setId(q1.getId());
+        String q2edited = objectMapper.writeValueAsString(q2);
+        String result = postQuestions(q2edited);
+        assertEquals("-1", result);
+    }
+
+    @Test
     void fetchQuestionsTest() throws Exception {
         final long qid1 = Long.parseLong(postQuestions(q1Json));
         final long qid2 = Long.parseLong(postQuestions(q2Json));
