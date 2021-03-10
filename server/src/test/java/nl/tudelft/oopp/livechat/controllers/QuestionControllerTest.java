@@ -336,8 +336,14 @@ class QuestionControllerTest {
                 + "\"text\":" + "\"this is the new text\"" + ",\n"
                 + "\"uid\":" + "12" + "\n"
                 + "}";
-        int result = editQuestion(json);
-        assertEquals(400, result);
+        String result = this.mockMvc
+                .perform(put("/api/question/edit")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
+                        .characterEncoding("utf-8"))
+                .andExpect(status().is4xxClientError())
+                .andReturn().getResponse().getContentAsString();
+        assertEquals("Invalid UUID", result);
         QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
         assertNotNull(question1after);
         assertEquals(question1after.getText(),

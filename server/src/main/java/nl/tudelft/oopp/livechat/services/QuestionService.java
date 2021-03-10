@@ -109,12 +109,7 @@ public class QuestionService {
         if (lecture == null) {
             return -1;
         }
-        UUID modkey;
-        try {
-            modkey = UUID.fromString(moderatorKey);
-        } catch (IllegalArgumentException e) {
-            return 400;
-        }
+        UUID modkey = UUID.fromString(moderatorKey);
         if (lecture.getModkey().equals(modkey)) {
             q.setText(newText);
             q.setOwnerId(newOwnerId);
