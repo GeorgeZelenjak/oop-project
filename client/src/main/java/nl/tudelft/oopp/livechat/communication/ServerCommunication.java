@@ -20,7 +20,7 @@ import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.QuestionEntity;
 
 /**
- *  Class for communicating with server.
+ * Class for communicating with server.
  */
 public class ServerCommunication {
 
@@ -164,6 +164,14 @@ public class ServerCommunication {
         return 1;
     }
 
+
+    /**
+    * Fetch questions list.
+    *
+    * @return the list of questions related to current lecture,
+    *       null if something happens or no lecture exists
+    */
+
     public static List<QuestionEntity> fetchQuestions() {
 
         if (Lecture.getCurrentLecture() == null) {
@@ -198,10 +206,7 @@ public class ServerCommunication {
 
         Type listType = new TypeToken<List<QuestionEntity>>(){}.getType();
 
-         List<QuestionEntity> list = gson.fromJson(response.body(), listType);
-
-         //questionPane.getItems().addAll(list);
-        return list;
+        return gson.fromJson(response.body(), listType);
 
 
     }
