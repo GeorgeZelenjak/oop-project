@@ -12,8 +12,6 @@ import java.io.IOException;
 
 public class JoinLecturePageController {
 
-    @FXML
-    private CheckBox modCheckBox;
 
     @FXML
     private TextField modKeyField;
