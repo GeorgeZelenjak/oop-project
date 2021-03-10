@@ -10,7 +10,8 @@ import java.util.UUID;
 
 
 @RestController
-public class LectureController {
+@RequestMapping("/api")
+public class  LectureController {
 
     private final LectureService service;
 
@@ -26,7 +27,7 @@ public class LectureController {
      * GET Endpoint to retrieve a lecture.
      * @return selected lecture
      */
-    @GetMapping("/api/get/{id}")
+    @GetMapping("/get/{id}")
     public LectureEntity getLecturesByID(@PathVariable("id") UUID id) {
         return service.getLectureById(id);
     }
@@ -36,7 +37,7 @@ public class LectureController {
      * @param name the name of the lecture
      * @return a new lecture entity
      */
-    @PostMapping("/api/newLecture")
+    @PostMapping("/newLecture")
     public LectureEntity newLecture(@RequestParam String name) {
         return service.newLecture(name, "placeholder"); //these are placeholders
     }
@@ -47,9 +48,14 @@ public class LectureController {
      * @param id UUID of lecture
      * @return 0 if lecture is deleted successfully, -1 if not
      */
-    @DeleteMapping("/api/delete/{id}/{modkey}")
+    @DeleteMapping("/delete/{id}/{modkey}")
     public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) {
         return service.delete(id, modkey);
+    }
+
+    @PutMapping("/close")
+    public int close(@RequestParam("lid") UUID lectureId, @RequestParam("modkey") UUID modkey) {
+        return service.close(lectureId, modkey);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -58,4 +64,5 @@ public class LectureController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid "
                 + "UUID");
     }
+
 }

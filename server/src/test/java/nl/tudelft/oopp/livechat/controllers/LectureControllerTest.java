@@ -69,6 +69,15 @@ class LectureControllerTest {
         return Integer.parseInt(m);
     }
 
+    int closeLecture(String url) throws Exception {
+        String m = this.mockMvc.perform(put(url))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        return Integer.parseInt(m);
+    }
+
     @Test
     void createLectureTest() {
         assertDoesNotThrow(() -> createLecture("/api/newLecture?name=test1"));
@@ -136,6 +145,37 @@ class LectureControllerTest {
 
         String lecture = getLecture("/api/get/" + uuid);
         assertNotEquals("", lecture);
+    }
+
+    @Test
+    void closeLectureSuccessfulTest() throws Exception {
+        String json = createLecture("/api/newLecture?name=test4");
+
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
+        String uuid = lectureEntity.getUuid().toString();
+        String modkey = lectureEntity.getModkey().toString();
+
+        int m = closeLecture("/api/close?lid=" + uuid + "&modkey=" + modkey);
+        assertEquals(0, m);
+
+        String lecture = getLecture("/api/get/" + uuid);
+        LectureEntity l = objectMapper.readValue(lecture, LectureEntity.class);
+        assertFalse(l.isOpen());
+    }
+
+    @Test
+    void closeLectureUnsuccessfulTest() throws Exception {
+        String json = createLecture("/api/newLecture?name=test4");
+
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
+        String uuid = lectureEntity.getUuid().toString();
+
+        int m = closeLecture("/api/close?lid=" + uuid + "&modkey=" + UUID.randomUUID().toString());
+        assertEquals(-1, m);
+
+        String lecture = getLecture("/api/get/" + uuid);
+        LectureEntity l = objectMapper.readValue(lecture, LectureEntity.class);
+        assertTrue(l.isOpen());
     }
 }
 

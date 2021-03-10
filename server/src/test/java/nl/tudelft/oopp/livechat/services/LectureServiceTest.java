@@ -55,4 +55,23 @@ class LectureServiceTest {
         LectureEntity m = lectureService.getLectureById(l.getUuid());
         assertNotNull(m);
     }
+
+    @Test
+    void closeLectureTest() {
+        LectureEntity l = new LectureEntity("name", "creator_name");
+        repository.save(l);
+        lectureService.close(l.getUuid(), l.getModkey());
+        LectureEntity l1 = lectureService.getLectureById(l.getUuid());
+        assertFalse(l1.isOpen());
+    }
+
+    @Test
+    void closeLectureUnsuccessfulTest() {
+        LectureEntity l = new LectureEntity("name", "creator_name");
+        repository.save(l);
+        lectureService.close(l.getUuid(), UUID.randomUUID());
+        LectureEntity l1 = lectureService.getLectureById(l.getUuid());
+        assertTrue(l1.isOpen());
+    }
+
 }

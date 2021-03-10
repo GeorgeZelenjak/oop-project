@@ -54,4 +54,21 @@ public class LectureService {
         }
         return -1;
     }
+
+    /**
+     * Close a lecture for future uses.
+     *
+     * @param id     the lecture id
+     * @param modkey the modkey
+     * @return 0 if successful, -1 otherwise
+     */
+    public int close(UUID id, UUID modkey) {
+        LectureEntity toClose = getLectureById(id);
+        if (toClose != null && toClose.getModkey().equals(modkey)) {
+            toClose.close();
+            lectureRepository.save(toClose);
+            return 0;
+        }
+        return -1;
+    }
 }
