@@ -1,29 +1,28 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
+import nl.tudelft.oopp.livechat.communication.ServerCommunication;
+import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.QuestionEntity;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
-import javafx.util.Duration;
-import nl.tudelft.oopp.livechat.communication.ServerCommunication;
-import nl.tudelft.oopp.livechat.data.Lecture;
-import nl.tudelft.oopp.livechat.data.QuestionEntity;
 
 
 /**
@@ -40,24 +39,33 @@ public class UserChatPageController implements Initializable {
     @FXML
     private Text lectureName;
 
-    @FXML
+    /**
+     * method that runs when the scene is first initialized.
+     * @param location location of current scene
+     * @param resourceBundle resource bundle
+     */
+
     public void initialize(URL location, ResourceBundle resourceBundle) {
         lectureName.setText(Lecture.getCurrentLecture().getName());
         lectureName.setTextAlignment(TextAlignment.CENTER);
 
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(2500),
-                ae -> fetchQuestions()));
+            ae -> fetchQuestions()));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
 
+    /**
+     * Fetch questions.
+     */
     public void fetchQuestions() {
 
         List<QuestionEntity> list = ServerCommunication.fetchQuestions();
-        if(list == null)
+        if (list == null)
             return;
-        List<String> listString = list.stream().map(QuestionEntity::getText).collect(Collectors.toList());
+        List<String> listString = list.stream()
+                .map(QuestionEntity::getText).collect(Collectors.toList());
         questionPane.getItems().clear();
         questionPane.getItems().addAll(listString);
     }
@@ -130,8 +138,8 @@ public class UserChatPageController implements Initializable {
             alert.showAndWait();
         }
 
-        //System.out.println(inputQuestion.getText());
-        QuestionEntity question = new QuestionEntity(Lecture.getCurrentLecture().getUuid(), inputQuestion.getText(), 0);
+        QuestionEntity question = new QuestionEntity(
+                Lecture.getCurrentLecture().getUuid(), inputQuestion.getText(), 0);
 
 
         questionPane.getItems().add(question.getText());

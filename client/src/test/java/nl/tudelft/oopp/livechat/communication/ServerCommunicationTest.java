@@ -1,21 +1,15 @@
 package nl.tudelft.oopp.livechat.communication;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockserver.model.HttpRequest.request;
-
 import nl.tudelft.oopp.livechat.data.Lecture;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
-import org.mockserver.mock.Expectation;
-import org.mockserver.model.Body;
 import org.mockserver.model.HttpResponse;
-import org.mockserver.model.Parameter;
 
-import java.sql.SQLOutput;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockserver.model.HttpRequest.request;
 
 
 public class ServerCommunicationTest {
