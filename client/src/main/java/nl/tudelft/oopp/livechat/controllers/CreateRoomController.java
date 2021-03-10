@@ -36,10 +36,9 @@ public class CreateRoomController {
         alert.setTitle("Creating lecture");
         alert.setHeaderText(null);
         Lecture lecture = ServerCommunication
-                .createLecture(URLEncoder.encode(
-                        enterRoomName.getCharacters().toString(), StandardCharsets.UTF_8));
+                .createLecture(enterRoomName.getText());
         //Lecture.setCurrentLecture(lecture); //Sets static current lecture object
-        String ret = "";
+        String ret;
         try {
             ret = lecture.toString();
         } catch (Exception e) {
