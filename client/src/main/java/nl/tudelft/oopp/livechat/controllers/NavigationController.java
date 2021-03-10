@@ -86,6 +86,14 @@ public class NavigationController {
         goToSceneHelper("/joinLecturePage.fxml");
     }
 
+    /**
+     * Navigation to the lecturer chat room scene.
+     *
+     * @throws IOException the io exception
+     */
+    public void goToLecturerChatPage() throws IOException {
+        goToSceneHelper("/lecturerChatPage.fxml");
+    }
 
     /**
      * Navigation to the user chat page.
