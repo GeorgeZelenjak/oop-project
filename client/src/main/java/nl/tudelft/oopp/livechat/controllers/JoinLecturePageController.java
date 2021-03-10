@@ -3,43 +3,30 @@ package nl.tudelft.oopp.livechat.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import nl.tudelft.oopp.livechat.communication.ServerCommunication;
 import nl.tudelft.oopp.livechat.data.Lecture;
 
 import java.io.IOException;
 
-
-/**
- * Class for controlling events happening from the main scene.
- */
-public class MainSceneController {
+public class JoinLecturePageController {
 
     @FXML
-    TextField enterRoomCode;
+    private CheckBox modCheckBox;
+
     @FXML
-    Button  joinRoom;
+    private TextField modKeyField;
 
-    /**
-     * Navigates to lecture creation scene.
-     */
+    @FXML
+    private TextField enterRoomCode;
 
-    public void goToCreateLecture() throws IOException {
-
-        //Navigating to the scene
-        NavigationController.getCurrentController().goToCreateRoomScene();
-
+    public void onCheckBoxAction(){
+        modKeyField.setVisible(!modKeyField.isVisible());
     }
 
-    /** Navigates to Lecture scene (for Students).
-     *
-     * @throws IOException - in case Stage throws an exception
-     */
-
     public void goToLecture() throws IOException {
-        NavigationController.getCurrentController().goToJoinLecturePage();
 
-        /*
         Lecture.setCurrentLecture(ServerCommunication.joinLectureById(enterRoomCode.getText()));
         Lecture currentLecture = Lecture.getCurrentLecture();
 
@@ -66,33 +53,12 @@ public class MainSceneController {
             NavigationController.getCurrentController().goToUserChatPage();
 
 
-        }*/
-
-
+        }
     }
+    public void goBack() {
 
-    /**
-     * Go to user manual.
-     *
-     * @throws IOException the io exception
-     */
-    public void goToUserManual() throws IOException {
-
-        NavigationController.getCurrentController().goToUserManual();
-
+        NavigationController.getCurrentController().goBack();
+        System.out.println("Button was pressed!");
     }
-
-    /**
-     * Go to settings.
-     *
-     * @throws IOException the io exception
-     */
-    public void goToSettings() throws IOException {
-
-        NavigationController.getCurrentController().goToSettings();
-    }
-
-
-
 
 }

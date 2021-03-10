@@ -77,6 +77,14 @@ public class NavigationController {
         goToSceneHelper("/inputLectureParameters.fxml");
     }
 
+    /**
+     * Navigation to the create room scene.
+     *
+     * @throws IOException the io exception
+     */
+    public void goToJoinLecturePage() throws IOException {
+        goToSceneHelper("/joinLecturePage.fxml");
+    }
 
 
     /**
