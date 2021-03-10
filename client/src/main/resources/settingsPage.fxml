@@ -6,7 +6,7 @@
 
 <AnchorPane prefHeight="650.0" prefWidth="1000.0" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.SettingsPageController">
    <children>
-      <Button mnemonicParsing="false" prefHeight="34.0" prefWidth="116.0" styleClass="mainSceneButton" text="←Go Back" />
+      <Button fx:id="backSettings" mnemonicParsing="false" onAction="#goBack" prefHeight="34.0" prefWidth="116.0" styleClass="mainSceneButton" text="←Go Back" />
       <Text layoutX="421.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings">
          <font>
             <Font name="Arial Bold" size="40.0" />

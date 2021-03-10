@@ -2,14 +2,20 @@ package nl.tudelft.oopp.livechat.communication;
 
 import com.google.gson.*;
 
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
-
+import com.google.gson.reflect.TypeToken;
+import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.QuestionEntity;
 
@@ -157,6 +163,50 @@ public class ServerCommunication {
         System.out.println("The question was asked successfully! " + response.body());
         return 1;
     }
+
+    public static List<QuestionEntity> fetchQuestions() {
+
+        if (Lecture.getCurrentLecture() == null) {
+            System.out.println("You are not connected to a lecture!");
+            return null;
+        }
+
+
+        UUID lectureId = Lecture.getCurrentLecture().getUuid();
+
+
+        //String json = gson.toJson(question);
+        //HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
+
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(
+                URI.create("http://localhost:8080/api/question/fetch?lid=" + lectureId.toString())).build();
+        HttpResponse<String> response;
+
+
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.println("There was an exception!");
+            e.printStackTrace();
+            return null;
+        }
+        if (response.statusCode() != 200) {
+            System.out.println("Status: " + response.statusCode());
+            return null;
+        }
+        System.out.println("The questions were retrieved successfully! " + response.body());
+
+        Type listType = new TypeToken<List<QuestionEntity>>(){}.getType();
+
+         List<QuestionEntity> list = gson.fromJson(response.body(), listType);
+
+         //questionPane.getItems().addAll(list);
+        return list;
+
+
+    }
+
+
 
 
 

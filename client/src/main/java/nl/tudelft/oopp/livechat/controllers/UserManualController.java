@@ -13,9 +13,6 @@ import java.io.IOException;
 
 public class UserManualController {
 
-    @FXML
-    private Button backButton;
-
     public void goBack() {
         NavigationController.getCurrentController().goBack();
         System.out.println("Button was pressed!");

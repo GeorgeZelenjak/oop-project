@@ -1,32 +1,66 @@
 package nl.tudelft.oopp.livechat.controllers;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.communication.ServerCommunication;
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.QuestionEntity;
 
 
 /**
  * The type User chat page controller.
  */
-public class UserChatPageController {
+public class UserChatPageController implements Initializable {
 
 
 
     @FXML
     private TextField inputQuestion;
+    @FXML
+    private ListView<String> questionPane;
+    @FXML
+    private Text lectureName;
+
+    @FXML
+    public void initialize(URL location, ResourceBundle resourceBundle) {
+        lectureName.setText(Lecture.getCurrentLecture().getName());
+        lectureName.setTextAlignment(TextAlignment.CENTER);
+
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.millis(2500),
+                ae -> fetchQuestions()));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
+    public void fetchQuestions() {
+
+        List<QuestionEntity> list = ServerCommunication.fetchQuestions();
+        if(list == null)
+            return;
+        List<String> listString = list.stream().map(QuestionEntity::getText).collect(Collectors.toList());
+        questionPane.getItems().clear();
+        questionPane.getItems().addAll(listString);
+    }
 
     /**
      * Go back to main.
@@ -80,9 +114,13 @@ public class UserChatPageController {
      */
     @FXML
     public int askQuestion(ActionEvent ae) {
-        int ret = ServerCommunication.askQuestion(inputQuestion.getText());
-        inputQuestion.setText("");
 
+        int ret = ServerCommunication.askQuestion(inputQuestion.getText());
+        //inputQuestion.setText("");
+
+
+
+        System.out.println(ret);
         if (ret <= 0) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("ERROR");
@@ -91,6 +129,12 @@ public class UserChatPageController {
             alert.setContentText("There was a problem with asking question!");
             alert.showAndWait();
         }
+
+        //System.out.println(inputQuestion.getText());
+        QuestionEntity question = new QuestionEntity(Lecture.getCurrentLecture().getUuid(), inputQuestion.getText(), 0);
+
+
+        questionPane.getItems().add(question.getText());
 
         return (ret);
 
