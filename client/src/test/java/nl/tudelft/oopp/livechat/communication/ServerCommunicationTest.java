@@ -37,7 +37,7 @@ public class ServerCommunicationTest {
 
 
         mockServer = ClientAndServer.startClientAndServer(8080);
-        mockServer.when(request().withMethod("POST").withPath("/newLecture")
+        mockServer.when(request().withMethod("POST").withPath("/api/newLecture")
                 .withQueryStringParameter("name","name"))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody(jsonResponseLecture)

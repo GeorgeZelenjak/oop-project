@@ -47,7 +47,7 @@ public class ServerCommunication {
 
         //Parameters for request
         HttpRequest.BodyPublisher req = HttpRequest.BodyPublishers.ofString("");
-        String address = "http://localhost:8080//api/newLecture?name=";
+        String address = "http://localhost:8080/api/newLecture?name=";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().POST(req)
