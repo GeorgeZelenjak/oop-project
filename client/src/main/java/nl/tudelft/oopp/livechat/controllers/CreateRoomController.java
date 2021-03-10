@@ -5,16 +5,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.communication.ServerCommunication;
 import nl.tudelft.oopp.livechat.data.Lecture;
-import nl.tudelft.oopp.livechat.views.MainSceneDisplay;
 
 
 public class CreateRoomController {
@@ -44,6 +38,7 @@ public class CreateRoomController {
             ret = lecture.toString();
         } catch (Exception e) {
             ret = "";
+            e.printStackTrace();
         }
         alert.setContentText(ret);
         alert.showAndWait();
@@ -53,6 +48,22 @@ public class CreateRoomController {
 
         System.out.println(lecture.toString());
 
+    }
+
+    /**
+     * Go back to previous Scene.
+     */
+    public void goBack() {
+
+        NavigationController.getCurrentController().goBack();
+    }
+
+    public void goToSettings() throws IOException {
+        NavigationController.getCurrentController().goToSettings();
+    }
+
+    public void goToUserManual() throws IOException {
+        NavigationController.getCurrentController().goToUserManual();
     }
 
 }

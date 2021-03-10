@@ -1,9 +1,13 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import nl.tudelft.oopp.livechat.data.Lecture;
+
 
 import java.io.IOException;
 import java.util.Stack;
@@ -16,10 +20,11 @@ import java.util.Stack;
 public class NavigationController {
 
     private Scene main;
-    //TODO Stack for the back button
+
     private static NavigationController currentController;
 
     private Stack<Scene> backStack;
+
 
     /**
      * Instantiates a new Navigation controller.
@@ -75,6 +80,7 @@ public class NavigationController {
     public void goToCreateRoomScene() throws IOException {
         goToSceneHelper("/inputLectureParameters.fxml");
     }
+
 
 
     /**
