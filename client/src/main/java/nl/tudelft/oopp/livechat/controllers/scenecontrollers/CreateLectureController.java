@@ -10,10 +10,10 @@ import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 
-public class CreateRoomController {
+public class CreateLectureController {
 
     @FXML
-    private TextField enterRoomName;
+    private TextField enterLectureNameTextField;
 
 
     /**
@@ -29,7 +29,7 @@ public class CreateRoomController {
         alert.setTitle("Creating lecture");
         alert.setHeaderText(null);
         Lecture lecture = LectureCommunication
-                .createLecture(enterRoomName.getText());
+                .createLecture(enterLectureNameTextField.getText());
         //Lecture.setCurrentLecture(lecture); //Sets static current lecture object
         String ret;
         try {

@@ -74,7 +74,7 @@ public class NavigationController {
      * @throws IOException the io exception
      */
     public void goToCreateRoomScene() throws IOException {
-        goToSceneHelper("/fxml/createRoomScene.fxml");
+        goToSceneHelper("/fxml/createLectureScene.fxml");
     }
 
     /**

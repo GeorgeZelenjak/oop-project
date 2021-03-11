@@ -6,16 +6,16 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.JoinLectureSceneController">
    <children>
-      <CheckBox fx:id="modCheckBox" layoutX="439.0" layoutY="267.0" mnemonicParsing="false" onAction="#onCheckBoxAction" text="Are you a moderator?" />
-      <Button fx:id="joinLecture" layoutX="393.0" layoutY="368.0" mnemonicParsing="false" onAction="#goToLecture" prefHeight="34.0" prefWidth="230.0" styleClass="mainSceneButton" text="Join Lecture" />
+      <CheckBox fx:id="modkeyCheckBox" layoutX="439.0" layoutY="267.0" mnemonicParsing="false" onAction="#onCheckBoxAction" text="Are you a moderator?" />
+      <Button fx:id="goToJoinLectureButton" layoutX="393.0" layoutY="368.0" mnemonicParsing="false" onAction="#goToLecture" prefHeight="34.0" prefWidth="230.0" styleClass="mainSceneButton" text="Join Lecture" />
       <TextField layoutX="393.0" layoutY="166.0" promptText="First Name Last Name" styleClass="mainSceneEnterRoomCode" />
       <Text layoutX="444.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="Top text" wrappingWidth="138.39999999999998">
          <font>
             <Font size="14.0" />
          </font>
       </Text>
-      <TextField fx:id="modKeyField" layoutX="393.0" layoutY="302.0" promptText="Enter Mod Key" styleClass="mainSceneEnterRoomCode" visible="false" />
-      <TextField fx:id="enterRoomCode" layoutX="393.0" layoutY="215.0" promptText="Enter Lecture UUID" styleClass="mainSceneEnterRoomCode" />
-      <Button fx:id="backButton" layoutX="82.0" layoutY="67.0" mnemonicParsing="false" onAction="#goBack" prefHeight="34.0" prefWidth="138.0" styleClass="mainSceneButton" text="Back" />
+      <TextField fx:id="modkeyTextField" layoutX="393.0" layoutY="302.0" promptText="Enter Mod Key" styleClass="mainSceneEnterRoomCode" visible="false" />
+      <TextField fx:id="enterLectureCodeTextField" layoutX="393.0" layoutY="215.0" promptText="Enter Lecture UUID" styleClass="mainSceneEnterRoomCode" />
+      <Button fx:id="goBackButton" layoutX="82.0" layoutY="67.0" mnemonicParsing="false" onAction="#goBack" prefHeight="34.0" prefWidth="138.0" styleClass="mainSceneButton" text="Back" />
    </children>
 </AnchorPane>

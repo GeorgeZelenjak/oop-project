@@ -11,14 +11,6 @@ import java.util.Optional;
 
 public class LecturerChatSceneController {
 
-    @FXML
-    private Button backButton;
-    @FXML
-    private Button userManual;
-    @FXML
-    private Button settings;
-
-
     /**
      * Go back to main.
      *

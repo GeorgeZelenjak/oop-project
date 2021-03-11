@@ -13,15 +13,15 @@ public class JoinLectureSceneController {
 
 
     @FXML
-    private TextField modKeyField;
+    private TextField modkeyTextField;
 
     @FXML
-    private TextField enterRoomCode;
+    private TextField enterLectureCodeTextField;
 
 
 
     public void onCheckBoxAction() {
-        modKeyField.setVisible(!modKeyField.isVisible());
+        modkeyTextField.setVisible(!modkeyTextField.isVisible());
     }
 
     /**
@@ -31,7 +31,7 @@ public class JoinLectureSceneController {
      */
     public void goToLecture() throws IOException {
 
-        if (modKeyField.getText().equals("")) {
+        if (modkeyTextField.getText().equals("")) {
             joinAsStudent();
         } else {
             joinAsModerator();
@@ -39,7 +39,8 @@ public class JoinLectureSceneController {
     }
 
     private void joinAsStudent() throws IOException {
-        Lecture.setCurrentLecture(LectureCommunication.joinLectureById(enterRoomCode.getText()));
+        Lecture.setCurrentLecture(
+                LectureCommunication.joinLectureById(enterLectureCodeTextField.getText()));
         Lecture currentLecture = Lecture.getCurrentLecture();
 
         if (currentLecture == null) {
@@ -69,7 +70,7 @@ public class JoinLectureSceneController {
 
     private void joinAsModerator() throws IOException {
         boolean result = LectureCommunication
-                .validateModerator(enterRoomCode.getText(),modKeyField.getText());
+                .validateModerator(enterLectureCodeTextField.getText(),modkeyTextField.getText());
 
 
         if (!result) {
@@ -82,7 +83,8 @@ public class JoinLectureSceneController {
             return;
         }
 
-        Lecture.setCurrentLecture(LectureCommunication.joinLectureById(enterRoomCode.getText()));
+        Lecture.setCurrentLecture(
+                LectureCommunication.joinLectureById(enterLectureCodeTextField.getText()));
         Lecture currentLecture = Lecture.getCurrentLecture();
 
         if (currentLecture == null) {

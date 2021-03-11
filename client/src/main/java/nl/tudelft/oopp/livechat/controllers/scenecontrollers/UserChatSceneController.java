@@ -34,11 +34,11 @@ public class UserChatSceneController implements Initializable {
 
 
     @FXML
-    private TextField inputQuestion;
+    private TextField inputQuestionTextTextField;
     @FXML
-    private ListView<String> questionPane;
+    private ListView<String> questionPaneListView;
     @FXML
-    private Text lectureName;
+    private Text lectureNameText;
 
     /**
      * method that runs when the scene is first initialized.
@@ -47,8 +47,8 @@ public class UserChatSceneController implements Initializable {
      */
 
     public void initialize(URL location, ResourceBundle resourceBundle) {
-        lectureName.setText(Lecture.getCurrentLecture().getName());
-        lectureName.setTextAlignment(TextAlignment.CENTER);
+        lectureNameText.setText(Lecture.getCurrentLecture().getName());
+        lectureNameText.setTextAlignment(TextAlignment.CENTER);
 
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(2500),
@@ -67,8 +67,8 @@ public class UserChatSceneController implements Initializable {
             return;
         List<String> listString = list.stream()
                 .map(Question::getText).collect(Collectors.toList());
-        questionPane.getItems().clear();
-        questionPane.getItems().addAll(listString);
+        questionPaneListView.getItems().clear();
+        questionPaneListView.getItems().addAll(listString);
     }
 
     /**
@@ -124,7 +124,7 @@ public class UserChatSceneController implements Initializable {
     @FXML
     public int askQuestion(ActionEvent ae) {
 
-        int ret = QuestionCommunication.askQuestion(inputQuestion.getText());
+        int ret = QuestionCommunication.askQuestion(inputQuestionTextTextField.getText());
         //inputQuestion.setText("");
 
 
@@ -140,10 +140,10 @@ public class UserChatSceneController implements Initializable {
         }
 
         Question question = new Question(
-                Lecture.getCurrentLecture().getUuid(), inputQuestion.getText(), 0);
+                Lecture.getCurrentLecture().getUuid(), inputQuestionTextTextField.getText(), 0);
 
 
-        questionPane.getItems().add(question.getText());
+        questionPaneListView.getItems().add(question.getText());
 
         return (ret);
 
