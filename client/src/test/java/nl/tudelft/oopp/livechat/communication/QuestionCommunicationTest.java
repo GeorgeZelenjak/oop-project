@@ -54,7 +54,6 @@ public class QuestionCommunicationTest {
         final String  responseQuestionBody = "5397545054934456486";
 
 
-
         mockServer = ClientAndServer.startClientAndServer(8080);
 
         mockServer.when(request().withMethod("POST").withPath("/api/question/ask"))
@@ -73,20 +72,15 @@ public class QuestionCommunicationTest {
 
     @Test
     public void testAskQuestionLectureExists() {
-
         Lecture res = new Lecture();
         Lecture.setCurrentLecture(res);
-
         assertEquals(1, QuestionCommunication.askQuestion("Is there anybody?"));
-
     }
 
     @Test
     public void testAskQuestionLectureNotExists() {
-
         Lecture.setCurrentLecture(null);
         assertEquals(-1,QuestionCommunication.askQuestion("Is there anybody?"));
-
     }
 
     @Test
@@ -96,9 +90,9 @@ public class QuestionCommunicationTest {
     }
 
     @Test
-    public void testFetchQuestionsCurrentLecturNotNull() {
-        Lecture.setCurrentLecture(new Lecture(
-                uuid, "MAMA", "TEST", "NOT TEST"));
+    public void testFetchQuestionsCurrentLectureNotNull() {
+        Lecture.setCurrentLecture(new Lecture(uuid,
+                "MAMA", "TEST", "NOT TEST"));
         assertNotNull(QuestionCommunication.fetchQuestions());
     }
 
@@ -107,8 +101,6 @@ public class QuestionCommunicationTest {
      */
     @AfterAll
     public static void stopServer() {
-
         mockServer.stop();
-
     }
 }

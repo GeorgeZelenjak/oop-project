@@ -10,9 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
-import org.mockserver.model.Parameter;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
@@ -28,7 +25,6 @@ public class LectureCommunicationTest {
     @BeforeAll
     public static void startServer() {
 
-
         ObjectNode node = new ObjectMapper().createObjectNode();
         node.put("uuid","0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
         node.put("modkey","08843278-e8b8-4d51-992f-48c6aee44e27");
@@ -41,7 +37,6 @@ public class LectureCommunicationTest {
         node.put("open","true");
 
         String jsonResponseLecture = node.toString();
-
         final String  responseQuestionBody = "5397545054934456486";
 
 
@@ -67,12 +62,7 @@ public class LectureCommunicationTest {
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/validate/112/123"))
                 .respond(HttpResponse.response().withStatusCode(200)
-                        .withBody("0"));
-
-
-
-
-
+                .withBody("0"));
     }
 
     @Test
@@ -83,33 +73,32 @@ public class LectureCommunicationTest {
     @Test
     public void testLectureNameMatches() {
         Lecture res = LectureCommunication.createLecture("name");
+        assertNotNull(res);
         assertEquals("name", res.getName());
     }
 
     @Test
     public void joinLectureByIdLectureExists() {
         Lecture res = LectureCommunication.joinLectureById("0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
-        assertEquals("0ee81155-96fc-4045-bfe9-dd7ca714b5e8",res.getUuid().toString());
+        assertNotNull(res);
+        assertEquals("0ee81155-96fc-4045-bfe9-dd7ca714b5e8", res.getUuid().toString());
 
     }
 
     @Test
     public void joinLectureByIdNotExist() {
-        Lecture res = LectureCommunication
-                .joinLectureById("zebra");
+        Lecture res = LectureCommunication.joinLectureById("zebra");
         assertNull(res);
     }
 
     @Test
     public void validateModeratorPass() {
-        assertTrue(LectureCommunication.validateModerator(
-                "112","123"));
+        assertTrue(LectureCommunication.validateModerator("112","123"));
     }
 
     @Test
     public void validateModeratorFail() {
-        assertFalse(LectureCommunication.validateModerator(
-                "not zebra","Zebra"));
+        assertFalse(LectureCommunication.validateModerator("not zebra","Zebra"));
     }
 
     /**
@@ -117,8 +106,6 @@ public class LectureCommunicationTest {
      */
     @AfterAll
     public static void stopServer() {
-
         mockServer.stop();
-
     }
 }
