@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
+import org.mockserver.model.Parameter;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
@@ -61,6 +64,11 @@ public class LectureCommunicationTest {
                         .withBody(responseQuestionBody)
                         .withHeader("Content-Type","application/json"));
 
+        mockServer.when(request().withMethod("GET")
+                .withPath("/api/validate/112/123"))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0"));
+
 
 
 
@@ -92,6 +100,17 @@ public class LectureCommunicationTest {
         assertNull(res);
     }
 
+    @Test
+    public void validateModeratorPass() {
+        assertTrue(LectureCommunication.validateModerator(
+                "112","123"));
+    }
+
+    @Test
+    public void validateModeratorFail() {
+        assertFalse(LectureCommunication.validateModerator(
+                "not zebra","Zebra"));
+    }
 
     /**
      * Stops server.
