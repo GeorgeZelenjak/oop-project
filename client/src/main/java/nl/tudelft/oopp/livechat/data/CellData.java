@@ -13,7 +13,7 @@ public class CellData {
     private Text questionText;
 
     @FXML
-    private HBox hBox;
+    private HBox hbox;
 
     /**
      * Instantiates a new Cell data.
@@ -34,6 +34,6 @@ public class CellData {
     }
 
     public HBox getBox() {
-        return hBox;
+        return hbox;
     }
 }

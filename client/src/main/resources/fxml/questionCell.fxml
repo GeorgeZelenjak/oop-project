@@ -4,7 +4,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 
-<HBox xmlns:fx="http://javafx.com/fxml" fx:id="hBox">
+<HBox xmlns:fx="http://javafx.com/fxml" fx:id="hbox">
     <children>
         <Text fx:id="questionText" layoutX="73.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Artjom" wrappingWidth="95.00682830810547" />
         <Button mnemonicParsing="false" text="Button" />

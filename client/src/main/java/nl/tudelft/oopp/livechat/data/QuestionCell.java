@@ -13,5 +13,4 @@ public class QuestionCell extends ListCell<Question> {
             setGraphic(data.getBox());
         }
     }
-
 }
