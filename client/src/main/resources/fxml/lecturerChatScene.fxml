@@ -5,9 +5,9 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.LecturerChatSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" styleClass="mainScenePane" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.LecturerChatSceneController">
    <children>
-      <Pane prefHeight="650.0" prefWidth="200.0" style="-fx-background-color: rgba(14, 114, 237, 0.45);">
+      <Pane prefHeight="650.0" prefWidth="200.0" style="-fx-background-color: rgba(14, 114, 237, 0.45);" styleClass="sidebar">
          <children>
             <Button layoutX="16.0" layoutY="217.0" mnemonicParsing="false" styleClass="mainSceneButton" text="Show Participants" />
             <Button fx:id="goToSettingsButton" layoutX="16.0" layoutY="292.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Settings" />
