@@ -9,6 +9,8 @@ import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
 
@@ -17,23 +19,40 @@ public class QuestionCommunicationTest {
     public static MockServerClient mockServer;
 
 
+    private static final UUID uuid = UUID.randomUUID();
+
     /**
      * Starts mock server.
      */
     @BeforeAll
     public static void startServer() {
 
+        String response = "[\n"
+                + "    {\n"
+                + "        \"id\": 1525501830961993525,\n"
+                + "        \"lectureId\": \"dfabcfdf-271b-48d2-841e-4874ff28b4a6\",\n"
+                + "        \"time\": \"2021-03-11T12:37:37.403+0000\",\n"
+                + "        \"votes\": 0,\n"
+                + "        \"text\": \"HHH\",\n"
+                + "        \"answered\": false,\n"
+                + "        \"answerText\": null,\n"
+                + "        \"answerTime\": null\n"
+                + "    },\n"
+                + "    {\n"
+                + "        \"id\": 6482091313835038158,\n"
+                + "        \"lectureId\": \"dfabcfdf-271b-48d2-841e-4874ff28b4a6\",\n"
+                + "        \"time\": \"2021-03-11T12:37:41.344+0000\",\n"
+                + "        \"votes\": 0,\n"
+                + "        \"text\": \"koiko\",\n"
+                + "        \"answered\": false,\n"
+                + "        \"answerText\": null,\n"
+                + "        \"answerTime\": null\n"
+                + "    }\n"
+                + "]";
 
-
-        String jsonResponseLecture = "{\"uuid\":\"0ee81155-96fc-4045-bfe9-dd7ca714b5e8\",\"modkey\""
-                + ":\"08843278-e8b8-4d51-992f-48c6aee44e27\""
-                + ",\"name\":\"name\",\"creatorName\""
-                + ":\"placeholder\",\"fasterCount\":0,"
-                + "\"slowerCount\":0,\"frequency\""
-                + ":60,\"startTime\":\"2021-03-04T15:49:"
-                + "27.962+0000\",\"open\":true}";
 
         final String  responseQuestionBody = "5397545054934456486";
+
 
 
         mockServer = ClientAndServer.startClientAndServer(8080);
@@ -43,11 +62,14 @@ public class QuestionCommunicationTest {
                         .withBody(responseQuestionBody)
                         .withHeader("Content-Type","application/json"));
 
-
-
-
-
+        mockServer.when(request().withMethod("GET").withPath("/api/question/fetch")
+                .withQueryStringParameter("lid",uuid.toString()))
+                .respond(HttpResponse.response().withStatusCode(200)
+                .withBody(response)
+                .withHeader("Content-Type","application/json"));
     }
+
+
 
     @Test
     public void testAskQuestionLectureExists() {
@@ -65,6 +87,19 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(null);
         assertEquals(-1,QuestionCommunication.askQuestion("Is there anybody?"));
 
+    }
+
+    @Test
+    public void testFetchQuestionsCurrentLectureNull() {
+        Lecture.setCurrentLecture(null);
+        assertNull(QuestionCommunication.fetchQuestions());
+    }
+
+    @Test
+    public void testFetchQuestionsCurrentLecturNotNull() {
+        Lecture.setCurrentLecture(new Lecture(
+                uuid, "MAMA", "TEST", "NOT TEST"));
+        assertNotNull(QuestionCommunication.fetchQuestions());
     }
 
     /**
