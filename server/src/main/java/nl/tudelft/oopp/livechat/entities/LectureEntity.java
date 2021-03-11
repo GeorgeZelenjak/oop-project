@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.*;
 
-/**.
+/**
  * The class that represents a lecture entity.
  */
 @Entity
@@ -41,7 +41,7 @@ public class LectureEntity {
     @Column(name = "open")
     private boolean open = true;
 
-    /**.
+    /**
      * Empty constructor to create a lecture entity.
      */
     public LectureEntity() {
@@ -49,7 +49,7 @@ public class LectureEntity {
         this.modkey = UUID.randomUUID();
     }
 
-    /**.
+    /**
      * Constructor to create a lecture entity.
      * @param name the name of the lecture
      * @param creatorName the name of the creator of the lecture
@@ -65,7 +65,7 @@ public class LectureEntity {
         this.startTime = new Timestamp(System.currentTimeMillis());
     }
 
-    /**.
+    /**
      * Static constructor to create a lecture entity.
      * @param name the name of the lecture
      * @param creatorName the name of the creator of the lecture
@@ -82,7 +82,7 @@ public class LectureEntity {
         return l;
     }
 
-    /**.
+    /**
      * Gets the uuid of the lecture.
      * @return the uuid of the lecture
      */
@@ -90,7 +90,7 @@ public class LectureEntity {
         return uuid;
     }
 
-    /**.
+    /**
      * Gets modkey of the lecture.
      * @return the modkey of the lecture
      */
@@ -98,7 +98,7 @@ public class LectureEntity {
         return modkey;
     }
 
-    /**.
+    /**
      * Gets name of the lecture.
      * @return the name of the lecture
      */
@@ -106,7 +106,7 @@ public class LectureEntity {
         return name;
     }
 
-    /**.
+    /**
      * Gets the name of the creator of the lecture.
      * @return the name of the creator of the lecture
      */
@@ -114,7 +114,7 @@ public class LectureEntity {
         return creatorName;
     }
 
-    /**.
+    /**
      * Gets "faster" count.
      * @return the "faster" count
      */
@@ -122,7 +122,7 @@ public class LectureEntity {
         return fasterCount;
     }
 
-    /**.
+    /**
      * Gets "slower" count.
      * @return the "slower" count
      */
@@ -130,7 +130,7 @@ public class LectureEntity {
         return slowerCount;
     }
 
-    /**.
+    /**
      * Gets the start time of the lecture.
      * @return the start time of the lecture
      */
@@ -138,7 +138,7 @@ public class LectureEntity {
         return startTime;
     }
 
-    /**.
+    /**
      * Gets the frequency of asking questions.
      * @return the frequency of asking questions
      */
@@ -146,7 +146,7 @@ public class LectureEntity {
         return frequency;
     }
 
-    /**.
+    /**
      * Sets the name of the lecture.
      * @param name the name of the lecture
      */
@@ -154,21 +154,21 @@ public class LectureEntity {
         this.name = name;
     }
 
-    /**.
+    /**
      * Increases the "faster" count by 1.
      */
     public void incrementFasterCount() {
         ++this.fasterCount;
     }
 
-    /**.
+    /**
      * Increases the "slower" count by 1.
      */
     public void incrementSlowerCount() {
         ++this.slowerCount;
     }
 
-    /**.
+    /**
      * Sets the frequency of asking questions.
      * @param frequency the frequency of asking questions
      */
@@ -176,7 +176,7 @@ public class LectureEntity {
         this.frequency = frequency;
     }
 
-    /**.
+    /**
      * Resets speed counts.
      */
     public void resetSpeedCounts() {
@@ -184,7 +184,7 @@ public class LectureEntity {
         this.slowerCount = 0;
     }
 
-    /**.
+    /**
      * Closes the lecture.
      */
     @SuppressWarnings("unused")
@@ -192,7 +192,7 @@ public class LectureEntity {
         this.open = false;
     }
 
-    /**.
+    /**
      * Re-opens the lecture.
      */
     @SuppressWarnings("unused")
@@ -200,7 +200,7 @@ public class LectureEntity {
         this.open = true;
     }
 
-    /**.
+    /**
      * Checks whether the lecture is open.
      * @return whether the lecture is open
      */
@@ -209,7 +209,7 @@ public class LectureEntity {
         return this.open;
     }
 
-    /**.
+    /**
      * Compares the lecture to another object.
      * @param o object to compare to
      * @return true iff the other object is also a Lecture and has the same id. False otherwise
@@ -226,7 +226,7 @@ public class LectureEntity {
         return false;
     }
 
-    /**.
+    /**
      * The hash code of the Lecture object.
      * @return the hash code of the Lecture object
      */

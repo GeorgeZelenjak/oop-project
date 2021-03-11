@@ -18,7 +18,7 @@ public class QuestionService {
 
     Map<Long, Set<Long>> upvoted = new HashMap<>();
 
-    /**.
+    /**
      * Constructor for the question service.
      * @param questionRepository question repository
      * @param lectureRepository lecture repository
@@ -29,7 +29,7 @@ public class QuestionService {
         this.lectureRepository = lectureRepository;
     }
 
-    /**.
+    /**
      * Gets questions by lecture id.
      * @param lectureId the lecture id
      * @return the questions associated with the lecture id if found
@@ -38,10 +38,10 @@ public class QuestionService {
         return questionRepository.findAllByLectureId(lectureId);
     }
 
-    /**.
+    /**
      * Creates new question entity in the database.
      * @param q the question entity
-     * @return the question entity created, -1 if question with same id already existed
+     * @return the id of the question entity created, -1 if question with same id already existed
      */
     public long newQuestionEntity(QuestionEntity q) {
         if (questionRepository.findById(q.getId()).isPresent()) {
@@ -56,7 +56,7 @@ public class QuestionService {
         return q.getId();
     }
 
-    /**.
+    /**
      * Delete question from the database.
      * @param id the id of the question
      * @param personId the id of the person
@@ -99,7 +99,7 @@ public class QuestionService {
         return -1;
     }
 
-    /**.
+    /**
      * Edit any question (done by a moderator).
      * @param id the id of the question
      * @param moderatorKey the moderator key

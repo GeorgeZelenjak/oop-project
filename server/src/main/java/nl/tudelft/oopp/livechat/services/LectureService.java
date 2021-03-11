@@ -11,7 +11,7 @@ public class LectureService {
 
     final LectureRepository lectureRepository;
 
-    /**.
+    /**
      * Constructor for the lecture service.
      * @param lectureRepository lecture repository
      */
@@ -19,7 +19,7 @@ public class LectureService {
         this.lectureRepository = lectureRepository;
     }
 
-    /**.
+    /**
      * Gets lecture by id.
      * @param id the id of the lecture
      * @return the lecture if the id is found in the database
@@ -28,7 +28,7 @@ public class LectureService {
         return lectureRepository.findLectureEntityByUuid(id);
     }
 
-    /**.
+    /**
      * Creates a new lecture in the database.
      * @param name the name of the lecture
      * @param creatorName the name of the creator
@@ -40,7 +40,7 @@ public class LectureService {
         return n;
     }
 
-    /**.
+    /**
      * Deletes a lecture if the moderator key is found in the database.
      * @param id the id of the lecture
      * @param modkey the moderator key
@@ -57,7 +57,6 @@ public class LectureService {
 
     /**
      * Close a lecture for future uses.
-     *
      * @param id     the lecture id
      * @param modkey the modkey
      * @return 0 if successful, -1 otherwise
