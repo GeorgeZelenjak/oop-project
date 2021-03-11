@@ -44,6 +44,7 @@ public class QuestionEntity {
     @Column(name = "answerTime")
     private Timestamp answerTime;
 
+    @JsonIgnore
     @Column(name = "ownerId")
     private long ownerId;
 

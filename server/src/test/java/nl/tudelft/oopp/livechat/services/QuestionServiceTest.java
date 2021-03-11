@@ -61,7 +61,7 @@ class QuestionServiceTest {
 
     @Test
     @Order(12)
-    void newQuestionEntityUnsuccesfulTest() {
+    void newQuestionEntityUnsuccessfulTest() {
         long result = questionService.newQuestionEntity(q3);
         assertTrue(result > 0);
         q2.setId(q3.getId());

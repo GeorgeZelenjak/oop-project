@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
@@ -61,18 +60,17 @@ class QuestionControllerTest {
                         new Timestamp(System.currentTimeMillis()), 69);
         q1Json = objectMapper.writeValueAsString(q1);
         JsonNode node1 = objectMapper.readTree(q1Json);
-
         node1 = ((ObjectNode) node1).put("ownerId", q1.getOwnerId());
         q1Json = node1.toString();
-        q2Json = objectMapper.writeValueAsString(q2);
 
+        q2Json = objectMapper.writeValueAsString(q2);
         JsonNode node2 = objectMapper.readTree(q2Json);
         node2 = ((ObjectNode) node2).put("ownerId", q2.getOwnerId());
         q2Json = node2.toString();
     }
 
 
-    /**.
+    /**
      * A method to post questions.
      * @param question JSON representation of question entity
      * @return id of the new question
@@ -88,7 +86,7 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getContentAsString();
     }
 
-    /**.
+    /**
      * A method to get all the questions associated with the lecture.
      * @param lectureId id of the lecture
      * @return list of question entities associated with the lecture
@@ -103,7 +101,7 @@ class QuestionControllerTest {
                 new TypeReference<>(){});
     }
 
-    /**.
+    /**
      * A method to delete a question.
      * @param url url with question id and owner id/moderator id values
      * @return 0 if successful, otherwise -1
@@ -116,7 +114,7 @@ class QuestionControllerTest {
         return Integer.parseInt(result);
     }
 
-    /**.
+    /**
      * A method to edit questions.
      * @param bodyJson JSON representation of parameters used to edit
      * @return 0 if successful, -1 otherwise
@@ -133,7 +131,7 @@ class QuestionControllerTest {
         return Integer.parseInt(result);
     }
 
-    /**.
+    /**
      * A method to upvote a question.
      * @param qid id of the question
      * @param uid id of the user
@@ -148,7 +146,7 @@ class QuestionControllerTest {
     }
 
     @Test
-    void askQuestionTest() throws Exception {
+    void askQuestionSuccessfulTest() throws Exception {
         String qid1string = postQuestions(q1Json);
         long qid1 = Long.parseLong(qid1string);
         assertTrue(qid1 > 0);
@@ -156,9 +154,9 @@ class QuestionControllerTest {
 
     @Test
     void askQuestionUnsuccessfulTest() throws Exception {
-        String qid1string = postQuestions(q1Json);
-        long qid1 = Long.parseLong(qid1string);
-        assertTrue(qid1 > 0);
+        postQuestions(q1Json);
+
+        //check that 2 questions with the same id cannot bee asked
         q2.setId(q1.getId());
         String q2edited = objectMapper.writeValueAsString(q2);
         String result = postQuestions(q2edited);
@@ -305,33 +303,38 @@ class QuestionControllerTest {
     void editSuccessfulTest() throws Exception {
         long qid1 = Long.parseLong(postQuestions(q1Json));
 
-        String json = "{\n"
-                        + "\"id\":" + qid1 + ",\n"
-                        + "\"modkey\":" + "\"" +  lectureEntity1.getModkey().toString() + "\",\n"
-                        + "\"text\":" + "\"this is the new text\"" + ",\n"
-                        + "\"uid\":" + "0" + "\n"
-                        + "}";
+        ObjectNode node = objectMapper.createObjectNode();
+        node.put("id", qid1);
+        node.put("modkey", lectureEntity1.getModkey().toString());
+        node.put("text", "this is the new text");
+        node.put("uid", 42);
+        String json = node.toString();
+
         int result = editQuestion(json);
         assertEquals(0, result);
+
         QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+
         assertNotNull(question1after);
         assertEquals(question1after.getText(), "this is the new text");
-        assertEquals(question1after.getOwnerId(), 0);
+        assertEquals(0, question1after.getOwnerId());       //check that owner id is not exposed
     }
 
     @Test
     void editUnsuccessfulUnauthorizedTest() throws Exception {
         long qid1 = Long.parseLong(postQuestions(q1Json));
 
-        String json = "{\n"
-                + "\"id\":" + qid1 + ",\n"
-                + "\"modkey\":" + "\"" + lectureEntity2.getModkey().toString() + "\",\n"
-                + "\"text\":" + "\"this is the new text\"" + ",\n"
-                + "\"uid\":" + "12" + "\n"
-                + "}";
+        ObjectNode node = objectMapper.createObjectNode();
+        node.put("id", qid1);
+        node.put("modkey", lectureEntity2.getModkey().toString());
+        node.put("text", "this is the new text");
+        node.put("uid", 12);
+        String json = node.toString();
+
         int result = editQuestion(json);
         assertEquals(-1, result);
         QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+
         assertNotNull(question1after);
         assertEquals(question1after.getText(),
                 "What would you do if a seagull entered in your house?");
@@ -342,12 +345,13 @@ class QuestionControllerTest {
     void editUnsuccessfulBadRequestTest() throws Exception {
         long qid1 = Long.parseLong(postQuestions(q1Json));
 
-        String json = "{\n"
-                + "\"id\":" + qid1 + ",\n"
-                + "\"modkey\":" + "\"" + "oh yes i know this uuid" + "\",\n"
-                + "\"text\":" + "\"this is the new text\"" + ",\n"
-                + "\"uid\":" + "12" + "\n"
-                + "}";
+        ObjectNode node = objectMapper.createObjectNode();
+        node.put("id", qid1);
+        node.put("modkey", "oh yes i know this uuid");
+        node.put("text", "this is the new text");
+        node.put("uid", 12);
+        String json = node.toString();
+
         String result = this.mockMvc
                 .perform(put("/api/question/edit")
                         .contentType(APPLICATION_JSON)
@@ -356,6 +360,7 @@ class QuestionControllerTest {
                 .andExpect(status().is4xxClientError())
                 .andReturn().getResponse().getContentAsString();
         assertEquals("Invalid UUID", result);
+
         QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
         assertNotNull(question1after);
         assertEquals(question1after.getText(),
