@@ -6,8 +6,8 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.CreateLectureController">
     <children>
-        <TextField fx:id="enterLectureNameTextField" alignment="CENTER" layoutX="355.0" layoutY="159.0" prefHeight="94.0" prefWidth="290.0" promptText="Enter Room Name" styleClass="mainSceneEnterRoomCode" />
-        <Button fx:id="createLectureButton" layoutX="389.0" layoutY="355.0" mnemonicParsing="false" onAction="#createLecture" prefHeight="34.0" prefWidth="222.0" styleClass="mainSceneButton" text="Create Lecture">
+        <TextField fx:id="enterLectureNameTextField" alignment="CENTER" layoutX="355.0" layoutY="159.0" onAction="#createLectureEnter" prefHeight="94.0" prefWidth="290.0" promptText="Enter Room Name" styleClass="mainSceneEnterRoomCode" />
+        <Button fx:id="createLectureButton" layoutX="389.0" layoutY="355.0" mnemonicParsing="false" onAction="#createLectureButton" prefHeight="34.0" prefWidth="222.0" styleClass="mainSceneButton" text="Create Lecture">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
