@@ -14,15 +14,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 class LectureServiceTest {
 
     @Autowired
-    LectureService lectureService;
+    private LectureService lectureService;
 
     @Autowired
     private LectureRepository repository;
 
 
     @Test
-    void getLectureByIdTest() {
-        LectureEntity l = new LectureEntity("name", "creator_name");
+    void getLectureByIdSuccessfulTest() {
+        LectureEntity l = new LectureEntity("name", "Codrin Socol");
         repository.save(l);
 
         LectureEntity m = lectureService.getLectureByIdNoModkey(l.getUuid());
@@ -30,13 +30,22 @@ class LectureServiceTest {
     }
 
     @Test
+    void getLectureByIdUnsuccessfulTest() {
+        LectureEntity l = new LectureEntity("name", "Giulio Segalini");
+        repository.save(l);
+
+        LectureEntity m = lectureService.getLectureById(UUID.randomUUID());
+        assertNull(m);
+    }
+
+    @Test
     void newLectureTest() {
-        assertNotNull(lectureService.newLecture("name", "creator_name"));
+        assertNotNull(lectureService.newLecture("name", "Artjom Pugatsov"));
     }
 
     @Test
     void deleteSuccessfulTest() {
-        LectureEntity l = new LectureEntity("name", "creator_name");
+        LectureEntity l = new LectureEntity("name", "Tudor Popica");
         repository.save(l);
 
         lectureService.delete(l.getUuid(), l.getModkey());
@@ -47,7 +56,7 @@ class LectureServiceTest {
 
     @Test
     void deleteUnsuccessfulTest() {
-        LectureEntity l = new LectureEntity("name", "creator_name");
+        LectureEntity l = new LectureEntity("name", "Oleg Danilov");
         repository.save(l);
 
         lectureService.delete(l.getUuid(), UUID.randomUUID());
@@ -82,6 +91,35 @@ class LectureServiceTest {
 
         int result = lectureService.close(l.getUuid(),l.getModkey());
         assertEquals(-1, result);
+    }
+
+    @Test
+    void validateModeratorKeySuccessfulTest() {
+        LectureEntity l = new LectureEntity("name", "Jegor Zelenjak");
+        repository.save(l);
+
+        int res = lectureService.validateModerator(l.getUuid(), l.getModkey());
+        assertEquals(0, res);
+    }
+
+    @Test
+    void validateModeratorKeyUnsuccessfulTest() {
+        LectureEntity l = new LectureEntity("name", "Stefan Hugtenburg");
+        repository.save(l);
+
+        int res = lectureService.validateModerator(l.getUuid(), UUID.randomUUID());
+        assertEquals(-1, res);
+    }
+
+    @Test
+    void validateModeratorKeyNoLectureTest() {
+        LectureEntity l = new LectureEntity("name", "Andy Zaidman");
+        repository.save(l);
+
+        lectureService.delete(l.getUuid(), l.getModkey());
+
+        int res = lectureService.validateModerator(l.getUuid(), l.getModkey());
+        assertEquals(-1, res);
     }
 
 }

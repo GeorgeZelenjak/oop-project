@@ -1,6 +1,10 @@
-package nl.tudelft.oopp.livechat.communication;
+package nl.tudelft.oopp.livechat.servercommunication;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.Question;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -9,20 +13,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
-import com.google.gson.reflect.TypeToken;
-import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import nl.tudelft.oopp.livechat.data.Lecture;
-import nl.tudelft.oopp.livechat.data.QuestionEntity;
 
-/**
- * Class for communicating with server.
- */
-public class ServerCommunication {
+public class QuestionCommunication {
 
     //Client object for sending requests
     private static final HttpClient client = HttpClient.newBuilder().build();
@@ -32,81 +26,6 @@ public class ServerCommunication {
      */
     private static final Gson gson = new GsonBuilder().setDateFormat(
             "EEE, dd MMM yyyy HH:mm:ss zzz").excludeFieldsWithoutExposeAnnotation().create();
-
-
-    /**
-     * Creates a new lecture.
-     * @param name      A name of the lecture
-     * @return          Lecture which was created, null in case of errors
-    */
-    //  TODO: I AM PASSING A BLANK STRING IN THE POST METHOD, THIS SHOULD BE CHANGED
-    public static Lecture createLecture(String name) {
-
-        //Encoding the lecture name into url compatible format
-        name = URLEncoder.encode(name, StandardCharsets.UTF_8);
-
-        //Parameters for request
-        HttpRequest.BodyPublisher req = HttpRequest.BodyPublishers.ofString("");
-        String address = "http://localhost:8080/api/newLecture?name=";
-
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().POST(req)
-                .uri(URI.create(address + name)).build();
-        HttpResponse<String> response;
-
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        // Prints the status code if the communication
-        // if server gives an unexpected response
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-        }
-
-        //Return object from response
-        return gson.fromJson(response.body(), Lecture.class);
-
-    }
-
-    /**
-     * Sends an HTTP request to get lecture by uuid.
-     *
-     * @param lectureId The uuid of the lecture
-     * @return Lecture if the lecture exists on server or null if it doesn't
-     */
-    public static Lecture joinLectureById(String lectureId) {
-
-        //Encoding the lecture id into url compatible format
-        lectureId = URLEncoder.encode(lectureId, StandardCharsets.UTF_8);
-
-        //Parameter for request
-        String address = "http://localhost:8080/api/get/";
-
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create(address + lectureId)).build();
-        HttpResponse<String> response;
-
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return null;
-        }
-
-        //Return object from response
-        return gson.fromJson(response.body(), Lecture.class);
-    }
 
     /**
      * Sends an HTTP request to ask
@@ -130,7 +49,7 @@ public class ServerCommunication {
 
         //Parameters for question
         UUID lectureId = Lecture.getCurrentLecture().getUuid();
-        QuestionEntity question = new QuestionEntity(lectureId,questionText,  42);
+        Question question = new Question(lectureId,questionText,  42);
 
         //Parameters for request
         String json = gson.toJson(question);
@@ -164,33 +83,31 @@ public class ServerCommunication {
         return 1;
     }
 
-
     /**
-    * Fetch questions list.
-    *
-    * @return the list of questions related to current lecture,
-    *       null if something happens or no lecture exists
-    */
+     * Fetch questions list.
+     *
+     * @return the list of questions related to current lecture,
+     *       null if error occurs or no current lecture is set
+     */
+    public static List<Question> fetchQuestions() {
 
-    public static List<QuestionEntity> fetchQuestions() {
-
+        //Checking if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
             return null;
         }
 
+        //Parameters for request
+        String lectureId = URLEncoder.encode(
+                Lecture.getCurrentLecture().getUuid().toString(), StandardCharsets.UTF_8);
+        String address = "http://localhost:8080/api/question/fetch?lid=";
 
-        UUID lectureId = Lecture.getCurrentLecture().getUuid();
-
-
-        //String json = gson.toJson(question);
-        //HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
-
+        //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create("http://localhost:8080/api/question/fetch?lid=" + lectureId.toString())).build();
+                URI.create(address + lectureId)).build();
         HttpResponse<String> response;
 
-
+        //Catching error when communicating with server
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
@@ -202,10 +119,12 @@ public class ServerCommunication {
             System.out.println("Status: " + response.statusCode());
             return null;
         }
+
+        //Printing the response body for testing
         System.out.println("The questions were retrieved successfully! " + response.body());
 
-        Type listType = new TypeToken<List<QuestionEntity>>(){}.getType();
-
+        //Return object from response
+        Type listType = new TypeToken<List<Question>>(){}.getType();
         return gson.fromJson(response.body(), listType);
 
 

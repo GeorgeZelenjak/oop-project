@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.CreateLectureController">
+    <children>
+        <TextField fx:id="enterLectureNameTextField" alignment="CENTER" layoutX="355.0" layoutY="159.0" prefHeight="94.0" prefWidth="290.0" promptText="Enter Room Name" styleClass="mainSceneEnterRoomCode" />
+        <Button fx:id="createLectureButton" layoutX="389.0" layoutY="355.0" mnemonicParsing="false" onAction="#createLecture" prefHeight="34.0" prefWidth="222.0" styleClass="mainSceneButton" text="Create Lecture">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Button>
+        <Button fx:id="goToSettingsButton" layoutX="56.0" layoutY="603.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
+        <Button fx:id="goToHelpButton" layoutX="15.0" layoutY="603.0" mnemonicParsing="false" onAction="#goToUserManual" styleClass="mainSceneButton" text="?" />
+      <Text layoutX="347.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="Creating Lecture" textAlignment="CENTER" wrappingWidth="306.0">
+         <font>
+            <Font size="36.0" />
+         </font></Text>
+      <Button fx:id="goBackButton" layoutX="11.0" layoutY="12.0" mnemonicParsing="false" onAction="#goBack" prefHeight="34.0" prefWidth="122.0" styleClass="mainSceneButton" text="←Go Back">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+    </children>
+</AnchorPane>

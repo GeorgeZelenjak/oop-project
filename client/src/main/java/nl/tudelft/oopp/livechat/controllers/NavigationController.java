@@ -56,7 +56,7 @@ public class NavigationController {
      * @throws IOException the io exception
      */
     public void goToUserManual() throws IOException {
-        goToSceneHelper("/userManual.fxml");
+        goToSceneHelper("/fxml/userManualScene.fxml");
     }
 
     /**
@@ -65,7 +65,7 @@ public class NavigationController {
      * @throws IOException the io exception
      */
     public void goToMainScene() throws IOException {
-        goToSceneHelper("/mainScene.fxml");
+        goToSceneHelper("/fxml/mainScene.fxml");
     }
 
     /**
@@ -74,10 +74,26 @@ public class NavigationController {
      * @throws IOException the io exception
      */
     public void goToCreateRoomScene() throws IOException {
-        goToSceneHelper("/inputLectureParameters.fxml");
+        goToSceneHelper("/fxml/createLectureScene.fxml");
     }
 
+    /**
+     * Navigation to the create room scene.
+     *
+     * @throws IOException the io exception
+     */
+    public void goToJoinLecturePage() throws IOException {
+        goToSceneHelper("/fxml/joinLectureScene.fxml");
+    }
 
+    /**
+     * Navigation to the lecturer chat room scene.
+     *
+     * @throws IOException the io exception
+     */
+    public void goToLecturerChatPage() throws IOException {
+        goToSceneHelper("/fxml/lecturerChatScene.fxml");
+    }
 
     /**
      * Navigation to the user chat page.
@@ -85,7 +101,7 @@ public class NavigationController {
      * @throws IOException the io exception
      */
     public void goToUserChatPage() throws IOException {
-        goToSceneHelper("/userChatPage.fxml");
+        goToSceneHelper("/fxml/userChatScene.fxml");
     }
 
     private void goToSceneHelper(String javaFxFile) throws IOException {
@@ -100,7 +116,7 @@ public class NavigationController {
     }
 
     public void goToSettings() throws IOException {
-        goToSceneHelper("/settingsPage.fxml");
+        goToSceneHelper("/fxml/settingsScene.fxml");
     }
 
     /**

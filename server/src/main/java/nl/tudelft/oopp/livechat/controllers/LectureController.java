@@ -62,6 +62,15 @@ public class  LectureController {
     @PutMapping("/close")
     public int close(@RequestParam("lid") UUID lectureId, @RequestParam("modkey") UUID modkey) {
         return service.close(lectureId, modkey);
+    /**.
+     * Validate Endpoint.
+     * @param modkey the moderator key to authenticate
+     * @param id UUID of lecture
+     * @return 0 if moderator was validated successfully, -1 if not
+     */
+    @GetMapping("/validate/{id}/{modkey}")
+    public int validate(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) {
+        return service.validateModerator(id, modkey);
     }
 
     /**
@@ -76,5 +85,6 @@ public class  LectureController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid UUID");
     }
+
 
 }
