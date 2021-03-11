@@ -34,7 +34,7 @@ class LectureServiceTest {
         LectureEntity l = new LectureEntity("name", "Giulio Segalini");
         repository.save(l);
 
-        LectureEntity m = lectureService.getLectureById(UUID.randomUUID());
+        LectureEntity m = lectureService.getLectureByIdNoModkey(UUID.randomUUID());
         assertNull(m);
     }
 

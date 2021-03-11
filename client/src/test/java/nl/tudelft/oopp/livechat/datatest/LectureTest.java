@@ -13,7 +13,7 @@ public class LectureTest {
 
     @BeforeAll
     public static void createLecture() {
-        lecture = new Lecture(UUID.randomUUID(),"a secret", "History of zebras", "Yours truly");
+        lecture = new Lecture(UUID.randomUUID(),null, "History of zebras", "Yours truly");
     }
 
     @Test
@@ -23,7 +23,7 @@ public class LectureTest {
 
     @Test
     public void getModkeyTest() {
-        assertEquals("a secret", lecture.getModkey());
+        assertNull(lecture.getModkey());
     }
 
     @Test

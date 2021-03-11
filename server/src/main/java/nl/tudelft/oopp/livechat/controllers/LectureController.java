@@ -59,10 +59,12 @@ public class  LectureController {
      * @param modkey the moderator key to authenticate
      * @return 0 if the lecture has been closed successfully, -1 if not
      */
-    @PutMapping("/close")
-    public int close(@RequestParam("lid") UUID lectureId, @RequestParam("modkey") UUID modkey) {
+    @PutMapping("/close/{lid}/{modkey}")
+    public int close(@PathVariable("lid") UUID lectureId, @PathVariable("modkey") UUID modkey) {
         return service.close(lectureId, modkey);
-    /**.
+    }
+
+    /**
      * Validate Endpoint.
      * @param modkey the moderator key to authenticate
      * @param id UUID of lecture

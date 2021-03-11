@@ -8,6 +8,7 @@ import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class JoinLectureSceneController {
 
@@ -74,13 +75,15 @@ public class JoinLectureSceneController {
      * @throws IOException exception if something goes wrong
      */
     private void joinAsModerator() throws IOException {
+        String modkeyString = modkeyTextField.getText();
         boolean result = LectureCommunication
-                .validateModerator(enterLectureCodeTextField.getText(),modkeyTextField.getText());
+                .validateModerator(enterLectureCodeTextField.getText(),modkeyString);
 
         if (!result) {
             alert(Alert.AlertType.ERROR,"Invalid moderator key","Wrong moderator key!");
             return;
         }
+        Lecture.getCurrentLecture().setModkey(UUID.fromString(modkeyString));
         NavigationController.getCurrentController().goToLecturerChatPage();
     }
 

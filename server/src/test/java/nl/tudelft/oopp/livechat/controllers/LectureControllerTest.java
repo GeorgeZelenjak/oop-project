@@ -10,8 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -219,7 +217,7 @@ class LectureControllerTest {
         String uuid = lectureEntity.getUuid().toString();
         String modkey = lectureEntity.getModkey().toString();
 
-        int m = closeLecture("/api/close?lid=" + uuid + "&modkey=" + modkey);
+        int m = closeLecture("/api/close/" + uuid + "/" + modkey);
         assertEquals(0, m);
 
         String lecture = getLecture("/api/get/" + uuid);
@@ -234,7 +232,7 @@ class LectureControllerTest {
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
 
-        int m = closeLecture("/api/close?lid=" + uuid + "&modkey=" + UUID.randomUUID().toString());
+        int m = closeLecture("/api/close/" + uuid + "/" + UUID.randomUUID().toString());
         assertEquals(-1, m);
     }
 
@@ -261,8 +259,8 @@ class LectureControllerTest {
 
         deleteLecture("/api/delete/" + uuid + "/" + lectureEntity.getModkey().toString());
 
-        int m = closeLecture("/api/close?lid=" + uuid
-                + "&modkey=" + lectureEntity.getModkey().toString());
+        int m = closeLecture("/api/close/" + uuid
+                + "/" + lectureEntity.getModkey().toString());
         assertEquals(-1, m);
     }
 

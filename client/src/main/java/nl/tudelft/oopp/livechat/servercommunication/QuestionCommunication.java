@@ -131,32 +131,6 @@ public class QuestionCommunication {
     }
 
 
-    /**
-     * Close lecture.
-     *
-     * @return integer representing servers response
-     *      or the lack of it
-     *       1 - Question has been successfully asked
-     *      -1 - Current lecture not set
-     *      -2 - No response from server
-     *      -3 - Unexpected response from server
-     */
-    public static int closeLecture() {
-
-        if (Lecture.getCurrentLecture() == null) {
-            System.out.println("You are not connected to a lecture!");
-            return -1;
-        }
-
-        UUID lectureId = Lecture.getCurrentLecture().getUuid();
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create("http://localhost:8080/api/close?lid="
-                        + lectureId.toString()
-                        + "&modkey="))
-                .build();
-        HttpResponse<String> response;
-        return -1;
-    }
 
 
 
