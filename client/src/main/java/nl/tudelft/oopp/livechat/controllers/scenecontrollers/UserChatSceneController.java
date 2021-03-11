@@ -126,7 +126,7 @@ public class UserChatSceneController implements Initializable {
 
         int ret = QuestionCommunication.askQuestion(inputQuestionTextTextField.getText());
         //inputQuestion.setText("");
-
+        System.out.println(ae);
 
 
         System.out.println(ret);

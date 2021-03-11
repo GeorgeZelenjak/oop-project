@@ -1,11 +1,7 @@
 package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import nl.tudelft.oopp.livechat.controllers.NavigationController;
-
 import java.io.IOException;
+import nl.tudelft.oopp.livechat.controllers.NavigationController;
 
 
 /**

@@ -19,7 +19,7 @@ public class NavigationController {
 
     private static NavigationController currentController;
 
-    private Stack<Scene> backStack;
+    private final Stack<Scene> backStack;
 
 
     /**
