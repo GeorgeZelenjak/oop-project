@@ -32,8 +32,6 @@ import java.util.ResourceBundle;
  */
 public class UserChatSceneController implements Initializable {
 
-
-
     @FXML
     private TextField inputQuestionTextTextField;
     @FXML
@@ -48,7 +46,6 @@ public class UserChatSceneController implements Initializable {
      * @param location location of current scene
      * @param resourceBundle resource bundle
      */
-
     public void initialize(URL location, ResourceBundle resourceBundle) {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         lectureNameText.setTextAlignment(TextAlignment.CENTER);
@@ -105,7 +102,6 @@ public class UserChatSceneController implements Initializable {
         }
     }
 
-
     /**
      * Go to user manual.
      *
@@ -113,7 +109,6 @@ public class UserChatSceneController implements Initializable {
      */
     public void goToUserManual() throws IOException {
         NavigationController.getCurrentController().goToUserManual();
-
     }
 
     /**
@@ -141,7 +136,6 @@ public class UserChatSceneController implements Initializable {
         //inputQuestion.setText("");
         System.out.println(ae);
 
-
         System.out.println(ret);
         if (ret <= 0) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -155,11 +149,10 @@ public class UserChatSceneController implements Initializable {
         Question question = new Question(
                 Lecture.getCurrentLecture().getUuid(), inputQuestionTextTextField.getText(), 0);
 
-
         //questionPaneListView.getItems().add(question.getText());
 
+        inputQuestionTextTextField.clear();
+
         return (ret);
-
     }
-
 }

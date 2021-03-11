@@ -47,13 +47,31 @@ public class JoinLectureSceneController {
         Lecture currentLecture = Lecture.getCurrentLecture();
 
         if (currentLecture == null) {
-            alert(Alert.AlertType.ERROR, "Error", "Current lecture not set");
+            alert(Alert.AlertType.ERROR, "Error", "Lecture was not found.");
 
         } else if (!modkeyTextField.getText().equals("")) {
             joinAsModerator();
         } else {
             joinAsStudent();
         }
+    }
+
+    /**
+     * Go to lecture by pressing the button.
+     *
+     * @throws IOException the io exception
+     */
+    public void goToLectureButton() throws IOException {
+        goToLecture();
+    }
+
+    /**
+     * Go to lecture by pressing enter.
+     *
+     * @throws IOException the io exception
+     */
+    public void goToLectureEnter() throws IOException {
+        goToLecture();
     }
 
     /**
