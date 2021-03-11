@@ -1,6 +1,7 @@
 package nl.tudelft.oopp.livechat.communication;
 
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -11,8 +12,7 @@ import org.mockserver.model.HttpResponse;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
 
-
-public class ServerCommunicationTest {
+public class LectureCommunicationTest {
 
     public static MockServerClient mockServer;
 
@@ -63,43 +63,25 @@ public class ServerCommunicationTest {
 
     @Test
     public void testCreateLectureNotNull() {
-        assertNotNull(ServerCommunication.createLecture("name"));
+        assertNotNull(LectureCommunication.createLecture("name"));
     }
 
     @Test
     public void testLectureNameMatches() {
-        Lecture res = ServerCommunication.createLecture("name");
+        Lecture res = LectureCommunication.createLecture("name");
         assertEquals("name", res.getName());
     }
 
     @Test
-    public void testAskQuestionLectureExists() {
-
-        Lecture res = ServerCommunication.createLecture("name");
-        Lecture.setCurrentLecture(res);
-
-        assertEquals(1,ServerCommunication.askQuestion("Is there anybody?"));
-
-    }
-
-    @Test
-    public void testAskQuestionLectureNotExists() {
-
-        Lecture.setCurrentLecture(null);
-        assertEquals(-1,ServerCommunication.askQuestion("Is there anybody?"));
-
-    }
-
-    @Test
     public void joinLectureByIdLectureExists() {
-        Lecture res = ServerCommunication.joinLectureById("0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
+        Lecture res = LectureCommunication.joinLectureById("0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
         assertEquals("0ee81155-96fc-4045-bfe9-dd7ca714b5e8",res.getUuid().toString());
 
     }
 
     @Test
     public void joinLectureByIdNotExist() {
-        Lecture res = ServerCommunication
+        Lecture res = LectureCommunication
                 .joinLectureById("zebra");
         assertNull(res);
     }
@@ -114,6 +96,4 @@ public class ServerCommunicationTest {
         mockServer.stop();
 
     }
-
-
 }

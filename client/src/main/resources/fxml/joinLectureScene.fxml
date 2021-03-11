@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.JoinLecturePageController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.JoinLectureSceneController">
    <children>
       <CheckBox fx:id="modCheckBox" layoutX="439.0" layoutY="267.0" mnemonicParsing="false" onAction="#onCheckBoxAction" text="Are you a moderator?" />
       <Button fx:id="joinLecture" layoutX="393.0" layoutY="368.0" mnemonicParsing="false" onAction="#goToLecture" prefHeight="34.0" prefWidth="230.0" styleClass="mainSceneButton" text="Join Lecture" />

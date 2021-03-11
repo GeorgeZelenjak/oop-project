@@ -1,16 +1,15 @@
-package nl.tudelft.oopp.livechat.controllers;
+package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-import nl.tudelft.oopp.livechat.communication.ServerCommunication;
+import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 import java.io.IOException;
 
-public class JoinLecturePageController {
+public class JoinLectureSceneController {
 
 
     @FXML
@@ -40,7 +39,7 @@ public class JoinLecturePageController {
     }
 
     private void joinAsStudent() throws IOException {
-        Lecture.setCurrentLecture(ServerCommunication.joinLectureById(enterRoomCode.getText()));
+        Lecture.setCurrentLecture(LectureCommunication.joinLectureById(enterRoomCode.getText()));
         Lecture currentLecture = Lecture.getCurrentLecture();
 
         if (currentLecture == null) {
@@ -69,7 +68,7 @@ public class JoinLecturePageController {
     }
 
     private void joinAsModerator() throws IOException {
-        boolean result = ServerCommunication
+        boolean result = LectureCommunication
                 .validateModerator(enterRoomCode.getText(),modKeyField.getText());
 
 
@@ -83,7 +82,7 @@ public class JoinLecturePageController {
             return;
         }
 
-        Lecture.setCurrentLecture(ServerCommunication.joinLectureById(enterRoomCode.getText()));
+        Lecture.setCurrentLecture(LectureCommunication.joinLectureById(enterRoomCode.getText()));
         Lecture currentLecture = Lecture.getCurrentLecture();
 
         if (currentLecture == null) {

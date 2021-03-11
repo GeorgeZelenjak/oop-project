@@ -1,19 +1,19 @@
 package nl.tudelft.oopp.livechat.datatest;
 
-import nl.tudelft.oopp.livechat.data.QuestionEntity;
+import nl.tudelft.oopp.livechat.data.Question;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.UUID;
 
-public class QuestionEntityTest {
+public class QuestionTest {
 
-    public static QuestionEntity question;
+    public static Question question;
 
     @BeforeAll
     public static void createLecture() {
-        question = new QuestionEntity(UUID.randomUUID(), "How do you do, fellow kids?", 42);
+        question = new Question(UUID.randomUUID(), "How do you do, fellow kids?", 42);
     }
 
     @Test

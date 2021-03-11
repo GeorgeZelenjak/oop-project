@@ -5,14 +5,14 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.LecturerChatPageController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.LecturerChatSceneController">
    <children>
       <Pane prefHeight="650.0" prefWidth="200.0" style="-fx-background-color: rgba(14, 114, 237, 0.45);">
          <children>
             <Button layoutX="16.0" layoutY="217.0" mnemonicParsing="false" styleClass="mainSceneButton" text="Show Participants" />
             <Button fx:id="settings" layoutX="16.0" layoutY="292.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Settings" />
             <Button fx:id="userManual" layoutX="16.0" layoutY="337.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="User Manual" />
-            <Button id="leaveLecture" layoutX="16.0" layoutY="564.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@Styles.css" text="Leave Lecture" />
+            <Button id="leaveLecture" layoutX="16.0" layoutY="564.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="Leave Lecture" />
             <Line endX="100.0" layoutX="100.0" layoutY="72.0" opacity="0.5" startX="-100.0" stroke="#1a75ff" />
             <Text layoutX="16.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Name" wrappingWidth="168.0703125">
                <font>

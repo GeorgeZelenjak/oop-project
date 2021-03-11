@@ -1,14 +1,13 @@
-package nl.tudelft.oopp.livechat.controllers;
+package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import nl.tudelft.oopp.livechat.communication.ServerCommunication;
+import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 
 public class CreateRoomController {
@@ -29,7 +28,7 @@ public class CreateRoomController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Creating lecture");
         alert.setHeaderText(null);
-        Lecture lecture = ServerCommunication
+        Lecture lecture = LectureCommunication
                 .createLecture(enterRoomName.getText());
         //Lecture.setCurrentLecture(lecture); //Sets static current lecture object
         String ret;

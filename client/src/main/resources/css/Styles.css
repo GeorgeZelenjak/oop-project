@@ -37,16 +37,16 @@
     }
 
     .settingsButton{
-        -fx-background-image: url(/Gear.png) ;
+        -fx-background-image: url(/images/Gear.png) ;
         -fx-background-color: Transparent;
     }
 
     .settingsButton:hover{
-        -fx-background-image: url(Gear_gray.png);
+        -fx-background-image: url(../images/Gear_gray.png);
     }
 
     .sidebarButton{
-        -fx-background-image: url(/threeLines.png);
+        -fx-background-image: url(/images/threeLines.png);
         -fx-background-color: Transparent;
     }
 

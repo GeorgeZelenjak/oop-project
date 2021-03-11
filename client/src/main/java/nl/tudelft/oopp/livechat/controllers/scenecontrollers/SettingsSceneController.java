@@ -1,6 +1,8 @@
-package nl.tudelft.oopp.livechat.controllers;
+package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
-public class SettingsPageController {
+import nl.tudelft.oopp.livechat.controllers.NavigationController;
+
+public class SettingsSceneController {
 
 
     /**

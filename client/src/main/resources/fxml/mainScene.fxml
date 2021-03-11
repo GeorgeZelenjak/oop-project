@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.MainSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.MainSceneController">
    <children>
       <Button fx:id="joinRoom" layoutX="387.0" layoutY="260.0" mnemonicParsing="false" onAction="#goToLecture" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Join Room" />
       <Text layoutX="387.0" layoutY="133.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="App Name" textAlignment="CENTER" wrappingWidth="227.0">

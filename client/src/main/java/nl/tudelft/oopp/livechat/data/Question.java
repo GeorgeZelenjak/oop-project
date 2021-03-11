@@ -8,13 +8,13 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class QuestionEntity {
+public class Question {
 
     /**
      * The class that represents a question entity.
      */
 
-    private static List<QuestionEntity> currentQuestions;
+    private static List<Question> currentQuestions;
 
     @Expose(serialize = false, deserialize = true)
     private long id;
@@ -47,7 +47,7 @@ public class QuestionEntity {
      * .
      * Empty constructor to create a question entity.
      */
-    public QuestionEntity() {
+    public Question() {
     }
 
     /**
@@ -57,7 +57,7 @@ public class QuestionEntity {
      * @param text      the text
      * @param ownerId   the owner id
      */
-    public QuestionEntity(UUID lectureId, String text,  long ownerId) {
+    public Question(UUID lectureId, String text,  long ownerId) {
         this.lectureId = lectureId;
         this.text = text;
         this.ownerId = ownerId;
@@ -165,8 +165,8 @@ public class QuestionEntity {
         if (this == o) {
             return true;
         }
-        if (o instanceof QuestionEntity) {
-            QuestionEntity q = (QuestionEntity) o;
+        if (o instanceof Question) {
+            Question q = (Question) o;
             return this.id == q.id;
         }
         return false;

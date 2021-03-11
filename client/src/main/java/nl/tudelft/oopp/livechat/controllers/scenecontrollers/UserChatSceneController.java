@@ -1,4 +1,4 @@
-package nl.tudelft.oopp.livechat.controllers;
+package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -13,9 +13,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
-import nl.tudelft.oopp.livechat.communication.ServerCommunication;
+import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
-import nl.tudelft.oopp.livechat.data.QuestionEntity;
+import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * The type User chat page controller.
  */
-public class UserChatPageController implements Initializable {
+public class UserChatSceneController implements Initializable {
 
 
 
@@ -61,11 +62,11 @@ public class UserChatPageController implements Initializable {
      */
     public void fetchQuestions() {
 
-        List<QuestionEntity> list = ServerCommunication.fetchQuestions();
+        List<Question> list = QuestionCommunication.fetchQuestions();
         if (list == null)
             return;
         List<String> listString = list.stream()
-                .map(QuestionEntity::getText).collect(Collectors.toList());
+                .map(Question::getText).collect(Collectors.toList());
         questionPane.getItems().clear();
         questionPane.getItems().addAll(listString);
     }
@@ -123,7 +124,7 @@ public class UserChatPageController implements Initializable {
     @FXML
     public int askQuestion(ActionEvent ae) {
 
-        int ret = ServerCommunication.askQuestion(inputQuestion.getText());
+        int ret = QuestionCommunication.askQuestion(inputQuestion.getText());
         //inputQuestion.setText("");
 
 
@@ -138,7 +139,7 @@ public class UserChatPageController implements Initializable {
             alert.showAndWait();
         }
 
-        QuestionEntity question = new QuestionEntity(
+        Question question = new Question(
                 Lecture.getCurrentLecture().getUuid(), inputQuestion.getText(), 0);
 
 
