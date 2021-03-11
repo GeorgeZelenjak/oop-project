@@ -11,75 +11,33 @@ import java.io.IOException;
 
 public class JoinLectureSceneController {
 
-
     @FXML
-    private TextField modkeyTextField;
+    private TextField enterNameTextField;
 
     @FXML
     private TextField enterLectureCodeTextField;
 
+    @FXML
+    private TextField modkeyTextField;
 
 
+    /**
+     * Toggles the visibility of the modKeyTextField.
+     */
     public void onCheckBoxAction() {
         modkeyTextField.setVisible(!modkeyTextField.isVisible());
     }
 
     /**
-     * Go to lecture.
-     *
-     * @throws IOException the io exception
+     * Go to the lecture if successful.
+     * @throws IOException exception when something goes wrong
      */
     public void goToLecture() throws IOException {
-
-        if (modkeyTextField.getText().equals("")) {
-            joinAsStudent();
-        } else {
-            joinAsModerator();
-        }
-    }
-
-    private void joinAsStudent() throws IOException {
-        Lecture.setCurrentLecture(
-                LectureCommunication.joinLectureById(enterLectureCodeTextField.getText()));
-        Lecture currentLecture = Lecture.getCurrentLecture();
-
-        if (currentLecture == null) {
-
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error: 404");
-            alert.setHeaderText(null);
-
-            alert.setContentText("Invalid Lecture! (404)");
-            alert.showAndWait();
-        } else if (!currentLecture.isOpen()) {
-
-            //Creating lecture and translating it to String
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Lecture not open yet!");
-            alert.setHeaderText(null);
-
-            alert.setContentText("This lecture has not started yet!");
-            alert.showAndWait();
-        } else {
-
-            //Navigating to the scene
-            NavigationController.getCurrentController().goToUserChatPage();
-
-        }
-    }
-
-    private void joinAsModerator() throws IOException {
-        boolean result = LectureCommunication
-                .validateModerator(enterLectureCodeTextField.getText(),modkeyTextField.getText());
-
-
-        if (!result) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Invalid moderator key");
-            alert.setHeaderText(null);
-
-            alert.setContentText("Wrong moderator key!");
-            alert.showAndWait();
+        if (enterNameTextField.getText().equals("")) {
+            alert(Alert.AlertType.WARNING, "No name entered", "Please enter the name!");
+            return;
+        } else if (enterLectureCodeTextField.getText().equals("")) {
+            alert(Alert.AlertType.WARNING, "No lecture id entered", "Please enter the lecture id!");
             return;
         }
 
@@ -88,28 +46,57 @@ public class JoinLectureSceneController {
         Lecture currentLecture = Lecture.getCurrentLecture();
 
         if (currentLecture == null) {
+            alert(Alert.AlertType.ERROR, "Error", "Current lecture not set");
 
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error: 404");
-            alert.setHeaderText(null);
-
-            alert.setContentText("Invalid Lecture! (404)");
-            alert.showAndWait();
-        } else if (!currentLecture.isOpen()) {
-
-            //Creating lecture and translating it to String
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Lecture not open yet!");
-            alert.setHeaderText(null);
-
-            alert.setContentText("This lecture has not started yet!");
-            alert.showAndWait();
+        } else if (!modkeyTextField.getText().equals("")) {
+            joinAsModerator();
         } else {
+            joinAsStudent();
+        }
+    }
 
-            //Navigating to the scene
-            NavigationController.getCurrentController().goToLecturerChatPage();
+    /**
+     * Join lecture as a student.
+     * @throws IOException exception if something goes wrong
+     */
+    private void joinAsStudent() throws IOException {
+        if (!Lecture.getCurrentLecture().isOpen()) {
+            alert(Alert.AlertType.INFORMATION,
+                    "Lecture not open yet!","This lecture has not started yet!");
+        } else {
+            NavigationController.getCurrentController().goToUserChatPage();
 
         }
+    }
+
+    /**
+     * Join lecture as a moderator.
+     * @throws IOException exception if something goes wrong
+     */
+    private void joinAsModerator() throws IOException {
+        boolean result = LectureCommunication
+                .validateModerator(enterLectureCodeTextField.getText(),modkeyTextField.getText());
+
+        if (!result) {
+            alert(Alert.AlertType.ERROR,"Invalid moderator key","Wrong moderator key!");
+            return;
+        }
+        NavigationController.getCurrentController().goToLecturerChatPage();
+    }
+
+    /**
+     * A method that displays an alert.
+     * @param type the type of alert to display
+     * @param title the title of alert to display
+     * @param content the content of alert to display
+     */
+    private void alert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        //alert.setHeaderText(null);
+
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
 
