@@ -191,7 +191,7 @@ public class QuestionEntity {
     }
 
     /**
-     * Gets the answer time of the question
+     * Gets the answer time of the question.
      * @return the answer time of the question if it is answered, null otherwise
      */
     public Timestamp getAnswerTime() {

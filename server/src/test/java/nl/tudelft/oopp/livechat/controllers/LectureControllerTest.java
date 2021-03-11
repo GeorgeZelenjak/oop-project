@@ -1,12 +1,7 @@
 package nl.tudelft.oopp.livechat.controllers;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +9,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest
@@ -90,6 +90,15 @@ class LectureControllerTest {
     }
 
     @Test
+    void createLectureModkeyTest() throws Exception {
+        objectMapper.registerModule(new JavaTimeModule());
+        String json = createLecture("/api/newLecture?name=test2");
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
+        assertNotNull(lectureEntity);
+        assertNotNull(lectureEntity.getModkey());
+    }
+
+    @Test
     void getLecturesByIDTest() throws Exception {
         objectMapper.registerModule(new JavaTimeModule());
 
@@ -98,9 +107,13 @@ class LectureControllerTest {
 
         String uuid = lectureEntity.getUuid().toString();
         String m = getLecture("/api/get/" + uuid);
-        assertEquals(json, m);
+        assertNotEquals(json, m);
+
+        LectureEntity gotBack = objectMapper.readValue(m, LectureEntity.class);
         assertEquals(lectureEntity.getName(), "test1");
         assertEquals(lectureEntity.getCreatorName(), "placeholder");
+        assertNull(gotBack.getModkey());
+        assertEquals(gotBack, lectureEntity);
     }
 
     @Test
@@ -193,7 +206,8 @@ class LectureControllerTest {
 
         deleteLecture("/api/delete/" + uuid + "/" + lectureEntity.getModkey().toString());
 
-        int m = closeLecture("/api/close?lid=" + uuid + "&modkey=" + lectureEntity.getModkey().toString());
+        int m = closeLecture("/api/close?lid=" + uuid
+                + "&modkey=" + lectureEntity.getModkey().toString());
         assertEquals(-1, m);
     }
 }

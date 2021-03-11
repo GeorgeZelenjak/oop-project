@@ -24,7 +24,16 @@ public class LectureService {
      * @param id the id of the lecture
      * @return the lecture if the id is found in the database
      */
-    public LectureEntity getLectureById(UUID id) {
+    public LectureEntity getLectureByIdNoModkey(UUID id) {
+        LectureEntity toSend =  lectureRepository.findLectureEntityByUuid(id);
+        if (toSend == null) {
+            return null;
+        }
+        toSend.setModkeyToNull();
+        return toSend;
+    }
+
+    private LectureEntity getLectureById(UUID id) {
         return lectureRepository.findLectureEntityByUuid(id);
     }
 

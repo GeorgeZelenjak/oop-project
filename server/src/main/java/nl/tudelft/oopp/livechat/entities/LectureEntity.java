@@ -1,5 +1,7 @@
 package nl.tudelft.oopp.livechat.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.UUID;
@@ -18,7 +20,7 @@ public class LectureEntity {
     private final UUID uuid;
 
     @Column(name = "modkey")
-    private final UUID modkey;
+    private UUID modkey;
 
     @Column(name = "name")
     private String name;
@@ -96,6 +98,14 @@ public class LectureEntity {
      */
     public UUID getModkey() {
         return modkey;
+    }
+
+    /**
+     * Set modkey to null.
+     * this is done only on in-memory objects and not in database
+     */
+    public void setModkeyToNull() {
+        this.modkey = null;
     }
 
     /**

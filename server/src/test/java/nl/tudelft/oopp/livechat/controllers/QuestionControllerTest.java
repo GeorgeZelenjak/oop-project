@@ -334,7 +334,6 @@ class QuestionControllerTest {
         int result = editQuestion(json);
         assertEquals(-1, result);
         QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
-
         assertNotNull(question1after);
         assertEquals(question1after.getText(),
                 "What would you do if a seagull entered in your house?");

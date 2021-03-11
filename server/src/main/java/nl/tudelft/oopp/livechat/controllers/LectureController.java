@@ -29,7 +29,7 @@ public class  LectureController {
      */
     @GetMapping("/get/{id}")
     public LectureEntity getLecturesByID(@PathVariable("id") UUID id) {
-        return service.getLectureById(id);
+        return service.getLectureByIdNoModkey(id);
     }
 
     /**
