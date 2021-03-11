@@ -19,20 +19,20 @@ public class CreateLectureController {
     /**
      * Creates the lecture, shows alert with lecture and creator names
      * and returns to the main scene.
-     *
      * @throws IOException the io exception
      */
     public void createLecture() throws IOException {
-
-        //Creating lecture and translating it to String
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Creating lecture");
         alert.setHeaderText(null);
         Lecture lecture = LectureCommunication
                 .createLecture(enterLectureNameTextField.getText());
-        //Lecture.setCurrentLecture(lecture); //Sets static current lecture object
+
         String ret;
         try {
+            if (lecture == null) {
+                throw new IllegalArgumentException("Lecture is null!");
+            }
             ret = lecture.toString();
         } catch (Exception e) {
             ret = "";
@@ -41,11 +41,9 @@ public class CreateLectureController {
         alert.setContentText(ret);
         alert.showAndWait();
 
-        //Navigation back to the main scene
-        NavigationController.getCurrentController().goToMainScene();
-
-        System.out.println(lecture.toString());
-
+        NavigationController.getCurrentController().goToLecturerChatPage();
+        Lecture.setCurrentLecture(lecture);
+        System.out.println(lecture);
     }
 
     /**
