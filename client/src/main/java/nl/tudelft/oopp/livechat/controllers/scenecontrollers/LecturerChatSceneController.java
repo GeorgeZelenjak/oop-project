@@ -59,9 +59,9 @@ public class LecturerChatSceneController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             NavigationController.getCurrentController().goBack();
+            NavigationController.getCurrentController().goBack();
         }
     }
-
 
     /**
      * Go to user manual.
