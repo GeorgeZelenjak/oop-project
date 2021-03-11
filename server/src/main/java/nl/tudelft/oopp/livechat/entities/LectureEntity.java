@@ -104,8 +104,8 @@ public class LectureEntity {
      * Set modkey to null.
      * this is done only on in-memory objects and not in database
      */
-    public void setModkeyToNull() {
-        this.modkey = null;
+    public void setModkey(UUID modkey) {
+        this.modkey = modkey;
     }
 
     /**

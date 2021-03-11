@@ -29,7 +29,7 @@ public class LectureService {
         if (toSend == null) {
             return null;
         }
-        toSend.setModkeyToNull();
+        toSend.setModkey(null);
         return toSend;
     }
 

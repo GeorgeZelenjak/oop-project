@@ -37,6 +37,7 @@ public class Lecture {
     @Expose(serialize = true, deserialize = true)
     private boolean open = true;
 
+    @Expose(serialize = true, deserialize = true)
     private UUID modkey;
 
 
