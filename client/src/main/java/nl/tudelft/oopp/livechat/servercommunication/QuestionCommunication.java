@@ -8,9 +8,11 @@ import nl.tudelft.oopp.livechat.data.Question;
 
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
@@ -85,28 +87,27 @@ public class QuestionCommunication {
      * Fetch questions list.
      *
      * @return the list of questions related to current lecture,
-     *       null if something happens or no lecture exists
+     *       null if error occurs or no current lecture is set
      */
-
     public static List<Question> fetchQuestions() {
 
+        //Checking if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
             return null;
         }
 
+        //Parameters for request
+        String lectureId = URLEncoder.encode(
+                Lecture.getCurrentLecture().getUuid().toString(), StandardCharsets.UTF_8);
+        String address = "http://localhost:8080/api/question/fetch?lid=";
 
-        UUID lectureId = Lecture.getCurrentLecture().getUuid();
-
-
-        //String json = gson.toJson(question);
-        //HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
-
+        //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create("http://localhost:8080/api/question/fetch?lid=" + lectureId.toString())).build();
+                URI.create(address + lectureId)).build();
         HttpResponse<String> response;
 
-
+        //Catching error when communicating with server
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
@@ -118,10 +119,12 @@ public class QuestionCommunication {
             System.out.println("Status: " + response.statusCode());
             return null;
         }
+
+        //Printing the response body for testing
         System.out.println("The questions were retrieved successfully! " + response.body());
 
+        //Return object from response
         Type listType = new TypeToken<List<Question>>(){}.getType();
-
         return gson.fromJson(response.body(), listType);
 
 
