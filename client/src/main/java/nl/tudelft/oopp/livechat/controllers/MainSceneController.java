@@ -2,6 +2,7 @@ package nl.tudelft.oopp.livechat.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import nl.tudelft.oopp.livechat.communication.ServerCommunication;
 import nl.tudelft.oopp.livechat.data.Lecture;
@@ -16,6 +17,8 @@ public class MainSceneController {
 
     @FXML
     TextField enterRoomCode;
+    @FXML
+    Button  joinRoom;
 
     /**
      * Navigates to lecture creation scene.
@@ -32,8 +35,11 @@ public class MainSceneController {
      *
      * @throws IOException - in case Stage throws an exception
      */
-    public void goToLecture() throws IOException {
 
+    public void goToLecture() throws IOException {
+        NavigationController.getCurrentController().goToJoinLecturePage();
+
+        /*
         Lecture.setCurrentLecture(ServerCommunication.joinLectureById(enterRoomCode.getText()));
         Lecture currentLecture = Lecture.getCurrentLecture();
 
@@ -60,7 +66,9 @@ public class MainSceneController {
             NavigationController.getCurrentController().goToUserChatPage();
 
 
-        }
+        }*/
+
+
     }
 
     /**

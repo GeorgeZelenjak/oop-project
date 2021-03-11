@@ -56,17 +56,14 @@ public class LectureService {
     }
 
     /**
-     * Close a lecture for future uses.
-     *
-     * @param id     the lecture id
-     * @param modkey the modkey
+     * Checks if moderator.
+     * @param id the id of the lecture
+     * @param modkey the moderator key
      * @return 0 if successful, -1 otherwise
      */
-    public int close(UUID id, UUID modkey) {
-        LectureEntity toClose = getLectureById(id);
-        if (toClose != null && toClose.getModkey().equals(modkey)) {
-            toClose.close();
-            lectureRepository.save(toClose);
+    public int validateModerator(UUID id, UUID modkey) {
+        LectureEntity toDelete = getLectureById(id);
+        if (toDelete != null && toDelete.getModkey().equals(modkey)) {
             return 0;
         }
         return -1;

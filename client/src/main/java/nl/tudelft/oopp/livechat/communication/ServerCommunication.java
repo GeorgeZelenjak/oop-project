@@ -109,6 +109,43 @@ public class ServerCommunication {
     }
 
     /**
+     * Validate moderator boolean.
+     *
+     * @param lectureId the lecture id
+     * @param modKey    the mod key
+     * @return the boolean
+     */
+    public static boolean validateModerator(String lectureId, String modKey) {
+
+        //Encoding the lecture id and modKey into url compatible format
+        lectureId = URLEncoder.encode(lectureId, StandardCharsets.UTF_8);
+        modKey = URLEncoder.encode(modKey, StandardCharsets.UTF_8);
+
+        //Parameter for request
+        String address = "http://localhost:8080/api/validate/";
+
+        //Creating request and defining response
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(
+                URI.create(address + lectureId + "/" + modKey)).build();
+        HttpResponse<String> response;
+
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        if (response.statusCode() != 200) {
+            System.out.println("Status: " + response.statusCode());
+            return false;
+        }
+
+        return response.body().equals("0");
+
+    }
+
+    /**
      * Sends an HTTP request to ask
      * a question with the current LectureID.
      *

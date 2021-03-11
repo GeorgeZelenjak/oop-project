@@ -10,8 +10,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/api")
-public class  LectureController {
+public class LectureController {
 
     private final LectureService service;
 
@@ -27,7 +26,7 @@ public class  LectureController {
      * GET Endpoint to retrieve a lecture.
      * @return selected lecture
      */
-    @GetMapping("/get/{id}")
+    @GetMapping("/api/get/{id}")
     public LectureEntity getLecturesByID(@PathVariable("id") UUID id) {
         return service.getLectureById(id);
     }
@@ -37,7 +36,7 @@ public class  LectureController {
      * @param name the name of the lecture
      * @return a new lecture entity
      */
-    @PostMapping("/newLecture")
+    @PostMapping("/api/newLecture")
     public LectureEntity newLecture(@RequestParam String name) {
         return service.newLecture(name, "placeholder"); //these are placeholders
     }
@@ -48,14 +47,20 @@ public class  LectureController {
      * @param id UUID of lecture
      * @return 0 if lecture is deleted successfully, -1 if not
      */
-    @DeleteMapping("/delete/{id}/{modkey}")
+    @DeleteMapping("/api/delete/{id}/{modkey}")
     public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) {
         return service.delete(id, modkey);
     }
 
-    @PutMapping("/close")
-    public int close(@RequestParam("lid") UUID lectureId, @RequestParam("modkey") UUID modkey) {
-        return service.close(lectureId, modkey);
+    /**.
+     * Validate Endpoint.
+     * @param modkey the moderator key to authenticate
+     * @param id UUID of lecture
+     * @return 0 if moderator was validated successfully, -1 if not
+     */
+    @GetMapping("/api/validate/{id}/{modkey}")
+    public int validate(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id){
+        return service.validateModerator(id, modkey);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -64,5 +69,6 @@ public class  LectureController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid "
                 + "UUID");
     }
+
 
 }
