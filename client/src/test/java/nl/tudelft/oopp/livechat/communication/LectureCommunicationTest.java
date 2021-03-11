@@ -1,6 +1,9 @@
 package nl.tudelft.oopp.livechat.communication;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -11,8 +14,7 @@ import org.mockserver.model.HttpResponse;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
 
-
-public class ServerCommunicationTest {
+public class LectureCommunicationTest {
 
     public static MockServerClient mockServer;
 
@@ -23,16 +25,18 @@ public class ServerCommunicationTest {
     @BeforeAll
     public static void startServer() {
 
+        ObjectNode node = new ObjectMapper().createObjectNode();
+        node.put("uuid","0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
+        node.put("modkey","08843278-e8b8-4d51-992f-48c6aee44e27");
+        node.put("name","name");
+        node.put("creatorName","placeholder");
+        node.put("slowerCount","0");
+        node.put("frequency","60");
+        node.put("startTime","2021-03-04T15:49:27.962+0000");
+        node.put("slowerCount","0");
+        node.put("open","true");
 
-
-        String jsonResponseLecture = "{\"uuid\":\"0ee81155-96fc-4045-bfe9-dd7ca714b5e8\",\"modkey\""
-                + ":\"08843278-e8b8-4d51-992f-48c6aee44e27\""
-                + ",\"name\":\"name\",\"creatorName\""
-                + ":\"placeholder\",\"fasterCount\":0,"
-                + "\"slowerCount\":0,\"frequency\""
-                + ":60,\"startTime\":\"2021-03-04T15:49:"
-                + "27.962+0000\",\"open\":true}";
-
+        String jsonResponseLecture = node.toString();
         final String  responseQuestionBody = "5397545054934456486";
 
 
@@ -55,65 +59,53 @@ public class ServerCommunicationTest {
                         .withBody(responseQuestionBody)
                         .withHeader("Content-Type","application/json"));
 
-
-
-
-
+        mockServer.when(request().withMethod("GET")
+                .withPath("/api/validate/112/123"))
+                .respond(HttpResponse.response().withStatusCode(200)
+                .withBody("0"));
     }
 
     @Test
     public void testCreateLectureNotNull() {
-        assertNotNull(ServerCommunication.createLecture("name"));
+        assertNotNull(LectureCommunication.createLecture("name"));
     }
 
     @Test
     public void testLectureNameMatches() {
-        Lecture res = ServerCommunication.createLecture("name");
+        Lecture res = LectureCommunication.createLecture("name");
+        assertNotNull(res);
         assertEquals("name", res.getName());
     }
 
     @Test
-    public void testAskQuestionLectureExists() {
-
-        Lecture res = ServerCommunication.createLecture("name");
-        Lecture.setCurrentLecture(res);
-
-        assertEquals(1,ServerCommunication.askQuestion("Is there anybody?"));
-
-    }
-
-    @Test
-    public void testAskQuestionLectureNotExists() {
-
-        Lecture.setCurrentLecture(null);
-        assertEquals(-1,ServerCommunication.askQuestion("Is there anybody?"));
-
-    }
-
-    @Test
     public void joinLectureByIdLectureExists() {
-        Lecture res = ServerCommunication.joinLectureById("0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
-        assertEquals("0ee81155-96fc-4045-bfe9-dd7ca714b5e8",res.getUuid().toString());
+        Lecture res = LectureCommunication.joinLectureById("0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
+        assertNotNull(res);
+        assertEquals("0ee81155-96fc-4045-bfe9-dd7ca714b5e8", res.getUuid().toString());
 
     }
 
     @Test
     public void joinLectureByIdNotExist() {
-        Lecture res = ServerCommunication
-                .joinLectureById("zebra");
+        Lecture res = LectureCommunication.joinLectureById("zebra");
         assertNull(res);
     }
 
+    @Test
+    public void validateModeratorPass() {
+        assertTrue(LectureCommunication.validateModerator("112","123"));
+    }
+
+    @Test
+    public void validateModeratorFail() {
+        assertFalse(LectureCommunication.validateModerator("not zebra","Zebra"));
+    }
 
     /**
      * Stops server.
      */
     @AfterAll
     public static void stopServer() {
-
         mockServer.stop();
-
     }
-
-
 }

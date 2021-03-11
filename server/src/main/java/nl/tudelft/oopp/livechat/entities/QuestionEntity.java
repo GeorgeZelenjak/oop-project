@@ -5,6 +5,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.DynamicUpdate;
 
 
@@ -206,6 +209,7 @@ public class QuestionEntity {
      * Gets the id of the owner of the question.
      * @return the id of the owner of the question.
      */
+    @JsonIgnore
     public long getOwnerId() {
         return ownerId;
     }
@@ -214,6 +218,7 @@ public class QuestionEntity {
      * Sets the id of the new owner of the question.
      * @param ownerId the id of the new owner of the question
      */
+    @JsonProperty
     public void setOwnerId(long ownerId) {
         this.ownerId = ownerId;
     }

@@ -1,22 +1,15 @@
-package nl.tudelft.oopp.livechat.controllers;
+package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import nl.tudelft.oopp.livechat.controllers.NavigationController;
 
 import java.io.IOException;
 import java.util.Optional;
 
-public class LecturerChatPageController {
-
-    @FXML
-    private Button backButton;
-    @FXML
-    private Button userManual;
-    @FXML
-    private Button settings;
-
+public class LecturerChatSceneController {
 
     /**
      * Go back to main.

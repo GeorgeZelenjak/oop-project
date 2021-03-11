@@ -52,10 +52,23 @@ public class LectureController {
         return service.delete(id, modkey);
     }
 
+    /**.
+     * Validate Endpoint.
+     * @param modkey the moderator key to authenticate
+     * @param id UUID of lecture
+     * @return 0 if moderator was validated successfully, -1 if not
+     */
+    @GetMapping("/api/validate/{id}/{modkey}")
+    public int validate(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) {
+        return service.validateModerator(id, modkey);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid "
-                + "UUID");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Invalid UUID");
     }
+
+
 }

@@ -47,6 +47,10 @@ public class QuestionService {
         if (questionRepository.findById(q.getId()).isPresent()) {
             return -1;
         }
+        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
+        if (!lecture.isOpen()) {
+            return -1;
+        }
         questionRepository.save(q);
         upvoted.put(q.getId(), new HashSet<>());
         return q.getId();
@@ -61,6 +65,10 @@ public class QuestionService {
     public int deleteQuestion(long id, long personId) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
         if (q == null || q.getOwnerId() != personId) {
+            return -1;
+        }
+        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
+        if (!lecture.isOpen()) {
             return -1;
         }
         questionRepository.deleteById(id);
@@ -80,7 +88,7 @@ public class QuestionService {
             return -1;
         }
         LectureEntity l = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        if (l == null) {
+        if (l == null || !l.isOpen()) {
             return -1;
         }
         if (l.getModkey().equals(modkey)) {
@@ -106,7 +114,7 @@ public class QuestionService {
         }
         QuestionEntity q = optQuestion.get();
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        if (lecture == null) {
+        if (lecture == null || !lecture.isOpen()) {
             return -1;
         }
         UUID modkey = UUID.fromString(moderatorKey);
@@ -128,6 +136,12 @@ public class QuestionService {
     public int upvote(long id, long userId) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
         if (q == null) return -1;
+
+        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
+        if (!lecture.isOpen()) {
+            return -1;
+        }
+
         Set<Long> voters = this.upvoted.get(q.getId());
         if (!voters.contains(userId)) {
             q.vote();

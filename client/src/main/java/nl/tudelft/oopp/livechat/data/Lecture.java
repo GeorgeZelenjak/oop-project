@@ -170,7 +170,7 @@ public class Lecture {
     public String toString() {
         return "You created the lecture " + name + " by " + creatorName
                 + " with ID: " + uuid + ". Share this id with students,"
-                + " so they could join your lecture.";
+                + " so they could join your lecture, with modKey:" + getModkey();
     }
 
 

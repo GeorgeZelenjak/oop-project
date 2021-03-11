@@ -182,7 +182,7 @@ class QuestionControllerTest {
         postQuestions(q2Json);
 
         int result = deleteQuestion("/api/question/delete?qid=" + qid1
-                                                + "&uid=" + q1.getOwnerId());
+                                                + "&uid=" + "0");
         assertEquals(0, result);
 
         List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
@@ -297,14 +297,14 @@ class QuestionControllerTest {
                         + "\"id\":" + qid1 + ",\n"
                         + "\"modkey\":" + "\"" +  lectureEntity1.getModkey().toString() + "\",\n"
                         + "\"text\":" + "\"this is the new text\"" + ",\n"
-                        + "\"uid\":" + "12" + "\n"
+                        + "\"uid\":" + "0" + "\n"
                         + "}";
         int result = editQuestion(json);
         assertEquals(0, result);
         QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
         assertNotNull(question1after);
         assertEquals(question1after.getText(), "this is the new text");
-        assertEquals(question1after.getOwnerId(), 12);
+        assertEquals(question1after.getOwnerId(), 0);
     }
 
     @Test

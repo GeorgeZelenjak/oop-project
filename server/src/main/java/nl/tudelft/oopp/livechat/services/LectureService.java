@@ -54,4 +54,18 @@ public class LectureService {
         }
         return -1;
     }
+
+    /**
+     * Checks if moderator.
+     * @param id the id of the lecture
+     * @param modkey the moderator key
+     * @return 0 if successful, -1 otherwise
+     */
+    public int validateModerator(UUID id, UUID modkey) {
+        LectureEntity toDelete = getLectureById(id);
+        if (toDelete != null && toDelete.getModkey().equals(modkey)) {
+            return 0;
+        }
+        return -1;
+    }
 }
