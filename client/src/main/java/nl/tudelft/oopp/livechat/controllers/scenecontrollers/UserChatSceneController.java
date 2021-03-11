@@ -3,27 +3,28 @@ package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.data.QuestionCell;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
+import javafx.util.Callback;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 
 /**
@@ -36,9 +37,11 @@ public class UserChatSceneController implements Initializable {
     @FXML
     private TextField inputQuestionTextTextField;
     @FXML
-    private ListView<String> questionPaneListView;
+    private ListView<Question> questionPaneListView;
     @FXML
     private Text lectureNameText;
+    @FXML
+    ObservableList<Question> observableList = FXCollections.observableArrayList();
 
     /**
      * method that runs when the scene is first initialized.
@@ -65,10 +68,20 @@ public class UserChatSceneController implements Initializable {
         List<Question> list = QuestionCommunication.fetchQuestions();
         if (list == null)
             return;
-        List<String> listString = list.stream()
-                .map(Question::getText).collect(Collectors.toList());
+
+        observableList.setAll(list);
+        questionPaneListView.setItems(observableList);
+
+        questionPaneListView.setCellFactory(
+                new Callback<ListView<Question>, ListCell<Question>>() {
+                    @Override
+            public ListCell<Question> call(ListView<Question> listView) {
+                        return new QuestionCell();
+                    }
+                });
+
         questionPaneListView.getItems().clear();
-        questionPaneListView.getItems().addAll(listString);
+        questionPaneListView.getItems().addAll(list);
     }
 
     /**
@@ -143,7 +156,7 @@ public class UserChatSceneController implements Initializable {
                 Lecture.getCurrentLecture().getUuid(), inputQuestionTextTextField.getText(), 0);
 
 
-        questionPaneListView.getItems().add(question.getText());
+        //questionPaneListView.getItems().add(question.getText());
 
         return (ret);
 
