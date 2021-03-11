@@ -1,28 +1,17 @@
-package nl.tudelft.oopp.livechat.communication;
+package nl.tudelft.oopp.livechat.servercommunication;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import nl.tudelft.oopp.livechat.data.Lecture;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.UUID;
-import com.google.gson.reflect.TypeToken;
-import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import nl.tudelft.oopp.livechat.data.Lecture;
-import nl.tudelft.oopp.livechat.data.QuestionEntity;
 
-/**
- * Class for communicating with server.
- */
-public class ServerCommunication {
+public class LectureCommunication {
 
     //Client object for sending requests
     private static final HttpClient client = HttpClient.newBuilder().build();
@@ -33,12 +22,11 @@ public class ServerCommunication {
     private static final Gson gson = new GsonBuilder().setDateFormat(
             "EEE, dd MMM yyyy HH:mm:ss zzz").excludeFieldsWithoutExposeAnnotation().create();
 
-
     /**
      * Creates a new lecture.
      * @param name      A name of the lecture
      * @return          Lecture which was created, null in case of errors
-    */
+     */
     //  TODO: I AM PASSING A BLANK STRING IN THE POST METHOD, THIS SHOULD BE CHANGED
     public static Lecture createLecture(String name) {
 
@@ -144,112 +132,5 @@ public class ServerCommunication {
         return response.body().equals("0");
 
     }
-
-    /**
-     * Sends an HTTP request to ask
-     * a question with the current LectureID.
-     *
-     * @param questionText the question text
-     * @return integer representing servers response
-     *      or the lack of it
-     *       1 - Question has been successfully asked
-     *      -1 - Current lecture not set
-     *      -2 - No response from server
-     *      -3 - Unexpected response from server
-     */
-    public static int askQuestion(String questionText) {
-
-        //Checking if current lecture has been set
-        if (Lecture.getCurrentLecture() == null) {
-            System.out.println("You are not connected to a lecture!");
-            return -1;
-        }
-
-        //Parameters for question
-        UUID lectureId = Lecture.getCurrentLecture().getUuid();
-        QuestionEntity question = new QuestionEntity(lectureId,questionText,  42);
-
-        //Parameters for request
-        String json = gson.toJson(question);
-        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
-        String address = "http://localhost:8080/api/question/ask";
-        String headerName = "Content-Type";
-        String headerValue = "application/json";
-
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().POST(req).uri(
-                URI.create(address)).setHeader(headerName, headerValue).build();
-        HttpResponse<String> response;
-
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("There was an exception!");
-            e.printStackTrace();
-            return -2;
-        }
-
-        //Unexpected response
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return -3;
-        }
-
-        //Question has been asked successfully
-        System.out.println("The question was asked successfully! " + response.body());
-        return 1;
-    }
-
-
-    /**
-    * Fetch questions list.
-    *
-    * @return the list of questions related to current lecture,
-    *       null if something happens or no lecture exists
-    */
-
-    public static List<QuestionEntity> fetchQuestions() {
-
-        if (Lecture.getCurrentLecture() == null) {
-            System.out.println("You are not connected to a lecture!");
-            return null;
-        }
-
-
-        UUID lectureId = Lecture.getCurrentLecture().getUuid();
-
-
-        //String json = gson.toJson(question);
-        //HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
-
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create("http://localhost:8080/api/question/fetch?lid=" + lectureId.toString())).build();
-        HttpResponse<String> response;
-
-
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("There was an exception!");
-            e.printStackTrace();
-            return null;
-        }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return null;
-        }
-        System.out.println("The questions were retrieved successfully! " + response.body());
-
-        Type listType = new TypeToken<List<QuestionEntity>>(){}.getType();
-
-        return gson.fromJson(response.body(), listType);
-
-
-    }
-
-
-
-
 
 }
