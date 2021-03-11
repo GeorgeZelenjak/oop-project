@@ -1,5 +1,7 @@
 package nl.tudelft.oopp.livechat.communication;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import org.junit.jupiter.api.AfterAll;
@@ -24,14 +26,18 @@ public class LectureCommunicationTest {
     public static void startServer() {
 
 
+        ObjectNode node = new ObjectMapper().createObjectNode();
+        node.put("uuid","0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
+        node.put("modkey","08843278-e8b8-4d51-992f-48c6aee44e27");
+        node.put("name","name");
+        node.put("creatorName","placeholder");
+        node.put("slowerCount","0");
+        node.put("frequency","60");
+        node.put("startTime","2021-03-04T15:49:27.962+0000");
+        node.put("slowerCount","0");
+        node.put("open","true");
 
-        String jsonResponseLecture = "{\"uuid\":\"0ee81155-96fc-4045-bfe9-dd7ca714b5e8\",\"modkey\""
-                + ":\"08843278-e8b8-4d51-992f-48c6aee44e27\""
-                + ",\"name\":\"name\",\"creatorName\""
-                + ":\"placeholder\",\"fasterCount\":0,"
-                + "\"slowerCount\":0,\"frequency\""
-                + ":60,\"startTime\":\"2021-03-04T15:49:"
-                + "27.962+0000\",\"open\":true}";
+        String jsonResponseLecture = node.toString();
 
         final String  responseQuestionBody = "5397545054934456486";
 
