@@ -26,7 +26,7 @@ class LectureControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    /**.
+    /**
      * A method to create a lecture.
      * @param url url with lecture name
      * @return JSON representation of the new lecture entity
@@ -40,7 +40,7 @@ class LectureControllerTest {
                 .getContentAsString();
     }
 
-    /**.
+    /**
      * A method to get a lecture.
      * @param url url with lecture id
      * @return JSON representation of the new lecture entity
@@ -54,9 +54,9 @@ class LectureControllerTest {
                 .getContentAsString();
     }
 
-    /**.
+    /**
      * A method to delete a lecture.
-     * @param url url with lecture id and moderator id values
+     * @param url url with lecture id and moderator key values
      * @return 0 if successful, otherwise -1
      * @throws Exception if something goes wrong
      */
@@ -69,6 +69,12 @@ class LectureControllerTest {
         return Integer.parseInt(m);
     }
 
+    /**
+     * A method to close a lecture.
+     * @param url url with lecture id and moderator key values
+     * @return 0 if successful, otherwise -1
+     * @throws Exception if something goes wrong
+     */
     int closeLecture(String url) throws Exception {
         String m = this.mockMvc.perform(put(url))
                 .andExpect(status().isOk())
@@ -176,6 +182,19 @@ class LectureControllerTest {
         String lecture = getLecture("/api/get/" + uuid);
         LectureEntity l = objectMapper.readValue(lecture, LectureEntity.class);
         assertTrue(l.isOpen());
+    }
+
+    @Test
+    void closeLectureNoLectureTest() throws Exception {
+        String json = createLecture("/api/newLecture?name=test4");
+
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
+        String uuid = lectureEntity.getUuid().toString();
+
+        deleteLecture("/api/delete/" + uuid + "/" + lectureEntity.getModkey().toString());
+
+        int m = closeLecture("/api/close?lid=" + uuid + "&modkey=" + lectureEntity.getModkey().toString());
+        assertEquals(-1, m);
     }
 }
 

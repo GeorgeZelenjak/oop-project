@@ -74,4 +74,14 @@ class LectureServiceTest {
         assertTrue(l1.isOpen());
     }
 
+    @Test
+    void closeLectureNoLectureTest() {
+        LectureEntity l = new LectureEntity("name", "creator_name");
+        repository.save(l);
+        lectureService.delete(l.getUuid(), l.getModkey());
+
+        int result = lectureService.close(l.getUuid(),l.getModkey());
+        assertEquals(-1, result);
+    }
+
 }
