@@ -63,6 +63,11 @@ public class LectureCommunicationTest {
                 .withPath("/api/validate/112/123"))
                 .respond(HttpResponse.response().withStatusCode(200)
                 .withBody("0"));
+
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/close/12/69"))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0"));
     }
 
     @Test
@@ -99,6 +104,17 @@ public class LectureCommunicationTest {
     @Test
     public void validateModeratorFail() {
         assertFalse(LectureCommunication.validateModerator("not zebra","Zebra"));
+    }
+
+    @Test
+    public void closeLecturePass() {
+        Lecture.setCurrentLecture(new Lecture());
+        assertTrue(LectureCommunication.closeLecture("12","69"));
+    }
+
+    @Test
+    public void closeLectureFail() {
+        assertFalse(LectureCommunication.closeLecture("112","123"));
     }
 
     /**

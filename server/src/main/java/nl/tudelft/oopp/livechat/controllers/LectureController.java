@@ -10,11 +10,12 @@ import java.util.UUID;
 
 
 @RestController
-public class LectureController {
+@RequestMapping("/api")
+public class  LectureController {
 
     private final LectureService service;
 
-    /**.
+    /**
      * Constructor for the lecture controller.
      * @param service lecture service
      */
@@ -22,50 +23,67 @@ public class LectureController {
         this.service = service;
     }
 
-    /**.
+    /**
      * GET Endpoint to retrieve a lecture.
      * @return selected lecture
      */
-    @GetMapping("/api/get/{id}")
+    @GetMapping("/get/{id}")
     public LectureEntity getLecturesByID(@PathVariable("id") UUID id) {
-        return service.getLectureById(id);
+        return service.getLectureByIdNoModkey(id);
     }
 
-    /**.
+    /**
      * POST Endpoint to create a new lecture.
      * @param name the name of the lecture
      * @return a new lecture entity
      */
-    @PostMapping("/api/newLecture")
+    @PostMapping("/newLecture")
     public LectureEntity newLecture(@RequestParam String name) {
         return service.newLecture(name, "placeholder"); //these are placeholders
     }
 
-    /**.
+    /**
      * DELETE Endpoint to delete a lecture with the specified id iff the moderator key is correct.
      * @param modkey the moderator key to authenticate
      * @param id UUID of lecture
-     * @return 0 if lecture is deleted successfully, -1 if not
+     * @return 0 if the lecture has been deleted successfully, -1 if not
      */
-    @DeleteMapping("/api/delete/{id}/{modkey}")
+    @DeleteMapping("/delete/{id}/{modkey}")
     public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) {
         return service.delete(id, modkey);
     }
 
-    /**.
+    /**
+     * PUT endpoint to close a lecture with the specified id iff the moderator key is correct.
+     * @param lectureId UUID of lecture
+     * @param modkey the moderator key to authenticate
+     * @return 0 if the lecture has been closed successfully, -1 if not
+     */
+    @PutMapping("/close/{lid}/{modkey}")
+    public int close(@PathVariable("lid") UUID lectureId, @PathVariable("modkey") UUID modkey) {
+        return service.close(lectureId, modkey);
+    }
+
+    /**
      * Validate Endpoint.
      * @param modkey the moderator key to authenticate
      * @param id UUID of lecture
      * @return 0 if moderator was validated successfully, -1 if not
      */
-    @GetMapping("/api/validate/{id}/{modkey}")
+    @GetMapping("/validate/{id}/{modkey}")
     public int validate(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) {
         return service.validateModerator(id, modkey);
     }
 
+    /**
+     * Exception handler for requests containing invalid uuids.
+     * @param exception exception that has occurred
+     * @return response object with 400 Bad Request status code and 'Invalid UUID' message
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
+        System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid UUID");
     }

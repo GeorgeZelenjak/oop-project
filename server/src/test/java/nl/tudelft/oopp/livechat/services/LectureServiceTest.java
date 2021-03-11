@@ -25,7 +25,7 @@ class LectureServiceTest {
         LectureEntity l = new LectureEntity("name", "Codrin Socol");
         repository.save(l);
 
-        LectureEntity m = lectureService.getLectureById(l.getUuid());
+        LectureEntity m = lectureService.getLectureByIdNoModkey(l.getUuid());
         assertEquals(l, m);
     }
 
@@ -34,7 +34,7 @@ class LectureServiceTest {
         LectureEntity l = new LectureEntity("name", "Giulio Segalini");
         repository.save(l);
 
-        LectureEntity m = lectureService.getLectureById(UUID.randomUUID());
+        LectureEntity m = lectureService.getLectureByIdNoModkey(UUID.randomUUID());
         assertNull(m);
     }
 
@@ -50,7 +50,7 @@ class LectureServiceTest {
 
         lectureService.delete(l.getUuid(), l.getModkey());
 
-        LectureEntity m = lectureService.getLectureById(l.getUuid());
+        LectureEntity m = lectureService.getLectureByIdNoModkey(l.getUuid());
         assertNull(m);
     }
 
@@ -61,8 +61,36 @@ class LectureServiceTest {
 
         lectureService.delete(l.getUuid(), UUID.randomUUID());
 
-        LectureEntity m = lectureService.getLectureById(l.getUuid());
+        LectureEntity m = lectureService.getLectureByIdNoModkey(l.getUuid());
         assertNotNull(m);
+    }
+
+    @Test
+    void closeLectureTest() {
+        LectureEntity l = new LectureEntity("name", "creator_name");
+        repository.save(l);
+        lectureService.close(l.getUuid(), l.getModkey());
+        LectureEntity l1 = lectureService.getLectureByIdNoModkey(l.getUuid());
+        assertFalse(l1.isOpen());
+    }
+
+    @Test
+    void closeLectureUnsuccessfulTest() {
+        LectureEntity l = new LectureEntity("name", "creator_name");
+        repository.save(l);
+        lectureService.close(l.getUuid(), UUID.randomUUID());
+        LectureEntity l1 = lectureService.getLectureByIdNoModkey(l.getUuid());
+        assertTrue(l1.isOpen());
+    }
+
+    @Test
+    void closeLectureNoLectureTest() {
+        LectureEntity l = new LectureEntity("name", "creator_name");
+        repository.save(l);
+        lectureService.delete(l.getUuid(), l.getModkey());
+
+        int result = lectureService.close(l.getUuid(),l.getModkey());
+        assertEquals(-1, result);
     }
 
     @Test
@@ -93,4 +121,5 @@ class LectureServiceTest {
         int res = lectureService.validateModerator(l.getUuid(), l.getModkey());
         assertEquals(-1, res);
     }
+
 }

@@ -92,7 +92,7 @@ public class QuestionCommunicationTest {
     @Test
     public void testFetchQuestionsCurrentLectureNotNull() {
         Lecture.setCurrentLecture(new Lecture(uuid,
-                "MAMA", "TEST", "NOT TEST"));
+                null, "TEST", "NOT TEST"));
         assertNotNull(QuestionCommunication.fetchQuestions());
     }
 

@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
@@ -60,18 +60,21 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(12)
-    void newQuestionEntityUnsuccesfulTest() {
+    @Order(2)
+    void newQuestionEntityUnsuccessfulTest() {
         long result = questionService.newQuestionEntity(q3);
         assertTrue(result > 0);
         q2.setId(q3.getId());
+
         long result2 = questionService.newQuestionEntity(q2);
         assertEquals(-1, result2);
-        assertEquals(q3, questionRepository.findById(q2.getId()).get());
+        Optional<QuestionEntity> q = questionRepository.findById(q2.getId());
+        assertTrue(q.isPresent());
+        assertEquals(q3, q.get());
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     void getQuestionsByLectureIdTest() {
         String lid = q1.getLectureId().toString();
         questionService.newQuestionEntity(q3);
@@ -85,48 +88,70 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(3)
-    void deleteQuestionSuccessfulTest() {
-        long pid = 1L;
-        long qid = q1.getId();
-        int result = questionService.deleteQuestion(qid, pid);
-        assertEquals(result, 0);
-    }
-
-    @Test
     @Order(4)
-    void deleteQuestionUnsuccessfulTest() {
-        long pid = 2L;
-        long qid = q1.getId();
-        int result = questionService.deleteQuestion(qid, pid);
-        assertNotEquals(result, 0);
+    void getQuestionsByLectureIdUnsuccessfulTest() {
+        List<QuestionEntity> qs = questionService.getQuestionsByLectureId(UUID.randomUUID());
+        assertTrue(qs.isEmpty());
     }
 
     @Test
     @Order(5)
+    void deleteQuestionSuccessfulTest() {
+        questionService.newQuestionEntity(q3);
+        long pid = 1L;
+        long qid = q1.getId();
+        int result = questionService.deleteQuestion(qid, pid);
+        assertEquals(result, 0);
+
+        Optional<QuestionEntity> q = questionRepository.findById(qid);
+        assertTrue(q.isEmpty());
+    }
+
+    @Test
+    @Order(6)
+    void deleteQuestionUnsuccessfulTest() {
+        questionService.newQuestionEntity(q3);
+        long pid = 2L;
+        long qid = q1.getId();
+        int result = questionService.deleteQuestion(qid, pid);
+        assertNotEquals(result, 0);
+
+        Optional<QuestionEntity> q = questionRepository.findById(qid);
+        assertTrue(q.isPresent());
+    }
+
+    @Test
+    @Order(7)
     void deleteModeratorQuestionSuccessfulTest() {
         String modKey = l1.getModkey().toString();
         long qid = q1.getId();
         int result = questionService.deleteModeratorQuestion(qid, UUID.fromString(modKey));
         assertEquals(0, result);
+
+        Optional<QuestionEntity> q = questionRepository.findById(qid);
+        assertTrue(q.isEmpty());
     }
 
     @Test
-    @Order(6)
+    @Order(8)
     void deleteModeratorQuestionUnsuccessfulTest() {
         String modKey = l2.getModkey().toString();
         long qid = q1.getId();
         int result = questionService.deleteModeratorQuestion(qid, UUID.fromString(modKey));
         assertNotEquals(0, result);
+
+        Optional<QuestionEntity> q = questionRepository.findById(qid);
+        assertTrue(q.isPresent());
     }
 
     @Test
-    @Order(7)
+    @Order(9)
     void editQuestionSuccessfulTest() {
         long qid = q1.getId();
         long newOwnerId = 42L;
         String modKey = l1.getModkey().toString();
         String newText = "new text)))";
+
         int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
         q1 = questionRepository.findById(qid).orElse(null);
         assertEquals(0, result);
@@ -134,51 +159,71 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(8)
-    void editQuestionUnsuccessfulTest() {
+    @Order(10)
+    void editQuestionInvalidModkeyTest() {
         long qid = q1.getId();
         long newOwnerId = 42L;
         String modKey = "l2.getModkey().toString()";
         String newText = "new text)))";
+
         assertThrows(IllegalArgumentException.class,
             () -> questionService.editQuestion(qid, modKey, newText, newOwnerId));
     }
 
     @Test
-    @Order(9)
-    void editQuestionUnsuccessful2Test() {
+    @Order(11)
+    void editQuestionUnsuccessfulTest() {
         long qid = q1.getId();
         long newOwnerId = 42L;
+        String oldText = q1.getText();
         String modKey = l2.getModkey().toString();
         String newText = "new text)))";
+
         int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
         assertEquals(-1, result);
+
+        QuestionEntity q = questionRepository.findById(qid).orElse(null);
+        assertNotNull(q);
+        assertEquals(oldText, q.getText());
     }
 
     @Test
-    @Order(10)
+    @Order(12)
     void upvoteSuccessfulTest() {
         long qid = q1.getId();
         long uid = 27L;
         final int oldVotes = q1.getVotes();
+
         final int result = questionService.upvote(qid, uid);
         q1 = questionRepository.findById(qid).orElse(null);
-        if (q1 == null) fail();
+        assertNotNull(q1);
         assertEquals(0, result);
         assertEquals(oldVotes + 1, q1.getVotes());
     }
 
     @Test
-    @Order(11)
+    @Order(13)
     void upvoteUnsuccessfulTest() {
         long qid = q1.getId();
         long uid = 27L;
         final int oldVotes = q1.getVotes();
+
         questionService.upvote(qid, uid);
         final int result = questionService.upvote(qid, uid);
         q1 = questionRepository.findById(qid).orElse(null);
-        if (q1 == null) fail();
+        assertNotNull(q1);
         assertEquals(-1, result);
         assertEquals(oldVotes + 1, q1.getVotes());
+    }
+
+    @Test
+    @Order(14)
+    void askQuestionWhenLectureIsClosed() {
+        LectureEntity l = lectureRepository.findLectureEntityByUuid(q1.getLectureId());
+        l.close();
+        lectureRepository.save(l);
+
+        long result = questionService.newQuestionEntity(q3);        //q3 belongs to lecture 1
+        assertEquals(-1, result);
     }
 }

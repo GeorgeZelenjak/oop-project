@@ -1,10 +1,7 @@
 package nl.tudelft.oopp.livechat.controllers;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import org.junit.jupiter.api.Test;
@@ -13,6 +10,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest
@@ -39,7 +39,7 @@ class LectureControllerTest {
                 .getContentAsString();
     }
 
-    /**
+    /**.
      * A method to get a lecture.
      * @param url url with lecture id
      * @return JSON representation of the new lecture entity
@@ -69,6 +69,21 @@ class LectureControllerTest {
     }
 
     /**
+     * A method to close a lecture.
+     * @param url url with lecture id and moderator key values
+     * @return 0 if successful, otherwise -1
+     * @throws Exception if something goes wrong
+     */
+    int closeLecture(String url) throws Exception {
+        String result = this.mockMvc.perform(put(url))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        return Integer.parseInt(result);
+    }
+
+    /**
      * A method to validate a moderator key.
      * @param url url with lecture id and moderator key values
      * @return 0 if successful, otherwise -1
@@ -89,15 +104,28 @@ class LectureControllerTest {
     }
 
     @Test
+    void createLectureModkeyTest() throws Exception {
+        objectMapper.registerModule(new JavaTimeModule());
+        String json = createLecture("/api/newLecture?name=test2");
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
+        assertNotNull(lectureEntity);
+        assertNotNull(lectureEntity.getModkey());
+    }
+
+    @Test
     void getLecturesByIDSuccessfulTest() throws Exception {
         String json = createLecture("/api/newLecture?name=test1");
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
 
         String uuid = lectureEntity.getUuid().toString();
         String m = getLecture("/api/get/" + uuid);
-        assertEquals(json, m);
+        assertNotEquals(json, m);
+
+        LectureEntity gotBack = objectMapper.readValue(m, LectureEntity.class);
         assertEquals(lectureEntity.getName(), "test1");
         assertEquals(lectureEntity.getCreatorName(), "placeholder");
+        assertNull(gotBack.getModkey());
+        assertEquals(gotBack, lectureEntity);
     }
 
     @Test
@@ -182,6 +210,33 @@ class LectureControllerTest {
     }
 
     @Test
+    void closeLectureSuccessfulTest() throws Exception {
+        String json = createLecture("/api/newLecture?name=test4");
+
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
+        String uuid = lectureEntity.getUuid().toString();
+        String modkey = lectureEntity.getModkey().toString();
+
+        int m = closeLecture("/api/close/" + uuid + "/" + modkey);
+        assertEquals(0, m);
+
+        String lecture = getLecture("/api/get/" + uuid);
+        LectureEntity l = objectMapper.readValue(lecture, LectureEntity.class);
+        assertFalse(l.isOpen());
+    }
+
+    @Test
+    void closeLectureUnsuccessfulTest() throws Exception {
+        String json = createLecture("/api/newLecture?name=test4");
+
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
+        String uuid = lectureEntity.getUuid().toString();
+
+        int m = closeLecture("/api/close/" + uuid + "/" + UUID.randomUUID().toString());
+        assertEquals(-1, m);
+    }
+
+    @Test
     void validateModkeyUnsuccessfulNoLectureTest() throws Exception {
         String json = createLecture("/api/newLecture?name=ads");
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
@@ -191,6 +246,21 @@ class LectureControllerTest {
         deleteLecture("/api/delete/" + uuid + "/" + modkey);
 
         int m = validateModkey("/api/validate/" + uuid + "/" + modkey);
+        assertEquals(-1, m);
+    }
+
+
+    @Test
+    void closeLectureNoLectureTest() throws Exception {
+        String json = createLecture("/api/newLecture?name=test4");
+
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
+        String uuid = lectureEntity.getUuid().toString();
+
+        deleteLecture("/api/delete/" + uuid + "/" + lectureEntity.getModkey().toString());
+
+        int m = closeLecture("/api/close/" + uuid
+                + "/" + lectureEntity.getModkey().toString());
         assertEquals(-1, m);
     }
 

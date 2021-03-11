@@ -17,9 +17,6 @@ public class Lecture {
     private UUID uuid;
 
     @Expose(serialize = true, deserialize = true)
-    private String modkey;
-
-    @Expose(serialize = true, deserialize = true)
     private String name;
 
     @Expose(serialize = true, deserialize = true)
@@ -40,6 +37,9 @@ public class Lecture {
     @Expose(serialize = true, deserialize = true)
     private boolean open = true;
 
+    @Expose(serialize = true, deserialize = true)
+    private UUID modkey;
+
 
     /**
      * Instantiates a new Lecture.
@@ -49,7 +49,7 @@ public class Lecture {
      * @param name        the name
      * @param creatorName the creator name
      */
-    public Lecture(UUID uuid, String modkey, String name, String creatorName) {
+    public Lecture(UUID uuid, UUID modkey, String name, String creatorName) {
         this.uuid = uuid;
         this.modkey = modkey;
         this.name = name;
@@ -81,8 +81,8 @@ public class Lecture {
      *
      * @return the modkey
      */
-    public String getModkey() {
-        return modkey;
+    public UUID getModkey() {
+        return this.modkey;
     }
 
     /**
@@ -165,6 +165,11 @@ public class Lecture {
     public static Lecture getCurrentLecture() {
         return Lecture.currentLecture;
     }
+
+    public void setModkey(UUID modkey) {
+        this.modkey = modkey;
+    }
+
 
     @Override
     public String toString() {

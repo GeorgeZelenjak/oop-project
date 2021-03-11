@@ -10,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 public class LectureCommunication {
 
@@ -115,6 +116,7 @@ public class LectureCommunication {
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().GET().uri(
                 URI.create(address + lectureId + "/" + modKey)).build();
+
         HttpResponse<String> response;
 
         //Catching error when communicating with server
@@ -131,6 +133,46 @@ public class LectureCommunication {
 
         return response.body().equals("0");
 
+    }
+
+
+    /**
+     * Close lecture.
+     *
+     * @return boolean representing servers response
+     *      or the lack of it
+     *       true - Lecture has been successfully closed
+     *       false - error occured
+     */
+    public static boolean closeLecture(String uuid, String modkey) {
+        if (Lecture.getCurrentLecture() == null) {
+            System.out.println("You are not connected to a lecture!");
+            return false;
+        }
+
+        HttpRequest.BodyPublisher req = HttpRequest.BodyPublishers.ofString("");
+
+        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
+                URI.create("http://localhost:8080/api/close/"
+                        + uuid
+                        + "/" + modkey))
+                .build();
+
+        HttpResponse<String> response;
+
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        if (response.statusCode() != 200) {
+            System.out.println("Status: " + response.statusCode());
+            System.out.println(response.body());
+            return false;
+        }
+
+        return  response.body().equals("0");
     }
 
 }

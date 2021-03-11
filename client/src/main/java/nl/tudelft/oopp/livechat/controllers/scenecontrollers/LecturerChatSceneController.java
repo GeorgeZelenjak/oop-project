@@ -1,10 +1,10 @@
 package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
-import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -52,6 +52,17 @@ public class LecturerChatSceneController {
      */
     public void goToSettings() throws IOException {
         NavigationController.getCurrentController().goToSettings();
+    }
+
+    /**
+     * Close lecture.
+     *
+     * @throws IOException the io exception
+     */
+    public void closeLecture() throws IOException {
+        LectureCommunication.closeLecture(Lecture.getCurrentLecture().getUuid().toString(),
+                Lecture.getCurrentLecture().getModkey().toString());
+        NavigationController.getCurrentController().goToMainScene();
     }
 
 
