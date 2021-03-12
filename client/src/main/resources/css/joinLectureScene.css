@@ -1,0 +1,27 @@
+    .joinLectureButton {
+
+        -fx-background-color: -fx-blue;
+        -fx-background-radius: 7px;
+        -fx-font: 33px Roboto;
+        -fx-text-fill: -fx-white;
+        -fx-pref-width: 422px;
+        -fx-pref-height: 47px;
+
+    }
+
+    .joinLectureButton:hover{
+        -fx-background-color:  -fx-dark-blue;
+    }
+
+    .backButton {
+        -fx-background-color: -fx-blue;
+        -fx-background-radius: 7px;
+        -fx-font: 25px Roboto;
+        -fx-text-fill: -fx-white;
+        -fx-pref-width: 126px;
+        -fx-pref-height: 47px;
+    }
+
+    .backButton:hover{
+        -fx-background-color:  -fx-dark-blue;
+    }
