@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
@@ -91,11 +92,8 @@ public class UserChatSceneController implements Initializable {
 
         //Navigating back to Main Page
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirm your action");
-        alert.setHeaderText(null);
-
-        alert.setContentText("Are you sure do you want to quit this lecture?");
+        Alert alert = AlertController.createAlert(Alert.AlertType.CONFIRMATION,
+                "Confirm your action", "Are you sure do you want to quit this lecture?");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -139,12 +137,8 @@ public class UserChatSceneController implements Initializable {
 
         System.out.println(ret);
         if (ret <= 0) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("ERROR");
-            alert.setHeaderText(null);
-
-            alert.setContentText("There was a problem with asking question!");
-            alert.showAndWait();
+            AlertController.alertError("ERROR",
+                    "There was a problem with asking question!");
         }
 
         Question question = new Question(

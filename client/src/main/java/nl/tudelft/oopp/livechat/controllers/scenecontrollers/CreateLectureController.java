@@ -5,6 +5,7 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
@@ -22,9 +23,15 @@ public class CreateLectureController {
      * @throws IOException the io exception
      */
     private void createLecture() throws IOException {
+        String alertText = "The lecture has been created successfully!"
+                + "\nPress OK to go to the lecture page.";
+        /*
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Creating lecture");
         alert.setHeaderText(null);
+
+
+         */
         Lecture lecture = LectureCommunication
                 .createLecture(enterLectureNameTextField.getText());
 
@@ -38,9 +45,7 @@ public class CreateLectureController {
             ret = "";
             e.printStackTrace();
         }
-        alert.setContentText("The lecture has been created successfully!\n"
-                + "Press OK to go to the lecture page.");
-        alert.showAndWait();
+        AlertController.alertInformation("Creating lecture",alertText);
 
         NavigationController.getCurrentController().goToLecturerChatPage();
         Lecture.setCurrentLecture(lecture);

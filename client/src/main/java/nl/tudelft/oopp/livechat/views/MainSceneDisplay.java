@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 
@@ -25,6 +26,8 @@ public class MainSceneDisplay extends Application {
         Parent root = loader.load();
 
         primaryStage.setScene(new Scene(root));
+        primaryStage.setTitle("App name");
+        primaryStage.getIcons().add(new Image("file:client/src/main/resources/images/Gear.png"));
         primaryStage.show();
         NavigationController.setCurrentController(
                 new NavigationController(primaryStage.getScene()));
