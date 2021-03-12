@@ -126,11 +126,17 @@ public class UserChatSceneController implements Initializable {
      *      1- Everything is good
      *      -1 -Lecture has not been initialized
      *      -2/ -3 -Server error.
+     *      -4 - too long question
      */
     @FXML
     public int askQuestion(ActionEvent ae) {
-
-        int ret = QuestionCommunication.askQuestion(inputQuestionTextTextField.getText());
+        String text = inputQuestionTextTextField.getText();
+        if (text.length() > 2000) {
+            AlertController.alertWarning("Long question",
+                    "Your question is too long! (max 2000 characters)");
+            return -4;
+        }
+        int ret = QuestionCommunication.askQuestion(text);
         //inputQuestion.setText("");
         System.out.println(ae);
 
