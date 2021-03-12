@@ -235,7 +235,7 @@ class QuestionServiceTest {
         long qid = q1.getId();
         UUID modKey = l1.getModkey();
 
-        int result = questionService.answer(qid, modKey);
+        int result = questionService.answer(qid, modKey, "this is the answer to a question");
         assertEquals(0, result);
         QuestionEntity q1after = questionRepository.findById(qid).orElse(null);
         assertTrue(q1after.isAnswered());
@@ -247,7 +247,23 @@ class QuestionServiceTest {
         long qid = q1.getId();
         UUID modKey = UUID.randomUUID();
 
-        int result = questionService.answer(qid, modKey);
+        int result = questionService.answer(qid, modKey,
+                "this question is so stupid man, what are you thinking");
+
+        assertEquals(-1, result);
+        QuestionEntity q1after = questionRepository.findById(qid).orElse(null);
+        assertFalse(q1after.isAnswered());
+    }
+
+    @Test
+    @Order(17)
+    void answerQuestionUnsuccessfulLongTest() {
+        long qid = q1.getId();
+        UUID modKey = l1.getModkey();
+
+        int result = questionService.answer(qid, modKey,
+                "CULO".repeat(600));
+
         assertEquals(-1, result);
         QuestionEntity q1after = questionRepository.findById(qid).orElse(null);
         assertFalse(q1after.isAnswered());

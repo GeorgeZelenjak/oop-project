@@ -32,13 +32,13 @@ public class QuestionEntity {
     @Column(name = "votes")
     private int votes;
 
-    @Column(name = "text")
+    @Column(name = "text", length = 2000)
     private String text;
 
     @Column(name = "answered")
     private boolean answered;
 
-    @Column(name = "answerText")
+    @Column(name = "answerText", length = 2000)
     private String answerText;
 
     @Column(name = "answerTime")

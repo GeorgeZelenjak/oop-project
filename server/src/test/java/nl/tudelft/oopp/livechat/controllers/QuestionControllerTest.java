@@ -154,7 +154,10 @@ class QuestionControllerTest {
      * @throws Exception if something goes wrong
      */
     int answer(long qid, String modkey) throws Exception {
-        String result = this.mockMvc.perform(put("/api/question/answer/" + qid + "/" + modkey))
+        String result = this.mockMvc.perform(put("/api/question/answer/" + qid + "/" + modkey)
+                .contentType(APPLICATION_JSON)
+                .content("This is definitely a question asnwer dude")
+                .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         return Integer.parseInt(result);

@@ -102,14 +102,15 @@ public class QuestionController {
      * @return 0 if successful, -1 otherwise
      */
     @PutMapping("/answer/{qid}/{modkey}")
-    public int markAsAnswered(@PathVariable long qid, @PathVariable UUID modkey) {
-        return questionService.answer(qid, modkey);
+    public int markAsAnswered(@PathVariable long qid, @PathVariable UUID modkey,
+                              @RequestBody String answerText) {
+        return questionService.answer(qid, modkey, answerText);
     }
 
     /**
      * Exception handler.
      * @param exception exception that has occurred
-     * @return response body with 404 and 'Invalid UUID' message
+     * @return response body with 400 and 'Invalid UUID' message
      */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
