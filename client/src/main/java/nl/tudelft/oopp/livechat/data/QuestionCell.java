@@ -7,14 +7,14 @@ public class QuestionCell extends ListCell<Question> {
     @Override
     public void updateItem(Question question, boolean empty) {
         super.updateItem(question,empty);
-        if (question != null) {
+        if (question != null && !empty) {
             CellData data = new CellData();
             data.setQuestion(question);
             data.setInfo(question.getText());
             setGraphic(data.getBox());
             data.setUpvoteButton();
         }
+        else
+            setGraphic(null);
     }
-
-
 }
