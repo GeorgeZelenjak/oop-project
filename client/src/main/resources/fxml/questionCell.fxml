@@ -14,7 +14,6 @@
          <font>
             <Font size="11.0" />
          </font></Button>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
       <Text layoutX="16.0" layoutY="6.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asked By: ">
          <font>
             <Font name="System Bold" size="8.0" />
@@ -25,5 +24,6 @@
             <Font size="8.0" />
          </font>
       </Text>
+      <Text fx:id="numberOfUpvotes" layoutX="481.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="17.0" />
     </children>
 </AnchorPane>
