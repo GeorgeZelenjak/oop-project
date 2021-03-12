@@ -34,9 +34,8 @@
         -fx-min-width: 228px;
         -fx-max-height: 90px;
         -fx-max-width: 228px;
-
-
     }
+
     /*This should be added somewhere else!*/
     .mainSceneEnterRoomCode{
         -fx-background-color: -fx-white;

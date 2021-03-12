@@ -33,9 +33,11 @@ import java.util.ResourceBundle;
 public class UserChatSceneController implements Initializable {
 
     @FXML
-    private TextField inputQuestionTextTextField;
+    private TextArea questionInputTextArea;
+
     @FXML
     private ListView<Question> questionPaneListView;
+
     @FXML
     private Text lectureNameText;
     @FXML
@@ -121,16 +123,19 @@ public class UserChatSceneController implements Initializable {
     /**
      * Send a question to the server.
      *
-     * @param ae the enter button
      * @return Integer showing status of the action
      *      1- Everything is good
      *      -1 -Lecture has not been initialized
      *      -2/ -3 -Server error.
      *      -4 - too long question
+     *      -5 empty field
      */
     @FXML
-    public int askQuestion(ActionEvent ae) {
-        String text = inputQuestionTextTextField.getText();
+    public int askQuestion() {
+        String text = questionInputTextArea.getText();
+        if (text.length() == 0) {
+            return -5;
+        }
         if (text.length() > 2000) {
             AlertController.alertWarning("Long question",
                     "Your question is too long! (max 2000 characters)");
@@ -138,7 +143,6 @@ public class UserChatSceneController implements Initializable {
         }
         int ret = QuestionCommunication.askQuestion(text);
         //inputQuestion.setText("");
-        System.out.println(ae);
 
         System.out.println(ret);
         if (ret <= 0) {
@@ -147,11 +151,11 @@ public class UserChatSceneController implements Initializable {
         }
 
         Question question = new Question(
-                Lecture.getCurrentLecture().getUuid(), inputQuestionTextTextField.getText(), 0);
+                Lecture.getCurrentLecture().getUuid(), questionInputTextArea.getText(), 0);
 
         //questionPaneListView.getItems().add(question.getText());
 
-        inputQuestionTextTextField.clear();
+        questionInputTextArea.clear();
 
         return (ret);
     }

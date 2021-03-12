@@ -7,17 +7,13 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.JoinLectureSceneController">
    <children>
-      <CheckBox fx:id="modkeyCheckBox" alignment="CENTER" layoutX="360.0" layoutY="374.0" mnemonicParsing="false" onAction="#onCheckBoxAction" prefHeight="44.0" prefWidth="360.0" styleClass="checkbox" text="Are you a moderator?">
+      <CheckBox fx:id="modkeyCheckBox" alignment="CENTER" layoutX="313.0" layoutY="384.0" mnemonicParsing="false" onAction="#onCheckBoxAction" prefHeight="54.0" prefWidth="456.0" styleClass="checkbox" text="Are you a moderator?">
          <font>
             <Font size="36.0" />
          </font></CheckBox>
       <Button fx:id="goToJoinLectureButton" layoutX="312.75" layoutY="477.75" mnemonicParsing="false" onAction="#goToLecture" prefHeight="34.0" prefWidth="230.0" styleClass="joinLectureButton" text="Join Lecture" />
       <TextField fx:id="enterNameTextField" alignment="CENTER" layoutX="312.0" layoutY="240.0" promptText="First Name Last Name" styleClass="textBox" />
-      <Text layoutX="444.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 72;" styleClass="headerText" text="Top text" wrappingWidth="275.0" AnchorPane.leftAnchor="402.75" AnchorPane.topAnchor="72.0">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Text>
+      <Text layoutX="293.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 72;" styleClass="headerText" text="Join the lecture" wrappingWidth="497.0" AnchorPane.leftAnchor="293.0" AnchorPane.topAnchor="71.0" />
       <TextField fx:id="modkeyTextField" alignment="CENTER" layoutX="312.0" layoutY="417.75" promptText="Enter Mod Key" styleClass="textBox" visible="false" />
       <TextField fx:id="enterLectureCodeTextField" alignment="CENTER" layoutX="312.0" layoutY="300.0" promptText="Enter Lecture UUID" styleClass="textBox" />
       <Button fx:id="goBackButton" layoutX="43.5" layoutY="35.25" mnemonicParsing="false" onAction="#goBack" prefHeight="50.25" prefWidth="136.5" styleClass="backButton" text="Back" />
