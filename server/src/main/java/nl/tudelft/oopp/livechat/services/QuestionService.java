@@ -52,6 +52,9 @@ public class QuestionService {
         if (!lecture.isOpen()) {
             return -1;
         }
+        if (q.getText().length() > 2000) {
+            return -1;
+        }
         questionRepository.save(q);
         upvoted.put(q.getId(), new HashSet<>());
         return q.getId();
@@ -161,12 +164,13 @@ public class QuestionService {
      * @param modkey the modkey
      * @return 0 if successful, -1 otherwise
      */
-    public int answer(long id, UUID modkey) {
+    public int answer(long id, UUID modkey, String answerText) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
         if (q == null) return -1;
-
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-
+        if (answerText.length() > 2000) {
+            return -1;
+        }
         if (lecture.getModkey().equals(modkey)) {
             q.setAnswered(true);
             q.setAnswerTime(new Timestamp(System.currentTimeMillis() % 10));
