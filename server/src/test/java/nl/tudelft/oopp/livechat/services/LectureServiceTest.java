@@ -44,6 +44,12 @@ class LectureServiceTest {
     }
 
     @Test
+    void newLectureNullTest() {
+        assertNull(lectureService.newLecture("CULO".repeat(70),
+                "Artjom Pugatsov"));
+    }
+
+    @Test
     void deleteSuccessfulTest() {
         LectureEntity l = new LectureEntity("name", "Tudor Popica");
         repository.save(l);
