@@ -64,7 +64,7 @@ public class LectureEntity {
         this.fasterCount = 0;
         this.slowerCount = 0;
         this.frequency = 60;
-        this.startTime = new Timestamp(System.currentTimeMillis());
+        this.startTime = new Timestamp(System.currentTimeMillis() %10 );
     }
 
     /**
