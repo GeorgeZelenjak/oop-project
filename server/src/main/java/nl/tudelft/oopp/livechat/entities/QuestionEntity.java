@@ -139,7 +139,15 @@ public class QuestionEntity {
      * Increments the vote count of the question by 1.
      */
     public void vote() {
-        this.votes += 1;
+        this.votes++;
+    }
+
+
+    /**
+     * Decrement question votes by 1.
+     */
+    public void unvote() {
+        this.votes--;
     }
 
     /**
