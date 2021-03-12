@@ -66,6 +66,13 @@ class QuestionEntityTest {
     }
 
     @Test
+    void unvoteTest() {
+        int oldVotes = questionEntity.getVotes();
+        questionEntity.unvote();
+        assertEquals(oldVotes - 1, questionEntity.getVotes());
+    }
+
+    @Test
     void getTextTest() {
         String text = "What is the answer to the Ultimate Question of Life,"
                 + " the Universe, and Everything?";

@@ -149,7 +149,7 @@ class QuestionServiceTest {
     void editQuestionSuccessfulTest() {
         long qid = q1.getId();
         long newOwnerId = 42L;
-        String modKey = l1.getModkey().toString();
+        UUID modKey = l1.getModkey();
         String newText = "new text)))";
 
         int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
@@ -158,25 +158,14 @@ class QuestionServiceTest {
         assertEquals(newText, q1.getText());
     }
 
+
     @Test
     @Order(10)
-    void editQuestionInvalidModkeyTest() {
-        long qid = q1.getId();
-        long newOwnerId = 42L;
-        String modKey = "l2.getModkey().toString()";
-        String newText = "new text)))";
-
-        assertThrows(IllegalArgumentException.class,
-            () -> questionService.editQuestion(qid, modKey, newText, newOwnerId));
-    }
-
-    @Test
-    @Order(11)
     void editQuestionUnsuccessfulTest() {
         long qid = q1.getId();
         long newOwnerId = 42L;
         String oldText = q1.getText();
-        String modKey = l2.getModkey().toString();
+        UUID modKey = l2.getModkey();
         String newText = "new text)))";
 
         int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
@@ -188,7 +177,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(12)
+    @Order(11)
     void upvoteSuccessfulTest() {
         long qid = q1.getId();
         long uid = 27L;
@@ -202,8 +191,8 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(13)
-    void upvoteUnsuccessfulTest() {
+    @Order(12)
+    void unvoteSuccessfulTest() {
         long qid = q1.getId();
         long uid = 27L;
         final int oldVotes = q1.getVotes();
@@ -212,12 +201,12 @@ class QuestionServiceTest {
         final int result = questionService.upvote(qid, uid);
         q1 = questionRepository.findById(qid).orElse(null);
         assertNotNull(q1);
-        assertEquals(-1, result);
-        assertEquals(oldVotes + 1, q1.getVotes());
+        assertEquals(0, result);
+        assertEquals(oldVotes, q1.getVotes());
     }
 
     @Test
-    @Order(14)
+    @Order(13)
     void askQuestionWhenLectureIsClosed() {
         LectureEntity l = lectureRepository.findLectureEntityByUuid(q1.getLectureId());
         l.close();
@@ -226,4 +215,42 @@ class QuestionServiceTest {
         long result = questionService.newQuestionEntity(q3);        //q3 belongs to lecture 1
         assertEquals(-1, result);
     }
+
+
+    @Test
+    @Order(15)
+    void upvoteUnsuccessfulTest() {
+        long qid = -1;
+        long uid = 27L;
+
+        final int result = questionService.upvote(qid, uid);
+        q1 = questionRepository.findById(qid).orElse(null);
+        assertNull(q1);
+        assertEquals(-1, result);
+    }
+
+    @Test
+    @Order(16)
+    void answerQuestionSuccessfulTest() {
+        long qid = q1.getId();
+        UUID modKey = l1.getModkey();
+
+        int result = questionService.answer(qid, modKey);
+        assertEquals(0, result);
+        QuestionEntity q1after = questionRepository.findById(qid).orElse(null);
+        assertTrue(q1after.isAnswered());
+    }
+
+    @Test
+    @Order(17)
+    void answerQuestionUnsuccessfulTest() {
+        long qid = q1.getId();
+        UUID modKey = UUID.randomUUID();
+
+        int result = questionService.answer(qid, modKey);
+        assertEquals(-1, result);
+        QuestionEntity q1after = questionRepository.findById(qid).orElse(null);
+        assertFalse(q1after.isAnswered());
+    }
+
 }
