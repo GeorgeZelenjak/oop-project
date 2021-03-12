@@ -85,7 +85,4 @@ public class CellDataUser {
             System.out.println(question.getVotes());
         });
     }
-
-
-
 }
