@@ -7,7 +7,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1080.0" styleClass="mainScenePane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.MainSceneController">
    <children>
-      <Text id="appName" layoutX="344.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="App Name" textAlignment="CENTER" wrappingWidth="338.0" AnchorPane.leftAnchor="371.25" AnchorPane.topAnchor="75.75">
+      <Text id="appName" layoutX="372.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="App Name" textAlignment="CENTER" wrappingWidth="338.0" AnchorPane.leftAnchor="372.0" AnchorPane.topAnchor="75.75">
          
       </Text>
       <Button id="joinLecture" fx:id="goToJoinLectureButton" contentDisplay="CENTER" layoutX="312" layoutY="241.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#goToLecture" prefHeight="47.0" prefWidth="422.0" styleClass="mainSceneButton" text="Join Lecture" textAlignment="CENTER" />

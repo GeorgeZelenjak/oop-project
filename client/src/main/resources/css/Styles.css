@@ -51,7 +51,7 @@
 
 
     .headerText{
-        -fx-font-size: 36;
+        -fx-font-size: 36px;
     }
 
     .leaveLecture{
@@ -81,6 +81,34 @@
 
     .sidebar{
         -fx-background-color: -fx-blue-green;
+    }
+
+    .textBox {
+        -fx-background-color: -fx-white;
+        -fx-background-radius: 7px;
+        -fx-font-size: 36px;
+        -fx-text-fill: black;
+        -fx-pref-width: 455.25px;
+        -fx-pref-height: 50.25px;
+
+        -fx-border-radius: 7px;
+        -fx-border-width: 2px;
+        -fx-border-color: -fx-border-gray;
+        -fx-prompt-text-fill: -fx-text-gray;
+
+    }
+
+    .backButton {
+        -fx-background-color: -fx-blue;
+        -fx-background-radius: 7px;
+        -fx-font: 27px Roboto;
+        -fx-text-fill: -fx-white;
+        -fx-pref-width: 136.5px;
+        -fx-pref-height: 50.25px;
+    }
+
+    .backButton:hover{
+        -fx-background-color:  -fx-dark-blue;
     }
 
 

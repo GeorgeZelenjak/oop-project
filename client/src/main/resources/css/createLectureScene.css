@@ -1,4 +1,4 @@
-    .joinLectureButton {
+    .createLectureButton {
 
         -fx-background-color: -fx-blue;
         -fx-background-radius: 7px;
@@ -9,11 +9,6 @@
 
     }
 
-    .joinLectureButton:hover{
+    .createLectureButton:hover{
         -fx-background-color:  -fx-dark-blue;
-    }
-
-
-    .checkbox {
-        -fx-font-size: 36px;
     }
