@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.data.User;
 
 
 /**
@@ -20,6 +21,8 @@ public class MainSceneDisplay extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+
+        User.setUid();
         FXMLLoader loader = new FXMLLoader();
         URL xmlUrl = getClass().getResource("/fxml/mainScene.fxml");
         loader.setLocation(xmlUrl);

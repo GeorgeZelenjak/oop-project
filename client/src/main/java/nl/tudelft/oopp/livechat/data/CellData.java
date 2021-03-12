@@ -67,8 +67,12 @@ public class CellData {
     public void setUpvoteButton() {
         upvoteButton.setOnAction((
                 ActionEvent event) -> {
-            QuestionCommunication.upvoteQuestion(question.getId(), question.getOwnerId());
+            QuestionCommunication.upvoteQuestion(question.getId(), User.getUid());
+
+            System.out.println(question.getVotes());
         });
     }
+
+
 
 }

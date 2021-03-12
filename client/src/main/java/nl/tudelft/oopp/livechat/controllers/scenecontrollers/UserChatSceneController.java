@@ -77,7 +77,7 @@ public class UserChatSceneController implements Initializable {
                         return new QuestionCell();
                     }
                 });
-        System.out.println(list.size());
+        //System.out.println(list.size());
 
         questionPaneListView.getItems().clear();
         questionPaneListView.getItems().addAll(list);
