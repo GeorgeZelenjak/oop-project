@@ -71,7 +71,8 @@ public class CellDataUser {
     }
 
     public void setTimestamp(Timestamp timestamp) {
-        dateStamp.setText(timestamp.toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        dateStamp.setText(timestamp.toLocalDateTime()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 
     /**

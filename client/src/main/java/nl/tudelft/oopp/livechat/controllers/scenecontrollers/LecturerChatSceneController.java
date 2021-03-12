@@ -32,14 +32,35 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * The type Lecturer chat scene controller.
+ */
 public class LecturerChatSceneController implements Initializable {
 
     @FXML
     private Text lectureNameLecturer;
     @FXML
     private ListView<Question> questionPaneListView;
+    /**
+     * The Observable list.
+     */
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
+
+
+    /**
+     * Method that runs at scene initalization.
+     * @param location location of scene
+     * @param resourceBundle resources brought around
+     */
+
+    public void initialize(URL location, ResourceBundle resourceBundle) {
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.millis(2500),
+            ae -> fetchQuestions()));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
 
     /**
      * Copy lecture id to clipboard.
@@ -83,7 +104,8 @@ public class LecturerChatSceneController implements Initializable {
 
     /**
      * Go to user manual.
-     * @throws IOException the io exception
+     *
+     * @throws IOException if something happens
      */
     public void goToUserManual() throws IOException {
 
@@ -93,7 +115,7 @@ public class LecturerChatSceneController implements Initializable {
     /**
      * Go to settings.
      *
-     * @throws IOException the io exception
+     * @throws IOException if something happens
      */
     public void goToSettings() throws IOException {
         NavigationController.getCurrentController().goToSettings();
@@ -101,7 +123,8 @@ public class LecturerChatSceneController implements Initializable {
 
     /**
      * Close lecture.
-     * @throws IOException the io exception
+     *
+     * @throws IOException if something happens
      */
     public void closeLecture() throws IOException {
         LectureCommunication.closeLecture(Lecture.getCurrentLecture().getUuid().toString(),
@@ -109,17 +132,9 @@ public class LecturerChatSceneController implements Initializable {
         NavigationController.getCurrentController().goToMainScene();
     }
 
-    public void initialize(URL location, ResourceBundle resourceBundle) {
-        //lectureNameLecturer.setText(Lecture.getCurrentLecture().getName());
-       // lectureNameLecturer.setTextAlignment(TextAlignment.CENTER);
-
-        Timeline timeline = new Timeline(new KeyFrame(
-                Duration.millis(2500),
-                ae -> fetchQuestions()));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
-    }
-
+    /**
+     * Fetch questions.
+     */
     public void fetchQuestions() {
 
         List<Question> list = QuestionCommunication.fetchQuestions();
