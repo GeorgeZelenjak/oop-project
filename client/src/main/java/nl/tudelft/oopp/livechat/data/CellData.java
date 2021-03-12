@@ -1,7 +1,9 @@
 package nl.tudelft.oopp.livechat.data;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
@@ -15,6 +17,9 @@ public class CellData {
 
     @FXML
     private AnchorPane questionBoxAnchorPane;
+
+    @FXML
+    private Button upvoteButton;
 
     private Question question;
 
@@ -43,4 +48,15 @@ public class CellData {
     public void setQuestion(Question question) {
         this.question = question;
     }
+
+    /**
+     * Sets upvote button.
+     */
+    public void setUpvoteButton() {
+        upvoteButton.setOnAction((
+                ActionEvent event) -> {
+            System.out.println(question.getText());
+        });
+    }
+
 }

@@ -12,6 +12,9 @@ public class QuestionCell extends ListCell<Question> {
             data.setQuestion(question);
             data.setInfo(question.getText());
             setGraphic(data.getBox());
+            data.setUpvoteButton();
         }
     }
+
+
 }

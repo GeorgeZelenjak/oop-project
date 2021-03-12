@@ -7,7 +7,7 @@
 <AnchorPane fx:id="questionBoxAnchorPane" prefHeight="38.0" prefWidth="503.0" styleClass="mainSceneButton" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Text fx:id="questionText" fill="#e5ff00" layoutX="14.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Artjom" wrappingWidth="303.00682830810547" />
-        <Button layoutX="459.0" layoutY="7.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="30.0" text="⬆">
+        <Button fx:id="upvoteButton" layoutX="459.0" layoutY="7.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="30.0" text="⬆">
          <font>
             <Font size="11.0" />
          </font></Button>
