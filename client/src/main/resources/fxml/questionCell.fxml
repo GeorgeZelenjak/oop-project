@@ -4,26 +4,33 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="questionBoxAnchorPane" prefWidth="503.0" styleClass="mainSceneButton" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="questionBoxAnchorPane" prefHeight="80.0" prefWidth="503.0" styleClass="mainSceneButton" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Text fx:id="questionText" fill="#e5ff00" layoutX="7.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="277.00682830810547">
+        <Text fx:id="questionText" fill="#f8f8f8" layoutX="14.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="387.00682830810547" />
+        <Button fx:id="upvoteButton" layoutX="419.0" layoutY="4.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="31.0" styleClass="upvoteButton" stylesheets="@../css/Styles.css" text="⬆">
          <font>
-            <Font size="10.0" />
-         </font></Text>
-        <Button fx:id="upvoteButton" layoutX="445.0" layoutY="2.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="30.0" text="⬆">
-         <font>
-            <Font size="11.0" />
+            <Font size="9.0" />
          </font></Button>
-      <Text layoutX="16.0" layoutY="6.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asked By: ">
+      <Text layoutX="14.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asked By: ">
          <font>
-            <Font name="System Bold" size="8.0" />
+            <Font name="Arial Bold" size="10.0" />
          </font>
       </Text>
-      <Text fx:id="questionOwner" layoutX="55.0" layoutY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="103.0">
+      <Text fx:id="questionOwner" layoutX="66.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="103.0">
          <font>
-            <Font size="8.0" />
+            <Font name="Arial" size="10.0" />
          </font>
       </Text>
-      <Text fx:id="numberOfUpvotes" layoutX="481.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="17.0" />
+      <Text fx:id="numberOfUpvotes" layoutX="460.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="31.0" />
+      <Text fx:id="dateStamp" layoutX="251.0" layoutY="16.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="163.44822692871094">
+         <font>
+            <Font name="Arial Italic" size="10.0" />
+         </font>
+      </Text>
+      <Button fx:id="upvoteButton1" layoutX="415.0" layoutY="35.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="89.0" style="-fx-background-color: red; -fx-text-fill: #f8f8f8;" styleClass="upvoteButton" stylesheets="@../css/Styles.css" text="Delete Question" textFill="#f8f8f8">
+         <font>
+            <Font size="9.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>

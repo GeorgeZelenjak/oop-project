@@ -16,13 +16,12 @@ import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
-import nl.tudelft.oopp.livechat.data.QuestionCell;
+import nl.tudelft.oopp.livechat.data.QuestionCellUser;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import javafx.util.Callback;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -74,7 +73,7 @@ public class UserChatSceneController implements Initializable {
                 new Callback<ListView<Question>, ListCell<Question>>() {
                     @Override
             public ListCell<Question> call(ListView<Question> listView) {
-                        return new QuestionCell();
+                        return new QuestionCellUser();
                     }
                 });
         //System.out.println(list.size());
@@ -127,11 +126,17 @@ public class UserChatSceneController implements Initializable {
      *      1- Everything is good
      *      -1 -Lecture has not been initialized
      *      -2/ -3 -Server error.
+     *      -4 - too long question
      */
     @FXML
     public int askQuestion(ActionEvent ae) {
-
-        int ret = QuestionCommunication.askQuestion(inputQuestionTextTextField.getText());
+        String text = inputQuestionTextTextField.getText();
+        if (text.length() > 2000) {
+            AlertController.alertWarning("Long question",
+                    "Your question is too long! (max 2000 characters)");
+            return -4;
+        }
+        int ret = QuestionCommunication.askQuestion(text);
         //inputQuestion.setText("");
         System.out.println(ae);
 

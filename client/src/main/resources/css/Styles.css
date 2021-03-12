@@ -110,6 +110,18 @@
     .backButton:hover{
         -fx-background-color:  -fx-dark-blue;
     }
+    .upvoteButton{
+
+        -fx-background-color: lightgreen;
+        -fx-background-radius: 10px;
+        -fx-font: 10px Arial;
+        -fx-text-fill: black;
+    }
+    .deleteQuestionButton{
+        -fx-background-image: url(../images/trash.png);
+        -fx-background-color: red;
+        -fx-background-radius: 10px;
+    }
 
 
 

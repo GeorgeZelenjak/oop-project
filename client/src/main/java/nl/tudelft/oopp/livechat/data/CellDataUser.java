@@ -5,13 +5,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 
-public class CellData {
+public class CellDataUser {
 
     @FXML
     private Text questionText;
@@ -28,13 +28,16 @@ public class CellData {
     @FXML
     private Text numberOfUpvotes;
 
+    @FXML
+    private Text dateStamp;
+
     private Question question;
 
 
     /**
      * Instantiates a new Cell data.
      */
-    public CellData() {
+    public CellDataUser() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                 "/fxml/questionCell.fxml"));
         fxmlLoader.setController(this);
@@ -66,6 +69,11 @@ public class CellData {
         numberOfUpvotes.setText(String.valueOf(number));
     }
 
+    public void setTimestamp(Timestamp timestamp) {
+
+        dateStamp.setText(timestamp.toLocalDateTime().toString());
+    }
+
     /**
      * Sets upvote button.
      */
@@ -77,7 +85,4 @@ public class CellData {
             System.out.println(question.getVotes());
         });
     }
-
-
-
 }
