@@ -104,6 +104,7 @@ public class Question {
         return this.votes;
     }
 
+
     /**
      * .
      * Gets the text of the question.

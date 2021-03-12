@@ -2,6 +2,7 @@ package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
@@ -23,11 +24,8 @@ public class LecturerChatSceneController {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Copied successfully!");
-        alert.setContentText("Lecture id copied to clipboard");
-        alert.show();
+        AlertController.alertInformation("Copied successfully!",
+                "Lecture id copied to clipboard");
     }
 
     /**
@@ -39,22 +37,16 @@ public class LecturerChatSceneController {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Copied successfully!");
-        alert.setHeaderText(null);
-        alert.setContentText("Moderator key copied to clipboard");
-        alert.show();
+        AlertController.alertInformation("Copied successfully!",
+                "Moderator key copied to clipboard");
     }
 
     /**
      * Go back to main page.
      */
     public void goBackToMain() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirm your action");
-        alert.setHeaderText(null);
-
-        alert.setContentText("Are you sure do you want to quit this lecture?");
+        Alert alert = AlertController.createAlert(Alert.AlertType.CONFIRMATION,
+                "Confirm your action", "Are you sure do you want to quit this lecture?");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {

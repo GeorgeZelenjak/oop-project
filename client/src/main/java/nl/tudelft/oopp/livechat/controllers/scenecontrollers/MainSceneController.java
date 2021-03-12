@@ -44,6 +44,9 @@ public class MainSceneController {
         NavigationController.getCurrentController().goToSettings();
     }
 
+    public void goToSceneTest() throws IOException {
+        NavigationController.getCurrentController().goToTestScene();
+    }
 
 
 

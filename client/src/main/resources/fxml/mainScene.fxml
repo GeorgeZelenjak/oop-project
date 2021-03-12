@@ -15,5 +15,6 @@
       <Button fx:id="goToExportQAFromLectureButton" layoutX="387.0" layoutY="512.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Export Q&amp;A from Lecture" />
       <Button fx:id="goToSettingsButton" layoutX="55.0" layoutY="613.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
       <Button fx:id="goToHelpButton" layoutX="14.0" layoutY="613.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="33.0" prefWidth="19.0" styleClass="mainSceneButton" text="?" />
+      <Button fx:id="goToTestScene" layoutX="387.0" layoutY="580.0" mnemonicParsing="false" onAction="#goToSceneTest" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Test scene (testing)" />
    </children>
 </AnchorPane>

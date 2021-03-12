@@ -119,6 +119,10 @@ public class NavigationController {
         goToSceneHelper("/fxml/settingsScene.fxml");
     }
 
+    public void goToTestScene() throws IOException {
+        goToSceneHelper("/fxml/newUserChatScene.fxml");
+    }
+
     /**
      * Navigates to the previous scene.
      */

@@ -130,8 +130,50 @@ public class QuestionCommunication {
 
     }
 
+    public static int upvoteQuestion(long qid, long uid) {
 
+        //Checking if current lecture has been set
+        if (Lecture.getCurrentLecture() == null) {
+            System.out.println("You are not connected to a lecture!");
+
+        }
+        //Parameters for request
+
+        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("");
+        String address = "http://localhost:8080/api/question/upvote";
+
+        //Creating request and defining response
+        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
+                URI.create(address + "?qid=" + qid + "&uid=" + uid)).build();
+
+        HttpResponse<String> response;
+
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.println("There was an exception!");
+            e.printStackTrace();
+            return -2;
+        }
+
+        //Unexpected response
+        if (response.statusCode() != 200) {
+            System.out.println("Status: " + response.statusCode());
+            return -3;
+        }
+
+        //Question has been asked successfully
+        System.out.println("The question was upvoted/unvoted successfully! " + response.body());
+        return 1;
+    }
 
 
 
 }
+
+
+
+
+
+

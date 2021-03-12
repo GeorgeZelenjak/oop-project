@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.io.IOException;
 
@@ -21,7 +22,14 @@ public class CellData {
     @FXML
     private Button upvoteButton;
 
+    @FXML
+    private Text questionOwner;
+
+    @FXML
+    private Text numberOfUpvotes;
+
     private Question question;
+
 
     /**
      * Instantiates a new Cell data.
@@ -41,6 +49,8 @@ public class CellData {
         questionText.setText(string);
     }
 
+    public void setOwnerName(String owner) { questionOwner.setText(owner); }
+
     public AnchorPane getBox() {
         return questionBoxAnchorPane;
     }
@@ -49,14 +59,20 @@ public class CellData {
         this.question = question;
     }
 
+    public void setNumberOfUpvotes(int number) { numberOfUpvotes.setText(String.valueOf(number));}
+
     /**
      * Sets upvote button.
      */
     public void setUpvoteButton() {
         upvoteButton.setOnAction((
                 ActionEvent event) -> {
-            System.out.println(question.getText());
+            QuestionCommunication.upvoteQuestion(question.getId(), User.getUid());
+
+            System.out.println(question.getVotes());
         });
     }
+
+
 
 }
