@@ -130,6 +130,11 @@ public class QuestionCommunication {
 
     }
 
+    /** Method that sends a request to upvote a question to the server.
+     * @param qid - the Question ID
+     * @param uid - the User ID
+     * @return - the status code
+     */
     public static int upvoteQuestion(long qid, long uid) {
 
         //Checking if current lecture has been set
