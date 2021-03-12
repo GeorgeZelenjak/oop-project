@@ -10,6 +10,7 @@ import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 
 public class CellDataUser {
 
@@ -70,8 +71,7 @@ public class CellDataUser {
     }
 
     public void setTimestamp(Timestamp timestamp) {
-
-        dateStamp.setText(timestamp.toLocalDateTime().toString());
+        dateStamp.setText(timestamp.toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 
     /**
@@ -85,7 +85,4 @@ public class CellDataUser {
             System.out.println(question.getVotes());
         });
     }
-
-
-
 }

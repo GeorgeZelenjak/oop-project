@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.JoinLectureSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.JoinLectureSceneController">
    <children>
-      <CheckBox fx:id="modkeyCheckBox" layoutX="439.0" layoutY="267.0" mnemonicParsing="false" onAction="#onCheckBoxAction" text="Are you a moderator?" />
-      <Button fx:id="goToJoinLectureButton" layoutX="393.0" layoutY="368.0" mnemonicParsing="false" onAction="#goToLectureButton" prefHeight="34.0" prefWidth="230.0" styleClass="mainSceneButton" text="Join Lecture" />
-      <TextField fx:id="enterNameTextField" layoutX="393.0" layoutY="166.0" promptText="First Name Last Name" styleClass="mainSceneEnterRoomCode" />
-      <Text layoutX="391.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="Join a Lecture" wrappingWidth="218.39999999999998">
+      <CheckBox fx:id="modkeyCheckBox" alignment="CENTER" layoutX="313.0" layoutY="384.0" mnemonicParsing="false" onAction="#onCheckBoxAction" prefHeight="54.0" prefWidth="456.0" styleClass="checkbox" text="Are you a moderator?">
          <font>
-            <Font size="14.0" />
-         </font>
-      </Text>
-      <TextField fx:id="modkeyTextField" layoutX="393.0" layoutY="302.0" promptText="Enter Mod Key" styleClass="mainSceneEnterRoomCode" visible="false" />
-      <TextField fx:id="enterLectureCodeTextField" layoutX="393.0" layoutY="215.0" onAction="#goToLectureEnter" promptText="Enter Lecture UUID" styleClass="mainSceneEnterRoomCode" />
-      <Button fx:id="goBackButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" prefHeight="34.0" prefWidth="138.0" styleClass="mainSceneButton" text="←Go Back" />
+            <Font size="36.0" />
+         </font></CheckBox>
+      <Button fx:id="goToJoinLectureButton" layoutX="312.75" layoutY="477.75" mnemonicParsing="false" onAction="#goToLecture" prefHeight="34.0" prefWidth="230.0" styleClass="joinLectureButton" text="Join Lecture" />
+      <TextField fx:id="enterNameTextField" alignment="CENTER" layoutX="312.0" layoutY="240.0" promptText="First Name Last Name" styleClass="textBox" />
+      <Text layoutX="293.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 72;" styleClass="headerText" text="Join the lecture" wrappingWidth="497.0" AnchorPane.leftAnchor="293.0" AnchorPane.topAnchor="71.0" />
+      <TextField fx:id="modkeyTextField" alignment="CENTER" layoutX="312.0" layoutY="417.75" promptText="Enter Mod Key" styleClass="textBox" visible="false" />
+      <TextField fx:id="enterLectureCodeTextField" alignment="CENTER" layoutX="312.0" layoutY="300.0" promptText="Enter Lecture UUID" styleClass="textBox" />
+      <Button fx:id="goBackButton" layoutX="43.5" layoutY="35.25" mnemonicParsing="false" onAction="#goBack" prefHeight="50.25" prefWidth="136.5" styleClass="backButton" text="Back" />
+      <Pane layoutX="45.0" layoutY="630.0" prefHeight="90.0" prefWidth="228.0" styleClass="tudLogo" />
    </children>
+   <stylesheets>
+      <URL value="@../css/Styles.css" />
+      <URL value="@../css/joinLectureScene.css" />
+   </stylesheets>
 </AnchorPane>

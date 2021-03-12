@@ -19,6 +19,8 @@ public class QuestionCellUser extends ListCell<Question> {
 
             setGraphic(data.getBox());
             data.setUpvoteButton();
-        } else setGraphic(null);
+        } else {
+            setGraphic(null);
+        }
     }
 }

@@ -1,35 +1,63 @@
 
-    .mainSceneButton {
+    * {
+        -fx-white: #F7F7F7;
+        -fx-blue: #00A6D6;
+        -fx-dark-blue: #0066a2;
+        -fx-border-gray: #B0BEC5;
+        -fx-text-gray: #C4C4C4;
+        -fx-blue-green: #82D7C6;
+        -fx-green: #39C86A;
+        -fx-red: #C3312F;
+        -fx-yellow: #F1BE3E;
+        -fx-font-family: Roboto;
+        -fx-padding: 0px 0px 0px 0px;
 
-        -fx-background-color: #1a75ff;
-        -fx-background-radius: 10px;
-        -fx-font: 18px Arial;
-        -fx-text-fill: white;
     }
+    /*To be used*/
 
-    .mainSceneButton:hover{
-        -fx-background-color:  #6699ff;
-    }
+    /*button {*/
+    /*    -fx-background-color: -fx-blue;*/
+    /*    -fx-background-radius: 10px;*/
 
-    .mainSceneEnterRoomCode{
+    /*    -fx-font: 18px Roboto;*/
+    /*    -fx-text-fill: -fx-white;*/
+    /*}*/
+    /*button:hover {*/
+    /*    -fx-background-color: -fx-dark-blue;*/
+    /*}*/
+
+
+    .tudLogo {
+        -fx-background-image: url(/images/tudLogo.png) ;
         -fx-background-color: Transparent;
+        -fx-min-height: 90px;
+        -fx-min-width: 228px;
+        -fx-max-height: 90px;
+        -fx-max-width: 228px;
+    }
+
+    /*This should be added somewhere else!*/
+    .mainSceneEnterRoomCode{
+        -fx-background-color: -fx-white;
         -fx-background-radius: 10px;
         -fx-border-radius: 10px;
         -fx-border-width: 2px;
-        -fx-border-color: black;
+        -fx-border-color: -fx-border-gray;
         -fx-font: 18px Arial;
-        -fx-text-fill: Black;
+        -fx-prompt-text-fill: -fx-text-gray;
+        -fx-text-fill: black;
     }
 
+
     .headerText{
-        -fx-font-size: 36;
+        -fx-font-size: 36px;
     }
 
     .leaveLecture{
         -fx-background-color: #C3312F;
         -fx-background-radius: 10px;
         -fx-font: 18px Arial;
-        -fx-text-fill: white;
+        -fx-text-fill: -fx-white;
     }
 
     .leaveLecture:hover{
@@ -38,6 +66,11 @@
 
     .settingsButton{
         -fx-background-image: url(/images/Gear.png) ;
+        -fx-background-color: Transparent;
+    }
+
+    .deleteButton{
+        -fx-graphic: url(/images/trash.png);
         -fx-background-color: Transparent;
     }
 
@@ -51,7 +84,35 @@
     }
 
     .sidebar{
-        -fx-background-color: rgba(14, 114, 237, 0.45);
+        -fx-background-color: -fx-blue-green;
+    }
+
+    .textBox {
+        -fx-background-color: -fx-white;
+        -fx-background-radius: 7px;
+        -fx-font-size: 36px;
+        -fx-text-fill: black;
+        -fx-pref-width: 455.25px;
+        -fx-pref-height: 50.25px;
+
+        -fx-border-radius: 7px;
+        -fx-border-width: 2px;
+        -fx-border-color: -fx-border-gray;
+        -fx-prompt-text-fill: -fx-text-gray;
+
+    }
+
+    .backButton {
+        -fx-background-color: -fx-blue;
+        -fx-background-radius: 7px;
+        -fx-font: 27px Roboto;
+        -fx-text-fill: -fx-white;
+        -fx-pref-width: 136.5px;
+        -fx-pref-height: 50.25px;
+    }
+
+    .backButton:hover{
+        -fx-background-color:  -fx-dark-blue;
     }
     .upvoteButton{
 
@@ -59,11 +120,6 @@
         -fx-background-radius: 10px;
         -fx-font: 10px Arial;
         -fx-text-fill: black;
-    }
-    .deleteQuestionButton{
-        -fx-background-image: url(../images/trash.png);
-        -fx-background-color: red;
-        -fx-background-radius: 10px;
     }
 
 

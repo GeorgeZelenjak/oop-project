@@ -43,6 +43,13 @@ public class JoinLectureSceneController {
             return;
         }
 
+        String text = enterNameTextField.getText();
+        if (text.length() > 100) {
+            AlertController.alertWarning("Long name",
+                    "The lecture name is too long!\n(max 100 characters)");
+            return;
+        }
+
         Lecture.setCurrentLecture(
                 LectureCommunication.joinLectureById(enterLectureCodeTextField.getText()));
         Lecture currentLecture = Lecture.getCurrentLecture();
