@@ -25,22 +25,17 @@ public class CreateLectureController {
     private void createLecture() throws IOException {
         String text = enterLectureNameTextField.getText();
         if (text.length() > 255) {
-            AlertController.alertWarning("Long lecture name", "The lecture name is too long!\n(max 255 characters)");
+            AlertController.alertWarning("Long lecture name",
+                    "The lecture name is too long!\n(max 255 characters)");
             return;
         }
         Lecture lecture = LectureCommunication
                 .createLecture(enterLectureNameTextField.getText());
 
-        String ret;
-        try {
-            if (lecture == null) {
-                throw new IllegalArgumentException("Lecture is null!");
-            }
-            ret = lecture.toString();
-        } catch (Exception e) {
-            ret = "";
-            e.printStackTrace();
+        if (lecture == null) {
+            return;
         }
+
         String alertText = "The lecture has been created successfully!"
                 + "\nPress OK to go to the lecture page.";
         AlertController.alertInformation("Creating lecture", alertText);
