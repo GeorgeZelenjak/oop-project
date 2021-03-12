@@ -15,7 +15,7 @@
             <Button fx:id="goToUserManualButton" layoutX="14.0" layoutY="417.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="28.0" prefWidth="168.0" styleClass="mainSceneButton" text="User Manual" />
             <Button id="leaveLecture" layoutX="16.0" layoutY="564.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="Leave Lecture" />
             <Line endX="100.0" layoutX="100.0" layoutY="72.0" opacity="0.5" startX="-100.0" stroke="#1a75ff" />
-            <Text layoutX="16.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Name" wrappingWidth="168.0703125">
+            <Text fx:id="lectureNameLecturer" layoutX="16.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Name" wrappingWidth="168.0703125">
                <font>
                   <Font name="Arial Bold" size="25.0" />
                </font>
@@ -35,7 +35,6 @@
             <Button layoutX="16.0" layoutY="309.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Copy lecture id" />
             <Button layoutX="14.0" layoutY="261.0" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Copy modkey" />
          </children></Pane>
-      <TextFlow layoutX="208.0" layoutY="51.0" prefHeight="490.0" prefWidth="501.0" />
       <Pane layoutX="738.0" layoutY="14.0" prefHeight="216.0" prefWidth="247.0" styleClass="sidebar">
          <children>
             <Text layoutX="7.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Polling Question Results" textAlignment="CENTER" wrappingWidth="232.20000000000005">
@@ -46,7 +45,7 @@
             <Button layoutX="45.0" layoutY="169.0" mnemonicParsing="false" styleClass="mainSceneButton" text="Release Results" />
          </children>
       </Pane>
-      <Button layoutX="208.0" layoutY="583.0" mnemonicParsing="false" styleClass="mainSceneButton" text="Create Polling Question" />
+      <Button layoutX="227.0" layoutY="583.0" mnemonicParsing="false" styleClass="mainSceneButton" text="Create Polling Question" />
       <Button layoutX="742.0" layoutY="541.0" mnemonicParsing="false" styleClass="mainSceneButton" text="Reopen a Polling Question" />
       <Pane layoutX="738.0" layoutY="247.0" prefHeight="157.0" prefWidth="247.0" styleClass="sidebar">
          <children>
@@ -60,7 +59,8 @@
       </Pane>
       <Button layoutX="744.0" layoutY="447.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="234.0" styleClass="mainSceneButton" text="View Lecture Log" />
       <Button layoutX="744.0" layoutY="495.0" mnemonicParsing="false" styleClass="mainSceneButton" text="View Answered Questions" />
-      <Button layoutX="495.0" layoutY="582.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="214.0" styleClass="mainSceneButton" text="Create Quiz" />
+      <Button layoutX="500.0" layoutY="583.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="214.0" styleClass="mainSceneButton" text="Create Quiz" />
       <Button id="leaveLecture" fx:id="closeLectureButton" layoutX="743.0" layoutY="583.0" mnemonicParsing="false" onAction="#closeLecture" prefHeight="34.0" prefWidth="234.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="Close Lecture" />
+      <ListView fx:id="questionPaneListView" layoutX="208.0" layoutY="14.0" prefHeight="538.0" prefWidth="522.0" />
    </children>
 </AnchorPane>

@@ -11,16 +11,13 @@ import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 import java.io.IOException;
 import java.sql.Timestamp;
 
-public class CellDataUser {
+public class CellDataLecturer {
 
     @FXML
     private Text questionText;
 
     @FXML
     private AnchorPane questionBoxAnchorPane;
-
-    @FXML
-    private Button upvoteButton;
 
     @FXML
     private Text questionOwner;
@@ -37,9 +34,9 @@ public class CellDataUser {
     /**
      * Instantiates a new Cell data.
      */
-    public CellDataUser() {
+    public CellDataLecturer() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                "/fxml/questionCellUser.fxml"));
+                "/fxml/questionCellLecturer.fxml"));
         fxmlLoader.setController(this);
         try {
             fxmlLoader.load();
@@ -65,27 +62,8 @@ public class CellDataUser {
         this.question = question;
     }
 
-    public void setNumberOfUpvotes(int number) {
-        numberOfUpvotes.setText(String.valueOf(number));
-    }
-
     public void setTimestamp(Timestamp timestamp) {
 
         dateStamp.setText(timestamp.toLocalDateTime().toString());
     }
-
-    /**
-     * Sets upvote button.
-     */
-    public void setUpvoteButton() {
-        upvoteButton.setOnAction((
-                ActionEvent event) -> {
-            QuestionCommunication.upvoteQuestion(question.getId(), User.getUid());
-
-            System.out.println(question.getVotes());
-        });
-    }
-
-
-
 }
