@@ -9,6 +9,7 @@ public class QuestionCell extends ListCell<Question> {
         super.updateItem(question,empty);
         if (question != null) {
             CellData data = new CellData();
+            data.setQuestion(question);
             data.setInfo(question.getText());
             setGraphic(data.getBox());
         }

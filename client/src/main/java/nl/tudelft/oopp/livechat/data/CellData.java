@@ -2,6 +2,7 @@ package nl.tudelft.oopp.livechat.data;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
@@ -13,7 +14,9 @@ public class CellData {
     private Text questionText;
 
     @FXML
-    private HBox hbox;
+    private AnchorPane questionBoxAnchorPane;
+
+    private Question question;
 
     /**
      * Instantiates a new Cell data.
@@ -33,7 +36,11 @@ public class CellData {
         questionText.setText(string);
     }
 
-    public HBox getBox() {
-        return hbox;
+    public AnchorPane getBox() {
+        return questionBoxAnchorPane;
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 }
