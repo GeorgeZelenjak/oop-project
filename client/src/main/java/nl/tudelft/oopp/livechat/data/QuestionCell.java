@@ -8,9 +8,13 @@ public class QuestionCell extends ListCell<Question> {
     public void updateItem(Question question, boolean empty) {
         super.updateItem(question,empty);
         if (question != null && !empty) {
+
             CellData data = new CellData();
             data.setQuestion(question);
+
             data.setInfo(question.getText());
+            data.setOwnerName("Anonymous"); //Will be changed when we implement authorization
+
             setGraphic(data.getBox());
             data.setUpvoteButton();
         }

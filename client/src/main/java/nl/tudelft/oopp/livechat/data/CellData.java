@@ -21,6 +21,9 @@ public class CellData {
     @FXML
     private Button upvoteButton;
 
+    @FXML
+    private Text questionOwner;
+
     private Question question;
 
     /**
@@ -40,6 +43,8 @@ public class CellData {
     public void setInfo(String string) {
         questionText.setText(string);
     }
+
+    public void setOwnerName(String owner) { questionOwner.setText(owner); }
 
     public AnchorPane getBox() {
         return questionBoxAnchorPane;
