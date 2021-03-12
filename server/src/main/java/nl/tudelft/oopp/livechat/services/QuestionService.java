@@ -173,7 +173,7 @@ public class QuestionService {
         }
         if (lecture.getModkey().equals(modkey)) {
             q.setAnswered(true);
-            q.setAnswerTime(new Timestamp(System.currentTimeMillis() % 10));
+            q.setAnswerTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
             questionRepository.save(q);
             return 0;
         }
