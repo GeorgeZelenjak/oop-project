@@ -49,17 +49,22 @@ public class CellData {
         questionText.setText(string);
     }
 
-    public void setOwnerName(String owner) { questionOwner.setText(owner); }
+    public void setOwnerName(String owner) {
+        questionOwner.setText(owner);
+    }
 
     public AnchorPane getBox() {
         return questionBoxAnchorPane;
     }
 
     public void setQuestion(Question question) {
+
         this.question = question;
     }
 
-    public void setNumberOfUpvotes(int number) { numberOfUpvotes.setText(String.valueOf(number));}
+    public void setNumberOfUpvotes(int number) {
+        numberOfUpvotes.setText(String.valueOf(number));
+    }
 
     /**
      * Sets upvote button.
