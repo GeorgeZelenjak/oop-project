@@ -139,6 +139,15 @@ public class Question implements Comparable<Question> {
         return ownerId;
     }
 
+
+    public static List<Question> getCurrentQuestions() {
+        return currentQuestions;
+    }
+
+    public static void setCurrentQuestions(List<Question> questions) {
+        currentQuestions = questions;
+    }
+
     /**
      * Compares the question to another object.
      * @param o object to compare to

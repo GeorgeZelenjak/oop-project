@@ -13,7 +13,7 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
-import nl.tudelft.oopp.livechat.controllers.QuestionSorter;
+import nl.tudelft.oopp.livechat.controllers.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.QuestionCellLecturer;
@@ -74,6 +74,35 @@ public class LecturerChatSceneController implements Initializable {
             ae -> fetchQuestions()));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+    }
+
+    /**
+     * Fetch questions.
+     */
+    public void fetchQuestions() {
+        List<Question> list = QuestionCommunication.fetchQuestions();
+        if (list == null || list.size() == 0) {
+            return;
+        }
+        Question.setCurrentQuestions(list);
+
+        questions = Question.getCurrentQuestions();
+        questions = QuestionManager.filter(answeredCheckBox.isSelected(),
+                unansweredCheckBox.isSelected(), questions);
+        QuestionManager.sort(sortByVotesCheckBox.isSelected(), questions);
+
+        observableList.setAll(questions);
+        questionPaneListView.setItems(observableList);
+
+        questionPaneListView.setCellFactory(
+                new Callback<ListView<Question>, ListCell<Question>>() {
+                    @Override
+                    public ListCell<Question> call(ListView<Question> listView) {
+                        return new QuestionCellLecturer();
+                    }
+                });
+        questionPaneListView.getItems().clear();
+        questionPaneListView.getItems().addAll(questions);
     }
 
     /**
@@ -144,50 +173,5 @@ public class LecturerChatSceneController implements Initializable {
         LectureCommunication.closeLecture(Lecture.getCurrentLecture().getUuid().toString(),
                 Lecture.getCurrentLecture().getModkey().toString());
         NavigationController.getCurrentController().goToMainScene();
-    }
-
-    /**
-     * Fetch questions.
-     */
-    public void fetchQuestions() {
-        List<Question> list = QuestionCommunication.fetchQuestions();
-        if (list == null || list.size() == 0) {
-            return;
-        }
-
-        questions = list;
-        sort();
-
-        observableList.setAll(list);
-        questionPaneListView.setItems(observableList);
-
-        questionPaneListView.setCellFactory(
-                new Callback<ListView<Question>, ListCell<Question>>() {
-                    @Override
-                    public ListCell<Question> call(ListView<Question> listView) {
-                        return new QuestionCellLecturer();
-                    }
-                });
-        //System.out.println(list.size());
-
-        questionPaneListView.getItems().clear();
-        questionPaneListView.getItems().addAll(list);
-    }
-
-    /**
-     * Sorts questions by votes or time.
-     */
-    public void sort() {
-        if (questions == null) {
-            return;
-        }
-        QuestionSorter.sort(sortByVotesCheckBox.isSelected(), questions);
-    }
-
-    /**
-     * Show the questions based on user's choice.
-     */
-    public void show() {
-        System.out.println("Bugaga!");
     }
 }

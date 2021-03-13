@@ -12,7 +12,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
-import nl.tudelft.oopp.livechat.controllers.QuestionSorter;
+import nl.tudelft.oopp.livechat.controllers.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 
 import nl.tudelft.oopp.livechat.data.Question;
@@ -78,16 +78,18 @@ public class UserChatSceneController implements Initializable {
      * Fetch questions.
      */
     public void fetchQuestions() {
-
         List<Question> list = QuestionCommunication.fetchQuestions();
         if (list == null) {
             return;
         }
+        Question.setCurrentQuestions(list);
 
-        questions = list;
-        sort();
+        questions = Question.getCurrentQuestions();
+        questions = QuestionManager.filter(answeredCheckBox.isSelected(),
+                unansweredCheckBox.isSelected(), questions);
+        QuestionManager.sort(sortByVotesCheckBox.isSelected(), questions);
 
-        observableList.setAll(list);
+        observableList.setAll(questions);
         questionPaneListView.setItems(observableList);
 
         questionPaneListView.setCellFactory(
@@ -100,24 +102,7 @@ public class UserChatSceneController implements Initializable {
         //System.out.println(list.size());
 
         questionPaneListView.getItems().clear();
-        questionPaneListView.getItems().addAll(list);
-    }
-
-    /**
-     * Sorts questions by votes or time.
-     */
-    public void sort() {
-        if (questions == null) {
-            return;
-        }
-        QuestionSorter.sort(sortByVotesCheckBox.isSelected(), questions);
-    }
-
-    /**
-     * Show the questions based on user's choice.
-     */
-    public void show() {
-        System.out.println("Bugaga!");
+        questionPaneListView.getItems().addAll(questions);
     }
 
     /**
@@ -193,6 +178,8 @@ public class UserChatSceneController implements Initializable {
 
         questionInputTextArea.clear();
 
+        //TODO this will be removed when we implement a more efficient polling
+        fetchQuestions();
         return (ret);
     }
 }
