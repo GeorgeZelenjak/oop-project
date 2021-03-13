@@ -3,27 +3,29 @@ package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.data.QuestionCellUser;
+import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
+import javafx.util.Callback;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 
 /**
@@ -31,24 +33,29 @@ import java.util.stream.Collectors;
  */
 public class UserChatSceneController implements Initializable {
 
-
+    @FXML
+    private TextArea questionInputTextArea;
 
     @FXML
-    private TextField inputQuestionTextTextField;
-    @FXML
-    private ListView<String> questionPaneListView;
+    private ListView<Question> questionPaneListView;
+
     @FXML
     private Text lectureNameText;
+
+    @FXML
+    private Text userNameText;
+
+    @FXML
+    ObservableList<Question> observableList = FXCollections.observableArrayList();
 
     /**
      * method that runs when the scene is first initialized.
      * @param location location of current scene
      * @param resourceBundle resource bundle
      */
-
     public void initialize(URL location, ResourceBundle resourceBundle) {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
-        lectureNameText.setTextAlignment(TextAlignment.CENTER);
+        userNameText.setText(User.getUserName());
 
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(2500),
@@ -65,10 +72,21 @@ public class UserChatSceneController implements Initializable {
         List<Question> list = QuestionCommunication.fetchQuestions();
         if (list == null)
             return;
-        List<String> listString = list.stream()
-                .map(Question::getText).collect(Collectors.toList());
+
+        observableList.setAll(list);
+        questionPaneListView.setItems(observableList);
+
+        questionPaneListView.setCellFactory(
+                new Callback<ListView<Question>, ListCell<Question>>() {
+                    @Override
+            public ListCell<Question> call(ListView<Question> listView) {
+                        return new QuestionCellUser();
+                    }
+                });
+        //System.out.println(list.size());
+
         questionPaneListView.getItems().clear();
-        questionPaneListView.getItems().addAll(listString);
+        questionPaneListView.getItems().addAll(list);
     }
 
     /**
@@ -80,18 +98,14 @@ public class UserChatSceneController implements Initializable {
 
         //Navigating back to Main Page
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirm your action");
-        alert.setHeaderText(null);
-
-        alert.setContentText("Are you sure do you want to quit this lecture?");
+        Alert alert = AlertController.createAlert(Alert.AlertType.CONFIRMATION,
+                "Confirm your action", "Are you sure do you want to quit this lecture?");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             NavigationController.getCurrentController().goToMainScene();
         }
     }
-
 
     /**
      * Go to user manual.
@@ -100,7 +114,6 @@ public class UserChatSceneController implements Initializable {
      */
     public void goToUserManual() throws IOException {
         NavigationController.getCurrentController().goToUserManual();
-
     }
 
     /**
@@ -115,38 +128,40 @@ public class UserChatSceneController implements Initializable {
     /**
      * Send a question to the server.
      *
-     * @param ae the enter button
      * @return Integer showing status of the action
      *      1- Everything is good
      *      -1 -Lecture has not been initialized
      *      -2/ -3 -Server error.
+     *      -4 - too long question
+     *      -5 empty field
      */
     @FXML
-    public int askQuestion(ActionEvent ae) {
-
-        int ret = QuestionCommunication.askQuestion(inputQuestionTextTextField.getText());
+    public int askQuestion() {
+        String text = questionInputTextArea.getText();
+        if (text.length() == 0) {
+            return -5;
+        }
+        if (text.length() > 2000) {
+            AlertController.alertWarning("Long question",
+                    "Your question is too long! (max 2000 characters)");
+            return -4;
+        }
+        int ret = QuestionCommunication.askQuestion(text);
         //inputQuestion.setText("");
-        System.out.println(ae);
-
 
         System.out.println(ret);
         if (ret <= 0) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("ERROR");
-            alert.setHeaderText(null);
-
-            alert.setContentText("There was a problem with asking question!");
-            alert.showAndWait();
+            AlertController.alertError("ERROR",
+                    "There was a problem with asking question!");
         }
 
         Question question = new Question(
-                Lecture.getCurrentLecture().getUuid(), inputQuestionTextTextField.getText(), 0);
+                Lecture.getCurrentLecture().getUuid(), questionInputTextArea.getText(), 0);
 
+        //questionPaneListView.getItems().add(question.getText());
 
-        questionPaneListView.getItems().add(question.getText());
+        questionInputTextArea.clear();
 
         return (ret);
-
     }
-
 }

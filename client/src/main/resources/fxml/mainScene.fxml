@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.MainSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1080.0" styleClass="mainScenePane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.MainSceneController">
    <children>
-      <Button fx:id="goToJoinLectureButton" layoutX="386.0" layoutY="236.0" mnemonicParsing="false" onAction="#goToLecture" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Join Room" />
-      <Text layoutX="387.0" layoutY="133.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="App Name" textAlignment="CENTER" wrappingWidth="227.0">
+      <Text id="appName" layoutX="371.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="Friendly Chat" textAlignment="CENTER" wrappingWidth="338.0" AnchorPane.leftAnchor="371.0" AnchorPane.topAnchor="26.3046875">
          
       </Text>
-      <Button fx:id="goToCreateLectureButton" layoutX="386.0" layoutY="291.0" mnemonicParsing="false" onAction="#goToCreateLecture" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Create Room" />
-      <Button fx:id="goToRestoreLectureButton" layoutX="387.0" layoutY="466.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Restore Lecture" />
-      <Button fx:id="goToExportQAFromLectureButton" layoutX="387.0" layoutY="512.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="227.0" styleClass="mainSceneButton" text="Export Q&amp;A from Lecture" />
-      <Button fx:id="goToSettingsButton" layoutX="55.0" layoutY="613.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
-      <Button fx:id="goToHelpButton" layoutX="14.0" layoutY="613.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="33.0" prefWidth="19.0" styleClass="mainSceneButton" text="?" />
+      <Button id="joinLecture" fx:id="goToJoinLectureButton" contentDisplay="CENTER" layoutX="312" layoutY="241.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#goToLecture" prefHeight="47.0" prefWidth="422.0" styleClass="mainSceneButton" text="Join Lecture" textAlignment="CENTER" />
+      <Button id="createLecture" fx:id="goToCreateLectureButton" layoutX="312" layoutY="307.5" mnemonicParsing="false" onAction="#goToCreateLecture" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Create Lecture" />
+      <Button id="restoreLecture" fx:id="goToRestoreLectureButton" layoutX="312" layoutY="432" mnemonicParsing="false" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Restore Lecture" />
+      <Button fx:id="goToExportQAFromLectureButton" layoutX="312" layoutY="498" mnemonicParsing="false" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Lecture Archive" />
+      <Button fx:id="goToSettingsButton" layoutX="940.0" layoutY="613.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
+      <Button fx:id="goToHelpButton" layoutX="879.0" layoutY="613.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="33.0" prefWidth="19.0" text="?" />
+      <Button layoutX="14.0" layoutY="516.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="287.0" styleClass="tudLogo" visible="false" />
+      <Pane layoutX="45" layoutY="630" prefHeight="90" prefWidth="228" styleClass="tudLogo" />
+      <Button layoutX="315.0" layoutY="604.0" mnemonicParsing="false" onAction="#goToDebugScene" prefHeight="51.0" prefWidth="456.0" text="Debug scene" />
+
    </children>
+   <stylesheets>
+      <URL value="@../css/Styles.css" />
+      <URL value="@../css/mainScene.css" />
+   </stylesheets>
 </AnchorPane>

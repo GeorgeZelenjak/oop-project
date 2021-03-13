@@ -1,0 +1,12 @@
+
+
+.participants {
+    -fx-width: 185px;
+    -fx-height: 52px;
+    -fx-left: 5px;
+    -fx-top: 144px;
+
+
+    -fx-box-sizing: border-box;
+    -fx-border-radius: 10px;
+}

@@ -5,9 +5,13 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
+
 
 
 public class CreateLectureController {
@@ -15,42 +19,60 @@ public class CreateLectureController {
     @FXML
     private TextField enterLectureNameTextField;
 
+    @FXML
+    private TextField enterYourNameTextField;
 
     /**
      * Creates the lecture, shows alert with lecture and creator names
      * and returns to the main scene.
      * @throws IOException the io exception
      */
-    public void createLecture() throws IOException {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Creating lecture");
-        alert.setHeaderText(null);
+    private void createLecture() throws IOException {
+        if (!InputValidator.validateUserName(enterYourNameTextField.getText(), 50)
+                || !InputValidator.validateLectureName(
+                        enterLectureNameTextField.getText(), 255)) {
+            return;
+        }
+
         Lecture lecture = LectureCommunication
                 .createLecture(enterLectureNameTextField.getText());
 
-        String ret;
-        try {
-            if (lecture == null) {
-                throw new IllegalArgumentException("Lecture is null!");
-            }
-            ret = lecture.toString();
-        } catch (Exception e) {
-            ret = "";
-            e.printStackTrace();
+        if (lecture == null) {
+            return;
         }
-        alert.setContentText(ret);
-        alert.showAndWait();
 
-        NavigationController.getCurrentController().goToLecturerChatPage();
+        String alertText = "The lecture has been created successfully!"
+                + "\nPress OK to go to the lecture page.";
+        AlertController.alertInformation("Creating lecture", alertText);
+
         Lecture.setCurrentLecture(lecture);
+        User.setUserName(enterYourNameTextField.getText());
+        NavigationController.getCurrentController().goToLecturerChatPage();
         System.out.println(lecture);
+    }
+
+    /**
+     * Create lecture when you press the button.
+     *
+     * @throws IOException the io exception
+     */
+    public void createLectureButton() throws IOException {
+        createLecture();
+    }
+
+    /**
+     * Create the lecture when you press enter.
+     *
+     * @throws IOException the io exception
+     */
+    public void createLectureEnter() throws IOException {
+        createLecture();
     }
 
     /**
      * Go back to previous Scene.
      */
     public void goBack() {
-
         NavigationController.getCurrentController().goBack();
     }
 

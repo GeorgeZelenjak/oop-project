@@ -38,7 +38,7 @@ public class LectureEntity {
     private int frequency;
 
     @Column(name = "startTime")
-    private Timestamp startTime;
+    private Timestamp startTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
 
     @Column(name = "open")
     private boolean open = true;
@@ -64,7 +64,6 @@ public class LectureEntity {
         this.fasterCount = 0;
         this.slowerCount = 0;
         this.frequency = 60;
-        this.startTime = new Timestamp(System.currentTimeMillis());
     }
 
     /**

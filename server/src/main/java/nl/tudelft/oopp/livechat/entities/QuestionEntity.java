@@ -27,18 +27,18 @@ public class QuestionEntity {
     private UUID lectureId;
 
     @Column(name = "time")
-    private Timestamp time = new Timestamp(System.currentTimeMillis());
+    private Timestamp time = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
 
     @Column(name = "votes")
     private int votes;
 
-    @Column(name = "text")
+    @Column(name = "text", length = 2000)
     private String text;
 
     @Column(name = "answered")
     private boolean answered;
 
-    @Column(name = "answerText")
+    @Column(name = "answerText", length = 2000)
     private String answerText;
 
     @Column(name = "answerTime")
@@ -64,7 +64,8 @@ public class QuestionEntity {
      */
     public QuestionEntity(UUID lectureId, String text, Timestamp time, long ownerId) {
         this.lectureId = lectureId;
-        this.time = time;
+        this.time = Objects.requireNonNullElseGet(time,
+            () -> new Timestamp(System.currentTimeMillis() / 1000 * 1000));
         this.text = text;
         this.ownerId = ownerId;
     }
@@ -139,7 +140,15 @@ public class QuestionEntity {
      * Increments the vote count of the question by 1.
      */
     public void vote() {
-        this.votes += 1;
+        this.votes++;
+    }
+
+
+    /**
+     * Decrement question votes by 1.
+     */
+    public void unvote() {
+        this.votes--;
     }
 
     /**

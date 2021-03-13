@@ -22,7 +22,7 @@ public class Question {
     @Expose(serialize = true, deserialize = true)
     private UUID lectureId;
 
-    @Expose(serialize = false, deserialize = true)
+    @Expose(serialize = true, deserialize = true)
     private Timestamp time;
 
     @Expose(serialize = false, deserialize = true)
@@ -43,6 +43,9 @@ public class Question {
     @Expose(serialize = true, deserialize = true)
     private long ownerId;
 
+    @Expose(serialize = true, deserialize = true)
+    private String ownerName;
+
     /**
      * .
      * Empty constructor to create a question entity.
@@ -57,7 +60,7 @@ public class Question {
      * @param text      the text
      * @param ownerId   the owner id
      */
-    public Question(UUID lectureId, String text,  long ownerId) {
+    public Question(UUID lectureId, String text, long ownerId) {
         this.lectureId = lectureId;
         this.text = text;
         this.ownerId = ownerId;
@@ -103,6 +106,7 @@ public class Question {
     public int getVotes() {
         return this.votes;
     }
+
 
     /**
      * .

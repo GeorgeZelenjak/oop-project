@@ -1,5 +1,6 @@
 package nl.tudelft.oopp.livechat.services;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
@@ -49,6 +50,9 @@ public class QuestionService {
         }
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
         if (!lecture.isOpen()) {
+            return -1;
+        }
+        if (q.getText().length() > 2000) {
             return -1;
         }
         questionRepository.save(q);
@@ -107,7 +111,7 @@ public class QuestionService {
      * @param newOwnerId the id of the new owner of the question
      * @return 0 if question is edited successfully, -1 otherwise
      */
-    public int editQuestion(long id, String moderatorKey, String newText, long newOwnerId) {
+    public int editQuestion(long id, UUID moderatorKey, String newText, long newOwnerId) {
         Optional<QuestionEntity> optQuestion = questionRepository.findById(id);
         if (optQuestion.isEmpty()) {
             return -1;
@@ -117,8 +121,7 @@ public class QuestionService {
         if (lecture == null || !lecture.isOpen()) {
             return -1;
         }
-        UUID modkey = UUID.fromString(moderatorKey);
-        if (lecture.getModkey().equals(modkey)) {
+        if (lecture.getModkey().equals(moderatorKey)) {
             q.setText(newText);
             q.setOwnerId(newOwnerId);
             questionRepository.save(q);
@@ -146,9 +149,35 @@ public class QuestionService {
         if (!voters.contains(userId)) {
             q.vote();
             voters.add(userId);
+        } else {
+            q.unvote();
+            voters.remove(userId);
+        }
+        questionRepository.save(q);
+        return 0;
+    }
+
+    /**
+     * Mark a question as answered.
+     *
+     * @param id     the question id
+     * @param modkey the modkey
+     * @return 0 if successful, -1 otherwise
+     */
+    public int answer(long id, UUID modkey, String answerText) {
+        QuestionEntity q = questionRepository.findById(id).orElse(null);
+        if (q == null) return -1;
+        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
+        if (answerText.length() > 2000) {
+            return -1;
+        }
+        if (lecture.getModkey().equals(modkey)) {
+            q.setAnswered(true);
+            q.setAnswerTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
             questionRepository.save(q);
             return 0;
         }
         return -1;
+
     }
 }

@@ -1,0 +1,57 @@
+
+    .mainScenePane {
+        -fx-background-color: -fx-white;
+
+    }
+    .headerText{
+        -fx-font-size: 72px;
+    }
+
+    .mainSceneButton {
+
+        -fx-background-color: -fx-blue;
+        -fx-background-radius: 7px;
+        -fx-font-size: 36px;
+        -fx-text-fill: -fx-white;
+        -fx-pref-width: 455.25px;
+        -fx-pref-height: 50.25px;
+
+    }
+
+    .mainSceneButton:hover{
+        -fx-background-color:  -fx-dark-blue;
+    }
+
+    .mainSceneEnterRoomCode{
+        -fx-background-color: -fx-white;
+        -fx-background-radius: 10px;
+        -fx-border-radius: 10px;
+        -fx-border-width: 2px;
+        -fx-border-color: -fx-border-gray;
+        -fx-font: 18px Arial;
+        -fx-prompt-text-fill: -fx-text-gray;
+        -fx-text-fill: black;
+    }
+    /* ID styling*/
+    #appName {
+        -fx-font: 72px Roboto;
+    }
+
+    #joinLecture {
+
+    }
+
+    #createLecture {
+
+    }
+
+    #restoreLecture {
+
+    }
+
+    #lectureArchive {
+
+    }
+
+
+

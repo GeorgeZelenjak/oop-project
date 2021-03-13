@@ -44,9 +44,13 @@ public class LectureService {
      * @return the new lecture entity
      */
     public LectureEntity newLecture(String name, String creatorName) {
-        LectureEntity n = new LectureEntity(name, creatorName);
-        lectureRepository.save(n);
-        return n;
+        if (name.length() <= 255 && creatorName.length() <= 255) {
+            LectureEntity n = new LectureEntity(name, creatorName);
+            lectureRepository.save(n);
+            return n;
+        } else {
+            return null;
+        }
     }
 
     /**

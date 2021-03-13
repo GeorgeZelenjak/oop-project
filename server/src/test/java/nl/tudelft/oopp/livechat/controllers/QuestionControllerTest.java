@@ -145,6 +145,24 @@ class QuestionControllerTest {
         return Integer.parseInt(result);
     }
 
+    /**
+     * A method to anwer a question.
+     *
+     * @param qid id of the question
+     * @param modkey the modkey
+     * @return 0 if successful, otherwise -1
+     * @throws Exception if something goes wrong
+     */
+    int answer(long qid, String modkey) throws Exception {
+        String result = this.mockMvc.perform(put("/api/question/answer/" + qid + "/" + modkey)
+                .contentType(APPLICATION_JSON)
+                .content("This is definitely a question asnwer dude")
+                .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        return Integer.parseInt(result);
+    }
+
     @Test
     void askQuestionSuccessfulTest() throws Exception {
         String qid1string = postQuestions(q1Json);
@@ -275,8 +293,34 @@ class QuestionControllerTest {
     }
 
     @Test
-    void upvoteUnsuccessfulTest() throws Exception {
+    void unvoteSuccessfulTest() throws Exception {
         long qid1 = Long.parseLong(postQuestions(q1Json));
+        postQuestions(q2Json);
+
+        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
+        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+
+        final int oldVotes1 = listLecture1after.get(0).getVotes();
+        final int oldVotes2 = listLecture2after.get(0).getVotes();
+
+        upvote(qid1, q1.getOwnerId());
+        final int result = upvote(qid1, q1.getOwnerId());
+        assertEquals(0, result);
+
+        listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
+        listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+
+        int newVotes1 = listLecture1after.get(0).getVotes();
+        int newVotes2 = listLecture2after.get(0).getVotes();
+
+        assertEquals(oldVotes1, newVotes1);
+        assertEquals(oldVotes2, newVotes2);
+    }
+
+    @Test
+    void upvoteUnsuccessfulTest() throws Exception {
+        postQuestions(q1Json);
+        long qid1 = -1;
         postQuestions(q2Json);
 
         List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
@@ -295,7 +339,7 @@ class QuestionControllerTest {
         int newVotes1 = listLecture1after.get(0).getVotes();
         int newVotes2 = listLecture2after.get(0).getVotes();
 
-        assertEquals(oldVotes1 + 1, newVotes1);
+        assertEquals(oldVotes1, newVotes1);
         assertEquals(oldVotes2, newVotes2);
     }
 
@@ -365,5 +409,71 @@ class QuestionControllerTest {
         assertEquals(question1after.getText(),
                 "What would you do if a seagull entered in your house?");
         assertNotEquals(question1after.getOwnerId(), 12);
+    }
+
+    @Test
+    void answerSuccessfulTest() throws Exception {
+        final long qid1 = Long.parseLong(postQuestions(q1Json));
+        postQuestions(q2Json);
+
+        List<QuestionEntity> listLecture1after;
+        List<QuestionEntity> listLecture2after;
+
+        final int result = answer(qid1, lectureEntity1.getModkey().toString());
+        assertEquals(0, result);
+
+        listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
+        listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+
+        boolean q1status = listLecture1after.get(0).isAnswered();
+        boolean q2status = listLecture2after.get(0).isAnswered();
+
+        assertTrue(q1status);
+        assertFalse(q2status);
+    }
+
+    @Test
+    void answerUnuccessfulTest() throws Exception {
+        final long qid1 = Long.parseLong(postQuestions(q1Json));
+        postQuestions(q2Json);
+
+        List<QuestionEntity> listLecture1after;
+        List<QuestionEntity> listLecture2after;
+
+        final int result = answer(qid1, lectureEntity2.getModkey().toString());
+        assertEquals(-1, result);
+
+        listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
+        listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+
+        boolean q1status = listLecture1after.get(0).isAnswered();
+        boolean q2status = listLecture2after.get(0).isAnswered();
+
+        assertFalse(q1status);
+        assertFalse(q2status);
+    }
+
+    @Test
+    void answerUnuccessfulInvalidModkeyTest() throws Exception {
+        final long qid1 = Long.parseLong(postQuestions(q1Json));
+        postQuestions(q2Json);
+
+        List<QuestionEntity> listLecture1after;
+        List<QuestionEntity> listLecture2after;
+
+        String resultString = this.mockMvc.perform(
+                put("/api/question/answer/" + qid1 + "/" + "modkey"))
+                .andExpect(status().is4xxClientError())
+                .andReturn().getResponse().getContentAsString();
+        assertEquals("Invalid UUID", resultString);
+
+        listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
+        listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+
+        boolean q1status = listLecture1after.get(0).isAnswered();
+        boolean q2status = listLecture2after.get(0).isAnswered();
+
+        assertFalse(q1status);
+        assertFalse(q2status);
     }
 }

@@ -13,14 +13,14 @@ class QuestionEntityTest {
     private static final UUID lectureId = UUID.randomUUID();
     private static final Long ownerId = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
     private static QuestionEntity questionEntity;
-    private static final Timestamp time = new Timestamp(System.currentTimeMillis());
+    private static final Timestamp time = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
 
     @BeforeAll
     static void setUp() {
         questionEntity = new QuestionEntity(lectureId,
                 "What is the answer to the Ultimate "
                         + "Question of Life, the Universe, and Everything?",
-                new Timestamp(System.currentTimeMillis()), ownerId);
+                null, ownerId);
     }
 
     @Test
@@ -63,6 +63,13 @@ class QuestionEntityTest {
         int oldVotes = questionEntity.getVotes();
         questionEntity.vote();
         assertEquals(oldVotes + 1, questionEntity.getVotes());
+    }
+
+    @Test
+    void unvoteTest() {
+        int oldVotes = questionEntity.getVotes();
+        questionEntity.unvote();
+        assertEquals(oldVotes - 1, questionEntity.getVotes());
     }
 
     @Test

@@ -89,16 +89,28 @@ public class QuestionController {
     public int edit(@RequestBody String newQuestion) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(newQuestion);
         long id = jsonNode.get("id").asLong();
-        String modkey = jsonNode.get("modkey").asText();
+        UUID modkey = UUID.fromString(jsonNode.get("modkey").asText());
         String newText = jsonNode.get("text").asText();
         long uid = jsonNode.get("uid").asLong();
         return questionService.editQuestion(id, modkey, newText, uid);
     }
 
     /**
+     * PUT Endpoint to mark any question as answered.
+     * @param qid the id of the question
+     * @param modkey the moderator key
+     * @return 0 if successful, -1 otherwise
+     */
+    @PutMapping("/answer/{qid}/{modkey}")
+    public int markAsAnswered(@PathVariable long qid, @PathVariable UUID modkey,
+                              @RequestBody String answerText) {
+        return questionService.answer(qid, modkey, answerText);
+    }
+
+    /**
      * Exception handler.
      * @param exception exception that has occurred
-     * @return response body with 404 and 'Invalid UUID' message
+     * @return response body with 400 and 'Invalid UUID' message
      */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -107,4 +119,6 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid UUID");
     }
+
+
 }
