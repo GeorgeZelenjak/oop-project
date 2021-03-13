@@ -173,8 +173,57 @@ public class QuestionCommunication {
         return 1;
     }
 
+    /** Method that sends a request to upvote a question to the server.
+     * @param qid - the Question ID
+     * @param modkey - the User ID
+     * @return - the status code
+     */
+    public static int answerQuestion(long qid, UUID modkey) {
+
+        //Checking if current lecture has been set
+        if (Lecture.getCurrentLecture() == null) {
+            System.out.println("You are not connected to a lecture!");
+        }
+
+        //Parameters for request
+        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("placeholder");
+        String address = "http://localhost:8080/api/question/answer/" + qid + "/" + modkey;
+        String headerName = "Content-Type";
+        String headerValue = "application/json";
+
+        System.out.println(address);
+
+        //Creating request and defining response
+        HttpRequest request = HttpRequest.newBuilder().PUT(req)
+                .uri(URI.create(address + "?qid=" + qid + "&uid=" + modkey))
+                .setHeader(headerName, headerValue).build();
 
 
+        HttpResponse<String> response;
+
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.println("There was an exception!");
+            e.printStackTrace();
+            return -2;
+        }
+
+        //Unexpected response
+        if (response.statusCode() != 200) {
+            System.out.println("Status: " + response.statusCode());
+            return -3;
+        }
+
+        if (!response.body().equals("0")) {
+            return -4;
+        }
+
+        //Question has been marked as answered successfully
+        System.out.println("The question was marked as answered successfully!" + response.body());
+        return 0;
+    }
 }
 
 

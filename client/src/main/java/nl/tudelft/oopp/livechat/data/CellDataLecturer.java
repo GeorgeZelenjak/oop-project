@@ -68,5 +68,16 @@ public class CellDataLecturer {
         dateStamp.setText(timestamp.toLocalDateTime().toString());
     }
 
+    /**
+     * Sets question as answered.
+     */
+    public void setAnsweredQuestion() {
+        isAnsweredButton.setOnAction((
+                ActionEvent event) -> {
+            QuestionCommunication
+                    .answerQuestion(question.getId(), Lecture.getCurrentLecture().getModkey());
 
+            System.out.println(question.getVotes());
+        });
+    }
 }
