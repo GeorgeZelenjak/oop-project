@@ -43,6 +43,9 @@ public class Question {
     @Expose(serialize = true, deserialize = true)
     private long ownerId;
 
+    @Expose(serialize = true, deserialize = true)
+    private String ownerName;
+
     /**
      * .
      * Empty constructor to create a question entity.
