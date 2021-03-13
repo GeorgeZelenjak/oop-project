@@ -1,8 +1,9 @@
 plugins {
     id 'org.openjfx.javafxplugin' version '0.0.8'
+    id 'application'
 }
 
-mainClassName = "nl.tudelft.oopp.demo.MainApp"
+mainClassName = "nl.tudelft.oopp.livechat.MainApp"
 
 dependencies {
 
