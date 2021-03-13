@@ -5,26 +5,26 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.controllers.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
+
 import nl.tudelft.oopp.livechat.data.Question;
+
 import nl.tudelft.oopp.livechat.data.QuestionCellUser;
+import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import javafx.util.Callback;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 /**
@@ -40,8 +40,23 @@ public class UserChatSceneController implements Initializable {
 
     @FXML
     private Text lectureNameText;
+
+    @FXML
+    private Text userNameText;
+
+    @FXML
+    private CheckBox sortByVotesCheckBox;
+
+    @FXML
+    private CheckBox answeredCheckBox;
+
+    @FXML
+    private CheckBox unansweredCheckBox;
+
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
+
+    private List<Question> questions;
 
     /**
      * method that runs when the scene is first initialized.
@@ -50,7 +65,7 @@ public class UserChatSceneController implements Initializable {
      */
     public void initialize(URL location, ResourceBundle resourceBundle) {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
-        lectureNameText.setTextAlignment(TextAlignment.CENTER);
+        userNameText.setText(User.getUserName());
 
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(2500),
@@ -63,12 +78,18 @@ public class UserChatSceneController implements Initializable {
      * Fetch questions.
      */
     public void fetchQuestions() {
-
         List<Question> list = QuestionCommunication.fetchQuestions();
-        if (list == null)
+        if (list == null) {
             return;
+        }
+        Question.setCurrentQuestions(list);
 
-        observableList.setAll(list);
+        questions = Question.getCurrentQuestions();
+        questions = QuestionManager.filter(answeredCheckBox.isSelected(),
+                unansweredCheckBox.isSelected(), questions);
+        QuestionManager.sort(sortByVotesCheckBox.isSelected(), questions);
+
+        observableList.setAll(questions);
         questionPaneListView.setItems(observableList);
 
         questionPaneListView.setCellFactory(
@@ -81,7 +102,7 @@ public class UserChatSceneController implements Initializable {
         //System.out.println(list.size());
 
         questionPaneListView.getItems().clear();
-        questionPaneListView.getItems().addAll(list);
+        questionPaneListView.getItems().addAll(questions);
     }
 
     /**
@@ -157,6 +178,8 @@ public class UserChatSceneController implements Initializable {
 
         questionInputTextArea.clear();
 
+        //TODO this will be removed when we implement a more efficient polling
+        fetchQuestions();
         return (ret);
     }
 }

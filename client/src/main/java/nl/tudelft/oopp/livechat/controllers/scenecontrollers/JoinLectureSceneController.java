@@ -2,10 +2,13 @@ package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 import java.io.IOException;
@@ -22,6 +25,9 @@ public class JoinLectureSceneController {
     @FXML
     private TextField modkeyTextField;
 
+    @FXML
+    private CheckBox modkeyCheckBox;
+
 
     /**
      * Toggles the visibility of the modKeyTextField.
@@ -35,20 +41,13 @@ public class JoinLectureSceneController {
      * @throws IOException exception when something goes wrong
      */
     public void goToLecture() throws IOException {
-        if (enterNameTextField.getText().equals("")) {
-            AlertController.alertWarning("No name entered", "Please enter the name!");
-            return;
-        } else if (enterLectureCodeTextField.getText().equals("")) {
-            AlertController.alertWarning("No lecture id entered", "Please enter the lecture id!");
+        if (!InputValidator.validateUserName(enterNameTextField.getText(), 50)
+                || !InputValidator.validateLectureIdInput(
+                        enterLectureCodeTextField.getText(), 100)) {
             return;
         }
 
-        String text = enterNameTextField.getText();
-        if (text.length() > 100) {
-            AlertController.alertWarning("Long name",
-                    "The lecture name is too long!\n(max 100 characters)");
-            return;
-        }
+        User.setUserName(enterNameTextField.getText());
 
         Lecture.setCurrentLecture(
                 LectureCommunication.joinLectureById(enterLectureCodeTextField.getText()));
@@ -57,7 +56,7 @@ public class JoinLectureSceneController {
         if (currentLecture == null) {
             AlertController.alertError("Error", "Lecture was not found.");
 
-        } else if (!modkeyTextField.getText().equals("")) {
+        } else if (modkeyCheckBox.isSelected()) {
             joinAsModerator();
         } else {
             joinAsStudent();
@@ -101,6 +100,9 @@ public class JoinLectureSceneController {
      */
     private void joinAsModerator() throws IOException {
         String modkeyString = modkeyTextField.getText();
+        if (!InputValidator.validateModKeyInput(modkeyString, 200)) {
+            return;
+        }
         boolean result = LectureCommunication
                 .validateModerator(enterLectureCodeTextField.getText(),modkeyString);
 

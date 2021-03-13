@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
@@ -14,14 +15,14 @@
             <Button fx:id="goToUserManualButton" layoutX="16.0" layoutY="337.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="User Manual" />
             <Button id="leaveLecture" layoutX="16.0" layoutY="564.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="Leave Lecture" />
             <Line endX="100.0" layoutX="100.0" layoutY="72.0" opacity="0.5" startX="-100.0" stroke="#1a75ff" />
-            <Text fx:id="lectureNameText" layoutX="16.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="168.0703125">
+            <Text fx:id="lectureNameText" layoutX="16.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Name" textAlignment="CENTER" wrappingWidth="168.0703125">
                <font>
-                  <Font name="Arial Bold" size="25.0" />
+                  <Font name="Arial Bold" size="14.0" />
                </font>
             </Text>
-            <Text layoutX="12.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student Name" wrappingWidth="176.0703125">
+            <Text fx:id="userNameText" layoutX="12.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student Name" textAlignment="CENTER" wrappingWidth="176.0703125">
                <font>
-                  <Font name="Arial Bold" size="25.0" />
+                  <Font name="Arial Bold" size="14.0" />
                </font>
             </Text>
             <Line endX="100.0" layoutX="98.0" layoutY="125.0" opacity="0.5" startX="-100.0" stroke="#1a75ff" />
@@ -64,8 +65,24 @@
             </Text>
          </children>
       </Pane>
-      <ListView fx:id="questionPaneListView" layoutX="209.0" layoutY="14.0" prefHeight="523.0" prefWidth="522.0" />
+      <ListView fx:id="questionPaneListView" layoutX="209.0" layoutY="48.0" prefHeight="489.0" prefWidth="522.0" />
       <TextArea fx:id="questionInputTextArea" layoutX="212.0" layoutY="543.0" prefHeight="94.0" prefWidth="460.0" promptText="Enter your question..." styleClass="mainSceneEnterRoomCode" stylesheets="@../css/mainScene.css" wrapText="true" />
       <Button fx:id="submitButton" layoutX="680.0" layoutY="578.0" mnemonicParsing="false" onAction="#askQuestion" text="Submit" />
+      <Label layoutX="209.0" layoutY="14.0" prefHeight="18.0" prefWidth="47.0" text="Sort by:">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <CheckBox fx:id="sortByVotesCheckBox" alignment="TOP_LEFT" graphicTextGap="1.0" layoutX="263.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="20.0" prefWidth="55.0" text="Votes">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></CheckBox>
+      <CheckBox graphicTextGap="1.0" layoutX="332.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="20.0" prefWidth="55.0" text="Time">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></CheckBox>
+      <Label layoutX="430.0" layoutY="14.0" prefHeight="18.0" prefWidth="40.0" text="Show:" />
+      <CheckBox fx:id="answeredCheckBox" graphicTextGap="1.0" layoutX="487.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" prefWidth="80.0" selected="true" text="Answered" />
+      <CheckBox fx:id="unansweredCheckBox" layoutX="606.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" prefWidth="90.0" selected="true" text="Unaswered" />
    </children>
 </AnchorPane>

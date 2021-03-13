@@ -10,8 +10,7 @@
         -fx-red: #C3312F;
         -fx-yellow: #F1BE3E;
         -fx-font-family: Roboto;
-        -fx-padding: 0px 0px 0px 0px;
-
+        /*-fx-padding: 0px 0px 0px 0px;*/
     }
     /*To be used*/
 
@@ -74,6 +73,11 @@
         -fx-background-color: Transparent;
     }
 
+    .replyButton{
+        -fx-graphic: url(/images/reply.png);
+        -fx-background-color: Transparent;
+    }
+
     .settingsButton:hover{
         -fx-background-image: url(../images/Gear_gray.png);
     }
@@ -111,11 +115,11 @@
         -fx-pref-height: 50.25px;
     }
 
-    .backButton:hover{
+    .backButton:hover {
         -fx-background-color:  -fx-dark-blue;
     }
-    .upvoteButton{
 
+    .upvoteButton {
         -fx-background-color: lightgreen;
         -fx-background-radius: 10px;
         -fx-font: 10px Arial;

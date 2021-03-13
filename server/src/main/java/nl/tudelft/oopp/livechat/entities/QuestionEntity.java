@@ -64,7 +64,8 @@ public class QuestionEntity {
      */
     public QuestionEntity(UUID lectureId, String text, Timestamp time, long ownerId) {
         this.lectureId = lectureId;
-        this.time = time;
+        this.time = Objects.requireNonNullElseGet(time,
+            () -> new Timestamp(System.currentTimeMillis() / 1000 * 1000));
         this.text = text;
         this.ownerId = ownerId;
     }

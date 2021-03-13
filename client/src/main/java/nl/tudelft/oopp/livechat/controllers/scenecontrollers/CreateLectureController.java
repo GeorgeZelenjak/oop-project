@@ -6,8 +6,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 
@@ -17,18 +19,21 @@ public class CreateLectureController {
     @FXML
     private TextField enterLectureNameTextField;
 
+    @FXML
+    private TextField enterYourNameTextField;
+
     /**
      * Creates the lecture, shows alert with lecture and creator names
      * and returns to the main scene.
      * @throws IOException the io exception
      */
     private void createLecture() throws IOException {
-        String text = enterLectureNameTextField.getText();
-        if (text.length() > 255) {
-            AlertController.alertWarning("Long lecture name",
-                    "The lecture name is too long!\n(max 255 characters)");
+        if (!InputValidator.validateUserName(enterYourNameTextField.getText(), 50)
+                || !InputValidator.validateLectureName(
+                        enterLectureNameTextField.getText(), 255)) {
             return;
         }
+
         Lecture lecture = LectureCommunication
                 .createLecture(enterLectureNameTextField.getText());
 
@@ -40,8 +45,9 @@ public class CreateLectureController {
                 + "\nPress OK to go to the lecture page.";
         AlertController.alertInformation("Creating lecture", alertText);
 
-        NavigationController.getCurrentController().goToLecturerChatPage();
         Lecture.setCurrentLecture(lecture);
+        User.setUserName(enterYourNameTextField.getText());
+        NavigationController.getCurrentController().goToLecturerChatPage();
         System.out.println(lecture);
     }
 
