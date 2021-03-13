@@ -40,6 +40,10 @@ subprojects {
                 enabled = true
                 element = 'CLASS'
                 includes = ['nl.tudelft.*']
+                excludes = [
+                        'nl.tudelft.oopp.livechat.views',
+                        'nl.tudelft.oopp.livechat.controllers',
+                ]
 
                 limit {
                     counter = 'LINE'
