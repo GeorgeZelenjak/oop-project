@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
@@ -67,13 +68,19 @@
       <ListView fx:id="questionPaneListView" layoutX="209.0" layoutY="43.0" prefHeight="494.0" prefWidth="522.0" />
       <TextArea fx:id="questionInputTextArea" layoutX="212.0" layoutY="543.0" prefHeight="94.0" prefWidth="460.0" promptText="Enter your question..." styleClass="mainSceneEnterRoomCode" stylesheets="@../css/mainScene.css" wrapText="true" />
       <Button fx:id="submitButton" layoutX="680.0" layoutY="578.0" mnemonicParsing="false" onAction="#askQuestion" text="Submit" />
-      <Label layoutX="212.0" layoutY="15.0" prefHeight="18.0" prefWidth="47.0" text="Sort by:">
+      <Label layoutX="209.0" layoutY="15.0" prefHeight="18.0" prefWidth="47.0" text="Sort by:">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <CheckBox fx:id="sortByVotesCheckBox" layoutX="274.0" layoutY="15.0" mnemonicParsing="false" onAction="#sort" prefHeight="18.0" prefWidth="43.0" text="Votes" />
-      <CheckBox layoutX="325.0" layoutY="15.0" mnemonicParsing="false" onAction="#sort" prefHeight="18.0" prefWidth="38.0" text="Time" />
+      <CheckBox fx:id="sortByVotesCheckBox" alignment="TOP_LEFT" graphicTextGap="1.0" layoutX="263.0" layoutY="15.0" mnemonicParsing="false" onAction="#sort" prefHeight="20.0" prefWidth="55.0" text="Votes">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></CheckBox>
+      <CheckBox graphicTextGap="1.0" layoutX="332.0" layoutY="14.0" mnemonicParsing="false" onAction="#sort" prefHeight="20.0" prefWidth="55.0" text="Time">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></CheckBox>
       <Label layoutX="414.0" layoutY="16.0" prefHeight="18.0" prefWidth="31.0" text="Filter:" />
       <ChoiceBox layoutX="461.0" layoutY="15.0" prefHeight="18.0" prefWidth="121.0" />
    </children>
