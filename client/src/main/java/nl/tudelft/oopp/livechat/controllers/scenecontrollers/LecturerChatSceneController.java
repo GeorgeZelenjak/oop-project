@@ -28,9 +28,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URL;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
 
 /**
  * The type Lecturer chat scene controller.
@@ -142,10 +141,11 @@ public class LecturerChatSceneController implements Initializable {
      * Fetch questions.
      */
     public void fetchQuestions() {
-
         List<Question> list = QuestionCommunication.fetchQuestions();
-        if (list == null || list.size() == 0)
+        if (list == null || list.size() == 0) {
             return;
+        }
+        Collections.sort(list);
 
         observableList.setAll(list);
         questionPaneListView.setItems(observableList);

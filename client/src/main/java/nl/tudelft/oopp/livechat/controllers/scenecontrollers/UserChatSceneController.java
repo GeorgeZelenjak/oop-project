@@ -5,17 +5,18 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.controllers.QuestionSorter;
 import nl.tudelft.oopp.livechat.data.Lecture;
+
 import nl.tudelft.oopp.livechat.data.Question;
+
 import nl.tudelft.oopp.livechat.data.QuestionCellUser;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
@@ -23,9 +24,7 @@ import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 import javafx.util.Callback;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 /**
@@ -46,7 +45,12 @@ public class UserChatSceneController implements Initializable {
     private Text userNameText;
 
     @FXML
+    private CheckBox sortByVotesCheckBox;
+
+    @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
+
+    private List<Question> questions;
 
     /**
      * method that runs when the scene is first initialized.
@@ -70,8 +74,13 @@ public class UserChatSceneController implements Initializable {
     public void fetchQuestions() {
 
         List<Question> list = QuestionCommunication.fetchQuestions();
-        if (list == null)
+        if (list == null) {
             return;
+        }
+
+        questions = list;
+
+        sort();
 
         observableList.setAll(list);
         questionPaneListView.setItems(observableList);
@@ -87,6 +96,10 @@ public class UserChatSceneController implements Initializable {
 
         questionPaneListView.getItems().clear();
         questionPaneListView.getItems().addAll(list);
+    }
+
+    public void sort() {
+        QuestionSorter.sort(sortByVotesCheckBox.isSelected(), questions);
     }
 
     /**
