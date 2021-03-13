@@ -17,6 +17,9 @@ public class CellDataLecturer {
     private Text questionText;
 
     @FXML
+    private Button isAnsweredButton;
+
+    @FXML
     private AnchorPane questionBoxAnchorPane;
 
     @FXML
@@ -58,12 +61,12 @@ public class CellDataLecturer {
     }
 
     public void setQuestion(Question question) {
-
         this.question = question;
     }
 
     public void setTimestamp(Timestamp timestamp) {
-
         dateStamp.setText(timestamp.toLocalDateTime().toString());
     }
+
+
 }
