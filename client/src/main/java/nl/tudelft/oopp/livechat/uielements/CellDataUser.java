@@ -59,6 +59,9 @@ public class CellDataUser {
         questionText.setText(string);
     }
 
+    /**
+     * Makes a visible tick appear for answered questions.
+     */
     public void markAnswered() {
         if (question.isAnswered()) {
             answeredTick.setVisible(true);

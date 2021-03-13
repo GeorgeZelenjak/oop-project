@@ -16,6 +16,9 @@ import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
+/**
+ * The type Cell data lecturer.
+ */
 public class CellDataLecturer {
 
     @FXML
@@ -60,6 +63,9 @@ public class CellDataLecturer {
         questionText.setText(string);
     }
 
+    /**
+     * Makes a visible tick appear for answered questions.
+     */
     public void markAnswered() {
         if (question.isAnswered()) {
             answeredTick.setVisible(true);
