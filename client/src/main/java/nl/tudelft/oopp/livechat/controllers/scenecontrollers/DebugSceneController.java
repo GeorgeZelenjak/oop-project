@@ -65,6 +65,7 @@ public class DebugSceneController {
         QuestionCommunication.askQuestion("How do you do, fellow kids?");
         QuestionCommunication.askQuestion("How do you find the eigen values?");
         QuestionCommunication.askQuestion("I am confused!!!!");
+        QuestionCommunication.askQuestion("We live in a soc");
         List<Question> questions = QuestionCommunication.fetchQuestions();
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),1);
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),2);
