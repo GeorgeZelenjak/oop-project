@@ -3,6 +3,7 @@ package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
@@ -61,7 +62,7 @@ public class DebugSceneController {
      * Populate.
      */
     public void populate() {
-
+        User.setUserName("Stefan");
         QuestionCommunication.askQuestion("How do you do, fellow kids?");
         QuestionCommunication.askQuestion("How do you find the eigen values?");
         QuestionCommunication.askQuestion("I am confused!!!!");

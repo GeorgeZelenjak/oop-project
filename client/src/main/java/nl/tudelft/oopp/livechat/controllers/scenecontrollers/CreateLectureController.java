@@ -9,6 +9,7 @@ import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 
@@ -43,8 +44,9 @@ public class CreateLectureController {
                 + "\nPress OK to go to the lecture page.";
         AlertController.alertInformation("Creating lecture", alertText);
 
-        NavigationController.getCurrentController().goToLecturerChatPage();
         Lecture.setCurrentLecture(lecture);
+        User.setUserName(enterYourNameTextField.getText());
+        NavigationController.getCurrentController().goToLecturerChatPage();
         System.out.println(lecture);
     }
 

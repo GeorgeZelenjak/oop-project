@@ -12,8 +12,3 @@
     .joinLectureButton:hover{
         -fx-background-color:  -fx-dark-blue;
     }
-
-
-    .checkbox {
-        -fx-font-size: 36px;
-    }
