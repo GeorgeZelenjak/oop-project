@@ -41,8 +41,9 @@ public class JoinLectureSceneController {
      * @throws IOException exception when something goes wrong
      */
     public void goToLecture() throws IOException {
-        if (InputValidator.validateUserName(enterNameTextField.getText(), 50) == -1
-                || InputValidator.validateLectureIdInput(enterLectureCodeTextField.getText(), 100) == -1) {
+        if (!InputValidator.validateUserName(enterNameTextField.getText(), 50)
+                || !InputValidator.validateLectureIdInput(
+                        enterLectureCodeTextField.getText(), 100)) {
             return;
         }
 
@@ -99,7 +100,7 @@ public class JoinLectureSceneController {
      */
     private void joinAsModerator() throws IOException {
         String modkeyString = modkeyTextField.getText();
-        if (InputValidator.validateModKeyInput(modkeyString, 200) == -1) {
+        if (!InputValidator.validateModKeyInput(modkeyString, 200)) {
             return;
         }
         boolean result = LectureCommunication

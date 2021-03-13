@@ -28,8 +28,9 @@ public class CreateLectureController {
      * @throws IOException the io exception
      */
     private void createLecture() throws IOException {
-        if (InputValidator.validateUserName(enterYourNameTextField.getText(), 50) == -1
-                || InputValidator.validateLectureName(enterLectureNameTextField.getText(), 255) == -1) {
+        if (!InputValidator.validateUserName(enterYourNameTextField.getText(), 50)
+                || !InputValidator.validateLectureName(
+                        enterLectureNameTextField.getText(), 255)) {
             return;
         }
 
