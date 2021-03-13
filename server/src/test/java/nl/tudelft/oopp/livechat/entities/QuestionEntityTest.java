@@ -156,4 +156,21 @@ class QuestionEntityTest {
         int hash = Objects.hash(questionEntity.getId(), lectureId, time);
         assertEquals(hash, questionEntity.hashCode());
     }
+
+    @Test
+    void toStringTest() {
+        String expected = "QuestionEntity{"
+                + "id=" + questionEntity.getId()
+                + ", lectureId=" + lectureId
+                + ", time=" + time
+                + ", votes=" + questionEntity.getVotes()
+                + ", text='" + questionEntity.getText() + '\''
+                + ", answered=" + questionEntity.isAnswered()
+                + ", answerText='" + questionEntity.getAnswerText() + '\''
+                + ", answerTime=" + questionEntity.getAnswerTime()
+                + ", ownerId=" + questionEntity.getOwnerId()
+                + '}';
+
+        assertEquals(expected, questionEntity.toString());
+    }
 }

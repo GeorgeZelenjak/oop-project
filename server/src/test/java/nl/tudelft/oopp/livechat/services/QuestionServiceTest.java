@@ -269,4 +269,37 @@ class QuestionServiceTest {
         assertFalse(q1after.isAnswered());
     }
 
+    @Test
+    @Order(18)
+    void editQuestionUnsuccessful2Test() {
+        long qid = 112233;
+        long newOwnerId = 42L;
+        String oldText = q1.getText();
+        UUID modKey = l2.getModkey();
+        String newText = "new text)))";
+
+        int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
+        assertEquals(-1, result);
+
+        QuestionEntity q = questionRepository.findById(qid).orElse(null);
+        assertNull(q);
+    }
+
+    @Test
+    @Order(18)
+    void editQuestionUnsuccessful3Test() {
+        long qid = q1.getId();
+        long newOwnerId = 42L;
+        String oldText = q1.getText();
+        UUID modKey = l2.getModkey();
+        String newText = "new text)))";
+
+        lectureService.close(l1.getUuid(), l1.getModkey());
+        int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
+        assertEquals(-1, result);
+
+        QuestionEntity q = questionRepository.findById(qid).orElse(null);
+        assertNotNull(q);
+    }
+
 }

@@ -134,4 +134,11 @@ public class LectureEntityTest {
                 lectureEntity.getStartTime());
         assertEquals(hash, lectureEntity.hashCode());
     }
+
+    @Test
+    void reOpenTest() {
+        lectureEntity.close();
+        lectureEntity.reOpen();
+        assertTrue(lectureEntity.isOpen());
+    }
 }
