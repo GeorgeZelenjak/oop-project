@@ -15,6 +15,7 @@ public class QuestionCellLecturer extends ListCell<Question> {
 
             data.setInfo(question.getText());
             data.setOwnerName("Anonymous"); //Will be changed when we implement authorization
+            data.markAnswered();
 
             setGraphic(data.getBox());
             data.setAnsweredQuestion();

@@ -3,9 +3,11 @@ package nl.tudelft.oopp.livechat.data;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.scene.control.Button;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +33,9 @@ public class CellDataLecturer {
     @FXML
     private Text dateStamp;
 
+    @FXML
+    private Label answeredTick;
+
     private Question question;
 
 
@@ -52,6 +57,12 @@ public class CellDataLecturer {
         questionText.setText(string);
     }
 
+    public void markAnswered() {
+        if (question.isAnswered()) {
+            answeredTick.setVisible(true);
+        }
+    }
+
     public void setOwnerName(String owner) {
         questionOwner.setText(owner);
     }
@@ -61,7 +72,6 @@ public class CellDataLecturer {
     }
 
     public void setQuestion(Question question) {
-
         this.question = question;
     }
 

@@ -39,5 +39,10 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
+      <Label fx:id="answeredTick" layoutX="460.0" layoutY="45.0" prefHeight="20.0" prefWidth="20.0" styleClass="answeredTick" visible="false">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
     </children>
 </AnchorPane>

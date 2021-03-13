@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
@@ -32,6 +33,9 @@ public class CellDataUser {
     @FXML
     private Text dateStamp;
 
+    @FXML
+    private Label answeredTick;
+
     private Question question;
 
 
@@ -51,6 +55,12 @@ public class CellDataUser {
 
     public void setInfo(String string) {
         questionText.setText(string);
+    }
+
+    public void markAnswered() {
+        if (question.isAnswered()) {
+            answeredTick.setVisible(true);
+        }
     }
 
     public void setOwnerName(String owner) {

@@ -15,6 +15,7 @@ public class QuestionCellUser extends ListCell<Question> {
 
             data.setInfo(question.getText());
             data.setOwnerName("Anonymous"); //Will be changed when we implement authorization
+            data.markAnswered();
             data.setNumberOfUpvotes(question.getVotes());
 
             setGraphic(data.getBox());

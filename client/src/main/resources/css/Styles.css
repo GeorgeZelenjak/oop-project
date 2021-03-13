@@ -126,6 +126,11 @@
         -fx-text-fill: black;
     }
 
+    .answeredTick {
+        -fx-graphic: url(/images/tick.png);
+        -fx-background-color: Transparent;
+    }
+
 
 
 
