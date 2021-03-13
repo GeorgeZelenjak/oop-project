@@ -31,16 +31,6 @@ subprojects {
             xml.enabled false
             csv.enabled false
             html.destination file("${buildDir}/reports/jacoco/html")
-
-            afterEvaluate { // (optional) : to exclude classes / packages from coverage
-                classDirectories.from = files(classDirectories.files.collect {
-                    fileTree(
-                            dir: it,
-                            exclude : [
-                                    'nl.tudelft.oopp.livechat.views',
-                                    'nl.tudelft.oopp.livechat.controllers.scenecontrollers'])
-                })
-            }
         }
     }
 
@@ -50,15 +40,13 @@ subprojects {
                 enabled = true
                 element = 'CLASS'
                 includes = ['nl.tudelft.*']
-                excludes = [
-                        'nl.tudelft.oopp.livechat.views',
-                        'nl.tudelft.oopp.livechat.controllers.scenecontrollers']
 
                 limit {
                     counter = 'LINE'
                     value = 'COVEREDRATIO'
                     minimum = 0.4
                 }
+
             }
         }
     }
@@ -80,7 +68,7 @@ subprojects {
         jacoco {
             enabled = true
             includes = ['nl.tudelft.*']
-            excludes = []
+            excludes = ['nl.tudelft.oopp.livechat.controllers.scenecontrollers', 'nl.tudelft.oopp.livechat.views']
         }
 
     }
