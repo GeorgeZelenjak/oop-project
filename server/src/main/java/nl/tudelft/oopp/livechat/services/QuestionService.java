@@ -174,6 +174,7 @@ public class QuestionService {
         if (lecture.getModkey().equals(modkey)) {
             q.setAnswered(true);
             q.setAnswerTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
+            q.setAnswerText(answerText);
             questionRepository.save(q);
             return 0;
         }
