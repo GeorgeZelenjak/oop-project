@@ -1,18 +1,23 @@
 package nl.tudelft.oopp.livechat.data;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-
+import javafx.scene.control.Button;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
+import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 public class CellDataLecturer {
 
     @FXML
     private Text questionText;
+
+    @FXML
+    private Button isAnsweredButton;
 
     @FXML
     private AnchorPane questionBoxAnchorPane;
@@ -60,8 +65,27 @@ public class CellDataLecturer {
         this.question = question;
     }
 
+    /**
+     * Sets timestamp.
+     *
+     * @param timestamp the timestamp
+     */
     public void setTimestamp(Timestamp timestamp) {
+        dateStamp.setText(timestamp.toLocalDateTime().toString());
         dateStamp.setText(timestamp.toLocalDateTime()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    }
+
+    /**
+     * Sets question as answered.
+     */
+    public void setAnsweredQuestion() {
+        isAnsweredButton.setOnAction((
+                ActionEvent event) -> {
+            QuestionCommunication
+                    .markedAsAnswered(question.getId(), Lecture.getCurrentLecture().getModkey());
+
+            System.out.println(question.getVotes());
+        });
     }
 }

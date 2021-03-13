@@ -17,6 +17,7 @@ public class QuestionCellLecturer extends ListCell<Question> {
             data.setOwnerName("Anonymous"); //Will be changed when we implement authorization
 
             setGraphic(data.getBox());
+            data.setAnsweredQuestion();
         } else setGraphic(null);
     }
 }
