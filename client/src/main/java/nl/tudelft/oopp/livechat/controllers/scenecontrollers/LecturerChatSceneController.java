@@ -12,14 +12,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
-import nl.tudelft.oopp.livechat.data.QuestionCellUser;
+import nl.tudelft.oopp.livechat.data.QuestionCellLecturer;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
@@ -148,7 +147,7 @@ public class LecturerChatSceneController implements Initializable {
                 new Callback<ListView<Question>, ListCell<Question>>() {
                     @Override
                     public ListCell<Question> call(ListView<Question> listView) {
-                        return new QuestionCellUser();
+                        return new QuestionCellLecturer();
                     }
                 });
         //System.out.println(list.size());

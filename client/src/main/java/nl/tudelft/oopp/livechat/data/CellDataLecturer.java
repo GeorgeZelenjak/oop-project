@@ -1,15 +1,13 @@
 package nl.tudelft.oopp.livechat.data;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 
 public class CellDataLecturer {
 
@@ -63,7 +61,7 @@ public class CellDataLecturer {
     }
 
     public void setTimestamp(Timestamp timestamp) {
-
-        dateStamp.setText(timestamp.toLocalDateTime().toString());
+        dateStamp.setText(timestamp.toLocalDateTime()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 }
