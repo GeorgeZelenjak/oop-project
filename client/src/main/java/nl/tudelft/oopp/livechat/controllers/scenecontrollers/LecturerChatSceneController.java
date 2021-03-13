@@ -19,6 +19,7 @@ import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.QuestionCellLecturer;
+import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
@@ -37,7 +38,11 @@ import java.util.ResourceBundle;
 public class LecturerChatSceneController implements Initializable {
 
     @FXML
-    private Text lectureNameLecturer;
+    private Text lectureNameText;
+
+    @FXML
+    private Text userNameText;
+
     @FXML
     private ListView<Question> questionPaneListView;
     /**
@@ -54,6 +59,8 @@ public class LecturerChatSceneController implements Initializable {
      */
 
     public void initialize(URL location, ResourceBundle resourceBundle) {
+        lectureNameText.setText(Lecture.getCurrentLecture().getName());
+        userNameText.setText(User.getUserName());
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(2500),
             ae -> fetchQuestions()));

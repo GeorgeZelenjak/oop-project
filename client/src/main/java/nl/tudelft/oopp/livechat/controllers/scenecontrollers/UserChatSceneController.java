@@ -17,6 +17,7 @@ import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.QuestionCellUser;
+import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import javafx.util.Callback;
@@ -40,6 +41,10 @@ public class UserChatSceneController implements Initializable {
 
     @FXML
     private Text lectureNameText;
+
+    @FXML
+    private Text userNameText;
+
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
 
@@ -50,7 +55,7 @@ public class UserChatSceneController implements Initializable {
      */
     public void initialize(URL location, ResourceBundle resourceBundle) {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
-        lectureNameText.setTextAlignment(TextAlignment.CENTER);
+        userNameText.setText(User.getUserName());
 
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(2500),
