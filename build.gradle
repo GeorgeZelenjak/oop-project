@@ -27,6 +27,17 @@ subprojects {
     }
 
     jacocoTestReport {
+        afterEvaluate {
+            classDirectories.setFrom(files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: [
+                        'nl/tudelft/oopp/livechat/controllers/**',
+                        'nl/tudelft/oopp/livechat/views/**',
+                        'nl/tudelft/oopp/livechat/uielements/**',
+                        'nl/tudelft/oopp/livechat/*.class'
+                ])
+            }))
+        }
+
         reports {
             xml.enabled false
             csv.enabled false
@@ -40,13 +51,16 @@ subprojects {
                 enabled = true
                 element = 'CLASS'
                 includes = ['nl.tudelft.*']
+                excludes = ['nl.tudelft.oopp.livechat.views',
+                            'nl.tudelft.oopp.livechat.controllers',
+                            'nl.tudelft.oopp.livechat.uielements',
+                            'nl.tudelft.oopp.livechat.MainApp']
 
                 limit {
                     counter = 'LINE'
                     value = 'COVEREDRATIO'
                     minimum = 0.4
                 }
-
             }
         }
     }
@@ -68,7 +82,6 @@ subprojects {
         jacoco {
             enabled = true
             includes = ['nl.tudelft.*']
-            excludes = ['nl.tudelft.oopp.livechat.controllers.scenecontrollers', 'nl.tudelft.oopp.livechat.views']
         }
 
     }

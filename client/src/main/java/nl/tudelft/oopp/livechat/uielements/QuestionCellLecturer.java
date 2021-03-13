@@ -1,6 +1,7 @@
-package nl.tudelft.oopp.livechat.data;
+package nl.tudelft.oopp.livechat.uielements;
 
 import javafx.scene.control.ListCell;
+import nl.tudelft.oopp.livechat.data.Question;
 
 public class QuestionCellLecturer extends ListCell<Question> {
 
