@@ -16,10 +16,8 @@ import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.controllers.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
-import nl.tudelft.oopp.livechat.data.QuestionCellLecturer;
+import nl.tudelft.oopp.livechat.uielements.QuestionCellLecturer;
 import nl.tudelft.oopp.livechat.data.User;
-import nl.tudelft.oopp.livechat.data.QuestionCellLecturer;
-import nl.tudelft.oopp.livechat.data.QuestionCellUser;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 

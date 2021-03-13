@@ -1,4 +1,4 @@
-package nl.tudelft.oopp.livechat.data;
+package nl.tudelft.oopp.livechat.uielements;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,6 +9,9 @@ import javafx.scene.control.Button;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
+
+import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 public class CellDataLecturer {
