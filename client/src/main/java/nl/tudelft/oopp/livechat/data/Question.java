@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Question {
+public class Question implements Comparable<Question> {
 
     /**
      * The class that represents a question entity.
@@ -47,7 +47,6 @@ public class Question {
     private String ownerName;
 
     /**
-     * .
      * Empty constructor to create a question entity.
      */
     public Question() {
@@ -67,9 +66,7 @@ public class Question {
     }
 
     /**
-     * .
      * Gets id of the question.
-     *
      * @return the id of the question
      */
     public long getId() {
@@ -77,9 +74,7 @@ public class Question {
     }
 
     /**
-     * .
      * Gets the id of the lecture.
-     *
      * @return the id of the lecture
      */
     public UUID getLectureId() {
@@ -88,9 +83,7 @@ public class Question {
 
 
     /**
-     * .
      * Gets the time the question was asked.
-     *
      * @return the time the question was asked
      */
     public Timestamp getTime() {
@@ -98,9 +91,7 @@ public class Question {
     }
 
     /**
-     * .
      * Gets the number of votes.
-     *
      * @return the number of votes
      */
     public int getVotes() {
@@ -109,9 +100,7 @@ public class Question {
 
 
     /**
-     * .
      * Gets the text of the question.
-     *
      * @return the text of the question
      */
     public String getText() {
@@ -119,9 +108,7 @@ public class Question {
     }
 
     /**
-     * .
      * Checks whether the question is (un)answered.
-     *
      * @return true if the question is answered, false otherwise
      */
     public boolean isAnswered() {
@@ -129,9 +116,7 @@ public class Question {
     }
 
     /**
-     * .
      * Gets the text of the answer.
-     *
      * @return the text of the answer
      */
     public String getAnswerText() {
@@ -139,9 +124,7 @@ public class Question {
     }
 
     /**
-     * .
      * Gets the answer time of the question
-     *
      * @return the answer time of the question if it is answered, null otherwise
      */
     public Timestamp getAnswerTime() {
@@ -150,17 +133,23 @@ public class Question {
 
     /**
      * Gets the id of the owner of the question.
-     *
      * @return the id of the owner of the question.
      */
     public long getOwnerId() {
         return ownerId;
     }
 
+
+    public static List<Question> getCurrentQuestions() {
+        return currentQuestions;
+    }
+
+    public static void setCurrentQuestions(List<Question> questions) {
+        currentQuestions = questions;
+    }
+
     /**
-     * .
      * Compares the question to another object.
-     *
      * @param o object to compare to
      * @return true iff the other object is also a Question and has the same id. False otherwise
      */
@@ -177,9 +166,7 @@ public class Question {
     }
 
     /**
-     * .
      * The hash code of the Question object.
-     *
      * @return the hash code of the Question object
      */
     @Override
@@ -188,9 +175,7 @@ public class Question {
     }
 
     /**
-     * .
      * Converts the question object to String format.
-     *
      * @return the question object in String format
      */
     @Override
@@ -208,4 +193,8 @@ public class Question {
                 + '}';
     }
 
+    @Override
+    public int compareTo(Question other) {
+        return other.time.compareTo(this.time);
+    }
 }

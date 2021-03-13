@@ -7,15 +7,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.controllers.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.QuestionCellLecturer;
@@ -28,9 +26,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URL;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
 
 /**
  * The type Lecturer chat scene controller.
@@ -45,11 +42,22 @@ public class LecturerChatSceneController implements Initializable {
 
     @FXML
     private ListView<Question> questionPaneListView;
+
+    @FXML
+    private CheckBox sortByVotesCheckBox;
+
+    @FXML
+    private CheckBox answeredCheckBox;
+
+    @FXML
+    private CheckBox unansweredCheckBox;
     /**
      * The Observable list.
      */
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
+
+    private List<Question> questions;
 
 
     /**
@@ -66,6 +74,35 @@ public class LecturerChatSceneController implements Initializable {
             ae -> fetchQuestions()));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+    }
+
+    /**
+     * Fetch questions.
+     */
+    public void fetchQuestions() {
+        List<Question> list = QuestionCommunication.fetchQuestions();
+        if (list == null || list.size() == 0) {
+            return;
+        }
+        Question.setCurrentQuestions(list);
+
+        questions = Question.getCurrentQuestions();
+        questions = QuestionManager.filter(answeredCheckBox.isSelected(),
+                unansweredCheckBox.isSelected(), questions);
+        QuestionManager.sort(sortByVotesCheckBox.isSelected(), questions);
+
+        observableList.setAll(questions);
+        questionPaneListView.setItems(observableList);
+
+        questionPaneListView.setCellFactory(
+                new Callback<ListView<Question>, ListCell<Question>>() {
+                    @Override
+                    public ListCell<Question> call(ListView<Question> listView) {
+                        return new QuestionCellLecturer();
+                    }
+                });
+        questionPaneListView.getItems().clear();
+        questionPaneListView.getItems().addAll(questions);
     }
 
     /**
@@ -136,30 +173,5 @@ public class LecturerChatSceneController implements Initializable {
         LectureCommunication.closeLecture(Lecture.getCurrentLecture().getUuid().toString(),
                 Lecture.getCurrentLecture().getModkey().toString());
         NavigationController.getCurrentController().goToMainScene();
-    }
-
-    /**
-     * Fetch questions.
-     */
-    public void fetchQuestions() {
-
-        List<Question> list = QuestionCommunication.fetchQuestions();
-        if (list == null || list.size() == 0)
-            return;
-
-        observableList.setAll(list);
-        questionPaneListView.setItems(observableList);
-
-        questionPaneListView.setCellFactory(
-                new Callback<ListView<Question>, ListCell<Question>>() {
-                    @Override
-                    public ListCell<Question> call(ListView<Question> listView) {
-                        return new QuestionCellLecturer();
-                    }
-                });
-        //System.out.println(list.size());
-
-        questionPaneListView.getItems().clear();
-        questionPaneListView.getItems().addAll(list);
     }
 }

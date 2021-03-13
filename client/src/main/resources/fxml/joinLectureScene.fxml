@@ -14,12 +14,7 @@
       <TextField fx:id="enterLectureCodeTextField" alignment="CENTER" layoutX="312.0" layoutY="300.0" promptText="Enter lecture id" styleClass="textBox" />
       <Button fx:id="goBackButton" layoutX="43.5" layoutY="35.25" mnemonicParsing="false" onAction="#goBack" prefHeight="50.25" prefWidth="136.5" styleClass="backButton" text="Back" />
       <Pane layoutX="45.0" layoutY="630.0" prefHeight="90.0" prefWidth="228.0" styleClass="tudLogo" />
-      <CheckBox fx:id="modkeyCheckBox" layoutX="408.0" layoutY="388.0" mnemonicParsing="false" onAction="#onCheckBoxAction" prefHeight="24.0" prefWidth="24.0" style="-fx-border-radius: 2; -fx-border-color: black;" />
-      <Text layoutX="443.0" layoutY="407.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Are you a moderator?" wrappingWidth="174.13671875">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Text>
+      <CheckBox fx:id="modkeyCheckBox" graphicTextGap="1.0" layoutX="453.0" layoutY="380.0" mnemonicParsing="false" onAction="#onCheckBoxAction" prefHeight="37.0" prefWidth="156.0" text="Are you a moderator?" />
    </children>
    <stylesheets>
       <URL value="@../css/Styles.css" />
