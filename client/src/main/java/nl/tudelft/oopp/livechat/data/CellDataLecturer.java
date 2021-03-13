@@ -65,6 +65,11 @@ public class CellDataLecturer {
         this.question = question;
     }
 
+    /**
+     * Sets timestamp.
+     *
+     * @param timestamp the timestamp
+     */
     public void setTimestamp(Timestamp timestamp) {
         dateStamp.setText(timestamp.toLocalDateTime().toString());
         dateStamp.setText(timestamp.toLocalDateTime()
