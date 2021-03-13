@@ -12,4 +12,5 @@ public class SettingsSceneController {
         NavigationController.getCurrentController().goBack();
         System.out.println("Button was pressed!");
     }
+
 }
