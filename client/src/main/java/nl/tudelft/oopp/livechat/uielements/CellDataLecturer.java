@@ -78,6 +78,10 @@ public class CellDataLecturer {
         this.question = question;
     }
 
+    public void setNumberOfUpvotes(int number) {
+        numberOfUpvotes.setText(String.valueOf(number));
+    }
+
     /**
      * Sets timestamp.
      *

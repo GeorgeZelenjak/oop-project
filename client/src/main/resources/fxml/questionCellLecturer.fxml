@@ -44,5 +44,10 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Label>
+      <Text fx:id="numberOfUpvotes" fill="#cf0a49" layoutX="453.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1000" textAlignment="CENTER" wrappingWidth="31.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Text>
     </children>
 </AnchorPane>
