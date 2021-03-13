@@ -7,15 +7,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.controllers.QuestionSorter;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.QuestionCellLecturer;
@@ -44,11 +42,22 @@ public class LecturerChatSceneController implements Initializable {
 
     @FXML
     private ListView<Question> questionPaneListView;
+
+    @FXML
+    private CheckBox sortByVotesCheckBox;
+
+    @FXML
+    private CheckBox answeredCheckBox;
+
+    @FXML
+    private CheckBox unansweredCheckBox;
     /**
      * The Observable list.
      */
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
+
+    private List<Question> questions;
 
 
     /**
@@ -145,7 +154,9 @@ public class LecturerChatSceneController implements Initializable {
         if (list == null || list.size() == 0) {
             return;
         }
-        Collections.sort(list);
+
+        questions = list;
+        sort();
 
         observableList.setAll(list);
         questionPaneListView.setItems(observableList);
@@ -161,5 +172,22 @@ public class LecturerChatSceneController implements Initializable {
 
         questionPaneListView.getItems().clear();
         questionPaneListView.getItems().addAll(list);
+    }
+
+    /**
+     * Sorts questions by votes or time.
+     */
+    public void sort() {
+        if (questions == null) {
+            return;
+        }
+        QuestionSorter.sort(sortByVotesCheckBox.isSelected(), questions);
+    }
+
+    /**
+     * Show the questions based on user's choice.
+     */
+    public void show() {
+        System.out.println("Bugaga!");
     }
 }
