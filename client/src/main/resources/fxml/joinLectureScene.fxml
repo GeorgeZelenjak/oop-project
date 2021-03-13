@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
@@ -14,7 +15,10 @@
       <TextField fx:id="enterLectureCodeTextField" alignment="CENTER" layoutX="312.0" layoutY="300.0" promptText="Enter lecture id" styleClass="textBox" />
       <Button fx:id="goBackButton" layoutX="43.5" layoutY="35.25" mnemonicParsing="false" onAction="#goBack" prefHeight="50.25" prefWidth="136.5" styleClass="backButton" text="Back" />
       <Pane layoutX="45.0" layoutY="630.0" prefHeight="90.0" prefWidth="228.0" styleClass="tudLogo" />
-      <CheckBox fx:id="modkeyCheckBox" graphicTextGap="1.0" layoutX="453.0" layoutY="380.0" mnemonicParsing="false" onAction="#onCheckBoxAction" prefHeight="37.0" prefWidth="156.0" text="Are you a moderator?" />
+      <CheckBox fx:id="modkeyCheckBox" graphicTextGap="1.0" layoutX="453.0" layoutY="380.0" mnemonicParsing="false" onAction="#onCheckBoxAction" prefHeight="37.0" prefWidth="156.0" text="Are you a moderator?">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></CheckBox>
    </children>
    <stylesheets>
       <URL value="@../css/Styles.css" />

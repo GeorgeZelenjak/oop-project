@@ -82,7 +82,13 @@
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>
       <Label layoutX="430.0" layoutY="14.0" prefHeight="18.0" prefWidth="40.0" text="Show:" />
-      <CheckBox fx:id="answeredCheckBox" graphicTextGap="1.0" layoutX="487.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" prefWidth="80.0" selected="true" text="Answered" />
-      <CheckBox fx:id="unansweredCheckBox" layoutX="606.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" prefWidth="90.0" selected="true" text="Unaswered" />
+      <CheckBox fx:id="answeredCheckBox" graphicTextGap="1.0" layoutX="487.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" prefWidth="80.0" selected="true" text="Answered">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></CheckBox>
+      <CheckBox fx:id="unansweredCheckBox" layoutX="606.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" prefWidth="90.0" selected="true" text="Unaswered">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></CheckBox>
    </children>
 </AnchorPane>
