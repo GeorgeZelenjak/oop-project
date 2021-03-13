@@ -173,12 +173,12 @@ public class QuestionCommunication {
         return 1;
     }
 
-    /** Method that sends a request to upvote a question to the server.
+    /** Method that sends a request to mark as answered a question to the server.
      * @param qid - the Question ID
      * @param modkey - the User ID
      * @return - the status code
      */
-    public static int answerQuestion(long qid, UUID modkey) {
+    public static int markedAsAnswered(long qid, UUID modkey) {
 
         //Checking if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
@@ -191,13 +191,10 @@ public class QuestionCommunication {
         String headerName = "Content-Type";
         String headerValue = "application/json";
 
-        System.out.println(address);
-
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().PUT(req)
                 .uri(URI.create(address + "?qid=" + qid + "&uid=" + modkey))
                 .setHeader(headerName, headerValue).build();
-
 
         HttpResponse<String> response;
 

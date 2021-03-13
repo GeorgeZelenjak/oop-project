@@ -42,7 +42,7 @@ subprojects {
                 includes = ['nl.tudelft.*']
                 excludes = [
                         'nl.tudelft.oopp.livechat.views',
-                        'nl.tudelft.oopp.livechat.controllers',
+                        'nl.tudelft.oopp.livechat.controllers.scenecontrollers'
                 ]
 
                 limit {

@@ -78,7 +78,7 @@ public class CellDataLecturer {
         isAnsweredButton.setOnAction((
                 ActionEvent event) -> {
             QuestionCommunication
-                    .answerQuestion(question.getId(), Lecture.getCurrentLecture().getModkey());
+                    .markedAsAnswered(question.getId(), Lecture.getCurrentLecture().getModkey());
 
             System.out.println(question.getVotes());
         });
