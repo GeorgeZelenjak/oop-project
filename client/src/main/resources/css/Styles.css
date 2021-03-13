@@ -74,6 +74,11 @@
         -fx-background-color: Transparent;
     }
 
+    .replyButton{
+        -fx-graphic: url(/images/reply.png);
+        -fx-background-color: Transparent;
+    }
+
     .settingsButton:hover{
         -fx-background-image: url(../images/Gear_gray.png);
     }
