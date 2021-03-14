@@ -13,7 +13,7 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
-import nl.tudelft.oopp.livechat.controllers.QuestionManager;
+import nl.tudelft.oopp.livechat.controllers.businesslogic.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.uielements.QuestionCellLecturer;

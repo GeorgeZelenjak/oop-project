@@ -1,4 +1,4 @@
-package nl.tudelft.oopp.livechat.controllers;
+package nl.tudelft.oopp.livechat.controllers.businesslogic;
 
 import nl.tudelft.oopp.livechat.data.Question;
 import java.util.Collections;

@@ -1,4 +1,6 @@
-package nl.tudelft.oopp.livechat.controllers;
+package nl.tudelft.oopp.livechat.controllers.businesslogic;
+
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 
 /**
  * Class for the Input validator.
