@@ -6,6 +6,7 @@ import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -37,8 +38,11 @@ public class QuestionCommunicationTest {
     private static final UUID incorrectModkey = UUID.randomUUID();
     private static final String qid1 = "5397545054934456486";
     private static final String qid2 = "8077505054105457480";
+    private static final String qid3 = "6840541099020457076";
+    private static long userId;
 
     private static String goodQuestion;
+    private static String normalQuestion;
     private static String badQuestion;
 
     private static final String response =  "[\n"
@@ -64,7 +68,7 @@ public class QuestionCommunicationTest {
             + "    }\n"
             + "]";
 
-    //TODO add new tests, check for uid
+    //TODO add new tests for ModDelete, delete
     /**
      * Create expectations for asking question.
      */
@@ -80,6 +84,13 @@ public class QuestionCommunicationTest {
         mockServer.when(request().withMethod("POST").withPath("/api/question/ask")
                     .withBody(badQuestion))
                 .respond(HttpResponse.response().withStatusCode(400));
+
+        //For testing other methods (different question id)
+        mockServer.when(request().withMethod("POST").withPath("/api/question/ask")
+                .withBody(normalQuestion))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody(qid3)
+                        .withHeader("Content-Type","application/json"));
     }
 
     /**
@@ -114,7 +125,7 @@ public class QuestionCommunicationTest {
         //Success
         mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
                 .withQueryStringParameters(new Parameter("qid", qid1),
-                        new Parameter("uid", "443")))
+                        new Parameter("uid", "443")).withBody(""))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0").withHeader("Content-Type","application/json"));
 
@@ -122,18 +133,81 @@ public class QuestionCommunicationTest {
         // (treat Long.MAX_VALUE as invalid parameter to test BAD REQUEST)
         mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
                 .withQueryStringParameters(new Parameter("qid", qid1),
-                        new Parameter("uid", String.valueOf(Long.MAX_VALUE))))
+                        new Parameter("uid", String.valueOf(Long.MAX_VALUE))).withBody(""))
                 .respond(HttpResponse.response().withStatusCode(400));
 
         //uid not found
         mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
+                .withQueryStringParameters(new Parameter("qid", qid1),
+                        new Parameter("uid", "442")).withBody(""))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+
+        //qid not found
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
+                .withQueryStringParameters(new Parameter("qid", "666"),
+                        new Parameter("uid", "443")).withBody(""))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+    }
+
+    //TODO change the body from "placeholder"
+    /**
+     * Create expectations for marking question as answered.
+     */
+    private static void createExpectationsForMarkAsAnswered() {
+        //Success
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
+                        + qid1 + "/" +  modkey).withBody("placeholder"))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0").withHeader("Content-Type","application/json"));
+
+        //invalid parameter - send 400
+        //  (treat lecture id (lid) as invalid UUID here to test BAD REQUEST)
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
+                        + qid1 + "/" +  lid).withBody("placeholder"))
+                .respond(HttpResponse.response().withStatusCode(400));
+
+        //qid does not match
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/question/answer/" + 666 + "/" +  modkey).withBody("placeholder"))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+
+        //incorrect modkey
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
+                + qid1 + "/" +  incorrectModkey).withBody("placeholder"))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+    }
+
+    /**
+     * Create expectations for deleting own questions.
+     */
+    private static void createExpectationsForDeleteQuestion() {
+        //Success
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/delete")
+                .withQueryStringParameters(new Parameter("qid", qid3),
+                        new Parameter("uid", String.valueOf(userId))))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0").withHeader("Content-Type","application/json"));
+
+        //invalid parameter - send 400
+        // (treat Long.MAX_VALUE as invalid parameter to test BAD REQUEST)
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/delete")
+                .withQueryStringParameters(new Parameter("qid", qid1),
+                        new Parameter("uid", String.valueOf(Long.MAX_VALUE))))
+                .respond(HttpResponse.response().withStatusCode(400));
+
+        //uid does not match
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/delete")
                 .withQueryStringParameters(new Parameter("qid", qid1),
                         new Parameter("uid", "442")))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
 
         //qid not found
-        mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/delete")
                 .withQueryStringParameters(new Parameter("qid", "666"),
                         new Parameter("uid", "443")))
                 .respond(HttpResponse.response().withStatusCode(200)
@@ -141,33 +215,38 @@ public class QuestionCommunicationTest {
     }
 
     /**
-     * Create expectations for marking question as answered.
+     * Create expectations for deleting any questions (done by moderator).
      */
-    private static void createExpectationsForMarkAsAnswered() {
+    private static void createExpectationsForModDelete() {
         //Success
-        mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                        + qid1 + "/" +  modkey))
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/moderator/delete")
+                .withQueryStringParameters(new Parameter("qid", qid2),
+                        new Parameter("modkey", String.valueOf(modkey))))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0").withHeader("Content-Type","application/json"));
 
         //invalid parameter - send 400
         //  (treat lecture id (lid) as invalid UUID here to test BAD REQUEST)
-        mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                        + qid1 + "/" +  lid))
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/moderator/delete")
+                .withQueryStringParameters(new Parameter("qid", qid1),
+                        new Parameter("modkey", String.valueOf(lid))))
                 .respond(HttpResponse.response().withStatusCode(400));
 
-        //qid not found
-        mockServer.when(request().withMethod("PUT")
-                .withPath("/api/question/answer/" + 666 + "/" +  modkey))
+        //modkey does not match
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/moderator/delete")
+                .withQueryStringParameters(new Parameter("qid", qid1),
+                        new Parameter("modkey", String.valueOf(incorrectModkey))))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
 
-        //incorrect modkey
-        mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                + qid1 + "/" +  incorrectModkey))
+        //qid not found
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/moderator/delete")
+                .withQueryStringParameters(new Parameter("qid", "666"),
+                        new Parameter("modkey", String.valueOf(modkey))))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
+
 
     /**
      * Starts mock server.
@@ -176,9 +255,11 @@ public class QuestionCommunicationTest {
     public static void startServer() {
         mockServer = ClientAndServer.startClientAndServer(8080);
         User.setUid();
-        long userId = User.getUid();
+        userId = User.getUid();
         goodQuestion = gson.toJson(
                 new Question(lid, "Is there anybody?",  userId));
+        normalQuestion = gson.toJson(
+                new Question(lid, "Will we get 10?",  userId));
         badQuestion = gson.toJson(
                 new Question(lid, "F*ck",  userId));
 
@@ -186,6 +267,8 @@ public class QuestionCommunicationTest {
         createExpectationsForFetching();
         createExpectationsForUpvote();
         createExpectationsForMarkAsAnswered();
+        createExpectationsForDeleteQuestion();
+        createExpectationsForModDelete();
     }
 
 
@@ -196,27 +279,38 @@ public class QuestionCommunicationTest {
     @Test
     public void askQuestionSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Testing", "Andy"));
+        int oldSize = User.getAskedQuestionIds().size();
         assertEquals(0, QuestionCommunication.askQuestion("Is there anybody?"));
+        assertTrue(User.getAskedQuestionIds().contains(Long.parseLong(qid1)));
+        assertEquals(oldSize + 1, User.getAskedQuestionIds().size());
     }
 
     @Test
     public void askQuestionLectureNotExistsTest() {
+        int oldSize = User.getAskedQuestionIds().size();
         Lecture.setCurrentLecture(null);
         assertEquals(-1, QuestionCommunication.askQuestion("Is there anybody?"));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
     @Test
     public void askQuestionServerRefusesTest() {
         stopServer();
+
+        int oldSize = User.getAskedQuestionIds().size();
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "?", "???"));
         assertEquals(-2, QuestionCommunication.askQuestion("Will we get 10 for OOPP?"));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
+
         startServer();
     }
 
     @Test
     public void askQuestionUnsuccessfulTest() {
+        int oldSize = User.getAskedQuestionIds().size();
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "#", "$"));
         assertEquals(-3, QuestionCommunication.askQuestion("F*ck"));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
     /**
@@ -374,6 +468,124 @@ public class QuestionCommunicationTest {
                 modkey, "Lambda expressions", "Thomas"));
         assertEquals(-4,
                 QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), incorrectModkey));
+    }
+
+    /**
+     * Tests for deleting own questions.
+     */
+
+    @Test
+    public void deleteQuestionSuccessfulTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Arrays", "Andy"));
+        QuestionCommunication.askQuestion("Will we get 10?");
+        int oldSize = User.getAskedQuestionIds().size();
+
+        assertEquals(0, QuestionCommunication.deleteQuestion(Long.parseLong(qid3), userId));
+        assertEquals(oldSize - 1, User.getAskedQuestionIds().size());
+        assertFalse(User.getAskedQuestionIds().contains(Long.parseLong(qid3)));
+    }
+
+    @Test
+    public void deleteQuestionNoLectureExistsTest() {
+        Lecture.setCurrentLecture(null);
+        User.getAskedQuestionIds().add(777L);
+        int oldSize = User.getAskedQuestionIds().size();
+
+        assertEquals(-1, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 443));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
+    }
+
+    @Test
+    public void deleteQuestionServerRefusesTest() {
+        stopServer();
+        User.getAskedQuestionIds().add(123789L);
+        Lecture.setCurrentLecture(new Lecture(lid, modkey,
+                "Linked lists", "Ivo"));
+        int oldSize = User.getAskedQuestionIds().size();
+
+        assertEquals(-2, QuestionCommunication.deleteQuestion(42, 42));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
+        startServer();
+    }
+
+    @Test
+    public void deleteQuestionInvalidUidTest() {
+        User.getAskedQuestionIds().add(123456789L);
+        Lecture.setCurrentLecture(new Lecture(lid, modkey,
+                "Red-black trees", "Ivo"));
+        int oldSize = User.getAskedQuestionIds().size();
+
+        assertEquals(-3,
+                QuestionCommunication.deleteQuestion(Long.parseLong(qid1), Long.MAX_VALUE));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
+    }
+
+    @Test
+    public void deleteQuestionIncorrectQidTest() {
+        User.getAskedQuestionIds().add(987654321L);
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "AVL trees", "Ivo"));
+        int oldSize = User.getAskedQuestionIds().size();
+        assertEquals(-4, QuestionCommunication.deleteQuestion(666, 443));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
+    }
+
+    @Test
+    public void deleteQuestionIncorrectUidTest() {
+        User.getAskedQuestionIds().add(69696969L);
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Multiway search trees", "Ivo"));
+        int oldSize = User.getAskedQuestionIds().size();
+        assertEquals(-4, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 442));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
+    }
+
+    /**
+     * Tests for deleting questions by moderator.
+     */
+
+    @Test
+    public void modDeleteSuccessfulTest() {
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Assembly", "Otto"));
+        QuestionCommunication.askQuestion("Will we get 10?");
+
+        assertEquals(0, QuestionCommunication.modDelete(Long.parseLong(qid2), modkey));
+    }
+
+    @Test
+    public void modDeleteNoLectureExistsTest() {
+        Lecture.setCurrentLecture(null);
+
+        assertEquals(-1, QuestionCommunication.modDelete(Long.parseLong(qid1), modkey));
+    }
+
+    @Test
+    public void modDeleteServerRefusesTest() {
+        stopServer();
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "CPU", "Koen"));
+
+        assertEquals(-2, QuestionCommunication.modDelete(42, modkey));
+        startServer();
+    }
+
+    @Test
+    public void modDeleteInvalidUUIDTest() {
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Virtual memory", "Koen"));
+
+        assertEquals(-3, QuestionCommunication.modDelete(Long.parseLong(qid1), lid));
+    }
+
+    @Test
+    public void modDeleteIncorrectQidTest() {
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Memory", "Koen"));
+        assertEquals(-4, QuestionCommunication.modDelete(666, modkey));
+    }
+
+    @Test
+    public void modDeleteIncorrectModkeyTest() {
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Caching", "Koen"));
+        assertEquals(-4, QuestionCommunication.modDelete(Long.parseLong(qid1), incorrectModkey));
     }
 
     /**
