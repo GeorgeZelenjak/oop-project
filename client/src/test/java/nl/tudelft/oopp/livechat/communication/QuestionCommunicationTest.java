@@ -451,6 +451,14 @@ public class QuestionCommunicationTest {
         startServer();
     }
 
+    @Test
+    public void deleteQuestionInvalidUidTest() {
+        Lecture.setCurrentLecture(new Lecture(lid, modkey,
+                "Red-black trees", "Ivo"));
+        assertEquals(-3,
+                QuestionCommunication.deleteQuestion(Long.parseLong(qid1), Long.MAX_VALUE));
+    }
+
     /**
      * Stops server.
      */
