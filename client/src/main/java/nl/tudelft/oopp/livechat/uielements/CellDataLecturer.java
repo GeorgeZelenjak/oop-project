@@ -42,6 +42,9 @@ public class CellDataLecturer {
     @FXML
     private Label answeredTick;
 
+    @FXML
+    private Button deleteButton;
+
     private Question question;
 
 
@@ -123,12 +126,20 @@ public class CellDataLecturer {
      * Sets question as answered.
      */
     public void setAnsweredQuestion() {
-        isAnsweredButton.setOnAction((
-                ActionEvent event) -> {
-            QuestionCommunication
-                    .markedAsAnswered(question.getId(), Lecture.getCurrentLecture().getModkey());
-
+        isAnsweredButton.setOnAction((ActionEvent event) -> {
+            QuestionCommunication.markedAsAnswered(question.getId(),
+                    Lecture.getCurrentLecture().getModkey());
             System.out.println(question.getVotes());
+        });
+    }
+
+    /**
+     * Deletes a question.
+     */
+    public void setDeleteQuestion() {
+        deleteButton.setOnAction((ActionEvent event) -> {
+            QuestionCommunication.modDelete(question.getId(),
+                    Lecture.getCurrentLecture().getModkey());
         });
     }
 }

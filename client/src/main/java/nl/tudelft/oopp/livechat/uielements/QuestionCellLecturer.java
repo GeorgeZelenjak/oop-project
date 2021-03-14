@@ -16,7 +16,7 @@ public class QuestionCellLecturer extends ListCell<Question> {
      */
     @Override
     public void updateItem(Question question, boolean empty) {
-        super.updateItem(question,empty);
+        super.updateItem(question, empty);
         if (question != null && !empty) {
 
             CellDataLecturer data = new CellDataLecturer();
@@ -30,6 +30,7 @@ public class QuestionCellLecturer extends ListCell<Question> {
 
             setGraphic(data.getBox());
             data.setAnsweredQuestion();
+            data.setDeleteQuestion();
         } else setGraphic(null);
     }
 }

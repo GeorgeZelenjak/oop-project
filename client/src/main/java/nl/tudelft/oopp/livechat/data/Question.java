@@ -80,6 +80,14 @@ public class Question implements Comparable<Question> {
         return this.lectureId;
     }
 
+    /**
+     * Sets time.
+     *
+     * @param time the time
+     */
+    public void setTime(Timestamp time) {
+        this.time = time;
+    }
 
     /**
      * Gets the time the question was asked.
@@ -87,6 +95,15 @@ public class Question implements Comparable<Question> {
      */
     public Timestamp getTime() {
         return this.time;
+    }
+
+    /**
+     * Sets votes.
+     *
+     * @param votes the votes
+     */
+    public void setVotes(int votes) {
+        this.votes = votes;
     }
 
     /**
@@ -104,6 +121,14 @@ public class Question implements Comparable<Question> {
      */
     public String getText() {
         return this.text;
+    }
+
+    /**
+     * Sets answered.
+     * @param answered boolean indicating if question is answered
+     */
+    public void setAnswered(boolean answered) {
+        this.answered = answered;
     }
 
     /**

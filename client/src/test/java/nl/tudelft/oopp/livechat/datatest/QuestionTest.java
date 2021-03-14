@@ -1,10 +1,12 @@
 package nl.tudelft.oopp.livechat.datatest;
 
+import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -63,8 +65,51 @@ public class QuestionTest {
     }
 
     @Test
-    public void getOwnerIdTEst() {
+    public void getOwnerIdTest() {
         assertEquals(42,question.getOwnerId());
+    }
+
+    @Test
+    public void emptyConstructorTest() {
+        Question question1 = new Question();
+
+        assertEquals(0, question1.getId());
+        assertEquals(0, question1.getVotes());
+        assertEquals(0, question1.getOwnerId());
+
+        assertNull(question1.getText());
+        assertNull(question1.getLectureId());
+        assertNull(question1.getTime());
+        assertNull(question1.getAnswerText());
+        assertNull(question1.getAnswerText());
+
+        assertFalse(question1.isAnswered());
+    }
+
+    @Test
+    public void gerCurrentQuestionsNotSetTest() {
+        Question.setCurrentQuestions(null);
+        assertNull(Question.getCurrentQuestions());
+    }
+
+    @Test
+    public void gerCurrentLectureSetTest() {
+        Question.setCurrentQuestions(new ArrayList<Question>());
+        assertNotNull(Question.getCurrentQuestions());
+    }
+
+    @Test
+    public void equalsTrueTest() {
+        Question q1 = new Question();
+        Question q2 = new Question();
+        assertEquals(q2, q1);
+    }
+
+    @Test
+    public void equalsFalseDifferentObjectsTest() {
+        Question q1 = new Question();
+        String q2 = "LobbyBobby";
+        assertNotEquals(q2, q1);
     }
 
     @Test
@@ -79,4 +124,6 @@ public class QuestionTest {
         }
         assertTrue(containsNeededInfo);
     }
+
+    //TODO ADD TEST FOR COMPARE TO
 }

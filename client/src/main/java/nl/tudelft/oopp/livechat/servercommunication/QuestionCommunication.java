@@ -212,6 +212,46 @@ public class QuestionCommunication {
     }
 
     /**
+     * Method that sends a request to delete a question (done by the moderator).
+     * @param qid the id of the question
+     * @param modkey the moderator key
+     * @return  0 if the question was deleted successfully
+     *         -1 if current lecture does not exist
+     *         -2 if an exception occurred when communicating with the server
+     *         -3 if unexpected response was received
+     *         -4 if the question wasn't deleted (e.g wrong uid, wrong modkey etc.)
+     */
+    public static int modDelete(long qid, UUID modkey) {
+        //Check if current lecture has been set
+        if (Lecture.getCurrentLecture() == null) {
+            System.out.println("You are not connected to a lecture!");
+            return -1;
+        }
+        //Parameters for request
+        String address = "http://localhost:8080/api/question/moderator/delete";
+
+        //Creating request and defining response
+        HttpRequest request = HttpRequest.newBuilder().DELETE()
+                .uri(URI.create(address + "?qid=" + qid + "&modkey=" + modkey)).build();
+
+        HttpResponse<String> response;
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.println("An exception occurred when communicating with the server!");
+            //e.printStackTrace();
+            return -2;
+        }
+
+        int result = handleResponse(response);
+        if (result == 0) {
+            System.out.println("The question with id " + qid + " was deleted successfully!");
+        }
+        return result;
+    }
+
+    /**
      * Handles the response for upvoteQuestion and markedAsAnswered methods.
      * @param response response received from the server
      * @return -3, -4, 0 according to the "status codes" for these methods

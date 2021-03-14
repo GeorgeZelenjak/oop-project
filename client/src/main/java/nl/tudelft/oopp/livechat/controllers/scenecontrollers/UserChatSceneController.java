@@ -71,7 +71,7 @@ public class UserChatSceneController implements Initializable {
         userNameText.setText(User.getUserName());
 
         Timeline timeline = new Timeline(new KeyFrame(
-                Duration.millis(2500),
+                Duration.millis(1500),
             ae -> fetchQuestions()));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();

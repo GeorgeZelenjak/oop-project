@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class QuestionManager {
+
     /**
      * Sorts questions by time or number of votes according to the given arguments.
      * @param byVotes true iff needs to sort by votes
