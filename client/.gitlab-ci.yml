@@ -4,6 +4,7 @@ stages:
   - build
   - validate
   - test
+  - release
 
 variables:
   # Disable the Gradle daemon to ensure isolated runs of the CI pipeline.
@@ -37,3 +38,24 @@ client-test:
     - ./gradlew :client:test :client:jacocoTestReport
     - cat client/build/reports/jacoco/html/index.html | grep -Po "Total.*?([0-9]{1,3})%"
   coverage: /([0-9]{1,3})%/
+
+client-release:
+    stage: release
+    rules:
+      - if: $CI_COMMIT_TAG
+    script:
+      - echo 'running release_job'
+      - ./gradlew :client:distTar :client:distZip
+    cache:
+      paths:
+        - build/
+        - .gradle/
+    artifacts:
+      paths:
+        - build/distributions/client.zip
+        - build/distributions/client.tar
+    release:
+      name: 'CLIENT Release $CI_COMMIT_TAG'
+      description: 'Client release generated after commit: $CI_COMMIT_REF_NAME'
+      tag_name: '$CI_COMMIT_TAG'
+      ref: '$CI_COMMIT_TAG'
