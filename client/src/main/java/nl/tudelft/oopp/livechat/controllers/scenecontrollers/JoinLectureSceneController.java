@@ -43,9 +43,31 @@ public class JoinLectureSceneController {
      * @throws IOException exception when something goes wrong
      */
     public void goToLecture() throws IOException {
-        if (!InputValidator.validateUserName(enterNameTextField.getText(), 50)
-                || !InputValidator.validateLectureIdInput(
-                        enterLectureCodeTextField.getText(), 100)) {
+
+        int inputStatusUserName = InputValidator.validateLength(
+                enterNameTextField.getText(), 50);
+        int inputStatusLectureId = InputValidator.validateLength(
+                enterLectureCodeTextField.getText(), 100);
+        if (inputStatusUserName == -1) {
+            AlertController.alertWarning("No name entered",
+                    "Please enter your name!");
+            return;
+        }
+        if (inputStatusUserName == -2) {
+            AlertController.alertWarning("Long name",
+                    "Your name is too long!\n(max: " + 50
+                            + " characters, you entered: "
+                            + enterNameTextField.getText().length() + ")");
+            return;
+        }
+        if (inputStatusLectureId == -1) {
+            AlertController.alertWarning("No lecture id entered",
+                    "Please enter the lecture id!");
+            return;
+        }
+        if (inputStatusLectureId == -2) {
+            AlertController.alertWarning(
+                    "Too long lecture id", "Lecture id is too long to be valid!");
             return;
         }
 
@@ -102,9 +124,20 @@ public class JoinLectureSceneController {
      */
     private void joinAsModerator() throws IOException {
         String modkeyString = modkeyTextField.getText();
-        if (!InputValidator.validateModKeyInput(modkeyString, 200)) {
+
+        int inputStatusModKey = InputValidator.validateLength(
+                modkeyTextField.getText(), 255);
+        if (inputStatusModKey == -1) {
+            AlertController.alertWarning(
+                    "No moderator key entered", "Please enter the moderator key!");
             return;
         }
+        if (inputStatusModKey == -2) {
+            AlertController.alertWarning(
+                    "Too long moderator key", "Moderator key is too long to be valid!");
+            return;
+        }
+
         boolean result = LectureCommunication
                 .validateModerator(enterLectureCodeTextField.getText(),modkeyString);
 

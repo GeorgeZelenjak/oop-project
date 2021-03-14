@@ -29,9 +29,34 @@ public class CreateLectureController {
      * @throws IOException the io exception
      */
     private void createLecture() throws IOException {
-        if (!InputValidator.validateUserName(enterYourNameTextField.getText(), 50)
-                || !InputValidator.validateLectureName(
-                        enterLectureNameTextField.getText(), 255)) {
+        int inputStatusUserName = InputValidator.validateLength(
+                enterYourNameTextField.getText(), 50);
+        int inputStatusLectureName = InputValidator.validateLength(
+                enterLectureNameTextField.getText(), 255);
+        if (inputStatusUserName == -1) {
+            AlertController.alertWarning("No name entered",
+                    "Please enter your name!");
+            return;
+        }
+        if (inputStatusUserName == -2) {
+            AlertController.alertWarning("Long name",
+                    "Your name is too long!\n(max: " + 50
+                            + " characters, you entered: "
+                            + enterYourNameTextField.getText().length() + ")");
+            return;
+        }
+        if (inputStatusLectureName == -1) {
+            AlertController.alertWarning("Long lecture name",
+                    "The lecture name is too long!\n(max: " + 255
+                            + " characters, you entered: "
+                            + enterLectureNameTextField.getText().length() + ")");
+            return;
+        }
+        if (inputStatusLectureName == -2) {
+            AlertController.alertWarning("Long name",
+                    "Your name is too long!\n(max: " + 50
+                            + " characters, you entered: "
+                            + enterYourNameTextField.getText().length() + ")");
             return;
         }
 
