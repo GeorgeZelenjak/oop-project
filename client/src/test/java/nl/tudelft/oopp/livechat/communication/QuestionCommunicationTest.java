@@ -1,6 +1,7 @@
 package nl.tudelft.oopp.livechat.communication;
 
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,6 +11,7 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.Parameter;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +22,7 @@ public class QuestionCommunicationTest {
     public static MockServerClient mockServer;
 
 
-    private static final UUID uuid = UUID.randomUUID();
+    private static final UUID uuid = UUID.fromString("dfabcfdf-271b-48d2-841e-4874ff28b4a6");
 
     /**
      * Starts mock server.
@@ -63,7 +65,7 @@ public class QuestionCommunicationTest {
                         .withHeader("Content-Type","application/json"));
 
         mockServer.when(request().withMethod("GET").withPath("/api/question/fetch")
-                .withQueryStringParameter("lid",uuid.toString()))
+                .withQueryStringParameter("lid", uuid.toString()))
                 .respond(HttpResponse.response().withStatusCode(200)
                 .withBody(response)
                 .withHeader("Content-Type","application/json"));
@@ -78,43 +80,66 @@ public class QuestionCommunicationTest {
 
 
     @Test
-    public void testAskQuestionLectureExists() {
+    public void askQuestionSuccessfulTest() {
         Lecture res = new Lecture();
         Lecture.setCurrentLecture(res);
         assertEquals(1, QuestionCommunication.askQuestion("Is there anybody?"));
     }
 
     @Test
-    public void testAskQuestionLectureNotExists() {
+    public void askQuestionLectureNotExistsTest() {
         Lecture.setCurrentLecture(null);
         assertEquals(-1,QuestionCommunication.askQuestion("Is there anybody?"));
     }
 
     @Test
-    public void testFetchQuestionsCurrentLectureNull() {
+    public void fetchQuestionsCurrentLectureExistsTest() {
+        Lecture.setCurrentLecture(new Lecture(uuid,
+                null, "TEST", "NOT TEST"));
+        List<Question> questions = QuestionCommunication.fetchQuestions();
+        assertNotNull(questions);
+        assertEquals(2, questions.size());
+
+        Question expected1 = new Question(uuid, "HHH", 42);
+        Question expected2 = new Question(uuid, "koiko", 69);
+        Question actual1 = questions.get(0);
+        Question actual2 = questions.get(1);
+        assertTrue(expected1.getLectureId().equals(actual1.getLectureId())
+                        && expected1.getText().equals(actual1.getText()));
+        assertTrue(expected2.getLectureId().equals(actual2.getLectureId())
+                && expected2.getText().equals(actual2.getText()));
+    }
+
+    @Test
+    public void fetchQuestionsCurrentNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
         assertNull(QuestionCommunication.fetchQuestions());
     }
 
     @Test
-    public void testFetchQuestionsCurrentLectureNotNull() {
+    public void upvoteQuestionSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(uuid,
-                null, "TEST", "NOT TEST"));
-        assertNotNull(QuestionCommunication.fetchQuestions());
-    }
-
-    @Test
-    public void testUpvoteQuestionSuccessful() {
+                null, "Spring Boot", "Sebastian"));
         assertEquals(1, QuestionCommunication.upvoteQuestion(5397545054934456486L, 443));
     }
 
     @Test
-    public void testUpvoteQuestionWrongQid() {
+    public void upvoteQuestionNoLectureExistsTest() {
+        Lecture.setCurrentLecture(null);
+        assertEquals(-1, QuestionCommunication.upvoteQuestion(5397545054934456486L, 443));
+    }
+
+    @Test
+    public void upvoteQuestionWrongQidTest() {
+        Lecture.setCurrentLecture(new Lecture(uuid,
+                null, "Testing", "Sebastian"));
         assertEquals(-3, QuestionCommunication.upvoteQuestion(42, 443));
     }
 
     @Test
-    public void testUpvoteQuestionWrongUid() {
+    public void upvoteQuestionWrongUidTest() {
+        Lecture.setCurrentLecture(new Lecture(uuid,
+                null, "Gitlab", "Sander"));
         assertEquals(-3, QuestionCommunication.upvoteQuestion(5397545054934456486L, 442));
     }
 

@@ -133,14 +133,18 @@ public class QuestionCommunication {
     /** Method that sends a request to upvote a question to the server.
      * @param qid - the Question ID
      * @param uid - the User ID
-     * @return - the status code
+     * @return - the "status code"
+     *           1 if success
+     *          -1 if current lecture does not exist
+     *          -2 if an exception occurred when communicating with the server
+     *          -3 if wasn't upvoted/downvoted (e.g wrong uid, wrong qid etc.)
      */
     public static int upvoteQuestion(long qid, long uid) {
 
         //Checking if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
-
+            return -1;
         }
         //Parameters for request
 
@@ -169,7 +173,7 @@ public class QuestionCommunication {
         }
 
         //Question has been asked successfully
-        System.out.println("The question was upvoted/unvoted successfully! " + response.body());
+        System.out.println("The question was upvoted/downvoted successfully! " + response.body());
         return 1;
     }
 
