@@ -545,7 +545,7 @@ public class QuestionCommunicationTest {
     public void modDeleteNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
 
-        assertEquals(-1, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 443));
+        assertEquals(-1, QuestionCommunication.modDelete(Long.parseLong(qid1), modkey));
     }
 
     @Test
@@ -554,8 +554,17 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(new Lecture(lid, modkey,
                 "CPU", "Koen"));
 
-        assertEquals(-2, QuestionCommunication.deleteQuestion(42, 42));
+        assertEquals(-2, QuestionCommunication.modDelete(42, modkey));
         startServer();
+    }
+
+    @Test
+    public void modDeleteInvalidUUIDTest() {
+        Lecture.setCurrentLecture(new Lecture(lid, modkey,
+                "Virtual memory", "Koen"));
+
+        assertEquals(-3,
+                QuestionCommunication.modDelete(Long.parseLong(qid1), lid));
     }
 
     /**
