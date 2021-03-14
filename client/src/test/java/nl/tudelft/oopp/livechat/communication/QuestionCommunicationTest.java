@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,10 +38,8 @@ public class QuestionCommunicationTest {
     private static final String qid1 = "5397545054934456486";
     private static final String qid2 = "8077505054105457480";
 
-    private static final String goodQuestion = gson.toJson(
-                                new Question(lid, "Is there anybody?",  42));
-    private static final String badQuestion = gson.toJson(
-                                new Question(lid, "F*ck",  69));
+    private static String goodQuestion;
+    private static String badQuestion;
 
     private static final String response =  "[\n"
             + "    {\n"
@@ -176,6 +175,12 @@ public class QuestionCommunicationTest {
     @BeforeAll
     public static void startServer() {
         mockServer = ClientAndServer.startClientAndServer(8080);
+        User.setUid();
+        long userId = User.getUid();
+        goodQuestion = gson.toJson(
+                new Question(lid, "Is there anybody?",  userId));
+        badQuestion = gson.toJson(
+                new Question(lid, "F*ck",  userId));
 
         createExpectationsForAsking();
         createExpectationsForFetching();
