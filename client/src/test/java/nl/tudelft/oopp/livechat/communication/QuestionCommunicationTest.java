@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
+import org.mockserver.model.Parameter;
 
 import java.util.UUID;
 
@@ -66,6 +67,12 @@ public class QuestionCommunicationTest {
                 .respond(HttpResponse.response().withStatusCode(200)
                 .withBody(response)
                 .withHeader("Content-Type","application/json"));
+
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
+                .withQueryStringParameters(new Parameter("qid", "5397545054934456486"),
+                        new Parameter("uid", "443")))
+                .respond(HttpResponse.response().withStatusCode(200)
+                .withBody("0").withHeader("Content-Type","application/json"));
     }
 
 
@@ -94,6 +101,21 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(new Lecture(uuid,
                 null, "TEST", "NOT TEST"));
         assertNotNull(QuestionCommunication.fetchQuestions());
+    }
+
+    @Test
+    public void testUpvoteQuestionSuccessful() {
+        assertEquals(1, QuestionCommunication.upvoteQuestion(5397545054934456486L, 443));
+    }
+
+    @Test
+    public void testUpvoteQuestionWrongQid() {
+        assertEquals(-3, QuestionCommunication.upvoteQuestion(42, 443));
+    }
+
+    @Test
+    public void testUpvoteQuestionWrongUid() {
+        assertEquals(-3, QuestionCommunication.upvoteQuestion(5397545054934456486L, 442));
     }
 
     /**
