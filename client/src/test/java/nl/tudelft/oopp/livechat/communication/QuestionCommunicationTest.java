@@ -204,6 +204,39 @@ public class QuestionCommunicationTest {
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
 
+    /**
+     * Create expectations for deleting any questions (done by moderator).
+     */
+    private static void createExpectationsForModDelete() {
+        //Success
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/moderator/delete")
+                .withQueryStringParameters(new Parameter("qid", qid2),
+                        new Parameter("modkey", String.valueOf(modkey))))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0").withHeader("Content-Type","application/json"));
+
+        //invalid parameter - send 400
+        //  (treat lecture id (lid) as invalid UUID here to test BAD REQUEST)
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/moderator/delete")
+                .withQueryStringParameters(new Parameter("qid", qid1),
+                        new Parameter("modkey", String.valueOf(lid))))
+                .respond(HttpResponse.response().withStatusCode(400));
+
+        //modkey does not match
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/moderator/delete")
+                .withQueryStringParameters(new Parameter("qid", qid1),
+                        new Parameter("modkey", String.valueOf(incorrectModkey))))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+
+        //qid not found
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/moderator/delete")
+                .withQueryStringParameters(new Parameter("qid", "666"),
+                        new Parameter("modkey", String.valueOf(modkey))))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+    }
+
 
     /**
      * Starts mock server.
@@ -223,6 +256,7 @@ public class QuestionCommunicationTest {
         createExpectationsForUpvote();
         createExpectationsForMarkAsAnswered();
         createExpectationsForDeleteQuestion();
+        createExpectationsForModDelete();
     }
 
 
