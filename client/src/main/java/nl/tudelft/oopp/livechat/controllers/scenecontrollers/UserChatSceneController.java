@@ -169,7 +169,7 @@ public class UserChatSceneController implements Initializable {
         //inputQuestion.setText("");
 
         System.out.println(ret);
-        if (ret <= 0) {
+        if (ret < 0) {
             AlertController.alertError("ERROR",
                     "There was a problem with asking question!");
         }
