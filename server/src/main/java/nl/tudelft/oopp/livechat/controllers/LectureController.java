@@ -90,6 +90,4 @@ public class  LectureController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid UUID");
     }
-
-
 }

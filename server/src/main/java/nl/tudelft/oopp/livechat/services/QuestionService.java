@@ -10,6 +10,9 @@ import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import org.springframework.stereotype.Service;
 
 
+/**
+ * Class for the Question service.
+ */
 @Service
 public class QuestionService {
 
