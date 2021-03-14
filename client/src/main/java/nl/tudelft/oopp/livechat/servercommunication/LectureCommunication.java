@@ -61,6 +61,7 @@ public class LectureCommunication {
         // if server gives an unexpected response
         if (response.statusCode() != 200) {
             System.out.println("Status: " + response.statusCode());
+            return null;
         }
 
         //Return object from response
