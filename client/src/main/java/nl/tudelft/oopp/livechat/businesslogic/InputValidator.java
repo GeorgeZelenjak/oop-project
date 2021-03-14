@@ -1,4 +1,4 @@
-package nl.tudelft.oopp.livechat.controllers.businesslogic;
+package nl.tudelft.oopp.livechat.businesslogic;
 
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 
