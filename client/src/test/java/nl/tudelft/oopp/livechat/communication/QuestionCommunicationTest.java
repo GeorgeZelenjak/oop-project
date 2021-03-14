@@ -65,6 +65,7 @@ public class QuestionCommunicationTest {
             + "    }\n"
             + "]";
 
+    //TODO add new tests, check for uid
     /**
      * Create expectations for asking question.
      */

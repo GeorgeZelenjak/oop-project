@@ -71,7 +71,7 @@ public class UserChatSceneController implements Initializable {
         userNameText.setText(User.getUserName());
 
         Timeline timeline = new Timeline(new KeyFrame(
-                Duration.millis(1500),
+                Duration.millis(1000),
             ae -> fetchQuestions()));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
@@ -110,7 +110,6 @@ public class UserChatSceneController implements Initializable {
 
     /**
      * Go back to main.
-     *
      * @throws IOException the io exception
      */
     public void goBackToMain() throws IOException {
@@ -128,7 +127,6 @@ public class UserChatSceneController implements Initializable {
 
     /**
      * Go to user manual.
-     *
      * @throws IOException the io exception
      */
     public void goToUserManual() throws IOException {
@@ -137,7 +135,6 @@ public class UserChatSceneController implements Initializable {
 
     /**
      * Go to settings.
-     *
      * @throws IOException the io exception
      */
     public void goToSettings() throws IOException {
@@ -146,7 +143,6 @@ public class UserChatSceneController implements Initializable {
 
     /**
      * Send a question to the server.
-     *
      * @return Integer showing status of the action
      *      1- Everything is good
      *      -1 -Lecture has not been initialized
@@ -154,7 +150,6 @@ public class UserChatSceneController implements Initializable {
      *      -4 - too long question
      *      -5 empty field
      */
-    @FXML
     public int askQuestion() {
         String text = questionInputTextArea.getText();
         if (text.length() == 0) {

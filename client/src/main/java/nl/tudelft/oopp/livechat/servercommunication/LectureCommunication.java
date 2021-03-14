@@ -34,7 +34,7 @@ public class LectureCommunication {
      * @param name      A name of the lecture
      * @return          Lecture which was created, null in case of errors
      */
-    //  TODO: I AM PASSING A BLANK STRING IN THE POST METHOD, THIS SHOULD BE CHANGED
+    // I AM PASSING A BLANK STRING IN THE POST METHOD, THIS SHOULD BE CHANGED
     public static Lecture createLecture(String name) {
 
         //Encoding the lecture name into url compatible format
