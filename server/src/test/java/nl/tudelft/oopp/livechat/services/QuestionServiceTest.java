@@ -16,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
+/**
+ * Class for Question service tests.
+ */
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class QuestionServiceTest {
@@ -37,7 +40,9 @@ class QuestionServiceTest {
     @Autowired
     LectureRepository lectureRepository;
 
-
+    /**
+     * Sets up a lecture with questions before each test.
+     */
     @BeforeEach
     void setup() {
         l1 = lectureService.newLecture("Lecture Name 1", "Ivo van Kreveld");

@@ -9,10 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 
+/**
+ * Class for Lecture entity tests.
+ */
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 public class LectureEntityTest {
     private static LectureEntity lectureEntity;
 
+    /**
+     * Sets up a lecture before starting testing.
+     */
     @BeforeAll
     static void setUp() {
         lectureEntity = new LectureEntity("Algorithms and Data Structures: Red-black trees",

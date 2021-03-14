@@ -14,11 +14,12 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
 
+/**
+ * Class for Question communication tests.
+ */
 public class QuestionCommunicationTest {
 
     public static MockServerClient mockServer;
-
-
     private static final UUID uuid = UUID.randomUUID();
 
     /**
@@ -53,7 +54,6 @@ public class QuestionCommunicationTest {
 
         final String  responseQuestionBody = "5397545054934456486";
 
-
         mockServer = ClientAndServer.startClientAndServer(8080);
 
         mockServer.when(request().withMethod("POST").withPath("/api/question/ask"))
@@ -67,8 +67,6 @@ public class QuestionCommunicationTest {
                 .withBody(response)
                 .withHeader("Content-Type","application/json"));
     }
-
-
 
     @Test
     public void testAskQuestionLectureExists() {

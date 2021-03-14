@@ -14,6 +14,9 @@ import org.mockserver.verify.VerificationTimes;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
 
+/**
+ * Class for Lecture communication tests.
+ */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LectureCommunicationTest {
 

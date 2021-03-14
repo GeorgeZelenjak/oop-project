@@ -7,10 +7,16 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
+/**
+ * Class for Lecture tests.
+ */
 public class LectureTest {
 
     static Lecture lecture;
 
+    /**
+     * Create a lecture before starting testing.
+     */
     @BeforeAll
     public static void createLecture() {
         lecture = new Lecture(UUID.randomUUID(),null, "History of zebras", "Yours truly");
@@ -82,6 +88,4 @@ public class LectureTest {
         }
         assertTrue(containsNeededInfo);
     }
-
-
 }

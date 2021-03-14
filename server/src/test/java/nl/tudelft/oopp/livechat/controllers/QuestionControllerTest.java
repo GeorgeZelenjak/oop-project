@@ -21,6 +21,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 
+/**
+ * Class for Question controller tests.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class QuestionControllerTest {
@@ -30,7 +33,6 @@ class QuestionControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
 
     QuestionEntity q1;
     QuestionEntity q2;
