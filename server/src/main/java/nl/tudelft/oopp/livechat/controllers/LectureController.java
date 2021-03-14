@@ -6,10 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpRequest;
 import java.util.UUID;
 
 
+/**
+ * Class for the Lecture controller.
+ */
 @RestController
 @RequestMapping("/api")
 public class  LectureController {
@@ -88,6 +90,4 @@ public class  LectureController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid UUID");
     }
-
-
 }

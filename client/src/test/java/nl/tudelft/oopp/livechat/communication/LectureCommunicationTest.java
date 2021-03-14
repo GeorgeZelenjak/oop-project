@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
@@ -14,17 +12,16 @@ import org.mockserver.model.HttpResponse;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
 
+/**
+ * Class for Lecture communication tests.
+ */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LectureCommunicationTest {
 
     public static MockServerClient mockServer;
+    public static String jsonLecture;
 
-
-    /**
-     * Starts mock server.
-     */
-    @BeforeAll
-    public static void startServer() {
-
+    private static void assignJsonLecture() {
         ObjectNode node = new ObjectMapper().createObjectNode();
         node.put("uuid","0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
         node.put("modkey","08843278-e8b8-4d51-992f-48c6aee44e27");
@@ -36,92 +33,136 @@ public class LectureCommunicationTest {
         node.put("slowerCount","0");
         node.put("open","true");
 
-        String jsonResponseLecture = node.toString();
-        final String  responseQuestionBody = "5397545054934456486";
+        jsonLecture = node.toString();
+    }
 
-
-        mockServer = ClientAndServer.startClientAndServer(8080);
+    private static void createLectureExpectations() {
         mockServer.when(request().withMethod("POST").withPath("/api/newLecture")
                 .withQueryStringParameter("name","name"))
                 .respond(HttpResponse.response().withStatusCode(200)
-                        .withBody(jsonResponseLecture)
+                        .withBody(jsonLecture)
                         .withHeader("Content-Type","application/json"));
+    }
 
+    private static void joinLectureByIdExpectations() {
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/get/0ee81155-96fc-4045-bfe9-dd7ca714b5e8"))
                 .respond(HttpResponse.response().withStatusCode(200)
-                        .withBody(jsonResponseLecture)
+                        .withBody(jsonLecture)
                         .withHeader("Content-Type","application/json"));
+    }
 
-
-        mockServer.when(request().withMethod("POST").withPath("/api/question/ask"))
-                .respond(HttpResponse.response().withStatusCode(200)
-                        .withBody(responseQuestionBody)
-                        .withHeader("Content-Type","application/json"));
-
+    private static void validateModeratorExpectations() {
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/validate/112/123"))
                 .respond(HttpResponse.response().withStatusCode(200)
-                .withBody("0"));
+                        .withBody("0"));
+    }
 
+    private static void closeLectureExpectations() {
         mockServer.when(request().withMethod("PUT")
                 .withPath("/api/close/12/69"))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0"));
     }
 
+    //Starts the server and assigns expectations
+    @BeforeAll
+    private static void startServer() {
+        assignJsonLecture();
+        mockServer = ClientAndServer.startClientAndServer(8080);
+        createLectureExpectations();
+        joinLectureByIdExpectations();
+        validateModeratorExpectations();
+        closeLectureExpectations();
+    }
+
     @Test
-    public void testCreateLectureNotNull() {
+    public void createLectureNotNullTest() {
         assertNotNull(LectureCommunication.createLecture("name"));
     }
 
     @Test
-    public void testLectureNameMatches() {
+    public void createLectureWrongResponse() {
+        Lecture res = LectureCommunication.createLecture("Babba booey!");
+        assertNull(res);
+    }
+
+    @Test
+    public void createLectureNameMatchesTest() {
         Lecture res = LectureCommunication.createLecture("name");
         assertNotNull(res);
         assertEquals("name", res.getName());
     }
 
     @Test
-    public void joinLectureByIdLectureExists() {
-        Lecture res = LectureCommunication.joinLectureById("0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
-        assertNotNull(res);
-        assertEquals("0ee81155-96fc-4045-bfe9-dd7ca714b5e8", res.getUuid().toString());
-
+    public void createLectureNoResponseTest() {
+        stopServer();
+        assertNull(LectureCommunication.createLecture("name"));
+        startServer();
     }
 
     @Test
-    public void joinLectureByIdNotExist() {
+    public void joinLectureByIdLectureExistsTest() {
+        Lecture res = LectureCommunication.joinLectureById("0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
+        assertNotNull(res);
+        assertEquals("0ee81155-96fc-4045-bfe9-dd7ca714b5e8", res.getUuid().toString());
+    }
+
+    @Test
+    public void joinLectureByIdLectureNotExistTest() {
         Lecture res = LectureCommunication.joinLectureById("zebra");
         assertNull(res);
     }
 
     @Test
-    public void validateModeratorPass() {
+    public void joinLectureByIdNoResponseTest() {
+        stopServer();
+        Lecture res = LectureCommunication.joinLectureById(
+                "0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
+        assertNull(res);
+        startServer();
+    }
+
+
+    @Test
+    public void validateModeratorPassTest() {
         assertTrue(LectureCommunication.validateModerator("112","123"));
     }
 
     @Test
-    public void validateModeratorFail() {
+    public void validateModeratorFailTest() {
         assertFalse(LectureCommunication.validateModerator("not zebra","Zebra"));
     }
 
     @Test
-    public void closeLecturePass() {
+    public void validateModeratorNoResponseTest() {
+        stopServer();
+        assertFalse(LectureCommunication.validateModerator("not zebra","Zebra"));
+        startServer();
+    }
+
+    @Test
+    public void closeLecturePassTest() {
         Lecture.setCurrentLecture(new Lecture());
         assertTrue(LectureCommunication.closeLecture("12","69"));
     }
 
     @Test
-    public void closeLectureFail() {
+    public void closeLectureFailTest() {
         assertFalse(LectureCommunication.closeLecture("112","123"));
     }
 
-    /**
-     * Stops server.
-     */
+    @Test
+    public void closeLectureNoResponseTest() {
+        stopServer();
+        assertFalse(LectureCommunication.closeLecture("112","123"));
+        startServer();
+    }
+
+    //Stops the server
     @AfterAll
-    public static void stopServer() {
+    private static void stopServer() {
         mockServer.stop();
     }
 }

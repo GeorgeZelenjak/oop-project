@@ -16,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
+/**
+ * Class for Question service tests.
+ */
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class QuestionServiceTest {
@@ -37,7 +40,9 @@ class QuestionServiceTest {
     @Autowired
     LectureRepository lectureRepository;
 
-
+    /**
+     * Sets up a lecture with questions before each test.
+     */
     @BeforeEach
     void setup() {
         l1 = lectureService.newLecture("Lecture Name 1", "Ivo van Kreveld");
@@ -267,6 +272,39 @@ class QuestionServiceTest {
         assertEquals(-1, result);
         QuestionEntity q1after = questionRepository.findById(qid).orElse(null);
         assertFalse(q1after.isAnswered());
+    }
+
+    @Test
+    @Order(18)
+    void editQuestionUnsuccessful2Test() {
+        long qid = 112233;
+        long newOwnerId = 42L;
+        String oldText = q1.getText();
+        UUID modKey = l2.getModkey();
+        String newText = "new text)))";
+
+        int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
+        assertEquals(-1, result);
+
+        QuestionEntity q = questionRepository.findById(qid).orElse(null);
+        assertNull(q);
+    }
+
+    @Test
+    @Order(18)
+    void editQuestionUnsuccessful3Test() {
+        long qid = q1.getId();
+        long newOwnerId = 42L;
+        String oldText = q1.getText();
+        UUID modKey = l2.getModkey();
+        String newText = "new text)))";
+
+        lectureService.close(l1.getUuid(), l1.getModkey());
+        int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
+        assertEquals(-1, result);
+
+        QuestionEntity q = questionRepository.findById(qid).orElse(null);
+        assertNotNull(q);
     }
 
 }

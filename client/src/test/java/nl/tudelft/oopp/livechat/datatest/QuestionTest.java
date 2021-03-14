@@ -7,10 +7,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.UUID;
 
+/**
+ * Class for Question tests.
+ */
 public class QuestionTest {
 
     public static Question question;
 
+    /**
+     * Create lecture before starting testing.
+     */
     @BeforeAll
     public static void createLecture() {
         question = new Question(UUID.randomUUID(), "How do you do, fellow kids?", 42);

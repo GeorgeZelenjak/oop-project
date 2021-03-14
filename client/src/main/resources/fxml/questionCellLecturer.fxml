@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
@@ -26,11 +27,27 @@
          <font>
             <Font size="9.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Button>
-      <Button fx:id="isAnsweredButton" layoutX="420.0" layoutY="7.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="replyButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
+      <Button fx:id="isAnsweredButton" layoutX="420.0" layoutY="7.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="markAsAnsweredButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
          <font>
             <Font name="System Bold" size="9.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Button>
+      <Label fx:id="answeredTick" layoutX="460.0" layoutY="45.0" prefHeight="20.0" prefWidth="20.0" styleClass="answeredTick" visible="false">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+      <Text fx:id="numberOfUpvotes" fill="#cf0a49" layoutX="453.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1000" textAlignment="CENTER" wrappingWidth="31.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Text>
     </children>
 </AnchorPane>

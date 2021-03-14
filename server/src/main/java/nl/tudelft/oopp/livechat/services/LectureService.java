@@ -6,6 +6,9 @@ import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import org.springframework.stereotype.Service;
 
 
+/**
+ * Class for the Lecture service.
+ */
 @Service
 public class LectureService {
 
@@ -33,6 +36,12 @@ public class LectureService {
         return toSend;
     }
 
+    /**
+     * Gets lecture by id.
+     *
+     * @param id the id
+     * @return the lecture
+     */
     private LectureEntity getLectureById(UUID id) {
         return lectureRepository.findLectureEntityByUuid(id);
     }

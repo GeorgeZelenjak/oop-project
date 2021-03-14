@@ -8,11 +8,10 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Question class.
+ */
 public class Question implements Comparable<Question> {
-
-    /**
-     * The class that represents a question entity.
-     */
 
     private static List<Question> currentQuestions;
 
@@ -140,10 +139,20 @@ public class Question implements Comparable<Question> {
     }
 
 
+    /**
+     * Gets current questions.
+     *
+     * @return the current questions
+     */
     public static List<Question> getCurrentQuestions() {
         return currentQuestions;
     }
 
+    /**
+     * Sets current questions.
+     *
+     * @param questions the questions
+     */
     public static void setCurrentQuestions(List<Question> questions) {
         currentQuestions = questions;
     }
@@ -193,6 +202,12 @@ public class Question implements Comparable<Question> {
                 + '}';
     }
 
+    /**
+     * Compares the current question to the 'other' one.
+     *
+     * @param other the parameter
+     * @return the result of the comparison
+     */
     @Override
     public int compareTo(Question other) {
         return other.time.compareTo(this.time);

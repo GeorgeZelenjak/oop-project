@@ -3,17 +3,18 @@ package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 import java.io.IOException;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
-import nl.tudelft.oopp.livechat.controllers.InputValidator;
+import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 
-
+/**
+ * Class for the CreateLecture Scene controller.
+ */
 public class CreateLectureController {
 
     @FXML
@@ -28,9 +29,34 @@ public class CreateLectureController {
      * @throws IOException the io exception
      */
     private void createLecture() throws IOException {
-        if (!InputValidator.validateUserName(enterYourNameTextField.getText(), 50)
-                || !InputValidator.validateLectureName(
-                        enterLectureNameTextField.getText(), 255)) {
+        int inputStatusUserName = InputValidator.validateLength(
+                enterYourNameTextField.getText(), 50);
+        int inputStatusLectureName = InputValidator.validateLength(
+                enterLectureNameTextField.getText(), 255);
+        if (inputStatusUserName == -1) {
+            AlertController.alertWarning("No name entered",
+                    "Please enter your name!");
+            return;
+        }
+        if (inputStatusUserName == -2) {
+            AlertController.alertWarning("Long name",
+                    "Your name is too long!\n(max: " + 50
+                            + " characters, you entered: "
+                            + enterYourNameTextField.getText().length() + ")");
+            return;
+        }
+        if (inputStatusLectureName == -1) {
+            AlertController.alertWarning("Long lecture name",
+                    "The lecture name is too long!\n(max: " + 255
+                            + " characters, you entered: "
+                            + enterLectureNameTextField.getText().length() + ")");
+            return;
+        }
+        if (inputStatusLectureName == -2) {
+            AlertController.alertWarning("Long name",
+                    "Your name is too long!\n(max: " + 50
+                            + " characters, you entered: "
+                            + enterYourNameTextField.getText().length() + ")");
             return;
         }
 
@@ -76,10 +102,20 @@ public class CreateLectureController {
         NavigationController.getCurrentController().goBack();
     }
 
+    /**
+     * Go to settings Scene.
+     *
+     * @throws IOException the io exception
+     */
     public void goToSettings() throws IOException {
         NavigationController.getCurrentController().goToSettings();
     }
 
+    /**
+     * Go to user manual Scene.
+     *
+     * @throws IOException the io exception
+     */
     public void goToUserManual() throws IOException {
         NavigationController.getCurrentController().goToUserManual();
     }

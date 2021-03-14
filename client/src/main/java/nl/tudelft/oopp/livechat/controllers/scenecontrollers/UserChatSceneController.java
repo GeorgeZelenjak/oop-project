@@ -12,7 +12,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
-import nl.tudelft.oopp.livechat.controllers.QuestionManager;
+import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 
 import nl.tudelft.oopp.livechat.data.Question;
@@ -28,7 +28,7 @@ import java.util.*;
 
 
 /**
- * The type User chat page controller.
+ * Class for the UserChat Scene controller.
  */
 public class UserChatSceneController implements Initializable {
 
@@ -53,13 +53,16 @@ public class UserChatSceneController implements Initializable {
     @FXML
     private CheckBox unansweredCheckBox;
 
+    /**
+     * The Observable list.
+     */
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
 
     private List<Question> questions;
 
     /**
-     * method that runs when the scene is first initialized.
+     * Method that runs when the scene is first initialized.
      * @param location location of current scene
      * @param resourceBundle resource bundle
      */
@@ -166,7 +169,7 @@ public class UserChatSceneController implements Initializable {
         //inputQuestion.setText("");
 
         System.out.println(ret);
-        if (ret <= 0) {
+        if (ret < 0) {
             AlertController.alertError("ERROR",
                     "There was a problem with asking question!");
         }

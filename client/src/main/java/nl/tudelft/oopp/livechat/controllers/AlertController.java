@@ -3,7 +3,7 @@ package nl.tudelft.oopp.livechat.controllers;
 import javafx.scene.control.Alert;
 
 /**
- * The type Alert controller.
+ * Class for the Alert controller.
  */
 public class AlertController {
 

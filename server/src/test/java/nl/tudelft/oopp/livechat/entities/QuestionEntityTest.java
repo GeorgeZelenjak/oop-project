@@ -8,6 +8,9 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import org.junit.jupiter.api.*;
 
+/**
+ * Class for Question entity tests.
+ */
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 class QuestionEntityTest {
     private static final UUID lectureId = UUID.randomUUID();
@@ -15,6 +18,9 @@ class QuestionEntityTest {
     private static QuestionEntity questionEntity;
     private static final Timestamp time = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
 
+    /**
+     * Sets up a question before starting testing.
+     */
     @BeforeAll
     static void setUp() {
         questionEntity = new QuestionEntity(lectureId,
@@ -155,5 +161,22 @@ class QuestionEntityTest {
     void hashCodeTest() {
         int hash = Objects.hash(questionEntity.getId(), lectureId, time);
         assertEquals(hash, questionEntity.hashCode());
+    }
+
+    @Test
+    void toStringTest() {
+        String expected = "QuestionEntity{"
+                + "id=" + questionEntity.getId()
+                + ", lectureId=" + lectureId
+                + ", time=" + time
+                + ", votes=" + questionEntity.getVotes()
+                + ", text='" + questionEntity.getText() + '\''
+                + ", answered=" + questionEntity.isAnswered()
+                + ", answerText='" + questionEntity.getAnswerText() + '\''
+                + ", answerTime=" + questionEntity.getAnswerTime()
+                + ", ownerId=" + questionEntity.getOwnerId()
+                + '}';
+
+        assertEquals(expected, questionEntity.toString());
     }
 }

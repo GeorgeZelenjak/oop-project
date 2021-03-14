@@ -73,8 +73,8 @@
         -fx-background-color: Transparent;
     }
 
-    .replyButton{
-        -fx-graphic: url(/images/reply.png);
+    .markAsAnsweredButton {
+        -fx-graphic: url(/images/markAsAnswered.png);
         -fx-background-color: Transparent;
     }
 
@@ -124,6 +124,11 @@
         -fx-background-radius: 10px;
         -fx-font: 10px Arial;
         -fx-text-fill: black;
+    }
+
+    .answeredTick {
+        -fx-graphic: url(/images/tick.png);
+        -fx-background-color: Transparent;
     }
 
 

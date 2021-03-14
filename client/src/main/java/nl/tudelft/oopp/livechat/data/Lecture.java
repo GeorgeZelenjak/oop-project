@@ -170,7 +170,11 @@ public class Lecture {
         this.modkey = modkey;
     }
 
-
+    /**
+     * Converts the Lecture to String format.
+     *
+     * @return the Lecture in String format
+     */
     @Override
     public String toString() {
         return "You created the lecture " + name + " by " + creatorName

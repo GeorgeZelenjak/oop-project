@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * The type Debug scene controller.
+ * Class for the Debug Scene controller.
  */
 public class DebugSceneController {
 

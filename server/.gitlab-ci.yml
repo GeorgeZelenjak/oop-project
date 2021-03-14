@@ -4,6 +4,7 @@ stages:
   - build
   - validate
   - test
+  - release
 
 variables:
   # Disable the Gradle daemon to ensure isolated runs of the CI pipeline.
@@ -37,3 +38,19 @@ server-test:
     - ./gradlew :server:test :server:jacocoTestReport
     - cat server/build/reports/jacoco/html/index.html | grep -Po "Total.*?([0-9]{1,3})%"
   coverage: /([0-9]{1,3})%/
+
+server-release:
+  allow_failure: true
+  stage: release
+  script:
+    - echo 'running release_job'
+    - ./gradlew :server:distTar :server:distZip :server:bootJar
+  cache:
+    paths:
+      - build/
+      - .gradle/
+  artifacts:
+    paths:
+      - server/build/distributions/server.zip
+      - server/build/distributions/server.tar
+      - server/build/libs/server.jar
