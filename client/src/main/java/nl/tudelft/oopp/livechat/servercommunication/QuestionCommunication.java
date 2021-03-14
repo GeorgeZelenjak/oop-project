@@ -264,6 +264,7 @@ public class QuestionCommunication {
      *         -3 if unexpected response was received
      *         -4 if the question wasn't deleted (e.g wrong qid, wrong modkey etc.)
      */
+    //TODO remove qid from user's set of questions after deletion
     public static int modDelete(long qid, UUID modkey) {
         //Check if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {

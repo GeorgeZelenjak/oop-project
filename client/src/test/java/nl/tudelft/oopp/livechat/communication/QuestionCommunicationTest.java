@@ -210,7 +210,7 @@ public class QuestionCommunicationTest {
     private static void createExpectationsForModDelete() {
         //Success
         mockServer.when(request().withMethod("DELETE").withPath("/api/question/moderator/delete")
-                .withQueryStringParameters(new Parameter("qid", qid2),
+                .withQueryStringParameters(new Parameter("qid", qid1),
                         new Parameter("modkey", String.valueOf(modkey))))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0").withHeader("Content-Type","application/json"));
@@ -231,7 +231,7 @@ public class QuestionCommunicationTest {
 
         //qid not found
         mockServer.when(request().withMethod("DELETE").withPath("/api/question/moderator/delete")
-                .withQueryStringParameters(new Parameter("qid", "666"),
+                .withQueryStringParameters(new Parameter("qid", qid2),
                         new Parameter("modkey", String.valueOf(modkey))))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
@@ -526,6 +526,19 @@ public class QuestionCommunicationTest {
         int oldSize = User.getAskedQuestionIds().size();
         assertEquals(-4, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 442));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
+    }
+
+    /**
+     * Tests for deleting questions by moderator.
+     */
+
+    @Test
+    public void modDeleteSuccessfulTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Assembly", "Otto"));
+        QuestionCommunication.askQuestion("Is there anybody?");
+
+        assertEquals(0, QuestionCommunication.modDelete(Long.parseLong(qid1), modkey));
     }
 
     /**
