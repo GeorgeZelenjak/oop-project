@@ -427,12 +427,19 @@ public class QuestionCommunicationTest {
     /**
      * Tests for deleting own questions.
      */
+
     @Test
     public void deleteQuestionSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Arrays", "Andy"));
         assertEquals(0, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 443));
         assertFalse(User.getAskedQuestionIds().contains(qid1));
+    }
+
+    @Test
+    public void deleteQuestionNoLectureExistsTest() {
+        Lecture.setCurrentLecture(null);
+        assertEquals(-1, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 443));
     }
 
     /**
