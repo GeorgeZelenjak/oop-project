@@ -93,6 +93,11 @@ public class LecturerChatSceneController implements Initializable {
     private Button createPolling;
     @FXML
     private Button createQuiz;
+    @FXML
+    private Label sortByText;
+    @FXML
+    private CheckBox sortByTimeCheckBox;
+
 
     /**
      * The Observable list.
@@ -261,5 +266,11 @@ public class LecturerChatSceneController implements Initializable {
         this.createPolling.setDisable(!this.createPolling.isDisabled());
         this.createQuiz.setVisible(!this.createQuiz.isVisible());
         this.createQuiz.setDisable(!this.createQuiz.isDisabled());
+        this.sortByText.setVisible(!this.sortByText.isVisible());
+        this.sortByText.setDisable(!this.sortByText.isDisabled());
+        this.sortByVotesCheckBox.setVisible(!this.sortByVotesCheckBox.isVisible());
+        this.sortByVotesCheckBox.setDisable(!this.sortByVotesCheckBox.isDisabled());
+        this.sortByTimeCheckBox.setVisible(!this.sortByTimeCheckBox.isVisible());
+        this.sortByTimeCheckBox.setDisable(!this.sortByTimeCheckBox.isDisabled());
     }
 }
