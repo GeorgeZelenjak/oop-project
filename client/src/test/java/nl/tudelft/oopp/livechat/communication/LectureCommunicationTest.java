@@ -45,7 +45,7 @@ public class LectureCommunicationTest {
 
         mockServer = ClientAndServer.startClientAndServer(8080);
         mockServer.when(request().withMethod("POST").withPath("/api/newLecture")
-                .withQueryStringParameter("name","name"), Times.exactly(2))
+                .withQueryStringParameter("name","name"))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody(jsonResponseLecture)
                         .withHeader("Content-Type","application/json"));
@@ -71,17 +71,15 @@ public class LectureCommunicationTest {
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0"));
 
-        mockServer.verify(request(), VerificationTimes.exactly(0));
+        //mockServer.verify(request(), VerificationTimes.exactly(0));
     }
 
     @Test
-    @Order(1)
     public void testCreateLectureNotNull() {
         assertNotNull(LectureCommunication.createLecture("name"));
     }
 
     @Test
-    @Order(2)
     public void testLectureNameMatches() {
         Lecture res = LectureCommunication.createLecture("name");
         assertNotNull(res);
@@ -89,7 +87,6 @@ public class LectureCommunicationTest {
     }
 
     @Test
-    @Order(3)
     public void joinLectureByIdLectureExists() {
         Lecture res = LectureCommunication.joinLectureById("0ee81155-96fc-4045-bfe9-dd7ca714b5e8");
         assertNotNull(res);
@@ -97,41 +94,37 @@ public class LectureCommunicationTest {
     }
 
     @Test
-    @Order(4)
     public void joinLectureByIdNotExist() {
         Lecture res = LectureCommunication.joinLectureById("zebra");
         assertNull(res);
     }
 
     @Test
-    @Order(5)
     public void validateModeratorPass() {
         assertTrue(LectureCommunication.validateModerator("112","123"));
     }
 
     @Test
-    @Order(6)
     public void validateModeratorFail() {
         assertFalse(LectureCommunication.validateModerator("not zebra","Zebra"));
     }
 
     @Test
-    @Order(7)
     public void closeLecturePass() {
         Lecture.setCurrentLecture(new Lecture());
         assertTrue(LectureCommunication.closeLecture("12","69"));
     }
 
     @Test
-    @Order(8)
     public void closeLectureFail() {
         assertFalse(LectureCommunication.closeLecture("112","123"));
     }
 
     @Test
-    @Order(9)
     public void testCreateLectureNoRespose() {
+        stopServer();
         assertNull(LectureCommunication.createLecture("name"));
+        startServer();
     }
 
     /**

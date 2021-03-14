@@ -73,8 +73,8 @@
         -fx-background-color: Transparent;
     }
 
-    .replyButton{
-        -fx-graphic: url(/images/reply.png);
+    .markAsAnsweredButton {
+        -fx-graphic: url(/images/markAsAnswered.png);
         -fx-background-color: Transparent;
     }
 

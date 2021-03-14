@@ -136,17 +136,21 @@ public class QuestionCommunication {
     /** Method that sends a request to upvote a question to the server.
      * @param qid - the Question ID
      * @param uid - the User ID
-     * @return - the status code
+     * @return - the "status code"
+     *           0 if the question was upvoted/downvoted successfully
+     *          -1 if current lecture does not exist
+     *          -2 if an exception occurred when communicating with the server
+     *          -3 if unexpected response was received
+     *          -4 if the question wasn't upvoted/downvoted (e.g wrong uid, wrong qid etc.)
      */
     public static int upvoteQuestion(long qid, long uid) {
-
-        //Checking if current lecture has been set
+        //Check if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
-
+            return -1;
         }
-        //Parameters for request
 
+        //Parameters for request
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("");
         String address = "http://localhost:8080/api/question/upvote";
 
@@ -155,37 +159,36 @@ public class QuestionCommunication {
                 URI.create(address + "?qid=" + qid + "&uid=" + uid)).build();
 
         HttpResponse<String> response;
-
         //Catching error when communicating with server
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            System.out.println("There was an exception!");
-            e.printStackTrace();
+            System.out.println("An exception occurred when trying to communicate with the server!");
+            //e.printStackTrace();
             return -2;
         }
 
-        //Unexpected response
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return -3;
+        int result = handleResponse(response);
+        if (result == 0) {
+            System.out.println("The question was upvoted/downvoted successfully! "
+                                    + response.body());
         }
-
-        //Question has been asked successfully
-        System.out.println("The question was upvoted/unvoted successfully! " + response.body());
-        return 1;
+        return result;
     }
 
     /** Method that sends a request to mark as answered a question to the server.
-     * @param qid - the Question ID
-     * @param modkey - the User ID
-     * @return - the status code
+     *           0 if the question was marked as answered successfully
+     *          -1 if current lecture does not exist
+     *          -2 if an exception occurred when communicating with the server
+     *          -3 if unexpected response was received
+     *          -4 if the question wasn't marked as answered (e.g wrong uid, wrong modkey etc.)
      */
-    public static int markedAsAnswered(long qid, UUID modkey) {
 
-        //Checking if current lecture has been set
+    public static int markedAsAnswered(long qid, UUID modkey) {
+        //Check if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
+            return -1;
         }
 
         //Parameters for request
@@ -210,18 +213,27 @@ public class QuestionCommunication {
             return -2;
         }
 
+        int result = handleResponse(response);
+        if (result == 0) {
+            System.out.println("The question was marked as answered successfully!"
+                                    + response.body());
+        }
+        return result;
+    }
+
+    private static int handleResponse(HttpResponse<String> response) {
         //Unexpected response
         if (response.statusCode() != 200) {
             System.out.println("Status: " + response.statusCode());
             return -3;
         }
 
+        //Correct response, but not success
         if (!response.body().equals("0")) {
             return -4;
         }
 
-        //Question has been marked as answered successfully
-        System.out.println("The question was marked as answered successfully!" + response.body());
+        //Success
         return 0;
     }
 }
