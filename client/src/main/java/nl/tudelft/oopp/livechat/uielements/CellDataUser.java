@@ -38,6 +38,9 @@ public class CellDataUser {
     @FXML
     private Label answeredTick;
 
+    @FXML
+    private Button deleteButton;
+
     private Question question;
 
 
@@ -94,11 +97,21 @@ public class CellDataUser {
      * Sets upvote button.
      */
     public void setUpvoteButton() {
-        upvoteButton.setOnAction((
-                ActionEvent event) -> {
+        upvoteButton.setOnAction((ActionEvent event) -> {
             QuestionCommunication.upvoteQuestion(question.getId(), User.getUid());
-
             System.out.println(question.getVotes());
         });
+    }
+
+    /**
+     * Sets delete button.
+     */
+    public void setDeleteButton() {
+        if (User.getAskedQuestionIds().contains(question.getId())) {
+            deleteButton.setDisable(false);
+            deleteButton.setVisible(true);
+            deleteButton.setOnAction((ActionEvent event) ->
+                    QuestionCommunication.deleteQuestion(question.getId(), User.getUid()));
+        }
     }
 }

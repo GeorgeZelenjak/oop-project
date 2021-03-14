@@ -123,7 +123,7 @@ public class CellDataLecturer {
     }
 
     /**
-     * Sets question as answered.
+     * Sets mark as answered button.
      */
     public void setAnsweredQuestion() {
         isAnsweredButton.setOnAction((ActionEvent event) -> {
@@ -134,12 +134,11 @@ public class CellDataLecturer {
     }
 
     /**
-     * Deletes a question.
+     * Sets delete button.
      */
     public void setDeleteQuestion() {
-        deleteButton.setOnAction((ActionEvent event) -> {
-            QuestionCommunication.modDelete(question.getId(),
-                    Lecture.getCurrentLecture().getModkey());
-        });
+        deleteButton.setOnAction((ActionEvent event) ->
+                QuestionCommunication.modDelete(question.getId(),
+                    Lecture.getCurrentLecture().getModkey()));
     }
 }

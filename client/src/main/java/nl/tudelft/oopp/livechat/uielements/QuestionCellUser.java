@@ -10,7 +10,6 @@ public class QuestionCellUser extends ListCell<Question> {
 
     /**
      * Customizes the question cell for the user.
-     *
      * @param question the question
      * @param empty set to empty
      */
@@ -30,6 +29,7 @@ public class QuestionCellUser extends ListCell<Question> {
 
             setGraphic(data.getBox());
             data.setUpvoteButton();
+            data.setDeleteButton();
         } else {
             setGraphic(null);
         }

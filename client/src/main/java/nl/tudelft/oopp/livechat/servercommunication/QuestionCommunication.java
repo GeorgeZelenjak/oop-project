@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.data.User;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -46,9 +47,8 @@ public class QuestionCommunication {
         }
 
         //Parameters for question
-        //TODO not hardcode owner id
         UUID lectureId = Lecture.getCurrentLecture().getUuid();
-        Question question = new Question(lectureId, questionText,  42);
+        Question question = new Question(lectureId, questionText,  User.getUid());
 
         //Parameters for request
         String json = gson.toJson(question);
@@ -77,6 +77,7 @@ public class QuestionCommunication {
 
         //Question has been asked successfully
         System.out.println("The question was asked successfully! " + response.body());
+        User.addQuestionId(Long.parseLong(response.body()));
         return 0;
     }
 
@@ -174,7 +175,7 @@ public class QuestionCommunication {
      *         -1 if current lecture does not exist
      *         -2 if an exception occurred when communicating with the server
      *         -3 if unexpected response was received
-     *         -4 if the question wasn't marked as answered (e.g wrong uid, wrong modkey etc.)
+     *         -4 if the question wasn't marked as answered (e.g wrong qid, wrong modkey etc.)
      */
     public static int markedAsAnswered(long qid, UUID modkey) {
         //Check if current lecture has been set
@@ -212,6 +213,49 @@ public class QuestionCommunication {
     }
 
     /**
+     * Method that sends a request to delete a question (done by the user who asked the question).
+     * @param qid the id of the question
+     * @param uid the id of the user
+     * @return  0 if the question was deleted successfully
+     *         -1 if current lecture does not exist
+     *         -2 if an exception occurred when communicating with the server
+     *         -3 if unexpected response was received
+     *         -4 if the question wasn't deleted (e.g wrong uid, wrong qid etc.)
+     */
+    public static int deleteQuestion(long qid, long uid) {
+        System.out.println("Delete button pressed");
+        //Check if current lecture has been set
+        if (Lecture.getCurrentLecture() == null) {
+            System.out.println("You are not connected to a lecture!");
+            return -1;
+        }
+        //Parameters for request
+        String address = "http://localhost:8080/api/question/delete";
+
+        //Creating request and defining response
+        HttpRequest request = HttpRequest.newBuilder().DELETE()
+                .uri(URI.create(address + "?qid=" + qid + "&uid=" + uid)).build();
+
+        HttpResponse<String> response;
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.println("Exception occurred when communicating with the server!");
+            //e.printStackTrace();
+            return -2;
+        }
+
+        int result = handleResponse(response);
+        System.out.println("Deleted: " + result);
+        if (result == 0) {
+            System.out.println("The question with id " + qid + " was deleted successfully!");
+            User.deleteQuestionId(qid);
+        }
+        return result;
+    }
+
+    /**
      * Method that sends a request to delete a question (done by the moderator).
      * @param qid the id of the question
      * @param modkey the moderator key
@@ -219,7 +263,7 @@ public class QuestionCommunication {
      *         -1 if current lecture does not exist
      *         -2 if an exception occurred when communicating with the server
      *         -3 if unexpected response was received
-     *         -4 if the question wasn't deleted (e.g wrong uid, wrong modkey etc.)
+     *         -4 if the question wasn't deleted (e.g wrong qid, wrong modkey etc.)
      */
     public static int modDelete(long qid, UUID modkey) {
         //Check if current lecture has been set
