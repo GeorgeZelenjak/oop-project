@@ -541,6 +541,13 @@ public class QuestionCommunicationTest {
         assertEquals(0, QuestionCommunication.modDelete(Long.parseLong(qid1), modkey));
     }
 
+    @Test
+    public void modDeleteNoLectureExistsTest() {
+        Lecture.setCurrentLecture(null);
+
+        assertEquals(-1, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 443));
+    }
+
     /**
      * Stops server.
      */
