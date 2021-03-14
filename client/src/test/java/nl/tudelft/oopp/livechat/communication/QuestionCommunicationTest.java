@@ -37,6 +37,7 @@ public class QuestionCommunicationTest {
     private static final UUID incorrectModkey = UUID.randomUUID();
     private static final String qid1 = "5397545054934456486";
     private static final String qid2 = "8077505054105457480";
+    private static long userId;
 
     private static String goodQuestion;
     private static String badQuestion;
@@ -211,7 +212,7 @@ public class QuestionCommunicationTest {
     public static void startServer() {
         mockServer = ClientAndServer.startClientAndServer(8080);
         User.setUid();
-        long userId = User.getUid();
+        userId = User.getUid();
         goodQuestion = gson.toJson(
                 new Question(lid, "Is there anybody?",  userId));
         badQuestion = gson.toJson(
@@ -232,27 +233,38 @@ public class QuestionCommunicationTest {
     @Test
     public void askQuestionSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Testing", "Andy"));
+        int oldSize = User.getAskedQuestionIds().size();
         assertEquals(0, QuestionCommunication.askQuestion("Is there anybody?"));
+        assertTrue(User.getAskedQuestionIds().contains(Long.parseLong(qid1)));
+        assertEquals(oldSize + 1, User.getAskedQuestionIds().size());
     }
 
     @Test
     public void askQuestionLectureNotExistsTest() {
+        int oldSize = User.getAskedQuestionIds().size();
         Lecture.setCurrentLecture(null);
         assertEquals(-1, QuestionCommunication.askQuestion("Is there anybody?"));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
     @Test
     public void askQuestionServerRefusesTest() {
         stopServer();
+
+        int oldSize = User.getAskedQuestionIds().size();
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "?", "???"));
         assertEquals(-2, QuestionCommunication.askQuestion("Will we get 10 for OOPP?"));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
+
         startServer();
     }
 
     @Test
     public void askQuestionUnsuccessfulTest() {
+        int oldSize = User.getAskedQuestionIds().size();
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "#", "$"));
         assertEquals(-3, QuestionCommunication.askQuestion("F*ck"));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
     /**
@@ -410,6 +422,17 @@ public class QuestionCommunicationTest {
                 modkey, "Lambda expressions", "Thomas"));
         assertEquals(-4,
                 QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), incorrectModkey));
+    }
+
+    /**
+     * Tests for deleting own questions.
+     */
+    @Test
+    public void deleteQuestionSuccessfulTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Arrays", "Andy"));
+        assertEquals(0, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 443));
+        assertFalse(User.getAskedQuestionIds().contains(qid1));
     }
 
     /**
