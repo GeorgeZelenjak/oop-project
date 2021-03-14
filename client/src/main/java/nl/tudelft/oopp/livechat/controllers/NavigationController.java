@@ -132,6 +132,7 @@ public class NavigationController {
      *
      * @throws IOException the io exception
      */
+    @SuppressWarnings("unused")
     public void goToTestScene() throws IOException {
         goToSceneHelper("/fxml/newUserChatScene.fxml");
     }
