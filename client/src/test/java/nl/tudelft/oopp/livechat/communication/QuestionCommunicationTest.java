@@ -8,8 +8,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
+import org.mockserver.matchers.Times;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.Parameter;
+import org.mockserver.verify.VerificationTimes;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +25,7 @@ public class QuestionCommunicationTest {
 
 
     private static final UUID uuid = UUID.fromString("dfabcfdf-271b-48d2-841e-4874ff28b4a6");
+    private static final UUID modkey = UUID.randomUUID();
 
     /**
      * Starts mock server.
@@ -70,13 +73,39 @@ public class QuestionCommunicationTest {
                 .withBody(response)
                 .withHeader("Content-Type","application/json"));
 
+        createExpectationsForUpvote();
+
+    }
+
+    private static void createExpectationsForUpvote() {
+        //Success
         mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
                 .withQueryStringParameters(new Parameter("qid", "5397545054934456486"),
                         new Parameter("uid", "443")))
                 .respond(HttpResponse.response().withStatusCode(200)
-                .withBody("0").withHeader("Content-Type","application/json"));
-    }
+                        .withBody("0").withHeader("Content-Type","application/json"));
 
+        //invalid uid - send 400
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
+                .withQueryStringParameters(new Parameter("qid", "5397545054934456486"),
+                        new Parameter("uid", String.valueOf(Long.MAX_VALUE))))
+                .respond(HttpResponse.response().withStatusCode(400)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+
+        //incorrect uid
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
+                .withQueryStringParameters(new Parameter("qid", "5397545054934456486"),
+                        new Parameter("uid", "442")))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+
+        //incorrect qid
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
+                .withQueryStringParameters(new Parameter("qid", "666"),
+                        new Parameter("uid", "443")))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+    }
 
 
     @Test
@@ -95,7 +124,7 @@ public class QuestionCommunicationTest {
     @Test
     public void fetchQuestionsCurrentLectureExistsTest() {
         Lecture.setCurrentLecture(new Lecture(uuid,
-                null, "TEST", "NOT TEST"));
+                modkey, "HCI", "Not Sebastian"));
         List<Question> questions = QuestionCommunication.fetchQuestions();
         assertNotNull(questions);
         assertEquals(2, questions.size());
@@ -105,9 +134,11 @@ public class QuestionCommunicationTest {
         Question actual1 = questions.get(0);
         Question actual2 = questions.get(1);
         assertTrue(expected1.getLectureId().equals(actual1.getLectureId())
-                        && expected1.getText().equals(actual1.getText()));
+                        && expected1.getText().equals(actual1.getText())
+                        && 0 == actual1.getOwnerId());
         assertTrue(expected2.getLectureId().equals(actual2.getLectureId())
-                && expected2.getText().equals(actual2.getText()));
+                && expected2.getText().equals(actual2.getText())
+                && 0 == actual2.getOwnerId());
     }
 
     @Test
@@ -119,8 +150,8 @@ public class QuestionCommunicationTest {
     @Test
     public void upvoteQuestionSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(uuid,
-                null, "Spring Boot", "Sebastian"));
-        assertEquals(1, QuestionCommunication.upvoteQuestion(5397545054934456486L, 443));
+                modkey, "Spring Boot", "Sebastian"));
+        assertEquals(0, QuestionCommunication.upvoteQuestion(5397545054934456486L, 443));
     }
 
     @Test
@@ -130,17 +161,33 @@ public class QuestionCommunicationTest {
     }
 
     @Test
-    public void upvoteQuestionWrongQidTest() {
+    public void upvoteQuestionServerRefusesTest() {
+        stopServer();
         Lecture.setCurrentLecture(new Lecture(uuid,
-                null, "Testing", "Sebastian"));
-        assertEquals(-3, QuestionCommunication.upvoteQuestion(42, 443));
+                modkey, "RCS", "Sander"));
+        assertEquals(-2, QuestionCommunication.upvoteQuestion(666, 443));
+        startServer();
     }
 
     @Test
-    public void upvoteQuestionWrongUidTest() {
+    public void upvoteQuestionIncorrectQidTest() {
         Lecture.setCurrentLecture(new Lecture(uuid,
-                null, "Gitlab", "Sander"));
-        assertEquals(-3, QuestionCommunication.upvoteQuestion(5397545054934456486L, 442));
+                modkey, "Testing", "Sebastian"));
+        assertEquals(-4, QuestionCommunication.upvoteQuestion(666, 443));
+    }
+
+    @Test
+    public void upvoteQuestionTooInvalidUidTest() {
+        Lecture.setCurrentLecture(new Lecture(uuid,
+                modkey, "Testing", "Sebastian"));
+        assertEquals(-3, QuestionCommunication.upvoteQuestion(5397545054934456486L, Long.MAX_VALUE));
+    }
+
+    @Test
+    public void upvoteQuestionIncorrectUidTest() {
+        Lecture.setCurrentLecture(new Lecture(uuid,
+                modkey, "Gitlab", "Sander"));
+        assertEquals(-4, QuestionCommunication.upvoteQuestion(666, 443));
     }
 
     /**
