@@ -64,7 +64,7 @@ public class QuestionCommunicationTest {
             + "    }\n"
             + "]";
 
-    //TODO add new tests, check for uid
+    //TODO add new tests for ModDelete, delete
     /**
      * Create expectations for asking question.
      */
@@ -114,7 +114,7 @@ public class QuestionCommunicationTest {
         //Success
         mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
                 .withQueryStringParameters(new Parameter("qid", qid1),
-                        new Parameter("uid", "443")))
+                        new Parameter("uid", "443")).withBody(""))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0").withHeader("Content-Type","application/json"));
 
@@ -122,52 +122,87 @@ public class QuestionCommunicationTest {
         // (treat Long.MAX_VALUE as invalid parameter to test BAD REQUEST)
         mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
                 .withQueryStringParameters(new Parameter("qid", qid1),
-                        new Parameter("uid", String.valueOf(Long.MAX_VALUE))))
+                        new Parameter("uid", String.valueOf(Long.MAX_VALUE))).withBody(""))
                 .respond(HttpResponse.response().withStatusCode(400));
 
         //uid not found
         mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
                 .withQueryStringParameters(new Parameter("qid", qid1),
-                        new Parameter("uid", "442")))
+                        new Parameter("uid", "442")).withBody(""))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
 
         //qid not found
         mockServer.when(request().withMethod("PUT").withPath("/api/question/upvote")
                 .withQueryStringParameters(new Parameter("qid", "666"),
-                        new Parameter("uid", "443")))
+                        new Parameter("uid", "443")).withBody(""))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
 
+    //TODO change the body from "placeholder"
     /**
      * Create expectations for marking question as answered.
      */
     private static void createExpectationsForMarkAsAnswered() {
         //Success
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                        + qid1 + "/" +  modkey))
+                        + qid1 + "/" +  modkey).withBody("placeholder"))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0").withHeader("Content-Type","application/json"));
 
         //invalid parameter - send 400
         //  (treat lecture id (lid) as invalid UUID here to test BAD REQUEST)
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                        + qid1 + "/" +  lid))
+                        + qid1 + "/" +  lid).withBody("placeholder"))
                 .respond(HttpResponse.response().withStatusCode(400));
 
-        //qid not found
+        //qid does not match
         mockServer.when(request().withMethod("PUT")
-                .withPath("/api/question/answer/" + 666 + "/" +  modkey))
+                .withPath("/api/question/answer/" + 666 + "/" +  modkey).withBody("placeholder"))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
 
         //incorrect modkey
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                + qid1 + "/" +  incorrectModkey))
+                + qid1 + "/" +  incorrectModkey).withBody("placeholder"))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
+
+    /**
+     * Create expectations for deleting own questions.
+     */
+    private static void createExpectationsForDeleteQuestion() {
+        //Success
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/delete")
+                .withQueryStringParameters(new Parameter("qid", qid1),
+                        new Parameter("uid", "443")))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0").withHeader("Content-Type","application/json"));
+
+        //invalid parameter - send 400
+        // (treat Long.MAX_VALUE as invalid parameter to test BAD REQUEST)
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/delete")
+                .withQueryStringParameters(new Parameter("qid", qid1),
+                        new Parameter("uid", String.valueOf(Long.MAX_VALUE))))
+                .respond(HttpResponse.response().withStatusCode(400));
+
+        //uid does not match
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/delete")
+                .withQueryStringParameters(new Parameter("qid", qid1),
+                        new Parameter("uid", "442")))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+
+        //qid not found
+        mockServer.when(request().withMethod("DELETE").withPath("/api/question/delete")
+                .withQueryStringParameters(new Parameter("qid", "666"),
+                        new Parameter("uid", "443")))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+    }
+
 
     /**
      * Starts mock server.
@@ -186,6 +221,7 @@ public class QuestionCommunicationTest {
         createExpectationsForFetching();
         createExpectationsForUpvote();
         createExpectationsForMarkAsAnswered();
+        createExpectationsForDeleteQuestion();
     }
 
 

@@ -223,7 +223,6 @@ public class QuestionCommunication {
      *         -4 if the question wasn't deleted (e.g wrong uid, wrong qid etc.)
      */
     public static int deleteQuestion(long qid, long uid) {
-        System.out.println("Delete button pressed");
         //Check if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
