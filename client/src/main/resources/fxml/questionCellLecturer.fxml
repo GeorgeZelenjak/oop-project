@@ -23,7 +23,7 @@
             <Font name="Arial Italic" size="10.0" />
          </font>
       </Text>
-      <Button fx:id="deleteQuestion" layoutX="420.0" layoutY="41.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
+      <Button fx:id="deleteButton" layoutX="420.0" layoutY="41.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
          <font>
             <Font size="9.0" />
          </font>

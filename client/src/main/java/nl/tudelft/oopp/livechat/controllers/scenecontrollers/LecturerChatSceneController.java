@@ -69,7 +69,7 @@ public class LecturerChatSceneController implements Initializable {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
         Timeline timeline = new Timeline(new KeyFrame(
-                Duration.millis(2500),
+                Duration.millis(1500),
             ae -> fetchQuestions()));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
@@ -80,8 +80,11 @@ public class LecturerChatSceneController implements Initializable {
      */
     public void fetchQuestions() {
         List<Question> list = QuestionCommunication.fetchQuestions();
-        if (list == null || list.size() == 0) {
+        if (list == null) {
             return;
+        }
+        if (list.size() == 0) {
+            System.out.println("There are no questions");
         }
         Question.setCurrentQuestions(list);
 
