@@ -484,6 +484,16 @@ public class QuestionCommunicationTest {
         assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
+    @Test
+    public void deleteQuestionIncorrectUidTest() {
+        User.getAskedQuestionIds().add(69696969L);
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Multiway search trees", "Ivo"));
+        int oldSize = User.getAskedQuestionIds().size();
+        assertEquals(-4, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 442));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
+    }
+
     /**
      * Stops server.
      */
