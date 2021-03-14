@@ -40,7 +40,11 @@ server-test:
   coverage: /([0-9]{1,3})%/
 
 server-release:
+  allow_failure: true
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
   stage: release
+  rules:
+    - if: $CI_COMMIT_TAG
   script:
     - echo 'running release_job'
     - ./gradlew :server:distTar :server:distZip
@@ -53,7 +57,7 @@ server-release:
       - build/distributions/server.zip
       - build/distributions/server.tar
   release:
-    name: 'SERVER Release'
+    name: 'SERVER Release $CI_COMMIT_TAG'
     description: 'Server release generated after commit: $CI_COMMIT_REF_NAME'
     tag_name: '$CI_COMMIT_TAG'
     ref: '$CI_COMMIT_TAG'
