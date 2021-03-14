@@ -534,8 +534,7 @@ public class QuestionCommunicationTest {
 
     @Test
     public void modDeleteSuccessfulTest() {
-        Lecture.setCurrentLecture(new Lecture(lid,
-                modkey, "Assembly", "Otto"));
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Assembly", "Otto"));
         QuestionCommunication.askQuestion("Is there anybody?");
 
         assertEquals(0, QuestionCommunication.modDelete(Long.parseLong(qid2), modkey));
@@ -551,8 +550,7 @@ public class QuestionCommunicationTest {
     @Test
     public void modDeleteServerRefusesTest() {
         stopServer();
-        Lecture.setCurrentLecture(new Lecture(lid, modkey,
-                "CPU", "Koen"));
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "CPU", "Koen"));
 
         assertEquals(-2, QuestionCommunication.modDelete(42, modkey));
         startServer();
@@ -560,11 +558,16 @@ public class QuestionCommunicationTest {
 
     @Test
     public void modDeleteInvalidUUIDTest() {
-        Lecture.setCurrentLecture(new Lecture(lid, modkey,
-                "Virtual memory", "Koen"));
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Virtual memory", "Koen"));
 
         assertEquals(-3,
                 QuestionCommunication.modDelete(Long.parseLong(qid1), lid));
+    }
+
+    @Test
+    public void modDeleteIncorrectQidTest() {
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Memory", "Koen"));
+        assertEquals(-4, QuestionCommunication.modDelete(666, modkey));
     }
 
     /**
