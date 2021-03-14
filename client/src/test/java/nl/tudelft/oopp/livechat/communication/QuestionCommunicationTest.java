@@ -442,6 +442,15 @@ public class QuestionCommunicationTest {
         assertEquals(-1, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 443));
     }
 
+    @Test
+    public void deleteQuestionServerRefusesTest() {
+        stopServer();
+        Lecture.setCurrentLecture(new Lecture(lid, modkey,
+                "Linked lists", "Ivo"));
+        assertEquals(-2, QuestionCommunication.deleteQuestion(42, 42));
+        startServer();
+    }
+
     /**
      * Stops server.
      */
