@@ -467,10 +467,20 @@ public class QuestionCommunicationTest {
         User.getAskedQuestionIds().add(123456789L);
         Lecture.setCurrentLecture(new Lecture(lid, modkey,
                 "Red-black trees", "Ivo"));
-        final int oldSize = User.getAskedQuestionIds().size();
+        int oldSize = User.getAskedQuestionIds().size();
 
         assertEquals(-3,
                 QuestionCommunication.deleteQuestion(Long.parseLong(qid1), Long.MAX_VALUE));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
+    }
+
+    @Test
+    public void deleteQuestionIncorrectQidTest() {
+        User.getAskedQuestionIds().add(987654321L);
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "AVL trees", "Ivo"));
+        int oldSize = User.getAskedQuestionIds().size();
+        assertEquals(-4, QuestionCommunication.deleteQuestion(666, 443));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
