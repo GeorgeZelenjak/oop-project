@@ -272,5 +272,9 @@ public class LecturerChatSceneController implements Initializable {
         this.sortByVotesCheckBox.setDisable(!this.sortByVotesCheckBox.isDisabled());
         this.sortByTimeCheckBox.setVisible(!this.sortByTimeCheckBox.isVisible());
         this.sortByTimeCheckBox.setDisable(!this.sortByTimeCheckBox.isDisabled());
+
+        this.sortByVotesCheckBox.setSelected(true);
+        this.answeredCheckBox.setSelected(false);
+        this.unansweredCheckBox.setSelected(true);
     }
 }
