@@ -37,9 +37,11 @@ public class QuestionCommunicationTest {
     private static final UUID incorrectModkey = UUID.randomUUID();
     private static final String qid1 = "5397545054934456486";
     private static final String qid2 = "8077505054105457480";
+    private static final String qid3 = "6840541099020457076";
     private static long userId;
 
     private static String goodQuestion;
+    private static String normalQuestion;
     private static String badQuestion;
 
     private static final String response =  "[\n"
@@ -81,6 +83,13 @@ public class QuestionCommunicationTest {
         mockServer.when(request().withMethod("POST").withPath("/api/question/ask")
                     .withBody(badQuestion))
                 .respond(HttpResponse.response().withStatusCode(400));
+
+        //For testing other methods (different question id)
+        mockServer.when(request().withMethod("POST").withPath("/api/question/ask")
+                .withBody(normalQuestion))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody(qid3)
+                        .withHeader("Content-Type","application/json"));
     }
 
     /**
@@ -177,7 +186,7 @@ public class QuestionCommunicationTest {
     private static void createExpectationsForDeleteQuestion() {
         //Success
         mockServer.when(request().withMethod("DELETE").withPath("/api/question/delete")
-                .withQueryStringParameters(new Parameter("qid", qid1),
+                .withQueryStringParameters(new Parameter("qid", qid3),
                         new Parameter("uid", String.valueOf(userId))))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0").withHeader("Content-Type","application/json"));
@@ -248,6 +257,8 @@ public class QuestionCommunicationTest {
         userId = User.getUid();
         goodQuestion = gson.toJson(
                 new Question(lid, "Is there anybody?",  userId));
+        normalQuestion = gson.toJson(
+                new Question(lid, "Will we get 10?",  userId));
         badQuestion = gson.toJson(
                 new Question(lid, "F*ck",  userId));
 
@@ -466,17 +477,18 @@ public class QuestionCommunicationTest {
     public void deleteQuestionSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Arrays", "Andy"));
-        QuestionCommunication.askQuestion("Is there anybody?");
+        QuestionCommunication.askQuestion("Will we get 10?");
         int oldSize = User.getAskedQuestionIds().size();
 
-        assertEquals(0, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), userId));
+        assertEquals(0, QuestionCommunication.deleteQuestion(Long.parseLong(qid3), userId));
         assertEquals(oldSize - 1, User.getAskedQuestionIds().size());
-        assertFalse(User.getAskedQuestionIds().contains(Long.parseLong(qid1)));
+        assertFalse(User.getAskedQuestionIds().contains(Long.parseLong(qid3)));
     }
 
     @Test
     public void deleteQuestionNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
+        User.getAskedQuestionIds().add(777L);
         int oldSize = User.getAskedQuestionIds().size();
 
         assertEquals(-1, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 443));
@@ -535,7 +547,7 @@ public class QuestionCommunicationTest {
     @Test
     public void modDeleteSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Assembly", "Otto"));
-        QuestionCommunication.askQuestion("Is there anybody?");
+        QuestionCommunication.askQuestion("Will we get 10?");
 
         assertEquals(0, QuestionCommunication.modDelete(Long.parseLong(qid2), modkey));
     }
@@ -560,14 +572,19 @@ public class QuestionCommunicationTest {
     public void modDeleteInvalidUUIDTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Virtual memory", "Koen"));
 
-        assertEquals(-3,
-                QuestionCommunication.modDelete(Long.parseLong(qid1), lid));
+        assertEquals(-3, QuestionCommunication.modDelete(Long.parseLong(qid1), lid));
     }
 
     @Test
     public void modDeleteIncorrectQidTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Memory", "Koen"));
         assertEquals(-4, QuestionCommunication.modDelete(666, modkey));
+    }
+
+    @Test
+    public void modDeleteIncorrectModkeyTest() {
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Caching", "Koen"));
+        assertEquals(-4, QuestionCommunication.modDelete(Long.parseLong(qid1), incorrectModkey));
     }
 
     /**
