@@ -41,8 +41,6 @@ server-test:
 
 server-release:
   stage: release
-  rules:
-    - if: $CI_COMMIT_TAG
   script:
     - echo 'running release_job'
     - ./gradlew :server:distTar :server:distZip
@@ -55,7 +53,7 @@ server-release:
       - build/distributions/server.zip
       - build/distributions/server.tar
   release:
-    name: 'SERVER Release $CI_COMMIT_TAG'
+    name: 'SERVER Release'
     description: 'Server release generated after commit: $CI_COMMIT_REF_NAME'
     tag_name: '$CI_COMMIT_TAG'
     ref: '$CI_COMMIT_TAG'
