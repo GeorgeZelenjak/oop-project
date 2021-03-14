@@ -11,13 +11,20 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Class for Lecture server communication.
+ */
 public class LectureCommunication {
 
-    //Client object for sending requests
+    /**
+     * Client object for sending requests.
+     */
     private static final HttpClient client = HttpClient.newBuilder().build();
-    /* Gson object for parsing Json
-    set to parse fields according to annotations
-    and with specified date format
+
+    /**
+     * Gson object for parsing Json
+     * set to parse fields according to annotations
+     * and with specified date format.
      */
     private static final Gson gson = new GsonBuilder().setDateFormat(
             "EEE, dd MMM yyyy HH:mm:ss zzz").excludeFieldsWithoutExposeAnnotation().create();
@@ -133,7 +140,6 @@ public class LectureCommunication {
         return response.body().equals("0");
 
     }
-
 
     /**
      * Close lecture.

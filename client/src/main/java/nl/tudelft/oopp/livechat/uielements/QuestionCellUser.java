@@ -3,8 +3,17 @@ package nl.tudelft.oopp.livechat.uielements;
 import javafx.scene.control.ListCell;
 import nl.tudelft.oopp.livechat.data.Question;
 
+/**
+ * Customizes the question cell for the user.
+ */
 public class QuestionCellUser extends ListCell<Question> {
 
+    /**
+     * Customizes the question cell for the user.
+     *
+     * @param question the question
+     * @param empty set to empty
+     */
     @Override
     public void updateItem(Question question, boolean empty) {
         super.updateItem(question,empty);

@@ -12,13 +12,18 @@ import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.User;
 
-
 /**
  * Loads the MainScene.fxml file
  * And initializes the NavigationController
  */
 public class MainSceneDisplay extends Application {
 
+    /**
+     * Starts the app.
+     *
+     * @param primaryStage the parameter
+     * @throws IOException the exception
+     */
     @Override
     public void start(Stage primaryStage) throws IOException {
 

@@ -16,6 +16,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Class for Question server communication.
+ */
 public class QuestionCommunication {
 
     //Client object for sending requests
