@@ -31,39 +31,33 @@ public class QuestionCommunication {
             "EEE, dd MMM yyyy HH:mm:ss zzz").excludeFieldsWithoutExposeAnnotation().create();
 
     /**
-     * Sends an HTTP request to ask
-     * a question with the current LectureID.
-     *
+     * Sends an HTTP request to ask a question with the current Lecture id.
      * @param questionText the question text
-     * @return integer representing servers response
-     *      or the lack of it
-     *       1 - Question has been successfully asked
-     *      -1 - Current lecture not set
-     *      -2 - No response from server
-     *      -3 - Unexpected response from server
+     * @return  0 if the question was asked successfully
+     *         -1 if current lecture does not exist
+     *         -2 if an exception occurred when communicating with the server
+     *         -3 if unexpected response was received
      */
     public static int askQuestion(String questionText) {
-
-        //Checking if current lecture has been set
+        //Check if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
             return -1;
         }
 
         //Parameters for question
+        //TODO not hardcode owner id
         UUID lectureId = Lecture.getCurrentLecture().getUuid();
-        Question question = new Question(lectureId,questionText,  42);
+        Question question = new Question(lectureId, questionText,  42);
 
         //Parameters for request
         String json = gson.toJson(question);
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
         String address = "http://localhost:8080/api/question/ask";
-        String headerName = "Content-Type";
-        String headerValue = "application/json";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().POST(req).uri(
-                URI.create(address)).setHeader(headerName, headerValue).build();
+                URI.create(address)).setHeader("Content-Type", "application/json").build();
         HttpResponse<String> response;
 
         //Catching error when communicating with server
@@ -71,7 +65,7 @@ public class QuestionCommunication {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
             System.out.println("There was an exception!");
-            e.printStackTrace();
+            //e.printStackTrace();
             return -2;
         }
 
@@ -83,18 +77,16 @@ public class QuestionCommunication {
 
         //Question has been asked successfully
         System.out.println("The question was asked successfully! " + response.body());
-        return 1;
+        return 0;
     }
 
     /**
      * Fetch questions list.
-     *
      * @return the list of questions related to current lecture,
      *       null if error occurs or no current lecture is set
      */
     public static List<Question> fetchQuestions() {
-
-        //Checking if current lecture has been set
+        //Check if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
             return null;
@@ -114,8 +106,8 @@ public class QuestionCommunication {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            System.out.println("There was an exception!");
-            e.printStackTrace();
+            System.out.println("An exception occurred when trying to communicate with the server!");
+            //e.printStackTrace();
             return null;
         }
         if (response.statusCode() != 200) {
@@ -129,13 +121,11 @@ public class QuestionCommunication {
         //Return object from response
         Type listType = new TypeToken<List<Question>>(){}.getType();
         return gson.fromJson(response.body(), listType);
-
-
     }
 
     /** Method that sends a request to upvote a question to the server.
-     * @param qid - the Question ID
-     * @param uid - the User ID
+     * @param qid - the question id
+     * @param uid - the user id
      * @return - the "status code"
      *           0 if the question was upvoted/downvoted successfully
      *          -1 if current lecture does not exist
@@ -163,7 +153,7 @@ public class QuestionCommunication {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            System.out.println("An exception occurred when trying to communicate with the server!");
+            System.out.println("An exception when trying to communicate with the server!");
             //e.printStackTrace();
             return -2;
         }
@@ -176,14 +166,16 @@ public class QuestionCommunication {
         return result;
     }
 
-    /** Method that sends a request to mark as answered a question to the server.
-     *           0 if the question was marked as answered successfully
-     *          -1 if current lecture does not exist
-     *          -2 if an exception occurred when communicating with the server
-     *          -3 if unexpected response was received
-     *          -4 if the question wasn't marked as answered (e.g wrong uid, wrong modkey etc.)
+    /**
+     * Method that sends a request to mark as answered a question to the server.
+     * @param qid the id of the question
+     * @param modkey the moderator key
+     * @return  0 if the question was marked as answered successfully
+     *         -1 if current lecture does not exist
+     *         -2 if an exception occurred when communicating with the server
+     *         -3 if unexpected response was received
+     *         -4 if the question wasn't marked as answered (e.g wrong uid, wrong modkey etc.)
      */
-
     public static int markedAsAnswered(long qid, UUID modkey) {
         //Check if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
@@ -194,13 +186,11 @@ public class QuestionCommunication {
         //Parameters for request
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("placeholder");
         String address = "http://localhost:8080/api/question/answer/" + qid + "/" + modkey;
-        String headerName = "Content-Type";
-        String headerValue = "application/json";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().PUT(req)
                 .uri(URI.create(address + "?qid=" + qid + "&uid=" + modkey))
-                .setHeader(headerName, headerValue).build();
+                .setHeader("Content-Type", "application/json").build();
 
         HttpResponse<String> response;
 
@@ -208,8 +198,8 @@ public class QuestionCommunication {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            System.out.println("There was an exception!");
-            e.printStackTrace();
+            System.out.println("An exception occurred when trying to communicate with the server!");
+            //e.printStackTrace();
             return -2;
         }
 
@@ -221,6 +211,11 @@ public class QuestionCommunication {
         return result;
     }
 
+    /**
+     * Handles the response for upvoteQuestion and markedAsAnswered methods.
+     * @param response response received from the server
+     * @return -3, -4, 0 according to the "status codes" for these methods
+     */
     private static int handleResponse(HttpResponse<String> response) {
         //Unexpected response
         if (response.statusCode() != 200) {
