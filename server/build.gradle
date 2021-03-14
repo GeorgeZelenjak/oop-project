@@ -4,6 +4,8 @@ plugins {
 	id 'org.asciidoctor.convert' version '1.5.8'
 }
 
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java'
 mainClassName = 'nl.tudelft.oopp.livechat.MainApplication'
 
 configurations {
@@ -14,7 +16,7 @@ configurations {
 }
 
 dependencies {
-	compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4")
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

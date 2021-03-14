@@ -46,12 +46,13 @@ client-release:
       - if: $CI_COMMIT_TAG
     script:
       - echo 'running release_job'
-      - ./gradlew :client:distTar :client:distZip
+      - ./gradlew :client:distTar :client:distZip :client:fatJar
     cache:
       paths:
         - build/
         - .gradle/
     artifacts:
       paths:
-        - build/distributions/client.zip
-        - build/distributions/client.tar
+        - client/build/distributions/client.zip
+        - client/build/distributions/client.tar
+        - client/build/libs/client-AIO.jar

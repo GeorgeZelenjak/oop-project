@@ -53,5 +53,6 @@ server-release:
       - .gradle/
   artifacts:
     paths:
-      - build/distributions/server.zip
-      - build/distributions/server.tar
+      - server/build/distributions/server.zip
+      - server/build/distributions/server.tar
+      - server/build/libs/server.jar
