@@ -88,6 +88,7 @@ public class QuestionTest {
 
     @Test
     public void gerCurrentQuestionsNotSetTest() {
+        Question.setCurrentQuestions(null);
         assertNull(Question.getCurrentQuestions());
     }
 
