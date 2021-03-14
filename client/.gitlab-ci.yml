@@ -41,7 +41,6 @@ client-test:
 
 client-release:
     allow_failure: true
-    image: registry.gitlab.com/gitlab-org/release-cli:latest
     stage: release
     rules:
       - if: $CI_COMMIT_TAG
@@ -56,8 +55,3 @@ client-release:
       paths:
         - build/distributions/client.zip
         - build/distributions/client.tar
-    release:
-      name: 'CLIENT Release $CI_COMMIT_TAG'
-      description: 'Client release generated after commit: $CI_COMMIT_REF_NAME'
-      tag_name: '$CI_COMMIT_TAG'
-      ref: '$CI_COMMIT_TAG'
