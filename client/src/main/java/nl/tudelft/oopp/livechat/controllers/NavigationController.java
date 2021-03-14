@@ -104,21 +104,34 @@ public class NavigationController {
         goToSceneHelper("/fxml/userChatScene.fxml");
     }
 
+    /**
+     * Go to scene helper.
+     *
+     * @throws IOException the io exception
+     */
     private void goToSceneHelper(String javaFxFile) throws IOException {
-
         backStack.push(this.main);
         Parent root = FXMLLoader.load(getClass().getResource(javaFxFile));
         Stage window = (Stage) main.getWindow();
         Scene main = new Scene(root, 1080,768);
         this.main = main;
         window.setScene(main);
-
     }
 
+    /**
+     * Go to settings.
+     *
+     * @throws IOException the io exception
+     */
     public void goToSettings() throws IOException {
         goToSceneHelper("/fxml/settingsScene.fxml");
     }
 
+    /**
+     * Go to test scene.
+     *
+     * @throws IOException the io exception
+     */
     public void goToTestScene() throws IOException {
         goToSceneHelper("/fxml/newUserChatScene.fxml");
     }
@@ -127,16 +140,12 @@ public class NavigationController {
         goToSceneHelper("/fxml/debugScene.fxml");
     }
 
-
     /**
      * Navigates to the previous scene.
      */
     public void goBack() {
-
         Stage window = (Stage) main.getWindow();
         this.main = backStack.pop();
         window.setScene(main);
-
     }
-
 }

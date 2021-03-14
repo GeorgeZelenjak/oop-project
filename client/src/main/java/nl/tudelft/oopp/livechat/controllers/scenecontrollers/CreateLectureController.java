@@ -13,7 +13,9 @@ import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 
-
+/**
+ * Class for the CreateLecture Scene controller.
+ */
 public class CreateLectureController {
 
     @FXML
@@ -76,10 +78,20 @@ public class CreateLectureController {
         NavigationController.getCurrentController().goBack();
     }
 
+    /**
+     * Go to settings Scene.
+     *
+     * @throws IOException the io exception
+     */
     public void goToSettings() throws IOException {
         NavigationController.getCurrentController().goToSettings();
     }
 
+    /**
+     * Go to user manual Scene.
+     *
+     * @throws IOException the io exception
+     */
     public void goToUserManual() throws IOException {
         NavigationController.getCurrentController().goToUserManual();
     }

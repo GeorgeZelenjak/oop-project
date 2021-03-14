@@ -1,7 +1,7 @@
 package nl.tudelft.oopp.livechat.controllers;
 
 /**
- * The type Input validator.
+ * Class for the Input validator.
  */
 public class InputValidator {
     /**

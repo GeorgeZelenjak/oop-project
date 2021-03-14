@@ -5,14 +5,13 @@ import nl.tudelft.oopp.livechat.controllers.NavigationController;
 
 
 /**
- * Class for controlling events happening from the main scene.
+ * Class for Main Scene controller.
  */
 public class MainSceneController {
 
     /**
      * Navigates to lecture creation scene.
      */
-
     public void goToCreateLecture() throws IOException {
         NavigationController.getCurrentController().goToCreateRoomScene();
     }
@@ -21,7 +20,6 @@ public class MainSceneController {
      *
      * @throws IOException - in case Stage throws an exception
      */
-
     public void goToLecture() throws IOException {
         NavigationController.getCurrentController().goToJoinLecturePage();
     }
@@ -44,10 +42,12 @@ public class MainSceneController {
         NavigationController.getCurrentController().goToSettings();
     }
 
+    /**
+     * Go to debug scene.
+     *
+     * @throws IOException the io exception
+     */
     public void goToDebugScene() throws IOException {
         NavigationController.getCurrentController().goToDebugScene();
     }
-
-
-
 }

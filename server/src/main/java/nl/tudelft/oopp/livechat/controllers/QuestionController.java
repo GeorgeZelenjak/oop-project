@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Class for the Question controller.
+ */
 @RestController
 @RequestMapping("/api/question")
 public class QuestionController {
@@ -119,6 +122,4 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid UUID");
     }
-
-
 }

@@ -14,6 +14,9 @@ import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * Class for the JoinLecture Scene controller.
+ */
 public class JoinLectureSceneController {
 
     @FXML

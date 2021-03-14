@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.List;
 
 /**
- * The type Lecturer chat scene controller.
+ * Class for the LectureChat Scene controller.
  */
 public class LecturerChatSceneController implements Initializable {
 
@@ -51,6 +51,7 @@ public class LecturerChatSceneController implements Initializable {
 
     @FXML
     private CheckBox unansweredCheckBox;
+
     /**
      * The Observable list.
      */
@@ -59,13 +60,11 @@ public class LecturerChatSceneController implements Initializable {
 
     private List<Question> questions;
 
-
     /**
      * Method that runs at scene initalization.
      * @param location location of scene
      * @param resourceBundle resources brought around
      */
-
     public void initialize(URL location, ResourceBundle resourceBundle) {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());

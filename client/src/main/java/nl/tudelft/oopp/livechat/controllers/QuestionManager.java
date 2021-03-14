@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Class for the Question manager.
+ */
 public class QuestionManager {
     /**
      * Sorts questions by time or number of votes according to the given arguments.
@@ -22,7 +25,6 @@ public class QuestionManager {
             Collections.sort(questions);
         }
     }
-
 
     /**
      * Retains only the answered/unanswered questions according to the given arguments.
