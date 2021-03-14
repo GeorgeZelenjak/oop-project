@@ -178,7 +178,7 @@ public class QuestionCommunicationTest {
         //Success
         mockServer.when(request().withMethod("DELETE").withPath("/api/question/delete")
                 .withQueryStringParameters(new Parameter("qid", qid1),
-                        new Parameter("uid", "443")))
+                        new Parameter("uid", String.valueOf(userId))))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0").withHeader("Content-Type","application/json"));
 
@@ -432,31 +432,46 @@ public class QuestionCommunicationTest {
     public void deleteQuestionSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Arrays", "Andy"));
-        assertEquals(0, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 443));
-        assertFalse(User.getAskedQuestionIds().contains(qid1));
+        QuestionCommunication.askQuestion("Is there anybody?");
+        int oldSize = User.getAskedQuestionIds().size();
+
+        assertEquals(0, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), userId));
+        assertEquals(oldSize - 1, User.getAskedQuestionIds().size());
+        assertFalse(User.getAskedQuestionIds().contains(Long.parseLong(qid1)));
     }
 
     @Test
     public void deleteQuestionNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
+        int oldSize = User.getAskedQuestionIds().size();
+
         assertEquals(-1, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 443));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
     @Test
     public void deleteQuestionServerRefusesTest() {
         stopServer();
+        User.getAskedQuestionIds().add(123789L);
         Lecture.setCurrentLecture(new Lecture(lid, modkey,
                 "Linked lists", "Ivo"));
+        int oldSize = User.getAskedQuestionIds().size();
+
         assertEquals(-2, QuestionCommunication.deleteQuestion(42, 42));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
         startServer();
     }
 
     @Test
     public void deleteQuestionInvalidUidTest() {
+        User.getAskedQuestionIds().add(123456789L);
         Lecture.setCurrentLecture(new Lecture(lid, modkey,
                 "Red-black trees", "Ivo"));
+        final int oldSize = User.getAskedQuestionIds().size();
+
         assertEquals(-3,
                 QuestionCommunication.deleteQuestion(Long.parseLong(qid1), Long.MAX_VALUE));
+        assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
     /**
