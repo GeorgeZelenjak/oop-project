@@ -10,21 +10,27 @@
         -fx-red: #C3312F;
         -fx-yellow: #F1BE3E;
         -fx-font-family: Roboto;
-        /*-fx-padding: 0px 0px 0px 0px;*/
+        -fx-padding: 0px 0px 0px 0px;
     }
     /*To be used*/
 
-    /*button {*/
-    /*    -fx-background-color: -fx-blue;*/
-    /*    -fx-background-radius: 10px;*/
+    .button {
+        -fx-background-color: -fx-blue;
+        -fx-background-radius: 6px;
+        -fx-font: 18px Roboto;
+        -fx-text-fill: -fx-white;
+    }
+    .button:hover {
+        -fx-background-color: -fx-dark-blue;
+    }
 
-    /*    -fx-font: 18px Roboto;*/
-    /*    -fx-text-fill: -fx-white;*/
-    /*}*/
-    /*button:hover {*/
-    /*    -fx-background-color: -fx-dark-blue;*/
-    /*}*/
+    .check-box > .box {
+        -fx-padding: 0.166667em 0.166667em 0.25em 0.25em; /* 2 2 3 3 */
+    }
 
+    .check-box > .box > .mark {
+        -fx-padding: 0.416667em 0.416667em 0.5em 0.5em; /* 5 5 6 6 */
+    }
 
     .tudLogo {
         -fx-background-image: url(/images/tudLogo.png) ;
