@@ -1,0 +1,4 @@
+To create a lecture, press the "Create Lecture" Button on the main page of the application.
+Then, on the Create Lecture page, type your name in the first field, and in the second field type the name of the lecture
+Afterwards, click on the "Create Lecture" Button and when the notification pops up, press "OK" to be redirected to the lecture page.
+If you want to go back, press the "Back" button.
