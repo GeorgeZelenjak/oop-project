@@ -14,7 +14,7 @@ Add your own name (do not add the names for others!) to the section below.
 
 | 📸 | Name | Email |
 |---|---|---|
-| ![](https://eu.ui-avatars.com/api/?name=JZ&length=4&size=50&color=DDD&background=777&font-size=0.325) | Jegor Zelenjak | J.Zelenjak@student.tudelft.nl |
+| ![](https://eu.ui-avatars.com/api/?name=JZ&length=4&size=50&color=DDD&background=FF0000&font-size=0.325) | Jegor Zelenjak | J.Zelenjak@student.tudelft.nl |
 | ![](https://eu.ui-avatars.com/api/?name=GS&length=2&size=50&color=DDD&background=0049ff&font-size=0.325) | Giulio Segalini | g.segalini@student.tudelft.nl |
 | ![](https://eu.ui-avatars.com/api/?name=CS&length=4&size=50&color=DDD&background=777&font-size=0.325) | Codrin Socol | C.Socol@student.tudelft.nl |
 | ![](https://eu.ui-avatars.com/api/?name=AP&length=4&size=50&color=DDD&background=236&font-size=0.325) | Artjom Pugatsov | a.pugatsov@student.tudelft.nl |
