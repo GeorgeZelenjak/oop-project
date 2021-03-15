@@ -14,10 +14,10 @@
       <Button id="createLecture" fx:id="goToCreateLectureButton" layoutX="312" layoutY="307.5" mnemonicParsing="false" onAction="#goToCreateLecture" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Create Lecture" />
       <Button id="restoreLecture" fx:id="goToRestoreLectureButton" layoutX="312" layoutY="432" mnemonicParsing="false" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Restore Lecture" />
       <Button fx:id="goToExportQAFromLectureButton" layoutX="312" layoutY="498" mnemonicParsing="false" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Lecture Archive" />
-      <Button fx:id="goToSettingsButton" layoutX="940.0" layoutY="613.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
-      <Button fx:id="goToHelpButton" layoutX="879.0" layoutY="613.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="34.0" prefWidth="34.0" styleClass="goToHelpButton" text="?" />
+      <Button fx:id="goToSettingsButton" layoutX="1005.0" layoutY="703.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
+      <Button fx:id="goToHelpButton" layoutX="959.0" layoutY="702.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="34.0" prefWidth="34.0" styleClass="goToHelpButton" text="?" />
       <Button layoutX="14.0" layoutY="516.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="287.0" styleClass="tudLogo" visible="false" />
-      <Pane layoutX="45" layoutY="630" prefHeight="90" prefWidth="228" styleClass="tudLogo" />
+      <Pane layoutX="31.0" layoutY="658.0" prefHeight="90" prefWidth="228" styleClass="tudLogo" />
       <Button fx:id="debugButton" layoutX="315.0" layoutY="604.0" mnemonicParsing="false" onAction="#goToDebugScene" prefHeight="51.0" prefWidth="456.0" styleClass="debugButton" text="Debug scene" />
 
    </children>

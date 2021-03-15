@@ -4,16 +4,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1080.0" styleClass="mainScenePane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.DebugSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="770.0" prefWidth="1080.0" styleClass="mainScenePane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.DebugSceneController">
     <children>
-        <Button fx:id="goToUserChatButton" layoutX="312.0" layoutY="155.0" mnemonicParsing="false" onAction="#joinAsStudent" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Student Scene" />
-        <Button fx:id="goToLecturerChatButton" layoutX="312.0" layoutY="247.0" mnemonicParsing="false" onAction="#joinAsModerator" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Lecturer Scene" />
-        <Button fx:id="goToSettingsButton" layoutX="940.0" layoutY="613.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
+        <Button fx:id="goToUserChatButton" layoutX="312.0" layoutY="209.0" mnemonicParsing="false" onAction="#joinAsStudent" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Student Scene" />
+        <Button fx:id="goToLecturerChatButton" layoutX="312.0" layoutY="283.0" mnemonicParsing="false" onAction="#joinAsModerator" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Lecturer Scene" />
+        <Button fx:id="goToSettingsButton" layoutX="977.0" layoutY="686.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
         <Button layoutX="14.0" layoutY="516.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="287.0" styleClass="tudLogo" visible="false" />
         <Pane layoutX="45" layoutY="630" prefHeight="90" prefWidth="228" styleClass="tudLogo" />
-      <Button fx:id="populateButton" layoutX="312.0" layoutY="345.0" mnemonicParsing="false" onAction="#populate" prefHeight="54.0" prefWidth="456.0" styleClass="populateButton" text="Populate with questions" />
-      <Button fx:id="backButton" layoutX="31.0" layoutY="33.0" mnemonicParsing="false" onAction="#goBack" prefHeight="45.0" prefWidth="128.0" text="Back" />
-      <Button fx:id="setANewLectureButton" layoutX="312.0" layoutY="410.0" mnemonicParsing="false" onAction="#setNewLecture" prefHeight="53.0" prefWidth="456.0" styleClass="setANewLectureButton" text="Set a new lecture" />
+      <Button fx:id="populateButton" layoutX="312.0" layoutY="375.0" mnemonicParsing="false" onAction="#populate" prefHeight="54.0" prefWidth="456.0" styleClass="populateButton" stylesheets="@../css/debugScene.css" text="Populate with questions" />
+      <Button fx:id="backButton" layoutX="45.0" layoutY="33.0" mnemonicParsing="false" onAction="#goBack" prefHeight="45.0" prefWidth="128.0" text="Back" />
+      <Button fx:id="setANewLectureButton" layoutX="312.0" layoutY="443.0" mnemonicParsing="false" onAction="#setNewLecture" prefHeight="53.0" prefWidth="456.0" styleClass="setANewLectureButton" stylesheets="@../css/debugScene.css" text="Set a new lecture" />
 
     </children>
     <stylesheets>
