@@ -85,7 +85,7 @@
     }
 
     .settingsButton:hover{
-        -fx-background-color: gray;
+        -fx-background-image: url(../images/Gear_gray.png);
         -fx-opacity: 0.5;
     }
 

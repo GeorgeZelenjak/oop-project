@@ -1,0 +1,8 @@
+To join a lecture, press the "Join Lecture" button on the main page.
+Then, enter your name.
+
+If you are a student, enter the lecture id in the second text field and press "Join Lecture".
+If you are a moderator, select the "Are you a moderator" choice and enter the Mod Key in the third
+    text field that just appeared. Press "Join Lecture" to finish your action.
+
+If you want to go back, press the "Back" button.

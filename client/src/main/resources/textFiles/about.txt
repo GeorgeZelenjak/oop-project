@@ -1,0 +1,12 @@
+This application was developed by Group 56 of the CSE1105 OOP Project Course.
+
+
+
+Students:
+-> Oleg Danilov
+-> Tudor Popica
+-> Artjom Pugatšov
+-> Giulio Segalini
+-> Codrin Socol
+-> Jegor Zelenjak
+
