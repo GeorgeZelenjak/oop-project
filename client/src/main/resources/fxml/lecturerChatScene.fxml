@@ -6,10 +6,10 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1000.0" styleClass="mainScenePane" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.LecturerChatSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" styleClass="mainScenePane" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.LecturerChatSceneController">
    <children>
       <Pane prefHeight="650.0" prefWidth="200.0" style="-fx-background-color: rgba(14, 114, 237, 0.45);" styleClass="sidebar">         <children>
-            <Button fx:id="participants" layoutX="44.0" layoutY="218.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="108.0" styleClass="mainSceneButton" text="Show Participants" />
+            <Button fx:id="participants" layoutX="16.0" layoutY="217.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Show Participants" />
             <Button fx:id="goToSettingsButton" layoutX="16.0" layoutY="369.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Settings" />
             <Button fx:id="goToUserManualButton" layoutX="16.0" layoutY="412.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="User Manual" />
             <Button id="leaveLecture" layoutX="16.0" layoutY="564.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="Leave Lecture" />
@@ -25,7 +25,7 @@
                </font>
             </Text>
             <Line endX="100.0" layoutX="98.0" layoutY="125.0" opacity="0.5" startX="-100.0" stroke="#1a75ff" />
-            <Button id="backButton" fx:id="goBackButton" layoutX="12.0" layoutY="496.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="176.0" styleClass="mainSceneButton" text="Back to Main Page">
+            <Button id="backButton" fx:id="goBackButton" layoutX="16.0" layoutY="496.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Back to Main Page">
                <font>
                   <Font size="10.0" />
                </font>
@@ -41,11 +41,11 @@
                   <Font name="Arial Bold" size="20.0" />
                </font>
             </Text>
-            <Button fx:id="pollingButton" layoutX="75.0" layoutY="177.0" mnemonicParsing="false" styleClass="mainSceneButton" text="Release Results" />
+            <Button fx:id="pollingButton" layoutX="58.0" layoutY="175.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="131.0" styleClass="mainSceneButton" text="Release Results" />
          </children>
       </Pane>
-      <Button fx:id="createPolling" layoutX="227.0" layoutY="583.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="154.0" styleClass="mainSceneButton" text="Create Polling Question" />
-      <Button fx:id="reopenPolling" layoutX="742.0" layoutY="541.0" mnemonicParsing="false" styleClass="mainSceneButton" text="Reopen a Polling Question" />
+      <Button fx:id="createPolling" layoutX="227.0" layoutY="583.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Create Polling Question" />
+      <Button fx:id="reopenPolling" layoutX="742.0" layoutY="517.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="232.0" styleClass="mainSceneButton" text="Reopen a Polling Question" />
       <Pane fx:id="speedBackground" layoutX="738.0" layoutY="247.0" prefHeight="157.0" prefWidth="247.0" styleClass="sidebar">
          <children>
             <Text fx:id="speedText" layoutX="7.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture speed Results" textAlignment="CENTER" wrappingWidth="232.20000000000005">
@@ -53,11 +53,11 @@
                   <Font name="Arial Bold" size="20.0" />
                </font>
             </Text>
-            <Button fx:id="speedButton" layoutX="76.0" layoutY="119.0" mnemonicParsing="false" styleClass="mainSceneButton" text="Reopen Voting" />
+            <Button fx:id="speedButton" layoutX="58.0" layoutY="117.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="131.0" styleClass="mainSceneButton" text="Reopen Voting" />
          </children>
       </Pane>
-      <Button fx:id="lectureLog" layoutX="744.0" layoutY="447.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="234.0" styleClass="mainSceneButton" text="View Lecture Log" />
-      <Button fx:id="viewAnswered" layoutX="744.0" layoutY="495.0" mnemonicParsing="false" styleClass="mainSceneButton" text="View Answered Questions" />
+      <Button fx:id="lectureLog" layoutX="744.0" layoutY="423.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="234.0" styleClass="mainSceneButton" text="View Lecture Log" />
+      <Button fx:id="viewAnswered" layoutX="744.0" layoutY="471.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="232.0" styleClass="mainSceneButton" text="View Answered Questions" />
       <Button fx:id="createQuiz" layoutX="546.0" layoutY="583.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="168.0" styleClass="mainSceneButton" text="Create Quiz" />
       <Button id="leaveLecture" fx:id="closeLectureButton" layoutX="743.0" layoutY="583.0" mnemonicParsing="false" onAction="#closeLecture" prefHeight="34.0" prefWidth="234.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="Close Lecture" />
       <ListView fx:id="questionPaneListView" layoutX="209.0" layoutY="48.0" prefHeight="504.0" prefWidth="521.0" />
