@@ -85,7 +85,8 @@
     }
 
     .settingsButton:hover{
-        -fx-background-image: url(../images/Gear_gray.png);
+        -fx-background-color: gray;
+        -fx-opacity: 0.5;
     }
 
     .sidebarButton{
@@ -94,7 +95,8 @@
     }
 
     .sidebar{
-        -fx-background-color: -fx-blue-green;
+        -fx-background-color: rgb(199,199,199);
+        -fx-border-color: gray;
     }
 
     .textBox {
@@ -136,11 +138,6 @@
         -fx-graphic: url(/images/tick.png);
         -fx-background-color: Transparent;
     }
-
-
-
-
-
 
     .debugButton {
         -fx-background-color: white;
