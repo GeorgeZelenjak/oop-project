@@ -1,0 +1,17 @@
+    .populateButton {
+        -fx-background-color: white;
+        -fx-text-fill: gray;
+        -fx-border-style: solid;
+        -fx-border-color: gray;
+        -fx-border-width: 1px;
+        -fx-border-radius: 7px;
+    }
+
+    .setANewLectureButton {
+        -fx-background-color: white;
+        -fx-text-fill: gray;
+        -fx-border-style: solid;
+        -fx-border-color: gray;
+        -fx-border-width: 1px;
+        -fx-border-radius: 7px;
+    }
