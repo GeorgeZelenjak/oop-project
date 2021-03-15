@@ -1,7 +1,6 @@
 package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import javafx.fxml.FXML;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
@@ -18,8 +17,7 @@ public class UserManualSceneController {
 
     @FXML
     private Text helpText;
-    @FXML
-    private StackPane helpPane;
+
     /**
      * Go back to the previous scene.
      */
@@ -28,18 +26,32 @@ public class UserManualSceneController {
         System.out.println("Button was pressed!");
     }
 
+    /** Displays the Create Lecture Category.
+     *
+     */
     public void showCreateLectureText() {
         showCategoryX("client/src/main/resources/textFiles/createLecture.txt");
     }
 
+    /** Displays the Join Lecture Category.
+     *
+     */
     public void showJoinLectureText() {
         showCategoryX("client/src/main/resources/textFiles/joinLecture.txt");
 
     }
 
+    /** Displays the About Application Category.
+     *
+     */
     public void showAboutApplicationText() {
         showCategoryX("client/src/main/resources/textFiles/about.txt");
     }
+
+    /** Helper Method that loads a File from a given path, parses it as a string and displays the
+     *      requested text of the selected help category.
+     * @param fileName - String representing the path of the text file
+     */
     public void showCategoryX(String fileName)  {
         File file = new File(fileName);
 
