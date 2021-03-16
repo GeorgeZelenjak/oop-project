@@ -2,6 +2,7 @@ package nl.tudelft.oopp.livechat.entities;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -33,7 +34,7 @@ public class LectureEntityTest {
     @Test
     void staticConstructorTest() {
         assertNotNull(LectureEntity.create("Algorithms and Data Structures: Red-black trees",
-                "Ivo van Kreveld"));
+                "Ivo van Kreveld", new Timestamp(System.currentTimeMillis())));
     }
 
     @Test

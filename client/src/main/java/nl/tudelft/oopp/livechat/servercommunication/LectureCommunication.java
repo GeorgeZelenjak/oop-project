@@ -1,5 +1,9 @@
 package nl.tudelft.oopp.livechat.servercommunication;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import nl.tudelft.oopp.livechat.data.Lecture;
@@ -10,6 +14,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
 
 /**
  * Class for Lecture server communication.
@@ -35,13 +40,23 @@ public class LectureCommunication {
      * @return          Lecture which was created, null in case of errors
      */
     // I AM PASSING A BLANK STRING IN THE POST METHOD, THIS SHOULD BE CHANGED
-    public static Lecture createLecture(String name) {
+    public static Lecture createLecture(String name, String creatorName, Timestamp startTime) {
 
         //Encoding the lecture name into url compatible format
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
 
+        //Creating node
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.getFactory().configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
+        ObjectNode node = mapper.createObjectNode();
+        node.put("creatorName", creatorName);
+        node.put("startTime", startTime.getTime());
+
+        //Convert node to string
+        String nodeToString = node.toString();
+
         //Parameters for request
-        HttpRequest.BodyPublisher req = HttpRequest.BodyPublishers.ofString("");
+        HttpRequest.BodyPublisher req = HttpRequest.BodyPublishers.ofString(nodeToString);
         String address = "http://localhost:8080/api/newLecture?name=";
 
         //Creating request and defining response

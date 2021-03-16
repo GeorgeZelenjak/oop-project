@@ -1,6 +1,7 @@
 package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -61,7 +62,9 @@ public class CreateLectureController {
         }
 
         Lecture lecture = LectureCommunication
-                .createLecture(enterLectureNameTextField.getText());
+                .createLecture(enterLectureNameTextField.getText(),
+                enterYourNameTextField.getText(), new Timestamp(System.currentTimeMillis()));
+
 
         if (lecture == null) {
             return;

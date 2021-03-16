@@ -8,6 +8,7 @@ import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -54,7 +55,8 @@ public class DebugSceneController {
      */
     public void setNewLecture() {
         Lecture lecture = LectureCommunication
-                .createLecture("A great history of zebras");
+                .createLecture("A great history of zebras",
+                        "Andy", new Timestamp(System.currentTimeMillis()));
         Lecture.setCurrentLecture(lecture);
     }
 

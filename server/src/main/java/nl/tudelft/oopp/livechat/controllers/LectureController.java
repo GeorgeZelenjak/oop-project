@@ -1,11 +1,15 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.services.LectureService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 
@@ -17,6 +21,8 @@ import java.util.UUID;
 public class  LectureController {
 
     private final LectureService service;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Constructor for the lecture controller.
@@ -41,8 +47,12 @@ public class  LectureController {
      * @return a new lecture entity
      */
     @PostMapping("/newLecture")
-    public LectureEntity newLecture(@RequestParam String name) {
-        return service.newLecture(name, "placeholder"); //these are placeholders
+    public LectureEntity newLecture(@RequestParam String name,
+                                    @RequestBody String info) throws JsonProcessingException {
+        JsonNode jsonNode = objectMapper.readTree(info);
+        String creatorName = jsonNode.get("creatorName").asText();
+        Timestamp startTime = new Timestamp(jsonNode.get("startTime").asLong());
+        return service.newLecture(name, creatorName, startTime);
     }
 
     /**
