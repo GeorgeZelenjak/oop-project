@@ -80,8 +80,8 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Sets the time the question was asked.
-     * @param time the time the question was asked
+     * Sets the time the question was asked/changed.
+     * @param time the time the question was asked/changed
      */
     public void setTime(Timestamp time) {
         this.time = time;
@@ -207,23 +207,6 @@ public class Question implements Comparable<Question> {
         this.ownerName = newName;
     }
 
-
-    /**
-     * Gets current questions.
-     * @return the current questions
-     */
-    public static List<Question> getCurrentQuestions() {
-        return currentQuestions;
-    }
-
-    /**
-     * Sets current questions.
-     * @param questions the questions
-     */
-    public static void setCurrentQuestions(List<Question> questions) {
-        currentQuestions = questions;
-    }
-
     /**
      * Compares the question to another object.
      * @param o object to compare to
@@ -276,9 +259,25 @@ public class Question implements Comparable<Question> {
      *          0 if both questions were asked at the same time
      *          1 if current question was asked earlier
      */
-    //other.time - this.time
     @Override
     public int compareTo(Question other) {
         return other.time.compareTo(this.time);
+    }
+
+
+    /**
+     * Gets current questions.
+     * @return the current questions
+     */
+    public static List<Question> getCurrentQuestions() {
+        return currentQuestions;
+    }
+
+    /**
+     * Sets current questions.
+     * @param questions the questions
+     */
+    public static void setCurrentQuestions(List<Question> questions) {
+        currentQuestions = questions;
     }
 }
