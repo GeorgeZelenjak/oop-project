@@ -2,6 +2,7 @@ package nl.tudelft.oopp.livechat.data;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * User class.
@@ -16,8 +17,9 @@ public class User {
     /**
      * Sets uid.
      */
+    //TODO change this method when we come up with another authentication method
     public static void setUid() {
-        uid = (long) (Math.random() * 10000);
+        uid = ThreadLocalRandom.current().nextLong(1000000L, Long.MAX_VALUE);
     }
 
     /**
