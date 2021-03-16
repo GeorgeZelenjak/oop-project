@@ -3,6 +3,7 @@ package nl.tudelft.oopp.livechat.data;
 import com.google.gson.annotations.Expose;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -42,11 +43,10 @@ public class Lecture {
 
 
     /**
-     * Instantiates a new Lecture.
-     *
-     * @param uuid        the lecture's id
-     * @param modkey      the moderator key
-     * @param name        the name
+     * Creates a new lecture.
+     * @param uuid the id of the lecture
+     * @param modkey the moderator key
+     * @param name the name of the lecture
      * @param creatorName the creator name
      */
     public Lecture(UUID uuid, UUID modkey, String name, String creatorName) {
@@ -56,29 +56,26 @@ public class Lecture {
         this.creatorName = creatorName;
         this.fasterCount = 0;
         this.slowerCount = 0;
-        this.frequency = 60;
+        this.frequency = 60;        //seconds
         this.startTime = new Timestamp(System.currentTimeMillis());
     }
 
     /**
-     * Instantiates a new Lecture.
+     * Creates a new lecture.
      */
     public Lecture() {
-
     }
 
     /**
-     * Gets uuid.
-     *
-     * @return the uuid
+     * Gets the lecture id.
+     * @return the lecture id
      */
     public UUID getUuid() {
-        return uuid;
+        return this.uuid;
     }
 
     /**
-     * Gets modkey.
-     *
+     * Gets the modkey.
      * @return the modkey
      */
     public UUID getModkey() {
@@ -86,71 +83,139 @@ public class Lecture {
     }
 
     /**
-     * Gets name.
-     *
-     * @return the name
+     * Sets the modkey.
+     * @param modkey the modkey to be set
      */
-    public String getName() {
-        return name;
+    public void setModkey(UUID modkey) {
+        this.modkey = modkey;
     }
 
     /**
-     * Gets creator name.
-     *
+     * Gets the name of the lecture.
+     * @return the name of the lecture
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Gets the creator name.
      * @return the creator name
      */
     public String getCreatorName() {
-        return creatorName;
+        return this.creatorName;
     }
 
     /**
-     * Gets faster count.
-     *
+     * Gets the faster count.
      * @return the faster count
      */
     public int getFasterCount() {
-        return fasterCount;
+        return this.fasterCount;
     }
 
     /**
-     * Gets slower count.
-     *
+     * Sets the new faster count.
+     * @param fasterCount the new faster count
+     */
+    public void setFasterCount(int fasterCount) {
+        this.fasterCount = fasterCount;
+    }
+
+    /**
+     * Gets the slower count.
      * @return the slower count
      */
     public int getSlowerCount() {
-        return slowerCount;
+        return this.slowerCount;
     }
 
     /**
-     * Gets frequency.
-     *
-     * @return the frequency
+     * Sets the new slower count.
+     * @param slowerCount the new slower count
+     */
+    public void setSlowerCount(int slowerCount) {
+        this.slowerCount = slowerCount;
+    }
+
+    /**
+     * Gets the frequency of asking questions.
+     * @return the frequency of asking questions
      */
     public int getFrequency() {
-        return frequency;
+        return this.frequency;
     }
 
     /**
-     * Gets start time.
-     *
-     * @return the start time
+     * Sets the new frequency of asking questions.
+     * @param newFrequency the new frequency of asking questions
+     */
+    public void setFrequency(int newFrequency) {
+        this.frequency = newFrequency;
+    }
+
+    /**
+     * Gets the start time of the lecture.
+     * @return the start time of the lecture
      */
     public Timestamp getStartTime() {
-        return startTime;
+        return this.startTime;
     }
 
     /**
-     * Is open boolean.
-     *
-     * @return boolean
+     * Checks if the lecture is open.
+     * @return true is the lecture is open, false otherwise
      */
     public boolean isOpen() {
         return this.open;
     }
 
     /**
+     * Closes the lecture.
+     */
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+    /**
+     * Converts the lecture to String format.
+     * @return the lecture in String format
+     */
+    @Override
+    public String toString() {
+        return "Lecture " + name + " by " + creatorName
+                + " with ID: " + uuid + ". Share this id with students,"
+                + " so they could join your lecture, with modKey:" + getModkey();
+    }
+
+    /**
+     * Compares the lecture to another object.
+     * @param other object to compare to
+     * @return true iff the other object is also a Lecture and has the same id. False otherwise
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof Lecture) {
+            Lecture that = (Lecture) other;
+            return this.uuid == that.uuid;
+        }
+        return false;
+    }
+
+    /**
+     * The hash code of the Lecture object.
+     * @return the hash code of the Lecture object
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.uuid, this.name, this.creatorName);
+    }
+
+    /**
      * Sets current lecture.
-     *
      * @param lecture the lecture
      */
     public static void setCurrentLecture(Lecture lecture) {
@@ -159,29 +224,10 @@ public class Lecture {
 
     /**
      * Gets current lecture.
-     *
      * @return the current lecture
      */
     public static Lecture getCurrentLecture() {
         return Lecture.currentLecture;
     }
-
-    public void setModkey(UUID modkey) {
-        this.modkey = modkey;
-    }
-
-    /**
-     * Converts the Lecture to String format.
-     *
-     * @return the Lecture in String format
-     */
-    @Override
-    public String toString() {
-        return "You created the lecture " + name + " by " + creatorName
-                + " with ID: " + uuid + ". Share this id with students,"
-                + " so they could join your lecture, with modKey:" + getModkey();
-    }
-
-
 
 }

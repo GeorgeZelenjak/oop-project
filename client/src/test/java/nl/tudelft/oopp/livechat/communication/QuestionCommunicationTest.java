@@ -68,7 +68,6 @@ public class QuestionCommunicationTest {
             + "    }\n"
             + "]";
 
-    //TODO add new tests for ModDelete, delete
     /**
      * Create expectations for asking question.
      */

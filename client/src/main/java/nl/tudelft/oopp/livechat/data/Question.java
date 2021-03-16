@@ -52,11 +52,10 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Instantiates a new Question entity.
-     *
+     * Creates a new question entity.
      * @param lectureId the lecture id
-     * @param text      the text
-     * @param ownerId   the owner id
+     * @param text the text of the question
+     * @param ownerId the id of the owner of the question
      */
     public Question(UUID lectureId, String text, long ownerId) {
         this.lectureId = lectureId;
@@ -81,9 +80,8 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Sets time.
-     *
-     * @param time the time
+     * Sets the time the question was asked/changed.
+     * @param time the time the question was asked/changed
      */
     public void setTime(Timestamp time) {
         this.time = time;
@@ -98,22 +96,20 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Sets votes.
-     *
-     * @param votes the votes
+     * Sets the number of votes for the question.
+     * @param votes the number of votes for the question
      */
     public void setVotes(int votes) {
         this.votes = votes;
     }
 
     /**
-     * Gets the number of votes.
-     * @return the number of votes
+     * Gets the number of votes for the question.
+     * @return the number of votes for the question
      */
     public int getVotes() {
         return this.votes;
     }
-
 
     /**
      * Gets the text of the question.
@@ -124,7 +120,15 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Sets answered.
+     * Sets the text of the question (e.g after a moderator has edited).
+     * @param newText the new text of the question
+     */
+    public void setText(String newText) {
+        this.text = newText;
+    }
+
+    /**
+     * Sets the question as answered/unanswered.
      * @param answered boolean indicating if question is answered
      */
     public void setAnswered(boolean answered) {
@@ -148,6 +152,14 @@ public class Question implements Comparable<Question> {
     }
 
     /**
+     * Sets the text of the answer.
+     * @param answerText the text of the answer
+     */
+    public void setAnswerText(String answerText) {
+        this.answerText = answerText;
+    }
+
+    /**
      * Gets the answer time of the question.
      * @return the answer time of the question if it is answered, null otherwise
      */
@@ -156,30 +168,43 @@ public class Question implements Comparable<Question> {
     }
 
     /**
+     * Sets the answer time of the question.
+     * @param answerTime the answer time of the question
+     */
+    public void setAnswerTime(Timestamp answerTime) {
+        this.answerTime = answerTime;
+    }
+
+    /**
      * Gets the id of the owner of the question.
      * @return the id of the owner of the question.
      */
     public long getOwnerId() {
-        return ownerId;
-    }
-
-
-    /**
-     * Gets current questions.
-     *
-     * @return the current questions
-     */
-    public static List<Question> getCurrentQuestions() {
-        return currentQuestions;
+        return this.ownerId;
     }
 
     /**
-     * Sets current questions.
-     *
-     * @param questions the questions
+     * Sets the id of the new owner of the question.
+     * @param newOwnerId the id of the new owner of the question.
      */
-    public static void setCurrentQuestions(List<Question> questions) {
-        currentQuestions = questions;
+    public void setOwnerId(long newOwnerId) {
+        this.ownerId = newOwnerId;
+    }
+
+    /**
+     * Gets the name of the owner of the question.
+     * @return the name of the owner of the question.
+     */
+    public String getOwnerName() {
+        return this.ownerName;
+    }
+
+    /**
+     * Sets the name of the new owner of the question.
+     * @param newName the name of the new owner of the question.
+     */
+    public void setOwnerName(String newName) {
+        this.ownerName = newName;
     }
 
     /**
@@ -228,13 +253,31 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Compares the current question to the 'other' one.
-     *
-     * @param other the parameter
-     * @return the result of the comparison
+     * Compares the current question to another question.
+     * @param other the question to compare to
+     * @return -1 if current question was asked later
+     *          0 if both questions were asked at the same time
+     *          1 if current question was asked earlier
      */
     @Override
     public int compareTo(Question other) {
         return other.time.compareTo(this.time);
+    }
+
+
+    /**
+     * Gets current questions.
+     * @return the current questions
+     */
+    public static List<Question> getCurrentQuestions() {
+        return currentQuestions;
+    }
+
+    /**
+     * Sets current questions.
+     * @param questions the questions
+     */
+    public static void setCurrentQuestions(List<Question> questions) {
+        currentQuestions = questions;
     }
 }
