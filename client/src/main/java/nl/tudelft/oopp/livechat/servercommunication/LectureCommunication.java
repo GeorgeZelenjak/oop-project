@@ -105,6 +105,7 @@ public class LectureCommunication {
         JsonObject user = new JsonObject();
         user.addProperty("userName", User.getUserName());
         user.addProperty("uid", User.getUid());
+        user.addProperty("lectureId", lectureId);
 
         String json = gson.toJson(user);
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
