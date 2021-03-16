@@ -1,8 +1,7 @@
 package nl.tudelft.oopp.livechat.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.sql.Timestamp;
+
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.*;
@@ -73,14 +72,14 @@ public class LectureEntity {
      * @return a new lecture entity
      */
     public static LectureEntity create(String name, String creatorName) {
-        LectureEntity l = new LectureEntity();
-        l.name = name;
-        l.creatorName = creatorName;
-        l.fasterCount = 0;
-        l.slowerCount = 0;
-        l.frequency = 60;
-        l.startTime = new Timestamp(System.currentTimeMillis());
-        return l;
+        LectureEntity lecture = new LectureEntity();
+        lecture.name = name;
+        lecture.creatorName = creatorName;
+        lecture.fasterCount = 0;
+        lecture.slowerCount = 0;
+        lecture.frequency = 60;
+        lecture.startTime = new Timestamp(System.currentTimeMillis());
+        return lecture;
     }
 
     /**
@@ -196,7 +195,6 @@ public class LectureEntity {
     /**
      * Closes the lecture.
      */
-    @SuppressWarnings("unused")
     public void close() {
         this.open = false;
     }
@@ -204,7 +202,6 @@ public class LectureEntity {
     /**
      * Re-opens the lecture.
      */
-    @SuppressWarnings("unused")
     public void reOpen() {
         this.open = true;
     }
@@ -213,14 +210,13 @@ public class LectureEntity {
      * Checks whether the lecture is open.
      * @return whether the lecture is open
      */
-    @SuppressWarnings("unused")
     public boolean isOpen() {
         return this.open;
     }
 
     /**
      * Compares the lecture to another object.
-     * @param o object to compare to
+     * @param o the object to compare to
      * @return true iff the other object is also a Lecture and has the same id. False otherwise
      */
     @Override
