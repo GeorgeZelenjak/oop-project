@@ -68,26 +68,26 @@ class UserServiceTest {
     }
 
     @Test
-    public void newUserSuccessful() {
+    public void newUserSuccessfulTest() {
         int result = userService.newUser(user, "127.0.0.1");
         assertEquals(0, result);
         assertNotNull(userRepository.getUserEntityByUid(uid));
     }
 
     @Test
-    public void newUserUserNull() {
+    public void newUserUserNullTest() {
         int result = userService.newUser(null, "127.0.0.1");
         assertEquals(-1, result);
     }
 
     @Test
-    public void newUserIPNull() {
+    public void newUserIPNullTest() {
         int result = userService.newUser(user, null);
         assertEquals(-1, result);
     }
 
     @Test
-    public void newUserInvalidUid() {
+    public void newUserInvalidUidTest() {
         user.setUid(42);
         int result = userService.newUser(user, "127.0.0.1");
         assertEquals(-1, result);

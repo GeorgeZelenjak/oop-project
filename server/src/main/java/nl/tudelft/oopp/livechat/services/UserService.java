@@ -9,6 +9,10 @@ public class UserService {
 
     final UserRepository userRepository;
 
+    /**
+     * Creates a new user service.
+     * @param userRepository user repository object
+     */
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
