@@ -1,11 +1,11 @@
 package nl.tudelft.oopp.livechat.datatest;
 
-import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -14,7 +14,8 @@ import java.util.UUID;
  */
 public class QuestionTest {
 
-    public static Question question;
+    private static Question question;
+    private static Timestamp time;
 
     /**
      * Create lecture before starting testing.
@@ -22,6 +23,18 @@ public class QuestionTest {
     @BeforeAll
     public static void createLecture() {
         question = new Question(UUID.randomUUID(), "How do you do, fellow kids?", 42);
+        time = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+    }
+
+    @Test
+    public void constructorTest() {
+        assertNotNull(question);
+    }
+
+    @Test
+    public void emptyConstructorTest() {
+        Question q = new Question();
+        assertNotNull(q);
     }
 
     @Test
@@ -70,23 +83,6 @@ public class QuestionTest {
     }
 
     @Test
-    public void emptyConstructorTest() {
-        Question question1 = new Question();
-
-        assertEquals(0, question1.getId());
-        assertEquals(0, question1.getVotes());
-        assertEquals(0, question1.getOwnerId());
-
-        assertNull(question1.getText());
-        assertNull(question1.getLectureId());
-        assertNull(question1.getTime());
-        assertNull(question1.getAnswerText());
-        assertNull(question1.getAnswerText());
-
-        assertFalse(question1.isAnswered());
-    }
-
-    @Test
     public void gerCurrentQuestionsNotSetTest() {
         Question.setCurrentQuestions(null);
         assertNull(Question.getCurrentQuestions());
@@ -94,7 +90,7 @@ public class QuestionTest {
 
     @Test
     public void gerCurrentLectureSetTest() {
-        Question.setCurrentQuestions(new ArrayList<Question>());
+        Question.setCurrentQuestions(new ArrayList<>());
         assertNotNull(Question.getCurrentQuestions());
     }
 

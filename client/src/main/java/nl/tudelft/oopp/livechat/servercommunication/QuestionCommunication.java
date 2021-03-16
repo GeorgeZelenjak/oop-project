@@ -48,7 +48,7 @@ public class QuestionCommunication {
 
         //Parameters for question
         UUID lectureId = Lecture.getCurrentLecture().getUuid();
-        Question question = new Question(lectureId, questionText,  User.getUid());
+        Question question = new Question(lectureId, questionText, User.getUid());
 
         //Parameters for request
         String json = gson.toJson(question);
