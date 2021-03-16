@@ -1,0 +1,4 @@
+As a student, you can ask your questions about the current lecture, see the questions of your peers, upvote other questions or delete your question. You can see how many upvotes each question has, who asked it and when it was asked.
+->To ask a question, type your question in the text bar at the bottom of the page and click the "Submit" button. Your question will automatically appear along others' questions.
+-> To upvote a question, press the green up arrow on the right of the question.
+-> To delete a question, press the garbage can icon on the right of the question. Note that you can only delete the questions you are asking. Only moderators can delete other students' questions.
