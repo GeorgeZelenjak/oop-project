@@ -2,7 +2,9 @@ package nl.tudelft.oopp.livechat.servercommunication;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.User;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -90,12 +92,46 @@ public class LectureCommunication {
             return null;
         }
         if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
+            System.out.println("Status first req: " + response.statusCode());
+            return null;
+        }
+
+        final String lectureReceived = response.body();
+
+        //request to add user to user table
+        //Parameter for request
+        address = "http://localhost:8080/api/user/register";
+
+        JsonObject user = new JsonObject();
+        user.addProperty("userName", User.getUserName());
+        user.addProperty("uid", User.getUid());
+
+        String json = gson.toJson(user);
+        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
+
+        //Creating request and defining response
+        request = HttpRequest.newBuilder().POST(req).uri(
+                URI.create(address)).setHeader("Content-Type", "application/json").build();
+
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            //e.printStackTrace();
+            return null;
+        }
+        if (response.statusCode() != 200) {
+            System.out.println("Status second req: " + response.statusCode());
+            return null;
+        }
+
+        if (!response.body().equals("0")) {
+            System.out.println("Server rejected the request");
             return null;
         }
 
         //Return object from response
-        return gson.fromJson(response.body(), Lecture.class);
+        return gson.fromJson(lectureReceived, Lecture.class);
     }
 
     /**

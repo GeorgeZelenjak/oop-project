@@ -1,5 +1,6 @@
 package nl.tudelft.oopp.livechat.data;
 
+import com.google.gson.annotations.Expose;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 
 import java.net.InetAddress;
@@ -15,6 +16,7 @@ public class User {
 
     private static long uid;
 
+    @Expose(serialize = false)
     private static Set<Long> askedQuestionIds = new HashSet<>();
 
     /**
@@ -101,4 +103,5 @@ public class User {
             System.err.println("Id not deleted");
         }
     }
+
 }
