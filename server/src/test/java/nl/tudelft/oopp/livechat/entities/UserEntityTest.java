@@ -13,11 +13,12 @@ import java.util.UUID;
 public class UserEntityTest {
     private static UserEntity user;
     private static long uid;
-    private static Timestamp lastTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
-    private static UUID uuid;
+    private static final Timestamp lastTime = new Timestamp(
+                    System.currentTimeMillis() / 1000 * 1000);
+    private static final UUID lid = UUID.randomUUID();
 
     /**
-     * A method to generate user id based on the mac address.
+     * A method to generate user id based.
      * @return the generated user id
      */
     private static long createUid() {
@@ -39,13 +40,17 @@ public class UserEntityTest {
     }
 
     /**
-     * Sets up.
+     * Sets up everything.
      */
     @BeforeAll
     public static void setUp() {
-        uuid = UUID.randomUUID();
         uid = createUid();
-        user = new UserEntity(uid, "root", lastTime, true, "192.168.1.1", uuid);
+        user = new UserEntity(uid, "root", lastTime, true, "192.168.1.1", lid);
+    }
+
+    @Test
+    void constructorTest() {
+        assertNotNull(user);
     }
 
     @Test
@@ -76,7 +81,6 @@ public class UserEntityTest {
         user.setUserName("root");
     }
 
-
     @Test
     void getLastQuestionTest() {
         assertEquals(lastTime, user.getLastQuestion());
@@ -106,7 +110,37 @@ public class UserEntityTest {
         user.setAllowed(!oldState);
         assertEquals(!oldState, user.isAllowed());
 
+        //set it back for other tests
         user.setAllowed(oldState);
+    }
+
+    @Test
+    void getIpTest() {
+        assertEquals("192.168.1.1", user.getIp());
+    }
+
+    @Test
+    void setIpTest() {
+        user.setIp("127.0.0.1");
+        assertEquals("127.0.0.1", user.getIp());
+
+        //set it back for other tests
+        user.setIp("192.168.1.1");
+    }
+
+    @Test
+    void getLectureIdTest() {
+        assertEquals(lid, user.getLectureId());
+    }
+
+    @Test
+    void setLectureIdTest() {
+        UUID lid1 = UUID.randomUUID();
+        user.setLectureId(lid1);
+        assertEquals(lid1, user.getLectureId());
+
+        //set it back for other tests
+        user.setLectureId(lid);
     }
 
     @Test
@@ -117,7 +151,7 @@ public class UserEntityTest {
 
     @Test
     void toStringTest() {
-        String userStr = "username: 'root', user id: " + uid;
+        String userStr = "username: 'root', user id: " + uid + ", ip address: 192.168.1.1";
         assertEquals(userStr, user.toString());
     }
 
@@ -133,14 +167,14 @@ public class UserEntityTest {
 
     @Test
     void equalsEqualTest() {
-        UserEntity user1 = new UserEntity(uid, "sudo", lastTime, true, "192.168.1.1", uuid);
+        UserEntity user1 = new UserEntity(uid, "sudo", lastTime, true, "192.168.1.1", lid);
         assertEquals(user, user1);
     }
 
     @Test
     void equalsDifferentTest() {
         UserEntity user1 = new UserEntity(42, "root", lastTime, true,
-                "192.168.1.0", UUID.randomUUID());
+                "192.168.1.0", lid);
         assertNotEquals(user, user1);
     }
 }
