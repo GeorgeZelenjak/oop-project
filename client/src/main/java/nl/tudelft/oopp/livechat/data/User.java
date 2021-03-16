@@ -1,8 +1,11 @@
 package nl.tudelft.oopp.livechat.data;
 
+import nl.tudelft.oopp.livechat.controllers.AlertController;
+
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * User class.
@@ -17,9 +20,24 @@ public class User {
     /**
      * Sets uid.
      */
-    //TODO change this method when we come up with another authentication method
     public static void setUid() {
-        uid = ThreadLocalRandom.current().nextLong(1000000L, Long.MAX_VALUE);
+        byte[] hardwareAddress;
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            NetworkInterface ni = NetworkInterface.getByInetAddress(localHost);
+            hardwareAddress = ni.getHardwareAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertController.alertError("Error in creating User ID",
+                    "Couldn't create a valid user-id");
+            return;
+        }
+        long uidTemp = 0;
+        for (int i = 0;i < hardwareAddress.length;i++) {
+            long unsigned = (long) hardwareAddress[i] & 0xFF;
+            uidTemp += unsigned << (8 * i);
+        }
+        uid = uidTemp;
     }
 
     /**
