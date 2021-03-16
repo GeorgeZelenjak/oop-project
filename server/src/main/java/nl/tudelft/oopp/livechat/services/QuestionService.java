@@ -118,13 +118,16 @@ public class QuestionService {
      */
     public int deleteModeratorQuestion(long id, UUID modkey) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
+        //check if the question exists
         if (q == null) {
             return -1;
         }
         LectureEntity l = lectureRepository.findLectureEntityByUuid(q.getLectureId());
+        //check if the lecture exists and is open
         if (l == null || !l.isOpen()) {
             return -1;
         }
+        //check if the modkey is correct
         if (l.getModkey().equals(modkey)) {
             questionRepository.deleteById(id);
             userQuestionRepository.deleteAllByQuestionId(id);
@@ -143,15 +146,26 @@ public class QuestionService {
      */
     public int editQuestion(long id, UUID moderatorKey, String newText, long newOwnerId) {
         Optional<QuestionEntity> optQuestion = questionRepository.findById(id);
+        //check if the question exists
         if (optQuestion.isEmpty()) {
             return -1;
         }
         QuestionEntity q = optQuestion.get();
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
+        //check if the lecture exists and is open
         if (lecture == null || !lecture.isOpen()) {
             return -1;
         }
+        //check if the modkey is correct
         if (lecture.getModkey().equals(moderatorKey)) {
+            //check if the question text is not too long
+            if (newText.length() > 2000) {
+                return -1;
+            }
+            //check if the new owner is registered
+            if (userRepository.findById(newOwnerId).isEmpty()) {
+                return -1;
+            }
             q.setText(newText);
             q.setOwnerId(newOwnerId);
             questionRepository.save(q);

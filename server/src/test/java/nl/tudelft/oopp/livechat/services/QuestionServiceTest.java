@@ -299,19 +299,93 @@ class QuestionServiceTest {
         assertTrue(questionRepository.findById(q2.getId()).isEmpty());
         assertTrue(userQuestionRepository.getAllByQuestionId(q2.getId()).isEmpty());
     }
-    /*
-    @Test
-    @Order(8)
-    void deleteModeratorQuestionUnsuccessfulTest() {
-        String modKey = l2.getModkey().toString();
-        long qid = q1.getId();
-        int result = questionService.deleteModeratorQuestion(qid, UUID.fromString(modKey));
-        assertNotEquals(0, result);
 
-        Optional<QuestionEntity> q = questionRepository.findById(qid);
-        assertTrue(q.isPresent());
+    /**
+     * Tests related to editQuestion method.
+     */
+    @Test
+    @Order(22)
+    void editQuestionNoQuestionTest() {
+        assertEquals(-1, questionService.editQuestion(q3.getId(), l3.getModkey(), "bla bla", uid1));
     }
 
+    @Test
+    @Order(23)
+    void editQuestionNoLectureTest() {
+        questionRepository.save(q3);
+        assertEquals(-1, questionService.editQuestion(q3.getId(), l3.getModkey(), "foo", uid1));
+
+        QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals("how old?", q.getText());
+
+        questionRepository.deleteById(q3.getId());
+    }
+
+    @Test
+    @Order(24)
+    void editQuestionLectureClosedTest() {
+        l2.close();
+        lectureRepository.save(l2);
+        questionRepository.save(q2);
+
+        assertEquals(-1, questionService.editQuestion(q2.getId(), l2.getModkey(), "foo", uid2));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals("How to get 10 for testing?", q.getText());
+
+        l2.reOpen();
+        lectureRepository.save(l2);
+    }
+
+    @Test
+    @Order(25)
+    void editQuestionWrongModkeyTest() {
+        assertEquals(-1, questionService.editQuestion(q2.getId(), l1.getModkey(), "foo", uid2));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals("How to get 10 for testing?", q.getText());
+    }
+
+    @Test
+    @Order(26)
+    void editQuestionTooLongTextTest() {
+        assertEquals(-1, questionService.editQuestion(q2.getId(), l2.getModkey(), longText, uid2));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals("How to get 10 for testing?", q.getText());
+    }
+
+    @Test
+    @Order(27)
+    void editQuestionNewOwnerNotRegisteredTest() {
+        userRepository.deleteById(uid2);
+        assertEquals(-1, questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid2));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals("How to get 10 for testing?", q.getText());
+
+        userRepository.save(user2);
+    }
+
+    @Test
+    @Order(28)
+    void editQuestionSuccessfulTest() {
+        assertEquals(0, questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid2));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals("bar", q.getText());
+        assertEquals(uid2, q2.getOwnerId());
+
+        q2 = q;
+    }
+
+    /*
     @Test
     @Order(9)
     void editQuestionSuccessfulTest() {
