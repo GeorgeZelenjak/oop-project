@@ -39,6 +39,8 @@ class QuestionServiceTest {
     private static UserEntity user3;
     private static final long uid3 = 5453625625625654245L;
 
+    private static String longText;
+
     @Autowired
     LectureService lectureService;
 
@@ -78,9 +80,13 @@ class QuestionServiceTest {
                 System.currentTimeMillis() / 1000 * 1000), true,
                 "122.162.4.8", l3.getUuid());
 
+        StringBuilder sb = new StringBuilder();
+        sb.append("a".repeat(2001));
+        longText = sb.toString();
+
         q1 = new QuestionEntity(l1.getUuid(), "name?",
                 new Timestamp(System.currentTimeMillis()), uid1);
-        q2 = new QuestionEntity(l2.getUuid(), "surname?",
+        q2 = new QuestionEntity(l2.getUuid(), longText,
                 new Timestamp(System.currentTimeMillis()), uid2);
         q3 = new QuestionEntity(l3.getUuid(), "how old?",
                 new Timestamp(System.currentTimeMillis()), uid3);
@@ -96,23 +102,57 @@ class QuestionServiceTest {
 
         long result = questionService.newQuestionEntity(q1);
         assertTrue(result > 0);
+        assertTrue(questionRepository.findById(result).isPresent());
     }
 
     @Test
     @Order(2)
-    void newQuestionEntityUnsuccessfulTest() {
-        long result = questionService.newQuestionEntity(q3);
-        assertTrue(result > 0);
-        q2.setId(q3.getId());
-
-        long result2 = questionService.newQuestionEntity(q2);
-        assertEquals(-1, result2);
-        Optional<QuestionEntity> q = questionRepository.findById(q2.getId());
-        assertTrue(q.isPresent());
-        assertEquals(q3, q.get());
+    void newQuestionEntityQuestionIsAskedTest() {
+        long result = questionService.newQuestionEntity(q1);
+        assertEquals(-1, result);
     }
 
     @Test
+    @Order(3)
+    void newQuestionEntityLectureDoesNotExistTest() {
+        long result = questionService.newQuestionEntity(q2);
+        assertEquals(-1, result);
+    }
+
+    @Test
+    @Order(4)
+    void newQuestionEntityLectureClosedTest() {
+        l2.close();
+        lectureRepository.save(l2);
+        long result = questionService.newQuestionEntity(q2);
+        assertEquals(-1, result);
+
+        l2.reOpen();
+        lectureRepository.save(l2);
+    }
+
+    @Test
+    @Order(5)
+    void newQuestionEntityTooLongTextTest() {
+        userRepository.save(user2);
+        long result = questionService.newQuestionEntity(q2);
+        assertEquals(-1, result);
+
+        q2.setText("How to get 10 for testing?");
+    }
+
+    @Test
+    @Order(6)
+    void newQuestionEntityOwnerNotRegisteredTest() {
+        userRepository.deleteById(uid2);
+
+        long result = questionService.newQuestionEntity(q2);
+        assertEquals(-1, result);
+
+        userRepository.save(user2);
+    }
+
+    /*@Test
     @Order(3)
     void getQuestionsByLectureIdTest() {
         String lid = q1.getLectureId().toString();
@@ -339,6 +379,6 @@ class QuestionServiceTest {
 
         QuestionEntity q = questionRepository.findById(qid).orElse(null);
         assertNotNull(q);
-    }
+    }*/
 
 }

@@ -21,23 +21,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class QuestionService {
 
-    final QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
-    final LectureRepository lectureRepository;
+    private final LectureRepository lectureRepository;
 
-    final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    final UserQuestionRepository userQuestionRepository;
+    private final UserQuestionRepository userQuestionRepository;
 
     /**
      * Constructor for the question service.
      * @param questionRepository question repository
      * @param lectureRepository lecture repository
+     * @param userRepository user repository
+     * @param userQuestionRepository user-question repository
      */
-    public QuestionService(QuestionRepository questionRepository,
-                           LectureRepository lectureRepository,
-                           UserRepository userRepository,
-                           UserQuestionRepository userQuestionRepository) {
+    public QuestionService(QuestionRepository questionRepository, LectureRepository lectureRepository,
+                           UserRepository userRepository, UserQuestionRepository userQuestionRepository) {
         this.questionRepository = questionRepository;
         this.lectureRepository = lectureRepository;
         this.userRepository = userRepository;
@@ -56,19 +56,23 @@ public class QuestionService {
     /**
      * Creates new question entity in the database.
      * @param q the question entity
-     * @return the id of the question entity created, -1 if question with same id already existed
+     * @return the id of the question entity created, -1 if not
      */
     public long newQuestionEntity(QuestionEntity q) {
+        //check if the question already exists
         if (questionRepository.findById(q.getId()).isPresent()) {
             return -1;
         }
+        //check if the lecture exists and is open
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        if (!lecture.isOpen()) {
+        if (lecture == null || !lecture.isOpen()) {
             return -1;
         }
+        //check if the question text is not too long
         if (q.getText().length() > 2000) {
             return -1;
         }
+        //check if the owner is registered
         if (userRepository.findById(q.getOwnerId()).isEmpty()) {
             return -1;
         }
