@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 public class UserEntityTest {
     private static UserEntity user;
     private static long uid;
-    private static final Timestamp lastTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+    private static Timestamp lastTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
 
     /**
      * A method to generate user id based on the mac address.
@@ -39,7 +39,7 @@ public class UserEntityTest {
     @BeforeAll
     public static void setUp() {
         uid = createUid();
-        user = new UserEntity(uid, "root", lastTime, true);
+        user = new UserEntity(uid, "root", lastTime, true, "192.168.1.1");
     }
 
     @Test
@@ -127,13 +127,13 @@ public class UserEntityTest {
 
     @Test
     void equalsEqualTest() {
-        UserEntity user1 = new UserEntity(uid, "sudo", lastTime, true);
+        UserEntity user1 = new UserEntity(uid, "sudo", lastTime, true, "192.168.1.1");
         assertEquals(user, user1);
     }
 
     @Test
     void equalsDifferentTest() {
-        UserEntity user1 = new UserEntity(42, "root", lastTime, true);
+        UserEntity user1 = new UserEntity(42, "root", lastTime, true, "192.168.1.0");
         assertNotEquals(user, user1);
     }
 }

@@ -36,6 +36,12 @@ public class UserEntity {
     boolean allowed = true;
 
     /**
+     * The Ip.
+     */
+    @Column(name = "ip")
+    String ip;
+
+    /**
      * Instantiates a new User entity.
      */
     public UserEntity() {
@@ -43,20 +49,25 @@ public class UserEntity {
 
     /**
      * Instantiates a new User entity.
-     * @param uid the uid
-     * @param username the username
+     *
+     * @param uid          the uid
+     * @param username     the username
      * @param lastQuestion the last question
-     * @param allowed the allowed
+     * @param allowed      the allowed
+     * @param ip           the ip
      */
-    public UserEntity(long uid, String username, Timestamp lastQuestion, boolean allowed) {
+    public UserEntity(long uid, String username, Timestamp lastQuestion,
+                      boolean allowed, String ip) {
         this.uid = uid;
         this.userName = username;
         this.lastQuestion = lastQuestion;
         this.allowed = allowed;
+        this.ip = ip;
     }
 
     /**
      * Gets uid.
+     *
      * @return the uid
      */
     public long getUid() {
@@ -65,6 +76,7 @@ public class UserEntity {
 
     /**
      * Gets username.
+     *
      * @return the username
      */
     public String getUserName() {
@@ -73,6 +85,7 @@ public class UserEntity {
 
     /**
      * Gets last question.
+     *
      * @return the last question
      */
     public Timestamp getLastQuestion() {
@@ -81,6 +94,7 @@ public class UserEntity {
 
     /**
      * Is allowed boolean.
+     *
      * @return the boolean
      */
     public boolean isAllowed() {
@@ -89,6 +103,7 @@ public class UserEntity {
 
     /**
      * Sets uid.
+     *
      * @param uid the uid
      */
     public void setUid(long uid) {
@@ -97,6 +112,7 @@ public class UserEntity {
 
     /**
      * Sets username.
+     *
      * @param username the username
      */
     public void setUserName(String username) {
@@ -105,6 +121,7 @@ public class UserEntity {
 
     /**
      * Sets last question.
+     *
      * @param lastQuestion the last question
      */
     public void setLastQuestion(Timestamp lastQuestion) {
@@ -113,10 +130,29 @@ public class UserEntity {
 
     /**
      * Sets allowed.
+     *
      * @param allowed the allowed
      */
     public void setAllowed(boolean allowed) {
         this.allowed = allowed;
+    }
+
+    /**
+     * Gets ip.
+     *
+     * @return the ip
+     */
+    public String getIp() {
+        return ip;
+    }
+
+    /**
+     * Sets ip.
+     *
+     * @param ip the ip
+     */
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     /**
