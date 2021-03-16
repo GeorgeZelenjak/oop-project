@@ -39,8 +39,32 @@ public class User {
             long unsigned = (long) hardwareAddress[i] & 0xFF;
             uidTemp += unsigned << (8 * i);
         }
-        uid = uidTemp;
+        uid = uidTemp * 10 + getLuhnDigit(uidTemp);
     }
+
+    /**
+     * Gets luhn digit to make luhn checksum valid.
+     *
+     * @param n the number
+     * @return the luhn digit
+     */
+    public static long getLuhnDigit(long n) {
+        String number = Long.toString(n);
+        long temp = 0;
+        for (int i = 0;i < number.length();i++) {
+            int digit;
+            if (i % 2 == 1) {
+                digit = Character.getNumericValue(number.charAt(i)) * 2;
+                digit %= 9;
+                if (digit == 0) digit = 9;
+            } else {
+                digit = Character.getNumericValue(number.charAt(i));
+            }
+            temp += digit;
+        }
+        return 10 - (temp % 10);
+    }
+
 
     /**
      * Gets uid.
