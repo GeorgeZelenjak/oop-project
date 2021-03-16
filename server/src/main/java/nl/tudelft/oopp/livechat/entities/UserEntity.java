@@ -2,6 +2,7 @@ package nl.tudelft.oopp.livechat.entities;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 /**
  * The type User entity.
@@ -42,6 +43,12 @@ public class UserEntity {
     String ip;
 
     /**
+     * The Lecture id.
+     */
+    @Column(name = "lectureid")
+    UUID lectureId;
+
+    /**
      * Instantiates a new User entity.
      */
     public UserEntity() {
@@ -55,14 +62,16 @@ public class UserEntity {
      * @param lastQuestion the last question
      * @param allowed      the allowed
      * @param ip           the ip
+     * @param lectureId    the lecture id
      */
     public UserEntity(long uid, String username, Timestamp lastQuestion,
-                      boolean allowed, String ip) {
+                      boolean allowed, String ip, UUID lectureId) {
         this.uid = uid;
         this.userName = username;
         this.lastQuestion = lastQuestion;
         this.allowed = allowed;
         this.ip = ip;
+        this.lectureId = lectureId;
     }
 
     /**
@@ -153,6 +162,24 @@ public class UserEntity {
      */
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    /**
+     * Gets lecture id.
+     *
+     * @return the lecture id
+     */
+    public UUID getLectureId() {
+        return lectureId;
+    }
+
+    /**
+     * Sets lecture id.
+     *
+     * @param lectureId the lecture id
+     */
+    public void setLectureId(UUID lectureId) {
+        this.lectureId = lectureId;
     }
 
     /**

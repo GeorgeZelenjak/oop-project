@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Test;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 public class UserEntityTest {
     private static UserEntity user;
     private static long uid;
     private static Timestamp lastTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+    private static UUID uuid;
 
     /**
      * A method to generate user id based on the mac address.
@@ -36,10 +38,14 @@ public class UserEntityTest {
         return uidTemp;
     }
 
+    /**
+     * Sets up.
+     */
     @BeforeAll
     public static void setUp() {
+        uuid = UUID.randomUUID();
         uid = createUid();
-        user = new UserEntity(uid, "root", lastTime, true, "192.168.1.1");
+        user = new UserEntity(uid, "root", lastTime, true, "192.168.1.1", uuid);
     }
 
     @Test
@@ -127,13 +133,14 @@ public class UserEntityTest {
 
     @Test
     void equalsEqualTest() {
-        UserEntity user1 = new UserEntity(uid, "sudo", lastTime, true, "192.168.1.1");
+        UserEntity user1 = new UserEntity(uid, "sudo", lastTime, true, "192.168.1.1", uuid);
         assertEquals(user, user1);
     }
 
     @Test
     void equalsDifferentTest() {
-        UserEntity user1 = new UserEntity(42, "root", lastTime, true, "192.168.1.0");
+        UserEntity user1 = new UserEntity(42, "root", lastTime, true,
+                "192.168.1.0", UUID.randomUUID());
         assertNotEquals(user, user1);
     }
 }
