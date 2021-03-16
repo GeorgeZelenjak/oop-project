@@ -32,20 +32,25 @@ public class  LectureController {
         this.service = service;
     }
 
+
     /**
      * GET Endpoint to retrieve a lecture.
      * @return selected lecture
      */
+    //TODO Check if the lecture has started
     @GetMapping("/get/{id}")
     public LectureEntity getLecturesByID(@PathVariable("id") UUID id) {
         return service.getLectureByIdNoModkey(id);
     }
+
 
     /**
      * POST Endpoint to create a new lecture.
      * @param name the name of the lecture
      * @return a new lecture entity
      */
+    //TODO Check if the lecture time is not in the past
+    // (At least not too far in the past. Since timezones exist)
     @PostMapping("/newLecture")
     public LectureEntity newLecture(@RequestParam String name,
                                     @RequestBody String info) throws JsonProcessingException {
