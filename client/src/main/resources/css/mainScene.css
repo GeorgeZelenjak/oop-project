@@ -21,6 +21,10 @@
         -fx-background-color:  -fx-dark-blue;
     }
 
+    .mainSceneButtonGreen {
+        -fx-background-color: rgb(70,162,11);
+    }
+
     .mainSceneEnterRoomCode{
         -fx-background-color: -fx-white;
         -fx-background-radius: 10px;
@@ -51,6 +55,8 @@
     #lectureArchive {
 
     }
+
+
 
 
 

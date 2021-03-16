@@ -232,10 +232,10 @@ public class LecturerChatSceneController implements Initializable {
         this.goToUserManualButton.setVisible(!this.goToUserManualButton.isVisible());
         this.unansweredCheckBox.setDisable((!this.unansweredCheckBox.isDisabled()));
         this.sortByVotesCheckBox.setDisable(!this.sortByVotesCheckBox.isDisabled());
-        this.unansweredCheckBox.setVisible((!this.unansweredCheckBox.isVisible()));
         this.sortByVotesCheckBox.setVisible(!this.sortByVotesCheckBox.isVisible());
         this.goToSettingsButton.setDisable(!this.goToSettingsButton.isDisabled());
         this.sortByTimeCheckBox.setDisable(!this.sortByTimeCheckBox.isDisabled());
+        this.unansweredCheckBox.setVisible(!this.unansweredCheckBox.isVisible());
         this.goToSettingsButton.setVisible(!this.goToSettingsButton.isVisible());
         this.sortByTimeCheckBox.setVisible(!this.sortByTimeCheckBox.isVisible());
         this.pollingBackground.setDisable(!this.pollingBackground.isDisabled());
@@ -244,10 +244,8 @@ public class LecturerChatSceneController implements Initializable {
         this.answeredCheckBox.setVisible(!this.answeredCheckBox.isVisible());
         this.speedBackground.setDisable(!this.speedBackground.isDisabled());
         this.speedBackground.setVisible(!this.speedBackground.isVisible());
-        this.pollingButton.setDisable(!this.pollingButton.isDisabled());
         this.reopenPolling.setDisable(!this.reopenPolling.isDisabled());
         this.createPolling.setDisable(!this.createPolling.isDisabled());
-        this.pollingButton.setVisible(!this.pollingButton.isVisible());
         this.reopenPolling.setVisible(!this.reopenPolling.isVisible());
         this.createPolling.setVisible(!this.createPolling.isVisible());
         this.participants.setDisable(!this.participants.isDisabled());
@@ -255,9 +253,7 @@ public class LecturerChatSceneController implements Initializable {
         this.participants.setVisible(!this.participants.isVisible());
         this.viewAnswered.setVisible(!this.viewAnswered.isVisible());
         this.pollingText.setDisable(!this.pollingText.isDisabled());
-        this.speedButton.setDisable(!this.speedButton.isDisabled());
         this.pollingText.setVisible(!this.pollingText.isVisible());
-        this.speedButton.setVisible(!this.speedButton.isVisible());
         this.createQuiz.setDisable(!this.createQuiz.isDisabled());
         this.sortByText.setDisable(!this.sortByText.isDisabled());
         this.lectureLog.setDisable(!this.lectureLog.isDisabled());

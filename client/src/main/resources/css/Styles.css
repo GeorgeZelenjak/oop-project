@@ -154,6 +154,17 @@
     }
 
 
+    .deleteButton:hover {
+        -fx-background-color: rgb(250,250,250);
+        -fx-opacity: 0.5;
+    }
+
+    .participantsButton {
+        -fx-color: gray;
+        -fx-background-color: rgb(212,212,212);
+        -fx-border-radius: 7px;
+    }
+
 
 
 
