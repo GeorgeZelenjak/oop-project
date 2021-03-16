@@ -90,11 +90,19 @@ public class QuestionService {
      */
     public int deleteQuestion(long id, long personId) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
+        //check if the question exists and the owner ids are equal
         if (q == null || q.getOwnerId() != personId) {
             return -1;
         }
+
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        if (!lecture.isOpen()) {
+        //check if the lecture exists and is open
+        if (lecture == null || !lecture.isOpen()) {
+            return -1;
+        }
+
+        //check if the owner is registered
+        if (userRepository.findById(personId).isEmpty()) {
             return -1;
         }
         questionRepository.deleteById(id);
@@ -184,8 +192,7 @@ public class QuestionService {
 
     /**
      * Mark a question as answered.
-     *
-     * @param id     the question id
+     * @param id the question id
      * @param modkey the modkey
      * @return 0 if successful, -1 otherwise
      */
