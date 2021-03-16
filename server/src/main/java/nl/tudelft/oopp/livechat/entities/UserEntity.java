@@ -21,7 +21,7 @@ public class UserEntity {
      * The Username.
      */
     @Column(name = "username")
-    String username;
+    String userName;
 
     /**
      * The Last question timestamp.
@@ -51,7 +51,7 @@ public class UserEntity {
      */
     public UserEntity(long uid, String username, Timestamp lastQuestion, boolean allowed) {
         this.uid = uid;
-        this.username = username;
+        this.userName = username;
         this.lastQuestion = lastQuestion;
         this.allowed = allowed;
     }
@@ -71,7 +71,7 @@ public class UserEntity {
      * @return the username
      */
     public String getUsername() {
-        return username;
+        return userName;
     }
 
     /**
@@ -107,7 +107,7 @@ public class UserEntity {
      * @param username the username
      */
     public void setUsername(String username) {
-        this.username = username;
+        this.userName = username;
     }
 
     /**
