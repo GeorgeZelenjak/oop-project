@@ -2,11 +2,16 @@ package nl.tudelft.oopp.livechat.services;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
+import nl.tudelft.oopp.livechat.entities.UserEntity;
+import nl.tudelft.oopp.livechat.entities.UserQuestionTable;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
+import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
+import nl.tudelft.oopp.livechat.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 
@@ -20,7 +25,9 @@ public class QuestionService {
 
     final LectureRepository lectureRepository;
 
-    Map<Long, Set<Long>> upvoted = new HashMap<>();
+    final UserRepository userRepository;
+
+    final UserQuestionRepository userQuestionRepository;
 
     /**
      * Constructor for the question service.
@@ -28,9 +35,13 @@ public class QuestionService {
      * @param lectureRepository lecture repository
      */
     public QuestionService(QuestionRepository questionRepository,
-                           LectureRepository lectureRepository) {
+                           LectureRepository lectureRepository,
+                           UserRepository userRepository,
+                           UserQuestionRepository userQuestionRepository) {
         this.questionRepository = questionRepository;
         this.lectureRepository = lectureRepository;
+        this.userRepository = userRepository;
+        this.userQuestionRepository = userQuestionRepository;
     }
 
     /**
@@ -58,8 +69,12 @@ public class QuestionService {
         if (q.getText().length() > 2000) {
             return -1;
         }
+        if (userRepository.findById(q.getOwnerId()).isEmpty()) {
+            return -1;
+        }
+        UserEntity userAsked = userRepository.getUserEntityByUid(q.getOwnerId());
+        q.setOwnerName(userAsked.getUserName());
         questionRepository.save(q);
-        upvoted.put(q.getId(), new HashSet<>());
         return q.getId();
     }
 
@@ -79,7 +94,7 @@ public class QuestionService {
             return -1;
         }
         questionRepository.deleteById(id);
-        upvoted.remove(q.getId());
+        userQuestionRepository.deleteAllByQuestionId(id);
         return 0;
     }
 
@@ -100,7 +115,7 @@ public class QuestionService {
         }
         if (l.getModkey().equals(modkey)) {
             questionRepository.deleteById(id);
-            upvoted.remove(q.getId());
+            userQuestionRepository.deleteAllByQuestionId(id);
             return 0;
         }
         return -1;
@@ -148,13 +163,16 @@ public class QuestionService {
             return -1;
         }
 
-        Set<Long> voters = this.upvoted.get(q.getId());
+        List<UserQuestionTable> votersPair = userQuestionRepository.getAllByQuestionId(id);
+        List<Long> voters = votersPair.stream()
+                .map(UserQuestionTable::getUserId)
+                .collect(Collectors.toList());
         if (!voters.contains(userId)) {
             q.vote();
-            voters.add(userId);
+            userQuestionRepository.save(new UserQuestionTable(userId, id));
         } else {
             q.unvote();
-            voters.remove(userId);
+            userQuestionRepository.deleteAllByQuestionIdAndUserId(id, userId);
         }
         questionRepository.save(q);
         return 0;
