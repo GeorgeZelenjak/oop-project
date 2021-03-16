@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
@@ -32,9 +33,6 @@ public class CreateLectureController {
     private DatePicker lectureSchedulingDateDatePicker;
 
     @FXML
-    private TextField lectureSchedulingTimeTextField;
-
-    @FXML
     private CheckBox lectureSchedulingCheckBox;
 
     @FXML
@@ -42,6 +40,9 @@ public class CreateLectureController {
 
     @FXML
     private TextField lectureScheduleMinuteTextField;
+
+    @FXML
+    private Text dotsText;
 
     /**
      * Creates the lecture, shows alert with lecture and creator names
@@ -174,7 +175,17 @@ public class CreateLectureController {
         NavigationController.getCurrentController().goToUserManual();
     }
 
-    public void lectureScheduling() {
-
+    /**
+     * Hides everything concerning lecture scheduling.
+     */
+    public void hideLectureScheduling() {
+        dotsText.setVisible(lectureSchedulingCheckBox.isSelected());
+        dotsText.setDisable(!lectureSchedulingCheckBox.isSelected());
+        lectureScheduleMinuteTextField.setDisable(!lectureSchedulingCheckBox.isSelected());
+        lectureScheduleMinuteTextField.setVisible(lectureSchedulingCheckBox.isSelected());
+        lectureScheduleHourTextField.setDisable(!lectureSchedulingCheckBox.isSelected());
+        lectureScheduleHourTextField.setVisible(lectureSchedulingCheckBox.isSelected());
+        lectureSchedulingDateDatePicker.setDisable(!lectureSchedulingCheckBox.isSelected());
+        lectureSchedulingDateDatePicker.setVisible(lectureSchedulingCheckBox.isSelected());
     }
 }
