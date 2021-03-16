@@ -74,7 +74,7 @@ public class UserQuestionPairId implements Serializable {
         }
         if (o instanceof UserQuestionPairId) {
             UserQuestionPairId that = (UserQuestionPairId) o;
-            return userId == that.userId && questionId == that.questionId;
+            return this.userId == that.userId && this.questionId == that.questionId;
         }
         return false;
     }
@@ -85,6 +85,6 @@ public class UserQuestionPairId implements Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(userId, questionId);
+        return Objects.hash(this.userId, this.questionId);
     }
 }
