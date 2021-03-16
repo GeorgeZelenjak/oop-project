@@ -3,6 +3,7 @@ package nl.tudelft.oopp.livechat.data;
 import com.google.gson.annotations.Expose;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -55,7 +56,7 @@ public class Lecture {
         this.creatorName = creatorName;
         this.fasterCount = 0;
         this.slowerCount = 0;
-        this.frequency = 60;
+        this.frequency = 60;        //seconds
         this.startTime = new Timestamp(System.currentTimeMillis());
     }
 
@@ -83,9 +84,8 @@ public class Lecture {
 
     /**
      * Sets the modkey.
-     * @param modkey the modkey
+     * @param modkey the modkey to be set
      */
-    //TODO decide if we need it
     public void setModkey(UUID modkey) {
         this.modkey = modkey;
     }
@@ -173,8 +173,8 @@ public class Lecture {
     /**
      * Closes the lecture.
      */
-    public void close() {
-        this.open = false;
+    public void setOpen(boolean open) {
+        this.open = open;
     }
 
     /**
@@ -186,6 +186,32 @@ public class Lecture {
         return "Lecture " + name + " by " + creatorName
                 + " with ID: " + uuid + ". Share this id with students,"
                 + " so they could join your lecture, with modKey:" + getModkey();
+    }
+
+    /**
+     * Compares the lecture to another object.
+     * @param other object to compare to
+     * @return true iff the other object is also a Lecture and has the same id. False otherwise
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof Lecture) {
+            Lecture that = (Lecture) other;
+            return this.uuid == that.uuid;
+        }
+        return false;
+    }
+
+    /**
+     * The hash code of the Lecture object.
+     * @return the hash code of the Lecture object
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.uuid, this.name, this.creatorName);
     }
 
     /**
