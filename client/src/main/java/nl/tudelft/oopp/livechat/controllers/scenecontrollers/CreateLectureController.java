@@ -106,6 +106,14 @@ public class CreateLectureController {
     }
 
     private void createLectureScheduled() throws IOException {
+
+        if (InputValidator.validateHour(lectureScheduleHourTextField.getText()) != 0
+                || InputValidator.validateMinute(lectureScheduleMinuteTextField.getText()) != 0
+                || lectureSchedulingDateDatePicker.getValue() == null)  {
+            AlertController.alertWarning("Incorrect input", "Provided date or time is invalid!");
+            return;
+        }
+
         int hour = Integer.parseInt(lectureScheduleHourTextField.getText());
         int minute = Integer.parseInt(lectureScheduleMinuteTextField.getText());
         Timestamp timestamp = Timestamp.valueOf(lectureSchedulingDateDatePicker
