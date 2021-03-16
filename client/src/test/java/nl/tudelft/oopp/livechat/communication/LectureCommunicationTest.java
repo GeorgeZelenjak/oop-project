@@ -227,37 +227,26 @@ public class LectureCommunicationTest {
 
     @Test
     public void validateModeratorSuccessfulTest() {
-        Lecture.setCurrentLecture(new Lecture());
         assertTrue(LectureCommunication.validateModerator(lid, modkey));
     }
 
     @Test
-    public void validateModeratorCurrentLectureIsNullTest() {
-        Lecture.setCurrentLecture(null);
-        assertFalse(LectureCommunication.validateModerator(lid, modkey));
-    }
-
-    @Test
     public void validateModeratorInvalidLectureIdTest() {
-        Lecture.setCurrentLecture(new Lecture());
         assertFalse(LectureCommunication.validateModerator("validUUID", modkey));
     }
 
     @Test
     public void validateModeratorInvalidModkeyTest() {
-        Lecture.setCurrentLecture(new Lecture());
         assertFalse(LectureCommunication.validateModerator(lid, "validModkey"));
     }
 
     @Test
     public void validateModeratorLectureDoesNotExistTest() {
-        Lecture.setCurrentLecture(new Lecture());
         assertFalse(LectureCommunication.validateModerator(modkey, modkey));
     }
 
     @Test
     public void validateModeratorUnsuccessfulTest() {
-        Lecture.setCurrentLecture(new Lecture());
         assertFalse(LectureCommunication.validateModerator(lid, incorrectModkey));
     }
 

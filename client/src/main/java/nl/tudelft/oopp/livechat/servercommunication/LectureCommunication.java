@@ -106,11 +106,6 @@ public class LectureCommunication {
      *         false otherwise
      */
     public static boolean validateModerator(String lectureId, String modKey) {
-        //Check if current lecture has been set
-        if (Lecture.getCurrentLecture() == null) {
-            System.out.println("You are not connected to a lecture!");
-            return false;
-        }
         //Encoding the lecture id and modKey into url compatible format
         lectureId = URLEncoder.encode(lectureId, StandardCharsets.UTF_8);
         modKey = URLEncoder.encode(modKey, StandardCharsets.UTF_8);
