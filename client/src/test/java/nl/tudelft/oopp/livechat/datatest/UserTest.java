@@ -36,7 +36,7 @@ public class UserTest {
     public void setUidTest() {
         long oldUid = User.getUid();
         User.setUid();
-        assertNotEquals(oldUid, User.getUid());
+        assertEquals(oldUid, User.getUid());
     }
 
     @Test
