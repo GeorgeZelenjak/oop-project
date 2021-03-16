@@ -16,14 +16,20 @@ import java.util.UUID;
 @RequestMapping("/api/user")
 public class UserController {
 
-    @Autowired
     private UserService userService;
 
     /**
+     * Creates a new user controller.
+     * @param userService user service object
+     */
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    /**
      * POST endpoint to create a new user in the database.
-     *
-     * @param user the user
-     * @return the int
+     * @param user the new user
+     * @return 0 if successful, -1 if not
      */
     @PostMapping("/register")
     public int newUser(@RequestBody UserEntity user) {
@@ -38,10 +44,10 @@ public class UserController {
      * @param exception exception that has occurred
      * @return response body with 400 and 'Invalid UUID' message
      */
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
-        System.out.println(exception.getMessage());
+    public ResponseEntity<Object> badUUID(Exception exception) {
+        //System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid UUID");
     }
