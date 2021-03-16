@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableJpaRepositories("nl.tudelft.oopp.livechat")
-//change to application.properties to use postgres
+//change to application-postgres.properties to use postgres
 @PropertySource("classpath:./application-dev.properties")
 @EnableTransactionManagement
 public class H2Config {
