@@ -93,10 +93,12 @@ class QuestionServiceTest {
 
     }
 
+    /**
+     * Tests related to newQuestionEntity method.
+     */
     @Test
     @Order(1)
     void newQuestionEntityTestAndNonStaticSetup() {
-        //l1 = lectureService.newLecture("Lecture 1", "Ivo van Kreveld");
         lectureRepository.save(l1);
         userRepository.save(user1);
 
@@ -152,27 +154,32 @@ class QuestionServiceTest {
         userRepository.save(user2);
     }
 
-    /*@Test
-    @Order(3)
-    void getQuestionsByLectureIdTest() {
-        String lid = q1.getLectureId().toString();
-        questionService.newQuestionEntity(q3);
-        List<QuestionEntity> qs = questionService.getQuestionsByLectureId(UUID.fromString(lid));
-        assertEquals(2, qs.size());
-        if (qs.get(0).equals(q1)) {
-            if (!qs.get(1).equals(q3)) fail();
-        } else if (qs.get(0).equals(q3)) {
-            if (!qs.get(1).equals(q1)) fail();
-        } else fail();
+    @Test
+    @Order(7)
+    void getQuestionsByLectureIdSuccessfulTest() {
+        List<QuestionEntity> qs = questionService
+                .getQuestionsByLectureId(UUID.fromString(l1.getUuid().toString()));
+        assertEquals(1, qs.size());
+        assertEquals(q1, qs.get(0));
     }
 
     @Test
-    @Order(4)
-    void getQuestionsByLectureIdUnsuccessfulTest() {
-        List<QuestionEntity> qs = questionService.getQuestionsByLectureId(UUID.randomUUID());
-        assertTrue(qs.isEmpty());
+    @Order(8)
+    void getQuestionsByLectureIdNoQuestionsTest() {
+        List<QuestionEntity> qs = questionService
+                .getQuestionsByLectureId(UUID.fromString(l2.getUuid().toString()));
+        assertEquals(0, qs.size());
     }
 
+    @Test
+    @Order(9)
+    void getQuestionsByLectureIdNoLectureTest() {
+        List<QuestionEntity> qs = questionService
+                .getQuestionsByLectureId(UUID.fromString(l3.getUuid().toString()));
+        assertEquals(0, qs.size());
+    }
+
+    /*
     @Test
     @Order(5)
     void deleteQuestionSuccessfulTest() {
