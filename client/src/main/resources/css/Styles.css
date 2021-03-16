@@ -95,7 +95,8 @@
     }
 
     .sidebar{
-        -fx-background-color: -fx-blue-green;
+        -fx-background-color: rgb(199,199,199);
+        -fx-border-color: gray;
     }
 
     .textBox {
@@ -138,11 +139,6 @@
         -fx-background-color: Transparent;
     }
 
-
-
-
-
-
     .debugButton {
         -fx-background-color: white;
         -fx-text-fill: gray;
@@ -152,7 +148,10 @@
         -fx-border-radius: 7px;
     }
 
-
+    .debugButton:hover {
+        -fx-background-color: rgb(250,250,250);
+        -fx-opacity: 0.5;
+    }
 
 
 
