@@ -10,7 +10,7 @@
         -fx-red: #C3312F;
         -fx-yellow: #F1BE3E;
         -fx-font-family: Roboto;
-        -fx-padding: 0px 0px 0px 0px;
+        /**-fx-padding: 0px 0px 0px 0px; */
     }
 
     .button {
@@ -137,11 +137,6 @@
         -fx-background-color: Transparent;
     }
 
-
-
-
-
-
     .debugButton {
         -fx-background-color: white;
         -fx-text-fill: gray;
@@ -151,6 +146,8 @@
         -fx-border-radius: 7px;
     }
 
+    .lectureScheduling {
+    }
 
 
 
