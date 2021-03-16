@@ -43,11 +43,10 @@ public class UserEntity {
 
     /**
      * Instantiates a new User entity.
-     *
-     * @param uid          the uid
-     * @param username     the username
+     * @param uid the uid
+     * @param username the username
      * @param lastQuestion the last question
-     * @param allowed      the allowed
+     * @param allowed the allowed
      */
     public UserEntity(long uid, String username, Timestamp lastQuestion, boolean allowed) {
         this.uid = uid;
@@ -58,7 +57,6 @@ public class UserEntity {
 
     /**
      * Gets uid.
-     *
      * @return the uid
      */
     public long getUid() {
@@ -67,7 +65,6 @@ public class UserEntity {
 
     /**
      * Gets username.
-     *
      * @return the username
      */
     public String getUserName() {
@@ -76,7 +73,6 @@ public class UserEntity {
 
     /**
      * Gets last question.
-     *
      * @return the last question
      */
     public Timestamp getLastQuestion() {
@@ -85,7 +81,6 @@ public class UserEntity {
 
     /**
      * Is allowed boolean.
-     *
      * @return the boolean
      */
     public boolean isAllowed() {
@@ -94,7 +89,6 @@ public class UserEntity {
 
     /**
      * Sets uid.
-     *
      * @param uid the uid
      */
     public void setUid(long uid) {
@@ -103,7 +97,6 @@ public class UserEntity {
 
     /**
      * Sets username.
-     *
      * @param username the username
      */
     public void setUserName(String username) {
@@ -112,7 +105,6 @@ public class UserEntity {
 
     /**
      * Sets last question.
-     *
      * @param lastQuestion the last question
      */
     public void setLastQuestion(Timestamp lastQuestion) {
@@ -121,18 +113,35 @@ public class UserEntity {
 
     /**
      * Sets allowed.
-     *
      * @param allowed the allowed
      */
     public void setAllowed(boolean allowed) {
         this.allowed = allowed;
     }
 
+    /**
+     * Gets the hash code of the object.
+     * @return the hash code of the object.
+     */
     @Override
     public int hashCode() {
         return (int) (uid >> 32) + (int) uid;
     }
 
+    /**
+     * A String representation of the user entity.
+     * @return String representation of the user entity
+     */
+    @Override
+    public String toString() {
+        return "username: '" + this.userName + "', user id: " + this.uid;
+    }
+
+    /**
+     * A method to compare the user with another object.
+     * @param obj the object to compare to
+     * @return true iff the other object is also a UserEntity and has the same id
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
