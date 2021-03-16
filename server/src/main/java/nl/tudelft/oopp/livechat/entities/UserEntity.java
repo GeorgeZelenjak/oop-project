@@ -20,7 +20,7 @@ public class UserEntity {
     /**
      * The Username.
      */
-    @Column(name = "username")
+    @Column(name = "userName")
     String userName;
 
     /**
@@ -70,7 +70,7 @@ public class UserEntity {
      *
      * @return the username
      */
-    public String getUsername() {
+    public String getUserName() {
         return userName;
     }
 
@@ -106,7 +106,7 @@ public class UserEntity {
      *
      * @param username the username
      */
-    public void setUsername(String username) {
+    public void setUserName(String username) {
         this.userName = username;
     }
 
