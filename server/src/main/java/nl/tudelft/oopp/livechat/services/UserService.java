@@ -2,23 +2,28 @@ package nl.tudelft.oopp.livechat.services;
 
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
-    @Autowired
-    UserRepository userRepository;
+    final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
-     * New user.
-     *
-     * @param user the user
+     * Create a new user.
+     * @param user the user entity representing the new user
+     * @param ip the ip to be set
      * @return 0 if successful,
-     *          -1 if uid is invalid
+     *        -1 if uid is invalid or nulls were passed
      */
     public int newUser(UserEntity user, String ip) {
+        if (user == null || ip == null) {
+            return -1;
+        }
         user.setIp(ip);
         if (!luhnCheck(user.getUid())) { // use mac address checksum
             return -1;
