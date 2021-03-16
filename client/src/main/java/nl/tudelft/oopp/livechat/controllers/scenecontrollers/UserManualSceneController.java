@@ -37,8 +37,7 @@ public class UserManualSceneController {
      *
      */
     public void showJoinLectureText() {
-        showCategoryX("client/src/main/resources/textFiles/joinLecture.txt");
-
+        showCategoryX("client/src/main/resources/textFiles/joinLecture.docx");
     }
 
     /** Displays the About Application Category.
@@ -46,6 +45,22 @@ public class UserManualSceneController {
      */
     public void showAboutApplicationText() {
         showCategoryX("client/src/main/resources/textFiles/about.txt");
+    }
+
+    public void showShareLectureIDText() {
+        showCategoryX("client/src/main/resources/textFiles/shareLectureID.txt");
+    }
+
+    public void showAskingQuestionsText() {
+        showCategoryX("client/src/main/resources/textFiles/askingQuestions.txt");
+    }
+
+    public void showLecturerModeText() {
+        showCategoryX("client/src/main/resources/textFiles/lecturerMode.txt");
+    }
+
+    public void showQuestionInfoText() {
+        showCategoryX("client/src/main/resources/textFiles/questionInfo.txt");
     }
 
     /** Helper Method that loads a File from a given path, parses it as a string and displays the
