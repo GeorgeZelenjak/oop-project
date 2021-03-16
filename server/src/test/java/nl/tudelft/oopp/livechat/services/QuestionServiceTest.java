@@ -201,6 +201,7 @@ class QuestionServiceTest {
     @Order(12)
     void deleteQuestionWrongUidTest() {
         assertEquals(-1, questionService.deleteQuestion(q1.getId(), uid3));
+        assertTrue(questionRepository.findById(q1.getId()).isPresent());
     }
 
     @Test
@@ -209,6 +210,7 @@ class QuestionServiceTest {
         questionRepository.save(q3);
         userRepository.save(user3);
         assertEquals(-1, questionService.deleteQuestion(q3.getId(), uid3));
+        assertTrue(questionRepository.findById(q3.getId()).isPresent());
 
         questionRepository.deleteById(q3.getId());
         userRepository.deleteById(uid3);
@@ -222,6 +224,7 @@ class QuestionServiceTest {
         questionRepository.save(q2);
 
         assertEquals(-1, questionService.deleteQuestion(q2.getId(), uid2));
+        assertTrue(questionRepository.findById(q2.getId()).isPresent());
 
         l2.reOpen();
         lectureRepository.save(l2);
@@ -234,6 +237,7 @@ class QuestionServiceTest {
         questionRepository.save(q3);
 
         assertEquals(-1, questionService.deleteQuestion(q3.getId(), uid3));
+        assertTrue(questionRepository.findById(q3.getId()).isPresent());
 
         lectureRepository.deleteById(l3.getUuid());
         questionRepository.deleteById(q3.getId());
@@ -243,36 +247,59 @@ class QuestionServiceTest {
     @Order(16)
     void deleteQuestionSuccessfulTest() {
         assertEquals(0, questionService.deleteQuestion(q2.getId(), uid2));
+        assertTrue(questionRepository.findById(q2.getId()).isEmpty());
+        assertTrue(userQuestionRepository.getAllByQuestionId(q2.getId()).isEmpty());
+    }
 
-        Optional<QuestionEntity> q = questionRepository.findById(q2.getId());
-        assertTrue(q.isEmpty());
+    /**
+     * Tests related to deleteModeratorQuestion method.
+     */
+
+    @Test
+    @Order(17)
+    void deleteModeratorQuestionNoQuestionTest() {
+        assertEquals(-1, questionService.deleteModeratorQuestion(q3.getId(), l3.getModkey()));
+    }
+
+    @Test
+    @Order(18)
+    void deleteModeratorQuestionNoLectureTest() {
+        questionRepository.save(q3);
+        assertEquals(-1, questionService.deleteModeratorQuestion(q3.getId(), l3.getModkey()));
+        assertTrue(questionRepository.findById(q3.getId()).isPresent());
+
+        questionRepository.deleteById(q3.getId());
+    }
+
+    @Test
+    @Order(19)
+    void deleteModeratorQuestionLectureClosedTest() {
+        l2.close();
+        lectureRepository.save(l2);
+        questionRepository.save(q2);
+
+        assertEquals(-1, questionService.deleteModeratorQuestion(q2.getId(), l2.getModkey()));
+        assertTrue(questionRepository.findById(q2.getId()).isPresent());
+
+        l2.reOpen();
+        lectureRepository.save(l2);
+    }
+
+    @Test
+    @Order(20)
+    void deleteModeratorQuestionWrongModkeyTest() {
+        assertEquals(-1, questionService.deleteModeratorQuestion(q2.getId(), l1.getModkey()));
+        assertTrue(questionRepository.findById(q2.getId()).isPresent());
+    }
+
+    @Test
+    @Order(21)
+    void deleteModeratorQuestionSuccessfulTest() {
+        assertEquals(0, questionService.deleteModeratorQuestion(q2.getId(), l2.getModkey()));
+        assertTrue(questionRepository.findById(q2.getId()).isEmpty());
+        assertTrue(userQuestionRepository.getAllByQuestionId(q2.getId()).isEmpty());
     }
     /*
-    @Test
-    @Order(6)
-    void deleteQuestionUnsuccessfulTest() {
-        questionService.newQuestionEntity(q3);
-        long pid = 2L;
-        long qid = q1.getId();
-        int result = questionService.deleteQuestion(qid, pid);
-        assertNotEquals(result, 0);
-
-        Optional<QuestionEntity> q = questionRepository.findById(qid);
-        assertTrue(q.isPresent());
-    }
-
-    @Test
-    @Order(7)
-    void deleteModeratorQuestionSuccessfulTest() {
-        String modKey = l1.getModkey().toString();
-        long qid = q1.getId();
-        int result = questionService.deleteModeratorQuestion(qid, UUID.fromString(modKey));
-        assertEquals(0, result);
-
-        Optional<QuestionEntity> q = questionRepository.findById(qid);
-        assertTrue(q.isEmpty());
-    }
-
     @Test
     @Order(8)
     void deleteModeratorQuestionUnsuccessfulTest() {
