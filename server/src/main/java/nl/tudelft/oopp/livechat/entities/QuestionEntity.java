@@ -60,11 +60,10 @@ public class QuestionEntity {
 
     /**
      * Constructor to create a question entity.
-     *
      * @param lectureId the id of the lecture
-     * @param text      the text of the question
-     * @param time      the time the question was asked
-     * @param ownerId   the owner id
+     * @param text the text of the question
+     * @param time the time the question was asked
+     * @param ownerId the owner id
      */
     public QuestionEntity(UUID lectureId, String text, Timestamp time, long ownerId) {
         this.lectureId = lectureId;
@@ -76,11 +75,10 @@ public class QuestionEntity {
 
     /**
      * Static constructor to create a question entity.
-     *
      * @param lectureId the id of the lecture
-     * @param text      the text of the question
-     * @param time      the time the question was asked
-     * @param ownerId   the owner id
+     * @param text the text of the question
+     * @param time the time the question was asked
+     * @param ownerId the owner id
      * @return the question entity
      */
     public static QuestionEntity create(UUID lectureId, String text, Timestamp time, long ownerId) {
@@ -94,17 +92,14 @@ public class QuestionEntity {
 
     /**
      * Sets id of the question.
-     *
      * @param id the new id of the question
      */
-    @SuppressWarnings("unused")
     public void setId(long id) {
         this.id = id;
     }
 
     /**
      * Gets id of the question.
-     *
      * @return the id of the question
      */
     public long getId() {
@@ -113,7 +108,6 @@ public class QuestionEntity {
 
     /**
      * Gets the id of the lecture.
-     *
      * @return the id of the lecture
      */
     public UUID getLectureId() {
@@ -122,17 +116,14 @@ public class QuestionEntity {
 
     /**
      * Sets the id of the lecture.
-     *
      * @param lectureId the new id of the lecture
      */
-    @SuppressWarnings("unused")
     public void setLectureId(UUID lectureId) {
         this.lectureId = lectureId;
     }
 
     /**
      * Gets the time the question was asked.
-     *
      * @return the time the question was asked
      */
     public Timestamp getTime() {
@@ -157,7 +148,7 @@ public class QuestionEntity {
 
 
     /**
-     * Decrement question votes by 1.
+     * Decrements the vote count of the question by 1.
      */
     public void unvote() {
         this.votes--;
@@ -165,7 +156,6 @@ public class QuestionEntity {
 
     /**
      * Gets the text of the question.
-     *
      * @return the text of the question
      */
     public String getText() {
@@ -174,7 +164,6 @@ public class QuestionEntity {
 
     /**
      * Sets the text of the question.
-     *
      * @param text the new text of the question
      */
     public void setText(String text) {
@@ -183,7 +172,6 @@ public class QuestionEntity {
 
     /**
      * Checks whether the question is (un)answered.
-     *
      * @return true if the question is answered, false otherwise
      */
     public boolean isAnswered() {
@@ -191,8 +179,7 @@ public class QuestionEntity {
     }
 
     /**
-     * Sets the question an (un)answered.
-     *
+     * Sets the question as (un)answered.
      * @param answered true or false to indicate if the question is (un)answered
      */
     public void setAnswered(boolean answered) {
@@ -201,7 +188,6 @@ public class QuestionEntity {
 
     /**
      * Gets the text of the answer.
-     *
      * @return the text of the answer
      */
     public String getAnswerText() {
@@ -210,7 +196,6 @@ public class QuestionEntity {
 
     /**
      * Sets the answer text of the question.
-     *
      * @param answerText the answer text of the question
      */
     public void setAnswerText(String answerText) {
@@ -219,7 +204,6 @@ public class QuestionEntity {
 
     /**
      * Gets the answer time of the question.
-     *
      * @return the answer time of the question if it is answered, null otherwise
      */
     public Timestamp getAnswerTime() {
@@ -228,7 +212,6 @@ public class QuestionEntity {
 
     /**
      * Sets the answer time of the question.
-     *
      * @param answerTime the answer time of the question
      */
     public void setAnswerTime(Timestamp answerTime) {
@@ -236,8 +219,7 @@ public class QuestionEntity {
     }
 
     /**
-     * Gets owner name.
-     *
+     * Gets the owner name.
      * @return the owner name
      */
     public String getOwnerName() {
@@ -246,7 +228,6 @@ public class QuestionEntity {
 
     /**
      * Sets owner name.
-     *
      * @param ownerName the owner name
      */
     public void setOwnerName(String ownerName) {
@@ -255,7 +236,6 @@ public class QuestionEntity {
 
     /**
      * Gets the id of the owner of the question.
-     *
      * @return the id of the owner of the question.
      */
     @JsonIgnore
@@ -265,7 +245,6 @@ public class QuestionEntity {
 
     /**
      * Sets the id of the new owner of the question.
-     *
      * @param ownerId the id of the new owner of the question
      */
     @JsonProperty
@@ -276,7 +255,8 @@ public class QuestionEntity {
     /**
      * Compares the question to another object.
      * @param o object to compare to
-     * @return true iff the other object is also a Question and has the same id. False otherwise
+     * @return true iff the other object is also a QuestionEntity and has the same id.
+     *          False otherwise
      */
     @Override
     public boolean equals(Object o) {
