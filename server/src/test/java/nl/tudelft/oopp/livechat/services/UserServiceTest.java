@@ -28,7 +28,7 @@ class UserServiceTest {
     private static final UUID lid = UUID.randomUUID();
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
     private UserRepository userRepository;

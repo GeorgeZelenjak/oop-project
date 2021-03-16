@@ -9,8 +9,11 @@ import java.util.Optional;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
+import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
+import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
+import nl.tudelft.oopp.livechat.repositories.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,11 +25,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class QuestionServiceTest {
-    LectureEntity l1;
-    LectureEntity l2;
-    QuestionEntity q1;
-    QuestionEntity q2;
-    QuestionEntity q3;
+    private static LectureEntity l1;
+    private static LectureEntity l2;
+    private static LectureEntity l3;
+    private static QuestionEntity q1;
+    private static QuestionEntity q2;
+    private static QuestionEntity q3;
+
+    private static UserEntity user1;
+    private static final long uid1 = 1268346912741204312L;
+    private static UserEntity user2;
+    private static final long uid2 = 8976889685345625524L;
+    private static UserEntity user3;
+    private static final long uid3 = 5453625625625654245L;
 
     @Autowired
     LectureService lectureService;
@@ -40,27 +51,50 @@ class QuestionServiceTest {
     @Autowired
     LectureRepository lectureRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    UserQuestionRepository userQuestionRepository;
+
     /**
      * Sets up a lecture with questions before each test.
      */
-    @BeforeEach
-    void setup() {
-        l1 = lectureService.newLecture("Lecture Name 1", "Ivo van Kreveld");
-        l2 = lectureService.newLecture("Lecture Name 2", "Stefan Hugtenburg");
+    @BeforeAll
+    public static void setup() {
+        l1 = new LectureEntity("Lecture 1", "Ivo van Kreveld");
+        l2 = new LectureEntity("Lecture 2", "Stefan Hugtenburg");
+        l3 = new LectureEntity("Lecture 3", "Joana Gonçalves");
+
+        user1 = new UserEntity(uid1, "Koen", new Timestamp(
+                System.currentTimeMillis() / 1000 * 1000), true,
+                "192.168.1.1", l1.getUuid());
+
+        user2 = new UserEntity(uid2, "Otto", new Timestamp(
+                System.currentTimeMillis() / 1000 * 1000), false,
+                "192.185.7.3", l2.getUuid());
+
+        user3 = new UserEntity(uid3, "Taico", new Timestamp(
+                System.currentTimeMillis() / 1000 * 1000), true,
+                "122.162.4.8", l3.getUuid());
+
         q1 = new QuestionEntity(l1.getUuid(), "name?",
-                new Timestamp(System.currentTimeMillis()), 1L);
+                new Timestamp(System.currentTimeMillis()), uid1);
         q2 = new QuestionEntity(l2.getUuid(), "surname?",
-                new Timestamp(System.currentTimeMillis()), 2L);
-        q3 = new QuestionEntity(l1.getUuid(), "how old?",
-                new Timestamp(System.currentTimeMillis()), 3L);
-        questionService.newQuestionEntity(q1);
-        questionService.newQuestionEntity(q2);
+                new Timestamp(System.currentTimeMillis()), uid2);
+        q3 = new QuestionEntity(l3.getUuid(), "how old?",
+                new Timestamp(System.currentTimeMillis()), uid3);
+
     }
 
     @Test
     @Order(1)
-    void newQuestionEntityTest() {
-        long result = questionService.newQuestionEntity(q3);
+    void newQuestionEntityTestAndNonStaticSetup() {
+        //l1 = lectureService.newLecture("Lecture 1", "Ivo van Kreveld");
+        lectureRepository.save(l1);
+        userRepository.save(user1);
+
+        long result = questionService.newQuestionEntity(q1);
         assertTrue(result > 0);
     }
 
