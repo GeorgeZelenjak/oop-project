@@ -5,10 +5,10 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1000.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.UserManualSceneController">
+<AnchorPane prefHeight="768.0" prefWidth="1080.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.UserManualSceneController">
    <children>
-      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" styleClass="mainSceneButton" text="←Go Back" />
-      <Text layoutX="322.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Manual Page " textAlignment="CENTER" wrappingWidth="356.0">
+      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" prefHeight="34.0" prefWidth="86.0" styleClass="mainSceneButton" text="Back" />
+      <Text layoutX="357.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Help &amp; Documentation Page" textAlignment="CENTER" wrappingWidth="578.0">
          <font>
             <Font name="Arial Bold" size="40.0" />
          </font>
@@ -18,17 +18,25 @@
             <Font name="Arial Bold" size="30.0" />
          </font>
       </Text>
-      <Button layoutX="29.0" layoutY="164.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Category #1" />
-      <Button layoutX="29.0" layoutY="208.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Category #1" />
+      <Button layoutX="29.0" layoutY="164.0" mnemonicParsing="false" onAction="#showCreateLectureText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Create a Lecture" />
+      <Button layoutX="29.0" layoutY="208.0" mnemonicParsing="false" onAction="#showJoinLectureText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Join a Lecture" />
       <Button layoutX="29.0" layoutY="435.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Category #1" />
-      <Button layoutX="29.0" layoutY="252.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Category #1" />
-      <Button layoutX="29.0" layoutY="297.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Category #1" />
-      <Button layoutX="29.0" layoutY="343.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Category #1" />
-      <Button layoutX="29.0" layoutY="390.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Category #1" />
+      <Button layoutX="29.0" layoutY="252.0" mnemonicParsing="false" onAction="#showShareLectureIDText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Share Lecture ID" />
+      <Button layoutX="29.0" layoutY="297.0" mnemonicParsing="false" onAction="#showAskingQuestionsText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Asking Questions" />
+      <Button layoutX="29.0" layoutY="343.0" mnemonicParsing="false" onAction="#showLecturerModeText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Lecturer Mode" />
+      <Button layoutX="29.0" layoutY="390.0" mnemonicParsing="false" onAction="#showQuestionInfoText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Question Information" />
       <Button layoutX="29.0" layoutY="480.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Category #1" />
-      <Button layoutX="29.0" layoutY="572.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Category #1" />
+      <Button layoutX="29.0" layoutY="694.0" mnemonicParsing="false" onAction="#showAboutApplicationText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="About Application" />
       <Button layoutX="29.0" layoutY="525.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Category #1" />
       <Line endX="-100.0" endY="286.20001220703125" layoutX="360.0" layoutY="337.0" startX="-100.0" startY="-181.8000030517578" stroke="#6699ff" />
-      <ScrollPane layoutX="291.0" layoutY="155.0" prefHeight="470.0" prefWidth="660.0" />
+      <StackPane fx:id="helpPane" layoutX="276.0" layoutY="164.0" prefHeight="516.0" prefWidth="740.0">
+         <children>
+            <Text fx:id="helpText" boundsType="LOGICAL_VERTICAL_CENTER" strokeType="OUTSIDE" strokeWidth="0.0" text="To display the help text, select a category on the left to view its content." textAlignment="CENTER" wrappingWidth="737.1367490291595">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Text>
+         </children>
+      </StackPane>
    </children>
 </AnchorPane>

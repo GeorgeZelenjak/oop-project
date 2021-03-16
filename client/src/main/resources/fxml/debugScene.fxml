@@ -13,7 +13,7 @@
         <Pane layoutX="45" layoutY="630" prefHeight="90" prefWidth="228" styleClass="tudLogo" />
       <Button fx:id="populateButton" layoutX="312.0" layoutY="375.0" mnemonicParsing="false" onAction="#populate" prefHeight="54.0" prefWidth="456.0" styleClass="populateButton" stylesheets="@../css/debugScene.css" text="Populate with questions" />
       <Button fx:id="backButton" layoutX="45.0" layoutY="33.0" mnemonicParsing="false" onAction="#goBack" prefHeight="45.0" prefWidth="128.0" text="Back" />
-      <Button fx:id="setANewLectureButton" layoutX="312.0" layoutY="443.0" mnemonicParsing="false" onAction="#setNewLecture" prefHeight="53.0" prefWidth="456.0" styleClass="setANewLectureButton" stylesheets="@../css/debugScene.css" text="Set a new lecture" />
+      <Button fx:id="setANewLectureButton" layoutX="312.0" layoutY="443.0" mnemonicParsing="false" onAction="#setNewLecture" prefHeight="53.0" prefWidth="456.0" styleClass="populateButton" stylesheets="@../css/debugScene.css" text="Set a new lecture" />
 
     </children>
     <stylesheets>
