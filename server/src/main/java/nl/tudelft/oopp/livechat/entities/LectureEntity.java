@@ -196,10 +196,24 @@ public class LectureEntity {
     }
 
     /**
+     * Decrement faster count.
+     */
+    public void decrementFasterCount() {
+        --this.fasterCount;
+    }
+
+    /**
      * Increases the "slower" count by 1.
      */
     public void incrementSlowerCount() {
         ++this.slowerCount;
+    }
+
+    /**
+     * Decrement slower count.
+     */
+    public void decrementSlowerCount() {
+        --this.slowerCount;
     }
 
     /**
