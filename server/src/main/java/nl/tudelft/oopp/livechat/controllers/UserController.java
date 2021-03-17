@@ -44,9 +44,9 @@ public class UserController {
      * @param exception exception that has occurred
      * @return response body with 400 and 'Invalid UUID' message
      */
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> badUUID(Exception exception) {
+    private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
         //System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid UUID");
