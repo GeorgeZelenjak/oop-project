@@ -36,8 +36,10 @@ public class QuestionService {
      * @param userRepository user repository
      * @param userQuestionRepository user-question repository
      */
-    public QuestionService(QuestionRepository questionRepository, LectureRepository lectureRepository,
-                           UserRepository userRepository, UserQuestionRepository userQuestionRepository) {
+    public QuestionService(QuestionRepository questionRepository,
+                           LectureRepository lectureRepository,
+                           UserRepository userRepository,
+                           UserQuestionRepository userQuestionRepository) {
         this.questionRepository = questionRepository;
         this.lectureRepository = lectureRepository;
         this.userRepository = userRepository;
@@ -219,18 +221,27 @@ public class QuestionService {
     }
 
     /**
-     * Mark a question as answered.
+     * Mark question as answered.
      * @param id the question id
      * @param modkey the modkey
      * @return 0 if successful, -1 otherwise
      */
     public int answer(long id, UUID modkey, String answerText) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
-        if (q == null) return -1;
-        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
+        //check if the question exists
+        if (q == null) {
+            return -1;
+        }
+        //check if the answer text is not too long
         if (answerText.length() > 2000) {
             return -1;
         }
+        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
+        //check if the lecture exists
+        if (lecture == null) {
+            return -1;
+        }
+        //check if the modkey is correct
         if (lecture.getModkey().equals(modkey)) {
             q.setAnswered(true);
             q.setAnswerTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
