@@ -1,6 +1,6 @@
 package nl.tudelft.oopp.livechat.businesslogic;
 
-public class InputValidator {
+public abstract class InputValidator {
 
     /**
      * Validates length of user String input.
