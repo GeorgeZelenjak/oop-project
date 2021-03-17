@@ -1,7 +1,5 @@
 package nl.tudelft.oopp.livechat.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.sql.Timestamp;
 
 import java.util.Objects;
@@ -39,7 +37,7 @@ public class LectureEntity {
     private int frequency;
 
     @Column(name = "startTime")
-    private Timestamp startTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+    private Timestamp startTime;
 
     @Column(name = "open")
     private boolean open = true;
@@ -81,7 +79,7 @@ public class LectureEntity {
         lecture.fasterCount = 0;
         lecture.slowerCount = 0;
         lecture.frequency = 60;
-        lecture.startTime = new Timestamp(System.currentTimeMillis());
+        lecture.startTime = startTime;
         return lecture;
     }
 
@@ -147,6 +145,15 @@ public class LectureEntity {
      */
     public Timestamp getStartTime() {
         return startTime;
+    }
+
+
+    /**
+     * Sets the start time of the lecture.
+     * @param startTime the start time of the lecture
+     */
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
     }
 
     /**

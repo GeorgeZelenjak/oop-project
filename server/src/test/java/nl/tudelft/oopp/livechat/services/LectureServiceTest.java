@@ -2,6 +2,7 @@ package nl.tudelft.oopp.livechat.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
@@ -20,11 +21,12 @@ class LectureServiceTest {
     private LectureRepository repository;
 
     private final String longString = "a".repeat(256);
+    private static final Timestamp time = new Timestamp(System.currentTimeMillis());
 
 
     @Test
     void getLectureByIdSuccessfulTest() {
-        LectureEntity lecture1 = new LectureEntity("name", "Codrin Socol");
+        LectureEntity lecture1 = new LectureEntity("name", "Codrin Socol", time);
         repository.save(lecture1);
 
         LectureEntity lecture2 = lectureService.getLectureByIdNoModkey(lecture1.getUuid());
@@ -35,7 +37,7 @@ class LectureServiceTest {
 
     @Test
     void getLectureByIdUnsuccessfulTest() {
-        LectureEntity lecture1 = new LectureEntity("name", "Giulio Segalini");
+        LectureEntity lecture1 = new LectureEntity("name", "Giulio Segalini", time);
         repository.save(lecture1);
 
         LectureEntity lecture2 = lectureService.getLectureByIdNoModkey(UUID.randomUUID());
@@ -46,26 +48,27 @@ class LectureServiceTest {
 
     @Test
     void newLectureTest() {
-        LectureEntity lectureEntity = lectureService.newLecture("name", "Artjom Pugatsov");
+        LectureEntity lectureEntity = lectureService.newLecture("name", "Artjom Pugatsov", time);
         assertNotNull(lectureEntity);
         repository.deleteById(lectureEntity.getUuid());
     }
 
     @Test
     void newLectureLongCreatorTest() {
-        LectureEntity lectureEntity = lectureService.newLecture("name", longString);
+        LectureEntity lectureEntity = lectureService.newLecture("name", longString, time);
         assertNull(lectureEntity);
     }
 
     @Test
     void newLectureLongNameTest() {
-        LectureEntity lectureEntity = lectureService.newLecture(longString, "Artjom Pugatsov");
+        LectureEntity lectureEntity = lectureService.newLecture(longString,
+                "Artjom Pugatsov", time);
         assertNull(lectureEntity);
     }
 
     @Test
     void deleteSuccessfulTest() {
-        LectureEntity lecture1 = new LectureEntity("name", "Tudor Popica");
+        LectureEntity lecture1 = new LectureEntity("name", "Tudor Popica", time);
         repository.save(lecture1);
 
         lectureService.delete(lecture1.getUuid(), lecture1.getModkey());
@@ -76,7 +79,7 @@ class LectureServiceTest {
 
     @Test
     void deleteUnsuccessfulTest() {
-        LectureEntity lecture1 = new LectureEntity("name", "Tudor Popica");
+        LectureEntity lecture1 = new LectureEntity("name", "Tudor Popica", time);
         repository.save(lecture1);
 
         lectureService.delete(lecture1.getUuid(), UUID.randomUUID());
@@ -89,7 +92,7 @@ class LectureServiceTest {
 
     @Test
     void closeLectureTest() {
-        LectureEntity lecture1 = new LectureEntity("name", "creator_name");
+        LectureEntity lecture1 = new LectureEntity("name", "creator_name", time);
         repository.save(lecture1);
 
         lectureService.close(lecture1.getUuid(), lecture1.getModkey());
@@ -101,7 +104,7 @@ class LectureServiceTest {
 
     @Test
     void closeLectureUnsuccessfulTest() {
-        LectureEntity lecture1 = new LectureEntity("name", "creator_name");
+        LectureEntity lecture1 = new LectureEntity("name", "creator_name", time);
         repository.save(lecture1);
 
         lectureService.close(lecture1.getUuid(), UUID.randomUUID());
@@ -113,7 +116,7 @@ class LectureServiceTest {
 
     @Test
     void closeLectureNoLectureTest() {
-        LectureEntity lecture = new LectureEntity("name", "creator_name");
+        LectureEntity lecture = new LectureEntity("name", "creator_name", time);
 
         int result = lectureService.close(lecture.getUuid(), lecture.getModkey());
         assertEquals(-1, result);
@@ -121,7 +124,7 @@ class LectureServiceTest {
 
     @Test
     void validateModeratorKeySuccessfulTest() {
-        LectureEntity lecture = new LectureEntity("name", "Jegor Zelenjak");
+        LectureEntity lecture = new LectureEntity("name", "Jegor Zelenjak", time);
         repository.save(lecture);
 
         int res = lectureService.validateModerator(lecture.getUuid(), lecture.getModkey());
@@ -132,7 +135,7 @@ class LectureServiceTest {
 
     @Test
     void validateModeratorKeyUnsuccessfulTest() {
-        LectureEntity lecture = new LectureEntity("name", "Stefan Hugtenburg");
+        LectureEntity lecture = new LectureEntity("name", "Stefan Hugtenburg", time);
         repository.save(lecture);
 
         int res = lectureService.validateModerator(lecture.getUuid(), UUID.randomUUID());
@@ -143,7 +146,7 @@ class LectureServiceTest {
 
     @Test
     void validateModeratorKeyNoLectureTest() {
-        LectureEntity lecture = new LectureEntity("name", "Andy Zaidman");
+        LectureEntity lecture = new LectureEntity("name", "Andy Zaidman", time);
 
         int res = lectureService.validateModerator(lecture.getUuid(), lecture.getModkey());
         assertEquals(-1, res);
