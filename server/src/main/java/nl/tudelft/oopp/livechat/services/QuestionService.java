@@ -182,10 +182,23 @@ public class QuestionService {
      */
     public int upvote(long id, long userId) {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
-        if (q == null) return -1;
+        //check if the question exists
+        if (q == null) {
+            return -1;
+        }
 
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
+        //check if the lecture exists
+        if (lecture == null) {
+            return -1;
+        }
+        //check if the lecture is open
         if (!lecture.isOpen()) {
+            return -1;
+        }
+
+        //check if the new owner is registered
+        if (userRepository.findById(userId).isEmpty()) {
             return -1;
         }
 
@@ -193,6 +206,7 @@ public class QuestionService {
         List<Long> voters = votersPair.stream()
                 .map(UserQuestionTable::getUserId)
                 .collect(Collectors.toList());
+        //check if the user has already upvoted the question
         if (!voters.contains(userId)) {
             q.vote();
             userQuestionRepository.save(new UserQuestionTable(userId, id));

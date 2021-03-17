@@ -10,6 +10,7 @@ import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
+import nl.tudelft.oopp.livechat.entities.UserQuestionTable;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
@@ -385,39 +386,93 @@ class QuestionServiceTest {
         q2 = q;
     }
 
-    /*
+    /**
+     * Tests related to upvote method.
+     */
     @Test
-    @Order(9)
-    void editQuestionSuccessfulTest() {
-        long qid = q1.getId();
-        long newOwnerId = 42L;
-        UUID modKey = l1.getModkey();
-        String newText = "new text)))";
+    @Order(29)
+    void upvoteNoQuestionTest() {
+        userRepository.save(user3);
 
-        int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
-        q1 = questionRepository.findById(qid).orElse(null);
-        assertEquals(0, result);
-        assertEquals(newText, q1.getText());
+        assertEquals(-1, questionService.upvote(q3.getId(), uid3));
     }
 
-
     @Test
-    @Order(10)
-    void editQuestionUnsuccessfulTest() {
-        long qid = q1.getId();
-        long newOwnerId = 42L;
-        String oldText = q1.getText();
-        UUID modKey = l2.getModkey();
-        String newText = "new text)))";
+    @Order(30)
+    void upvoteNoLectureTest() {
+        questionRepository.save(q3);
+        assertEquals(-1, questionService.upvote(q3.getId(), uid3));
 
-        int result = questionService.editQuestion(qid, modKey, newText, newOwnerId);
-        assertEquals(-1, result);
-
-        QuestionEntity q = questionRepository.findById(qid).orElse(null);
+        QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
         assertNotNull(q);
-        assertEquals(oldText, q.getText());
+        assertEquals(0, q.getVotes());
+
+        questionRepository.deleteById(q3.getId());
     }
 
+    @Test
+    @Order(31)
+    void upvoteLectureClosedTest() {
+        l2.close();
+        lectureRepository.save(l2);
+        questionRepository.save(q2);
+
+        assertEquals(-1, questionService.upvote(q2.getId(), uid2));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals(0, q.getVotes());
+
+        l2.reOpen();
+        lectureRepository.save(l2);
+    }
+
+    @Test
+    @Order(32)
+    void upvoteNotRegisteredTest() {
+        userRepository.deleteById(uid2);
+        assertEquals(-1, questionService.upvote(q2.getId(), uid2));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals(0, q.getVotes());
+
+        userRepository.save(user2);
+    }
+
+    @Test
+    @Order(33)
+    void upvoteTest() {
+        assertEquals(0, questionService.upvote(q2.getId(), uid2));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals(1, q.getVotes());
+
+        List<UserQuestionTable> table = userQuestionRepository.getAllByQuestionId(q2.getId());
+        UserQuestionTable match = new UserQuestionTable(uid2, q2.getId());
+        assertTrue(table.contains(match));
+
+        q2 = q;
+    }
+
+    @Test
+    @Order(34)
+    void unvoteTest() {
+        assertEquals(0, questionService.upvote(q2.getId(), uid2));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals(0, q.getVotes());
+
+        List<UserQuestionTable> table = userQuestionRepository.getAllByQuestionId(q2.getId());
+        UserQuestionTable match = new UserQuestionTable(uid2, q2.getId());
+        assertFalse(table.contains(match));
+
+        q2 = q;
+    }
+
+    /*
     @Test
     @Order(11)
     void upvoteSuccessfulTest() {
@@ -446,7 +501,7 @@ class QuestionServiceTest {
         assertEquals(0, result);
         assertEquals(oldVotes, q1.getVotes());
     }
-
+    //TODO change when we implement off-lecture hours
     @Test
     @Order(13)
     void askQuestionWhenLectureIsClosed() {
