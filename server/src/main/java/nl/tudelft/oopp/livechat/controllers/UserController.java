@@ -2,21 +2,17 @@ package nl.tudelft.oopp.livechat.controllers;
 
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     /**
      * Creates a new user controller.
@@ -44,10 +40,10 @@ public class UserController {
      * @param exception exception that has occurred
      * @return response body with 400 and 'Invalid UUID' message
      */
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
-        //System.out.println(exception.getMessage());
+    public ResponseEntity<Object> badUUID(Exception exception) {
+        System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid UUID");
     }
