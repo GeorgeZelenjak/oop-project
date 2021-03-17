@@ -39,6 +39,8 @@ class QuestionServiceTest {
     private static UserEntity user3;
     private static final long uid3 = 5453625625625654245L;
 
+    private static final Timestamp time = new Timestamp(System.currentTimeMillis());
+
     private static String longText;
 
     @Autowired
@@ -64,20 +66,20 @@ class QuestionServiceTest {
      */
     @BeforeAll
     public static void setup() {
-        l1 = new LectureEntity("Lecture 1", "Ivo van Kreveld");
-        l2 = new LectureEntity("Lecture 2", "Stefan Hugtenburg");
-        l3 = new LectureEntity("Lecture 3", "Joana Gonçalves");
+        l1 = new LectureEntity("Lecture 1", "Ivo van Kreveld", time);
+        l2 = new LectureEntity("Lecture 2", "Stefan Hugtenburg", time);
+        l3 = new LectureEntity("Lecture 3", "Joana Gonçalves", time);
 
         user1 = new UserEntity(uid1, "Koen", new Timestamp(
-                System.currentTimeMillis() / 1000 * 1000), true,
+                System.currentTimeMillis()), true,
                 "192.168.1.1", l1.getUuid());
 
         user2 = new UserEntity(uid2, "Otto", new Timestamp(
-                System.currentTimeMillis() / 1000 * 1000), false,
+                System.currentTimeMillis()), false,
                 "192.185.7.3", l2.getUuid());
 
         user3 = new UserEntity(uid3, "Taico", new Timestamp(
-                System.currentTimeMillis() / 1000 * 1000), true,
+                System.currentTimeMillis()), true,
                 "122.162.4.8", l3.getUuid());
 
         longText = "a".repeat(2001);

@@ -8,9 +8,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
@@ -25,6 +27,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 
@@ -68,12 +71,27 @@ class QuestionControllerTest {
 
     private final long uid1 = 1268346912741204312L;
     private final long uid2 = 8976889685345625524L;
+    private final Timestamp time = new Timestamp(System.currentTimeMillis());
+
+    /**
+     * A helper method to create a JSON string representing the lecture.
+     * @param creatorName the creator name
+     * @param startTime the start time
+     * @return the JSON string representing the lecture
+     */
+    private String createJson(String creatorName, Timestamp startTime) {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode node = mapper.createObjectNode();
+        node.put("creatorName", creatorName);
+        node.put("startTime", String.valueOf(startTime));
+        return node.toString();
+    }
 
     @BeforeEach
     void setup() throws Exception {
-        objectMapper.registerModule(new JavaTimeModule());
-
-        String lecture1 = this.mockMvc.perform(post("/api/newLecture?name=test1"))
+        String lecture1 = this.mockMvc.perform(post("/api/newLecture?name=test1")
+                .content(createJson("Jegor", time))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -81,11 +99,12 @@ class QuestionControllerTest {
         lectureRepository.save(lectureEntity1);
 
         UserEntity user1 = new UserEntity(uid1, "Ivo", new Timestamp(
-                System.currentTimeMillis() / 1000 * 1000), true,
+                System.currentTimeMillis()), true,
                 "192.168.1.1", lectureEntity1.getUuid());
         userRepository.save(user1);
 
-        String lecture2 = this.mockMvc.perform(post("/api/newLecture?name=test2"))
+        String lecture2 = this.mockMvc.perform(post("/api/newLecture?name=test2")
+                .content(createJson("Jegorka", time)).contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -93,7 +112,7 @@ class QuestionControllerTest {
         lectureRepository.save(lectureEntity2);
 
         UserEntity user2 = new UserEntity(uid2, "Stefan", new Timestamp(
-                System.currentTimeMillis() / 1000 * 1000), false,
+                System.currentTimeMillis()), false,
                 "192.185.7.3", lectureEntity2.getUuid());
         userRepository.save(user2);
 
