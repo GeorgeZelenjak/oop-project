@@ -48,7 +48,7 @@ public class User {
      * @param n the number
      * @return the luhn digit
      */
-    private static long getLuhnDigit(long n) {
+    public static long getLuhnDigit(long n) {
         String number = Long.toString(n);
         long temp = 0;
         for (int i = number.length() - 1;i >= 0;i--) {
@@ -123,11 +123,7 @@ public class User {
      * @param questionId the question id to be deleted
      */
     public static void deleteQuestionId(Long questionId) {
-        try {
-            askedQuestionIds.remove(questionId);
-        } catch (Exception e) {
-            System.err.println("Id not deleted");
-        }
+        askedQuestionIds.remove(questionId);
     }
 
 }

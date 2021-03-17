@@ -13,10 +13,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class LectureService {
 
+    /**
+     * The Lecture repository.
+     */
     final LectureRepository lectureRepository;
 
     /**
      * Constructor for the lecture service.
+     *
      * @param lectureRepository lecture repository
      */
     public LectureService(LectureRepository lectureRepository) {
@@ -25,6 +29,7 @@ public class LectureService {
 
     /**
      * Gets lecture by id.
+     *
      * @param id the id of the lecture
      * @return the lecture if the id is found in the database
      */
@@ -48,8 +53,10 @@ public class LectureService {
 
     /**
      * Creates a new lecture in the database.
-     * @param name the name of the lecture
+     *
+     * @param name        the name of the lecture
      * @param creatorName the name of the creator
+     * @param startTime   the start time
      * @return the new lecture entity
      */
     public LectureEntity newLecture(String name, String creatorName, Timestamp startTime) {
@@ -64,7 +71,8 @@ public class LectureService {
 
     /**
      * Deletes a lecture if the moderator key is found in the database.
-     * @param id the id of the lecture
+     *
+     * @param id     the id of the lecture
      * @param modkey the moderator key
      * @return 0 if successful, -1 otherwise
      */
@@ -79,7 +87,8 @@ public class LectureService {
 
     /**
      * Close a lecture for future uses.
-     * @param id the lecture id
+     *
+     * @param id     the lecture id
      * @param modkey the modkey
      * @return 0 if successful, -1 otherwise
      */
@@ -95,7 +104,8 @@ public class LectureService {
 
     /**
      * Checks if moderator.
-     * @param id the id of the lecture
+     *
+     * @param id     the id of the lecture
      * @param modkey the moderator key
      * @return 0 if successful, -1 otherwise
      */

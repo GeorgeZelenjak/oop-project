@@ -131,8 +131,15 @@ class UserServiceTest {
     }
 
     @Test
-    public void test() {
+    public void testLuhnDigitIsOneDigit() {
         assertEquals(getLuhnDigit(100000000000L), getLuhnDigit(100000000000L) % 10);
+    }
+
+    @Test
+    public void luhnDigitIs9Times2Test() {
+        long luhnDigit = getLuhnDigit(7989);
+        assertEquals(7L, luhnDigit);
+        assertTrue(UserService.luhnCheck(79897L));
     }
 
 }

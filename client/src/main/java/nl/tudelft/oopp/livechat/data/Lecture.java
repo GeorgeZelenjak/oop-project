@@ -174,6 +174,7 @@ public class Lecture {
 
     /**
      * Closes the lecture.
+     * @param open the new boolean
      */
     public void setOpen(boolean open) {
         this.open = open;

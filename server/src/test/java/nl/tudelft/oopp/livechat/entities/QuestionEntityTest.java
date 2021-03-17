@@ -216,4 +216,10 @@ class QuestionEntityTest {
 
         assertEquals(expected, questionEntity.toString());
     }
+
+    @Test
+    void nullTimeTest() {
+        QuestionEntity q = new QuestionEntity(UUID.randomUUID(), "lalala", null, 12L);
+        assertNotNull(q.getTime());
+    }
 }

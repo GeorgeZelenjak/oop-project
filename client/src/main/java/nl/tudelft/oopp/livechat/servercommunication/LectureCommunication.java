@@ -37,7 +37,10 @@ public class LectureCommunication {
 
     /**
      * Creates a new lecture.
-     * @param name A name of the lecture
+     *
+     * @param name        A name of the lecture
+     * @param creatorName the creator name
+     * @param startTime   the start time
      * @return Lecture which was created, null in case of errors
      */
     // I AM PASSING A BLANK STRING IN THE POST METHOD, THIS SHOULD BE CHANGED
@@ -87,6 +90,7 @@ public class LectureCommunication {
 
     /**
      * Sends an HTTP request to get a lecture by its uuid.
+     *
      * @param lectureId The uuid of the lecture
      * @return Lecture object if the lecture exists on server, or null if it doesn't
      */
@@ -155,10 +159,10 @@ public class LectureCommunication {
 
     /**
      * Validate moderator.
+     *
      * @param lectureId the lecture id
-     * @param modKey the moderator key
-     * @return true if the moderator has been validated successfully,
-     *         false otherwise
+     * @param modKey    the moderator key
+     * @return true if the moderator has been validated successfully,         false otherwise
      */
     public static boolean validateModerator(String lectureId, String modKey) {
         //Encoding the lecture id and modKey into url compatible format
@@ -192,8 +196,11 @@ public class LectureCommunication {
 
     /**
      * Close lecture.
+     *
+     * @param uuid   the uuid
+     * @param modkey the modkey
      * @return true if the lecture has been successfully closed by the server
-     *         false otherwise
+     *          false otherwise
      */
     public static boolean closeLecture(String uuid, String modkey) {
         //Check if current lecture has been set

@@ -22,10 +22,14 @@ public class LectureController {
 
     private final LectureService service;
 
+    /**
+     * The Object mapper.
+     */
     ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Constructor for the lecture controller.
+     *
      * @param service lecture service
      */
     public LectureController(LectureService service) {
@@ -35,6 +39,8 @@ public class LectureController {
 
     /**
      * GET Endpoint to retrieve a lecture.
+     *
+     * @param id the id
      * @return selected lecture
      */
     //TODO Check if the lecture has started
@@ -46,8 +52,11 @@ public class LectureController {
 
     /**
      * POST Endpoint to create a new lecture.
+     *
      * @param name the name of the lecture
+     * @param info the info
      * @return a new lecture entity
+     * @throws JsonProcessingException the json processing exception
      */
     //TODO Check if the lecture time is not in the past
     // (At least not too far in the past. Since timezones exist)
@@ -62,8 +71,9 @@ public class LectureController {
 
     /**
      * DELETE Endpoint to delete a lecture with the specified id iff the moderator key is correct.
+     *
      * @param modkey the moderator key to authenticate
-     * @param id UUID of lecture
+     * @param id     UUID of lecture
      * @return 0 if the lecture has been deleted successfully, -1 if not
      */
     @DeleteMapping("/delete/{id}/{modkey}")
@@ -73,8 +83,9 @@ public class LectureController {
 
     /**
      * PUT Endpoint to close a lecture with the specified id iff the moderator key is correct.
+     *
      * @param lectureId UUID of lecture
-     * @param modkey the moderator key to authenticate
+     * @param modkey    the moderator key to authenticate
      * @return 0 if the lecture has been closed successfully, -1 if not
      */
     @PutMapping("/close/{lid}/{modkey}")
@@ -84,8 +95,9 @@ public class LectureController {
 
     /**
      * GET Endpoint to validate moderator key for the lecture.
+     *
      * @param modkey the moderator key to authenticate
-     * @param id UUID of lecture
+     * @param id     UUID of lecture
      * @return 0 if moderator was validated successfully, -1 if not
      */
     @GetMapping("/validate/{id}/{modkey}")
@@ -95,6 +107,7 @@ public class LectureController {
 
     /**
      * Exception handler for requests containing invalid uuids.
+     *
      * @param exception exception that has occurred
      * @return response object with 400 Bad Request status code and 'Invalid UUID' message
      */

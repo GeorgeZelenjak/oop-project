@@ -11,12 +11,15 @@ public class MainSceneController {
 
     /**
      * Navigates to lecture creation scene.
+     *
+     * @throws IOException the io exception
      */
     public void goToCreateLecture() throws IOException {
         NavigationController.getCurrentController().goToCreateRoomScene();
     }
 
-    /** Navigates to Lecture scene (for Students).
+    /**
+     * Navigates to Lecture scene (for Students).
      *
      * @throws IOException - in case Stage throws an exception
      */
