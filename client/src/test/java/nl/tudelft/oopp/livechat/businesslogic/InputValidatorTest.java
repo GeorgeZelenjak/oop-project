@@ -13,9 +13,7 @@ public class InputValidatorTest {
     private static void setup() {
         emptyText = "";
         StringBuilder stringBuilder = new StringBuilder("Ha");
-        for (int i = 0; i < 11; i++) {
-            stringBuilder.append(stringBuilder.toString());
-        }
+        stringBuilder.append(stringBuilder.toString().repeat(26));
         longText = stringBuilder.toString();
         System.out.println(longText.length());
         correctText = "This is a correct string!";
@@ -23,12 +21,12 @@ public class InputValidatorTest {
 
     @Test
     public void validateLengthIsZeroTest() {
-        assertEquals(-1,InputValidator.validateLength(emptyText,25));
+        assertEquals(-1, InputValidator.validateLength(emptyText,25));
     }
 
     @Test
     public void validateLengthIsTooLongTest() {
-        assertEquals(-2,InputValidator.validateLength(longText,25));
+        assertEquals(-2, InputValidator.validateLength(longText,25));
     }
 
     @Test
