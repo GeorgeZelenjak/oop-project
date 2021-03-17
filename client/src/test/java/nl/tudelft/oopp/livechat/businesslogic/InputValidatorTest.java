@@ -37,7 +37,45 @@ public class InputValidatorTest {
         assertEquals(0,InputValidator.validateLength(correctText,25));
     }
 
+    @Test
+    public void validateMinuteNotIntTest() {
+        assertEquals(-1, InputValidator.validateMinute("fortytwo"));
+    }
 
+    @Test
+    public void validateMinuteNegativeTest() {
+        assertEquals(-2, InputValidator.validateMinute("-1"));
+    }
+
+    @Test
+    public void validateMinuteTooLargeTest() {
+        assertEquals(-2, InputValidator.validateMinute("66"));
+    }
+
+    @Test
+    public void validateMinuteSuccessfulTest() {
+        assertEquals(0, InputValidator.validateMinute("42"));
+    }
+
+    @Test
+    public void validateHourNotIntTest() {
+        assertEquals(-1, InputValidator.validateHour("twelve"));
+    }
+
+    @Test
+    public void validateHourNegativeTest() {
+        assertEquals(-2, InputValidator.validateHour("-3"));
+    }
+
+    @Test
+    public void validateHourTooLargeTest() {
+        assertEquals(-2, InputValidator.validateHour("24"));
+    }
+
+    @Test
+    public void validateHourSuccessfulTest() {
+        assertEquals(0, InputValidator.validateHour("0"));
+    }
 
 
 }
