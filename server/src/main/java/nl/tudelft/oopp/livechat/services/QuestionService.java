@@ -73,6 +73,12 @@ public class QuestionService {
         if (lecture == null || !lecture.isOpen()) {
             return -1;
         }
+
+        //check if lecture has started
+        if (lecture.getStartTime().compareTo(new Timestamp(System.currentTimeMillis())) >= 0) {
+            return -1;
+        }
+
         //check if the question text is not too long
         if (q.getText().length() > 2000) {
             return -1;

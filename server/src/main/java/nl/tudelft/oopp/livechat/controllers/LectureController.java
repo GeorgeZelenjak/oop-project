@@ -43,7 +43,6 @@ public class LectureController {
      * @param id the id
      * @return selected lecture
      */
-    //TODO Check if the lecture has started
     @GetMapping("/get/{id}")
     public LectureEntity getLecturesByID(@PathVariable("id") UUID id) {
         return service.getLectureByIdNoModkey(id);
@@ -58,8 +57,6 @@ public class LectureController {
      * @return a new lecture entity
      * @throws JsonProcessingException the json processing exception
      */
-    //TODO Check if the lecture time is not in the past
-    // (At least not too far in the past. Since timezones exist)
     @PostMapping("/newLecture")
     public LectureEntity newLecture(@RequestParam String name,
                                     @RequestBody String info) throws JsonProcessingException {

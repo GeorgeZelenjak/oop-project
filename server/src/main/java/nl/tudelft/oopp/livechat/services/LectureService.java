@@ -38,6 +38,11 @@ public class LectureService {
         if (toSend == null) {
             return null;
         }
+
+        //check if lecture has started
+        if (toSend.getStartTime().compareTo(new Timestamp(System.currentTimeMillis())) >= 0) {
+            return null;
+        }
         toSend.setModkey(null);
         return toSend;
     }
