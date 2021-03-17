@@ -24,6 +24,11 @@
          </font>
       </Button>
       <TextField fx:id="enterYourNameTextField" alignment="CENTER" layoutX="336.0" layoutY="263.0" prefHeight="47.0" prefWidth="422.0" promptText="Enter your name" styleClass="mainSceneEnterRoomCode" />
+      <DatePicker fx:id="lectureSchedulingDateDatePicker" disable="true" layoutX="458.0" layoutY="513.0" prefHeight="34.0" prefWidth="204.0" styleClass="lectureScheduling" visible="false" />
+      <TextField fx:id="lectureScheduleHourTextField" alignment="CENTER" disable="true" layoutX="500.0" layoutY="556.0" prefHeight="34.0" prefWidth="34.0" promptText="hh" visible="false" />
+      <CheckBox fx:id="lectureSchedulingCheckBox" layoutX="447.0" layoutY="393.0" mnemonicParsing="false" onAction="#hideLectureScheduling" text="Do you want to schedule your lecture?" />
+      <Text fx:id="dotsText" disable="true" layoutX="546.0" layoutY="578.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":" visible="false" />
+      <TextField fx:id="lectureScheduleMinuteTextField" alignment="CENTER" disable="true" layoutX="559.0" layoutY="556.0" prefHeight="34.0" prefWidth="34.0" promptText="mm" visible="false" />
     </children>
    <stylesheets>
       <URL value="@../css/Styles.css" />

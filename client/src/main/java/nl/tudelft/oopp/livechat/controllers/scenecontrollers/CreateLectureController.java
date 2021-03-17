@@ -1,9 +1,15 @@
 package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Locale;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
@@ -22,6 +28,21 @@ public class CreateLectureController {
 
     @FXML
     private TextField enterYourNameTextField;
+
+    @FXML
+    private DatePicker lectureSchedulingDateDatePicker;
+
+    @FXML
+    private CheckBox lectureSchedulingCheckBox;
+
+    @FXML
+    private TextField lectureScheduleHourTextField;
+
+    @FXML
+    private TextField lectureScheduleMinuteTextField;
+
+    @FXML
+    private Text dotsText;
 
     /**
      * Creates the lecture, shows alert with lecture and creator names
@@ -60,8 +81,15 @@ public class CreateLectureController {
             return;
         }
 
+        if (lectureSchedulingCheckBox.isSelected()) {
+            createLectureScheduled();
+            return;
+        }
+
         Lecture lecture = LectureCommunication
-                .createLecture(enterLectureNameTextField.getText());
+                .createLecture(enterLectureNameTextField.getText(),
+                enterYourNameTextField.getText(), new Timestamp(System.currentTimeMillis()));
+
 
         if (lecture == null) {
             return;
@@ -70,6 +98,41 @@ public class CreateLectureController {
         String alertText = "The lecture has been created successfully!"
                 + "\nPress OK to go to the lecture page.";
         AlertController.alertInformation("Creating lecture", alertText);
+
+        Lecture.setCurrentLecture(lecture);
+        User.setUserName(enterYourNameTextField.getText());
+        NavigationController.getCurrentController().goToLecturerChatPage();
+        System.out.println(lecture);
+    }
+
+    private void createLectureScheduled() throws IOException {
+
+        if (InputValidator.validateHour(lectureScheduleHourTextField.getText()) != 0
+                || InputValidator.validateMinute(lectureScheduleMinuteTextField.getText()) != 0
+                || lectureSchedulingDateDatePicker.getValue() == null)  {
+            AlertController.alertWarning("Incorrect input", "Provided date or time is invalid!");
+            return;
+        }
+
+        int hour = Integer.parseInt(lectureScheduleHourTextField.getText());
+        int minute = Integer.parseInt(lectureScheduleMinuteTextField.getText());
+        Timestamp timestamp = Timestamp.valueOf(lectureSchedulingDateDatePicker
+                                    .getValue().atTime(hour,minute));
+
+        Lecture lecture = LectureCommunication
+                .createLecture(enterLectureNameTextField.getText(),
+                        enterYourNameTextField.getText(), timestamp);
+
+        if (lecture == null) {
+            return;
+        }
+
+        String alertText = "The lecture has been scheduled successfully!"
+                + "\nPress OK to go to the lecture page.";
+        String alertText2 = "\n!!!Please copy the moderator "
+                + "key to later use it when joining as moderator!!!";
+        AlertController.alertInformation("Creating lecture", alertText);
+        AlertController.alertWarning("ModKey Warning", alertText2.toUpperCase(Locale.ROOT));
 
         Lecture.setCurrentLecture(lecture);
         User.setUserName(enterYourNameTextField.getText());
@@ -120,4 +183,17 @@ public class CreateLectureController {
         NavigationController.getCurrentController().goToUserManual();
     }
 
+    /**
+     * Hides everything concerning lecture scheduling.
+     */
+    public void hideLectureScheduling() {
+        dotsText.setVisible(lectureSchedulingCheckBox.isSelected());
+        dotsText.setDisable(!lectureSchedulingCheckBox.isSelected());
+        lectureScheduleMinuteTextField.setDisable(!lectureSchedulingCheckBox.isSelected());
+        lectureScheduleMinuteTextField.setVisible(lectureSchedulingCheckBox.isSelected());
+        lectureScheduleHourTextField.setDisable(!lectureSchedulingCheckBox.isSelected());
+        lectureScheduleHourTextField.setVisible(lectureSchedulingCheckBox.isSelected());
+        lectureSchedulingDateDatePicker.setDisable(!lectureSchedulingCheckBox.isSelected());
+        lectureSchedulingDateDatePicker.setVisible(lectureSchedulingCheckBox.isSelected());
+    }
 }

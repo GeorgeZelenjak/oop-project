@@ -1,5 +1,7 @@
 package nl.tudelft.oopp.livechat.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.sql.Timestamp;
 
 import java.util.Objects;
@@ -55,13 +57,14 @@ public class LectureEntity {
      * @param name the name of the lecture
      * @param creatorName the name of the creator of the lecture
      */
-    public LectureEntity(String name, String creatorName) {
+    public LectureEntity(String name, String creatorName, Timestamp startTime) {
         this.uuid = UUID.randomUUID();
         this.modkey = UUID.randomUUID();
         this.name = name;
         this.creatorName = creatorName;
         this.fasterCount = 0;
         this.slowerCount = 0;
+        this.startTime = startTime;
         this.frequency = 60;
     }
 
@@ -71,7 +74,7 @@ public class LectureEntity {
      * @param creatorName the name of the creator of the lecture
      * @return a new lecture entity
      */
-    public static LectureEntity create(String name, String creatorName) {
+    public static LectureEntity create(String name, String creatorName, Timestamp startTime) {
         LectureEntity lecture = new LectureEntity();
         lecture.name = name;
         lecture.creatorName = creatorName;
