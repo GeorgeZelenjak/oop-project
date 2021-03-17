@@ -61,15 +61,17 @@ class UserServiceTest {
      * @param n the number
      * @return the luhn digit
      */
-    public static long getLuhnDigit(long n) {
+    private static long getLuhnDigit(long n) {
         String number = Long.toString(n);
         long temp = 0;
-        for (int i = 0;i < number.length();i++) {
+        for (int i = number.length() - 1;i >= 0;i--) {
             int digit;
-            if (i % 2 == 1) {
+            if ((number.length() - i) % 2 == 1) {
                 digit = Character.getNumericValue(number.charAt(i)) * 2;
-                digit %= 9;
-                if (digit == 0) digit = 9;
+                if (digit > 9) {
+                    digit %= 9;
+                    if (digit == 0) digit = 9;
+                }
             } else {
                 digit = Character.getNumericValue(number.charAt(i));
             }
@@ -110,12 +112,27 @@ class UserServiceTest {
 
     @Test
     public void newUserInvalidUidTest() {
-        user.setUid(42);
+        user.setUid(420);
         int result = userService.newUser(user, "127.0.0.1");
         assertEquals(-1, result);
 
         //set back for other tests
         user.setUid(uid);
+    }
+
+    @Test
+    public void luhnCheckValidTest() {
+        assertTrue(UserService.luhnCheck(1008L));
+    }
+
+    @Test
+    public void luhnCheckInvalidTest() {
+        assertFalse(UserService.luhnCheck(100L));
+    }
+
+    @Test
+    public void test() {
+        assertEquals(getLuhnDigit(100000000000L), getLuhnDigit(100000000000L) % 10);
     }
 
 }

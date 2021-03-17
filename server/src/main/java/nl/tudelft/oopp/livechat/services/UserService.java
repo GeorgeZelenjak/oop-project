@@ -45,12 +45,14 @@ public class UserService {
     public static boolean luhnCheck(long n) {
         String number = Long.toString(n);
         long temp = 0;
-        for (int i = 0;i < number.length();i++) {
+        for (int i = number.length() - 1;i >= 0;i--) {
             int digit;
-            if (i % 2 == 1) {
+            if ((number.length() - i) % 2 == 0) {
                 digit = Character.getNumericValue(number.charAt(i)) * 2;
-                digit %= 9;
-                if (digit == 0) digit = 9;
+                if (digit > 9) {
+                    digit %= 9;
+                    if (digit == 0) digit = 9;
+                }
             } else {
                 digit = Character.getNumericValue(number.charAt(i));
             }

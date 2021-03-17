@@ -64,15 +64,17 @@ public class UserControllerTest {
      * @param n the number
      * @return the luhn digit
      */
-    public static long getLuhnDigit(long n) {
+    private static long getLuhnDigit(long n) {
         String number = Long.toString(n);
         long temp = 0;
-        for (int i = 0;i < number.length();i++) {
+        for (int i = number.length() - 1;i >= 0;i--) {
             int digit;
-            if (i % 2 == 1) {
+            if ((number.length() - i) % 2 == 1) {
                 digit = Character.getNumericValue(number.charAt(i)) * 2;
-                digit %= 9;
-                if (digit == 0) digit = 9;
+                if (digit > 9) {
+                    digit %= 9;
+                    if (digit == 0) digit = 9;
+                }
             } else {
                 digit = Character.getNumericValue(number.charAt(i));
             }
@@ -93,7 +95,7 @@ public class UserControllerTest {
                 true, "192.168.1.1", UUID.randomUUID());
         user1Json = objectMapper.writeValueAsString(user1);
 
-        UserEntity user2 = new UserEntity(4432, "sudo",
+        UserEntity user2 = new UserEntity(420, "sudo",
                 new Timestamp(System.currentTimeMillis() / 1000 * 1000),
                 true, "127.0.0.1", UUID.randomUUID());
         user2Json = objectMapper.writeValueAsString(user2);
