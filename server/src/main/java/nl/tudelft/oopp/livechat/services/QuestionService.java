@@ -31,9 +31,10 @@ public class QuestionService {
 
     /**
      * Constructor for the question service.
-     * @param questionRepository question repository
-     * @param lectureRepository lecture repository
-     * @param userRepository user repository
+     *
+     * @param questionRepository     question repository
+     * @param lectureRepository      lecture repository
+     * @param userRepository         user repository
      * @param userQuestionRepository user-question repository
      */
     public QuestionService(QuestionRepository questionRepository,
@@ -48,6 +49,7 @@ public class QuestionService {
 
     /**
      * Gets questions by lecture id.
+     *
      * @param lectureId the lecture id
      * @return the questions associated with the lecture id if found
      */
@@ -57,6 +59,7 @@ public class QuestionService {
 
     /**
      * Creates new question entity in the database.
+     *
      * @param q the question entity
      * @return the id of the question entity created, -1 if not
      */
@@ -92,7 +95,8 @@ public class QuestionService {
 
     /**
      * Delete question from the database.
-     * @param id the id of the question
+     *
+     * @param id       the id of the question
      * @param personId the id of the person
      * @return 0 if the question is deleted successfully, -1 otherwise
      */
@@ -120,7 +124,8 @@ public class QuestionService {
 
     /**
      * Delete any question (done by a moderator).
-     * @param id the id of the question
+     *
+     * @param id     the id of the question
      * @param modkey the moderator key
      * @return 0 if the question is deleted successfully, -1 otherwise
      */
@@ -146,10 +151,11 @@ public class QuestionService {
 
     /**
      * Edit any question (done by a moderator).
-     * @param id the id of the question
+     *
+     * @param id           the id of the question
      * @param moderatorKey the moderator key
-     * @param newText the new question text
-     * @param newOwnerId the id of the new owner of the question
+     * @param newText      the new question text
+     * @param newOwnerId   the id of the new owner of the question
      * @return 0 if question is edited successfully, -1 otherwise
      */
     public int editQuestion(long id, UUID moderatorKey, String newText, long newOwnerId) {
@@ -184,7 +190,8 @@ public class QuestionService {
 
     /**
      * Upvote question.
-     * @param id the id of the question
+     *
+     * @param id     the id of the question
      * @param userId the id of the user
      * @return 0 if question is upvoted successfully, -1 otherwise
      */
@@ -228,8 +235,10 @@ public class QuestionService {
 
     /**
      * Mark question as answered.
-     * @param id the question id
-     * @param modkey the modkey
+     *
+     * @param id         the question id
+     * @param modkey     the modkey
+     * @param answerText the answer text
      * @return 0 if successful, -1 otherwise
      */
     public int answer(long id, UUID modkey, String answerText) {

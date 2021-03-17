@@ -41,7 +41,7 @@ server-test:
   artifacts:
     when: always
     reports:
-      junit: server/build/test-results/test/server-test/TEST-*.xml
+      junit: server/build/test-results/test/TEST-*.xml
 
 server-release:
   allow_failure: true

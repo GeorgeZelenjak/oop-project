@@ -9,9 +9,9 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1080.0" styleClass="mainScenePane" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.LecturerChatSceneController">
    <children>
       <Pane prefHeight="768.0" prefWidth="200.0" style="-fx-background-color: rgba(14, 114, 237, 0.45);" styleClass="sidebar">         <children>
-            <Button fx:id="participants" layoutX="16.0" layoutY="205.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Show Participants" />
-            <Button fx:id="goToSettingsButton" layoutX="16.0" layoutY="440.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Settings" />
-            <Button fx:id="goToUserManualButton" layoutX="16.0" layoutY="483.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="User Manual" />
+            <Button fx:id="participants" layoutX="16.0" layoutY="205.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="168.0" style="-fx-background-color: rgb(212,212,212);" styleClass="participantsButton" text="Show Participants" />
+            <Button fx:id="goToSettingsButton" layoutX="16.0" layoutY="471.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Settings" />
+            <Button fx:id="goToUserManualButton" layoutX="16.0" layoutY="514.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="User Manual" />
             <Button id="leaveLecture" layoutX="14.0" layoutY="700.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="34.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="Leave Lecture" />
             <Line endX="100.0" layoutX="100.0" layoutY="72.0" opacity="0.5" startX="-100.0" stroke="#1a75ff" />
             <Text fx:id="lectureNameText" layoutX="16.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Name" textAlignment="CENTER" wrappingWidth="168.0703125">
@@ -31,8 +31,8 @@
                </font>
             </Button>
             <Button fx:id="goToLectureModeButton" layoutX="16.0" layoutY="154.0" mnemonicParsing="false" onAction="#lecturerMode" prefHeight="33.0" prefWidth="168.0" style="-fx-background-color: #a5e8f0; -fx-text-fill: #000000;" styleClass="mainSceneButton" text="Lecturer Mode" />
-            <Button fx:id="copyId" layoutX="14.0" layoutY="309.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Copy lecture id" />
-            <Button fx:id="copyKey" layoutX="14.0" layoutY="273.0" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Copy modkey" />
+            <Button fx:id="copyId" layoutX="14.0" layoutY="309.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" style="-fx-background-color: rgb(70,162,11);" styleClass="mainSceneButtonGreen" text="Copy lecture id" />
+            <Button fx:id="copyKey" layoutX="14.0" layoutY="273.0" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" style="-fx-background-color: rgb(70,162,11);" styleClass="mainSceneButtonGreen" text="Copy modkey" />
          </children></Pane>
       <Pane fx:id="pollingBackground" layoutX="818.0" layoutY="14.0" prefHeight="216.0" prefWidth="247.0" styleClass="sidebar">
          <children>

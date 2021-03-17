@@ -85,7 +85,8 @@
     }
 
     .settingsButton:hover{
-        -fx-background-image: url(../images/Gear_gray.png);
+        -fx-background-color: gray;
+        -fx-opacity: 0.5;
     }
 
     .sidebarButton{
@@ -94,7 +95,8 @@
     }
 
     .sidebar{
-        -fx-background-color: -fx-blue-green;
+        -fx-background-color: rgb(199,199,199);
+        -fx-border-color: gray;
     }
 
     .textBox {
@@ -149,7 +151,16 @@
     .lectureScheduling {
     }
 
+    .deleteButton:hover {
+        -fx-background-color: rgb(250,250,250);
+        -fx-opacity: 0.5;
+    }
 
+    .participantsButton {
+        -fx-color: gray;
+        -fx-background-color: rgb(212,212,212);
+        -fx-border-radius: 7px;
+    }
 
 
 

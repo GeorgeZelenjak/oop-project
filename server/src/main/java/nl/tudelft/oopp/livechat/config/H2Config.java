@@ -25,6 +25,7 @@ public class H2Config {
 
     /**
      * Set up the connection to the database.
+     * @return the data source
      */
     @Bean
     public DataSource dataSource() {

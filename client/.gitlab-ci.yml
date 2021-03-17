@@ -41,7 +41,7 @@ client-test:
   artifacts:
     when: always
     reports:
-      junit: client/build/test-results/test/client-test/TEST-*.xml
+      junit: client/build/test-results/test/TEST-*.xml
 
 client-release:
     allow_failure: true
