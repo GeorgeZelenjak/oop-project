@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="questionBoxAnchorPane" prefHeight="80.0" prefWidth="493.0" styleClass="mainSceneButton" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="questionBoxAnchorPane" prefHeight="80.0" prefWidth="598.0" styleClass="mainSceneButton" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Text fx:id="questionText" layoutX="14.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="question" wrappingWidth="376.00682830810547" />
       <Text layoutX="14.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asked By: ">
