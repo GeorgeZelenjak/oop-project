@@ -19,6 +19,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 public class LectureEntityTest {
     private static LectureEntity lectureEntity;
     private static final UUID modkey = UUID.randomUUID();
+    private static final Timestamp time = new Timestamp(System.currentTimeMillis());
 
     /**
      * Sets up a lecture before starting testing.
@@ -26,7 +27,7 @@ public class LectureEntityTest {
     @BeforeAll
     static void setUp() {
         lectureEntity = new LectureEntity("Algorithms and Data Structures: Red-black trees",
-                "Ivo van Kreveld");
+                "Ivo van Kreveld", time);
         lectureEntity.setModkey(modkey);
         lectureEntity.incrementSlowerCount();
         lectureEntity.incrementFasterCount();
@@ -90,6 +91,13 @@ public class LectureEntityTest {
     @Test
     void getStartTimeTest() {
         assertNotNull(lectureEntity.getStartTime());
+    }
+
+    @Test
+    void setStartTimeTest() {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        lectureEntity.setStartTime(time);
+        assertEquals(time, lectureEntity.getStartTime());
     }
 
     @Test
@@ -167,7 +175,7 @@ public class LectureEntityTest {
     @Test
     void equalsDifferentTest() {
         LectureEntity other = new LectureEntity("Algorithms and Data Structures: Red-black trees",
-                "Ivo van Kreveld");
+                "Ivo van Kreveld", time);
         assertNotEquals(lectureEntity, other);
     }
 

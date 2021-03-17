@@ -56,7 +56,7 @@ public class LectureController {
                                     @RequestBody String info) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(info);
         String creatorName = jsonNode.get("creatorName").asText();
-        Timestamp startTime = new Timestamp(jsonNode.get("startTime").asLong());
+        Timestamp startTime = Timestamp.valueOf(jsonNode.get("startTime").asText());
         return service.newLecture(name, creatorName, startTime);
     }
 
