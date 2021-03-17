@@ -38,7 +38,6 @@ public class LectureService {
 
     /**
      * Gets lecture by id.
-     *
      * @param id the id
      * @return the lecture
      */
@@ -79,7 +78,7 @@ public class LectureService {
 
     /**
      * Close a lecture for future uses.
-     * @param id     the lecture id
+     * @param id the lecture id
      * @param modkey the modkey
      * @return 0 if successful, -1 otherwise
      */
