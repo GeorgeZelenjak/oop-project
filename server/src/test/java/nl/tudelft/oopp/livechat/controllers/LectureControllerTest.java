@@ -42,7 +42,7 @@ class LectureControllerTest {
                 .getContentAsString();
     }
 
-    /**.
+    /**
      * A method to get a lecture.
      * @param url url with lecture id
      * @return JSON representation of the new lecture entity
@@ -101,6 +101,7 @@ class LectureControllerTest {
         return Integer.parseInt(result);
     }
 
+    //TODO not to hardcode 'placeholder'
     @Test
     void createLectureTest() {
         assertDoesNotThrow(() -> createLecture("/api/newLecture?name=test1"));
@@ -213,6 +214,19 @@ class LectureControllerTest {
     }
 
     @Test
+    void validateModkeyNoLectureTest() throws Exception {
+        String json = createLecture("/api/newLecture?name=ads");
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
+        String uuid = lectureEntity.getUuid().toString();
+        String modkey = lectureEntity.getModkey().toString();
+
+        deleteLecture("/api/delete/" + uuid + "/" + modkey);
+
+        int m = validateModkey("/api/validate/" + uuid + "/" + modkey);
+        assertEquals(-1, m);
+    }
+
+    @Test
     void closeLectureSuccessfulTest() throws Exception {
         String json = createLecture("/api/newLecture?name=test4");
 
@@ -237,21 +251,11 @@ class LectureControllerTest {
 
         int m = closeLecture("/api/close/" + uuid + "/" + UUID.randomUUID().toString());
         assertEquals(-1, m);
+
+        String lecture = getLecture("/api/get/" + uuid);
+        LectureEntity l = objectMapper.readValue(lecture, LectureEntity.class);
+        assertTrue(l.isOpen());
     }
-
-    @Test
-    void validateModkeyUnsuccessfulNoLectureTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=ads");
-        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
-        String uuid = lectureEntity.getUuid().toString();
-        String modkey = lectureEntity.getModkey().toString();
-
-        deleteLecture("/api/delete/" + uuid + "/" + modkey);
-
-        int m = validateModkey("/api/validate/" + uuid + "/" + modkey);
-        assertEquals(-1, m);
-    }
-
 
     @Test
     void closeLectureNoLectureTest() throws Exception {

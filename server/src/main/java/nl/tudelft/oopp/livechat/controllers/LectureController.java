@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api")
-public class  LectureController {
+public class LectureController {
 
     private final LectureService service;
 
@@ -57,7 +57,7 @@ public class  LectureController {
     }
 
     /**
-     * PUT endpoint to close a lecture with the specified id iff the moderator key is correct.
+     * PUT Endpoint to close a lecture with the specified id iff the moderator key is correct.
      * @param lectureId UUID of lecture
      * @param modkey the moderator key to authenticate
      * @return 0 if the lecture has been closed successfully, -1 if not
@@ -68,7 +68,7 @@ public class  LectureController {
     }
 
     /**
-     * Validate Endpoint.
+     * GET Endpoint to validate moderator key for the lecture.
      * @param modkey the moderator key to authenticate
      * @param id UUID of lecture
      * @return 0 if moderator was validated successfully, -1 if not
