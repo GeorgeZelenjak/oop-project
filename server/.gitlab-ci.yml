@@ -38,6 +38,10 @@ server-test:
     - ./gradlew :server:test :server:jacocoTestReport
     - cat server/build/reports/jacoco/html/index.html | grep -Po "Total.*?([0-9]{1,3})%"
   coverage: /([0-9]{1,3})%/
+  artifacts:
+    when: always
+    reports:
+      junit: server/build/test-results/test/server-test/TEST-*.xml
 
 server-release:
   allow_failure: true
