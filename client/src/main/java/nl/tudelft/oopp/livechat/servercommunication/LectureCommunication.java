@@ -1,6 +1,6 @@
 package nl.tudelft.oopp.livechat.servercommunication;
 
-import com.fasterxml.jackson.core.JsonGenerator;
+//import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
@@ -32,8 +32,8 @@ public class LectureCommunication {
      * set to parse fields according to annotations
      * and with specified date format. // old - EEE, dd MMM yyyy HH:mm:ss zzz
      */
-    private static final Gson gson = new GsonBuilder().setDateFormat(
-            "yyyy-mm-dd hh:mm:ss").excludeFieldsWithoutExposeAnnotation().create();
+    private static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+            .setDateFormat("yyyy-mm-dd hh:mm:ss").create();
 
     /**
      * Creates a new lecture.
@@ -48,10 +48,10 @@ public class LectureCommunication {
 
         //Creating node
         ObjectMapper mapper = new ObjectMapper();
-        mapper.getFactory().configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
+        //mapper.getFactory().configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
         ObjectNode node = mapper.createObjectNode();
         node.put("creatorName", creatorName);
-        node.put("startTime", startTime.getTime());
+        node.put("startTime", String.valueOf(startTime));      //.getTime()
 
         //Convert node to string
         String nodeToString = node.toString();

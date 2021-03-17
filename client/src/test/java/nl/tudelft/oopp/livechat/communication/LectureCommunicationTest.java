@@ -33,7 +33,7 @@ public class LectureCommunicationTest {
             + "921817413596629043572900334295260595630738132328627943490763\n"
             + "233829880753195251019011573834187930702154089149934884167509\n"
              + "24476146066808226\n";
-    private static final Timestamp time = Timestamp.valueOf("2021-03-04 15:49:27");
+    private static final Timestamp time = new Timestamp(System.currentTimeMillis());
 
     /**
      * A helper method to assign JSON string lecture.
