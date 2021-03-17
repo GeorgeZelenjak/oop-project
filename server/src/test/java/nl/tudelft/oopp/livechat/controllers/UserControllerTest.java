@@ -78,7 +78,7 @@ public class UserControllerTest {
             }
             temp += digit;
         }
-        return 10 - (temp % 10);
+        return (10 - (temp % 10)) % 10;
     }
 
     /**

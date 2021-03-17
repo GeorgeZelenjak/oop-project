@@ -75,12 +75,12 @@ class UserServiceTest {
             }
             temp += digit;
         }
-        return 10 - (temp % 10);
+        return (10 - (temp % 10)) % 10;
     }
 
     @BeforeAll
     public static void setUp() {
-        user = new UserEntity(uid, "root", time, true, "192.168.1.1", lid);
+        user = new UserEntity(uid, "root", time, true, null, lid);
     }
 
     @Test
