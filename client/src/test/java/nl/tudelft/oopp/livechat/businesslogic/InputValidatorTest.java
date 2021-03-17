@@ -9,8 +9,11 @@ public class InputValidatorTest {
     private static String longText;
     private static String correctText;
 
+    /**
+     * Setup for the test class.
+     */
     @BeforeAll
-    private static void setup() {
+    public static void setup() {
         emptyText = "";
         StringBuilder stringBuilder = new StringBuilder("Ha");
         stringBuilder.append(stringBuilder.toString().repeat(26));
@@ -33,6 +36,7 @@ public class InputValidatorTest {
     public void validateLengthIsCorrectLengthTest() {
         assertEquals(0,InputValidator.validateLength(correctText,25));
     }
+
 
 
 

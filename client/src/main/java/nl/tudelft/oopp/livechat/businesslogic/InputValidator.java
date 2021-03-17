@@ -4,7 +4,6 @@ public class InputValidator {
 
     /**
      * Validates length of user String input.
-     *
      * @param input      the user input
      * @param maxLength the max length
      * @return int
@@ -23,8 +22,7 @@ public class InputValidator {
 
     /**
      * Validates user minute input.
-     *
-     * @param input      the user input
+     * @param input the user input
      * @return int
      *       0 - Everything is correct
      *      -1 - Not an integer
@@ -45,8 +43,7 @@ public class InputValidator {
 
     /**
      * Validates user hour input.
-     *
-     * @param input      the user input
+     * @param input the user input
      * @return int
      *       0 - Everything is correct
      *      -1 - Not an integer
