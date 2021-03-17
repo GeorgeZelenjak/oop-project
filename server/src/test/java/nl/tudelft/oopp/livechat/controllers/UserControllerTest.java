@@ -55,7 +55,30 @@ public class UserControllerTest {
             long unsigned = (long) hardwareAddress[i] & 0xFF;
             uidTemp += unsigned << (8 * i);
         }
-        return uidTemp;
+        return uidTemp * 10 + getLuhnDigit(uidTemp);
+    }
+
+    /**
+     * Gets luhn digit to make luhn checksum valid.
+     *
+     * @param n the number
+     * @return the luhn digit
+     */
+    public static long getLuhnDigit(long n) {
+        String number = Long.toString(n);
+        long temp = 0;
+        for (int i = 0;i < number.length();i++) {
+            int digit;
+            if (i % 2 == 1) {
+                digit = Character.getNumericValue(number.charAt(i)) * 2;
+                digit %= 9;
+                if (digit == 0) digit = 9;
+            } else {
+                digit = Character.getNumericValue(number.charAt(i));
+            }
+            temp += digit;
+        }
+        return 10 - (temp % 10);
     }
 
     /**
@@ -70,7 +93,7 @@ public class UserControllerTest {
                 true, "192.168.1.1", UUID.randomUUID());
         user1Json = objectMapper.writeValueAsString(user1);
 
-        UserEntity user2 = new UserEntity(443, "sudo",
+        UserEntity user2 = new UserEntity(4432, "sudo",
                 new Timestamp(System.currentTimeMillis() / 1000 * 1000),
                 true, "127.0.0.1", UUID.randomUUID());
         user2Json = objectMapper.writeValueAsString(user2);
