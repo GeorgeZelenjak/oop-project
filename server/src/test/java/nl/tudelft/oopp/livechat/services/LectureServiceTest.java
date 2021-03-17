@@ -19,7 +19,7 @@ class LectureServiceTest {
     @Autowired
     private LectureRepository repository;
 
-    private String longString = "a".repeat(256);
+    private final String longString = "a".repeat(256);
 
 
     @Test
