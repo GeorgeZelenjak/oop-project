@@ -48,6 +48,9 @@ public class QuestionEntity {
     @Column(name = "ownerId")
     private long ownerId;
 
+    @Column(name = "ownername")
+    String ownerName;
+
     /**
      * Empty constructor to create a question entity.
      */
@@ -76,6 +79,7 @@ public class QuestionEntity {
      * @param text the text of the question
      * @param time the time the question was asked
      * @param ownerId the owner id
+     * @return the question entity
      */
     public static QuestionEntity create(UUID lectureId, String text, Timestamp time, long ownerId) {
         QuestionEntity q = new QuestionEntity();
@@ -90,7 +94,6 @@ public class QuestionEntity {
      * Sets id of the question.
      * @param id the new id of the question
      */
-    @SuppressWarnings("unused")
     public void setId(long id) {
         this.id = id;
     }
@@ -115,7 +118,6 @@ public class QuestionEntity {
      * Sets the id of the lecture.
      * @param lectureId the new id of the lecture
      */
-    @SuppressWarnings("unused")
     public void setLectureId(UUID lectureId) {
         this.lectureId = lectureId;
     }
@@ -130,6 +132,7 @@ public class QuestionEntity {
 
     /**
      * Gets the number of votes.
+     *
      * @return the number of votes
      */
     public int getVotes() {
@@ -145,7 +148,7 @@ public class QuestionEntity {
 
 
     /**
-     * Decrement question votes by 1.
+     * Decrements the vote count of the question by 1.
      */
     public void unvote() {
         this.votes--;
@@ -176,7 +179,7 @@ public class QuestionEntity {
     }
 
     /**
-     * Sets the question an (un)answered.
+     * Sets the question as (un)answered.
      * @param answered true or false to indicate if the question is (un)answered
      */
     public void setAnswered(boolean answered) {
@@ -216,6 +219,22 @@ public class QuestionEntity {
     }
 
     /**
+     * Gets the owner name.
+     * @return the owner name
+     */
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    /**
+     * Sets owner name.
+     * @param ownerName the owner name
+     */
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    /**
      * Gets the id of the owner of the question.
      * @return the id of the owner of the question.
      */
@@ -236,7 +255,8 @@ public class QuestionEntity {
     /**
      * Compares the question to another object.
      * @param o object to compare to
-     * @return true iff the other object is also a Question and has the same id. False otherwise
+     * @return true iff the other object is also a QuestionEntity and has the same id.
+     *          False otherwise
      */
     @Override
     public boolean equals(Object o) {

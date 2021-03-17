@@ -1,5 +1,6 @@
 package nl.tudelft.oopp.livechat.services;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
@@ -38,7 +39,6 @@ public class LectureService {
 
     /**
      * Gets lecture by id.
-     *
      * @param id the id
      * @return the lecture
      */
@@ -52,9 +52,9 @@ public class LectureService {
      * @param creatorName the name of the creator
      * @return the new lecture entity
      */
-    public LectureEntity newLecture(String name, String creatorName) {
+    public LectureEntity newLecture(String name, String creatorName, Timestamp startTime) {
         if (name.length() <= 255 && creatorName.length() <= 255) {
-            LectureEntity n = new LectureEntity(name, creatorName);
+            LectureEntity n = new LectureEntity(name, creatorName, startTime);
             lectureRepository.save(n);
             return n;
         } else {
@@ -79,7 +79,7 @@ public class LectureService {
 
     /**
      * Close a lecture for future uses.
-     * @param id     the lecture id
+     * @param id the lecture id
      * @param modkey the modkey
      * @return 0 if successful, -1 otherwise
      */
@@ -100,8 +100,8 @@ public class LectureService {
      * @return 0 if successful, -1 otherwise
      */
     public int validateModerator(UUID id, UUID modkey) {
-        LectureEntity toDelete = getLectureById(id);
-        if (toDelete != null && toDelete.getModkey().equals(modkey)) {
+        LectureEntity l = getLectureById(id);
+        if (l != null && l.getModkey().equals(modkey)) {
             return 0;
         }
         return -1;

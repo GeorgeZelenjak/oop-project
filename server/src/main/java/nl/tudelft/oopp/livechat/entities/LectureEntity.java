@@ -1,8 +1,7 @@
 package nl.tudelft.oopp.livechat.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.sql.Timestamp;
+
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.*;
@@ -38,7 +37,7 @@ public class LectureEntity {
     private int frequency;
 
     @Column(name = "startTime")
-    private Timestamp startTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+    private Timestamp startTime;
 
     @Column(name = "open")
     private boolean open = true;
@@ -56,13 +55,14 @@ public class LectureEntity {
      * @param name the name of the lecture
      * @param creatorName the name of the creator of the lecture
      */
-    public LectureEntity(String name, String creatorName) {
+    public LectureEntity(String name, String creatorName, Timestamp startTime) {
         this.uuid = UUID.randomUUID();
         this.modkey = UUID.randomUUID();
         this.name = name;
         this.creatorName = creatorName;
         this.fasterCount = 0;
         this.slowerCount = 0;
+        this.startTime = startTime;
         this.frequency = 60;
     }
 
@@ -72,15 +72,15 @@ public class LectureEntity {
      * @param creatorName the name of the creator of the lecture
      * @return a new lecture entity
      */
-    public static LectureEntity create(String name, String creatorName) {
-        LectureEntity l = new LectureEntity();
-        l.name = name;
-        l.creatorName = creatorName;
-        l.fasterCount = 0;
-        l.slowerCount = 0;
-        l.frequency = 60;
-        l.startTime = new Timestamp(System.currentTimeMillis());
-        return l;
+    public static LectureEntity create(String name, String creatorName, Timestamp startTime) {
+        LectureEntity lecture = new LectureEntity();
+        lecture.name = name;
+        lecture.creatorName = creatorName;
+        lecture.fasterCount = 0;
+        lecture.slowerCount = 0;
+        lecture.frequency = 60;
+        lecture.startTime = startTime;
+        return lecture;
     }
 
     /**
@@ -147,6 +147,15 @@ public class LectureEntity {
         return startTime;
     }
 
+
+    /**
+     * Sets the start time of the lecture.
+     * @param startTime the start time of the lecture
+     */
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
     /**
      * Gets the frequency of asking questions.
      * @return the frequency of asking questions
@@ -196,7 +205,6 @@ public class LectureEntity {
     /**
      * Closes the lecture.
      */
-    @SuppressWarnings("unused")
     public void close() {
         this.open = false;
     }
@@ -204,7 +212,6 @@ public class LectureEntity {
     /**
      * Re-opens the lecture.
      */
-    @SuppressWarnings("unused")
     public void reOpen() {
         this.open = true;
     }
@@ -213,14 +220,13 @@ public class LectureEntity {
      * Checks whether the lecture is open.
      * @return whether the lecture is open
      */
-    @SuppressWarnings("unused")
     public boolean isOpen() {
         return this.open;
     }
 
     /**
      * Compares the lecture to another object.
-     * @param o object to compare to
+     * @param o the object to compare to
      * @return true iff the other object is also a Lecture and has the same id. False otherwise
      */
     @Override

@@ -1,11 +1,15 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.services.LectureService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 
@@ -14,9 +18,11 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api")
-public class  LectureController {
+public class LectureController {
 
     private final LectureService service;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Constructor for the lecture controller.
@@ -26,23 +32,32 @@ public class  LectureController {
         this.service = service;
     }
 
+
     /**
      * GET Endpoint to retrieve a lecture.
      * @return selected lecture
      */
+    //TODO Check if the lecture has started
     @GetMapping("/get/{id}")
     public LectureEntity getLecturesByID(@PathVariable("id") UUID id) {
         return service.getLectureByIdNoModkey(id);
     }
+
 
     /**
      * POST Endpoint to create a new lecture.
      * @param name the name of the lecture
      * @return a new lecture entity
      */
+    //TODO Check if the lecture time is not in the past
+    // (At least not too far in the past. Since timezones exist)
     @PostMapping("/newLecture")
-    public LectureEntity newLecture(@RequestParam String name) {
-        return service.newLecture(name, "placeholder"); //these are placeholders
+    public LectureEntity newLecture(@RequestParam String name,
+                                    @RequestBody String info) throws JsonProcessingException {
+        JsonNode jsonNode = objectMapper.readTree(info);
+        String creatorName = jsonNode.get("creatorName").asText();
+        Timestamp startTime = Timestamp.valueOf(jsonNode.get("startTime").asText());
+        return service.newLecture(name, creatorName, startTime);
     }
 
     /**
@@ -57,7 +72,7 @@ public class  LectureController {
     }
 
     /**
-     * PUT endpoint to close a lecture with the specified id iff the moderator key is correct.
+     * PUT Endpoint to close a lecture with the specified id iff the moderator key is correct.
      * @param lectureId UUID of lecture
      * @param modkey the moderator key to authenticate
      * @return 0 if the lecture has been closed successfully, -1 if not
@@ -68,7 +83,7 @@ public class  LectureController {
     }
 
     /**
-     * Validate Endpoint.
+     * GET Endpoint to validate moderator key for the lecture.
      * @param modkey the moderator key to authenticate
      * @param id UUID of lecture
      * @return 0 if moderator was validated successfully, -1 if not

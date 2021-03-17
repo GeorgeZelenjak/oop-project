@@ -20,8 +20,11 @@ public class QuestionManagerTest {
     private static List<Question> questionsToFilter;
 
 
+    /**
+     * Setup for the test class.
+     */
     @BeforeAll
-    private static void setup() {
+    public static void setup() {
         q1 = new Question();
         q1.setVotes(1);
         q1.setTime(new Timestamp(4));
@@ -41,7 +44,7 @@ public class QuestionManagerTest {
         q4.setTime(new Timestamp(1));
         q4.setAnswered(true);
 
-        questionsToFilter = new ArrayList<Question>();
+        questionsToFilter = new ArrayList<>();
         questionsToFilter.add(q2);
         questionsToFilter.add(q1);
         questionsToFilter.add(q4);
@@ -50,13 +53,13 @@ public class QuestionManagerTest {
 
     @Test
     public void sortByVotesTest() {
-        List<Question> questionsToSort = new ArrayList<Question>();
+        List<Question> questionsToSort = new ArrayList<>();
         questionsToSort.add(q2);
         questionsToSort.add(q1);
         questionsToSort.add(q4);
         questionsToSort.add(q3);
 
-        List<Question> questionsSorted = new ArrayList<Question>();
+        List<Question> questionsSorted = new ArrayList<>();
         questionsSorted.add(q4);
         questionsSorted.add(q3);
         questionsSorted.add(q2);
@@ -70,13 +73,13 @@ public class QuestionManagerTest {
 
     @Test
     public void sortByTimeTest() {
-        List<Question> questionsToSort = new ArrayList<Question>();
+        List<Question> questionsToSort = new ArrayList<>();
         questionsToSort.add(q2);
         questionsToSort.add(q1);
         questionsToSort.add(q4);
         questionsToSort.add(q3);
 
-        List<Question> questionsSorted = new ArrayList<Question>();
+        List<Question> questionsSorted = new ArrayList<>();
         questionsSorted.add(q1);
         questionsSorted.add(q2);
         questionsSorted.add(q3);
