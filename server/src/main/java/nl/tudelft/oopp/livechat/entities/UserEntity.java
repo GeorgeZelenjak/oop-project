@@ -1,5 +1,7 @@
 package nl.tudelft.oopp.livechat.entities;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -7,8 +9,9 @@ import java.util.UUID;
 /**
  * The type User entity.
  */
-@Entity
-@Table(name = "user")
+@Entity(name = "user")
+@Table(name = "users")
+@DynamicUpdate
 public class UserEntity {
 
     /**
