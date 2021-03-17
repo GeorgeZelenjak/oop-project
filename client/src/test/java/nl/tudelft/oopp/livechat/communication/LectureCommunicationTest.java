@@ -10,6 +10,7 @@ import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,6 +33,7 @@ public class LectureCommunicationTest {
             + "921817413596629043572900334295260595630738132328627943490763\n"
             + "233829880753195251019011573834187930702154089149934884167509\n"
              + "24476146066808226\n";
+    private static final Timestamp time = Timestamp.valueOf("2021-03-04 15:49:27");
 
     /**
      * A helper method to assign JSON string lecture.
@@ -44,9 +46,10 @@ public class LectureCommunicationTest {
         node.put("creatorName","placeholder");
         node.put("slowerCount","0");
         node.put("frequency","60");
-        node.put("startTime","2021-03-04T15:49:27.962+0000");
+        node.put("startTime",String.valueOf(time));
         node.put("slowerCount","0");
         node.put("open","true");
+        //2021-03-04T15:49:27.962+0000
 
         jsonLecture = node.toString();
     }
@@ -173,6 +176,7 @@ public class LectureCommunicationTest {
     @BeforeAll
     private static void startServer() {
         assignJsonLecture();
+        assignJsonUser();
         mockServer = ClientAndServer.startClientAndServer(8080);
         createExpectationsForCreateLecture();
         createExpectationsForJoinLectureById();
@@ -185,28 +189,31 @@ public class LectureCommunicationTest {
      */
     @Test
     public void createLectureSuccessfulTest() {
-        Lecture res = LectureCommunication.createLecture("An awesome lecture");
+        Lecture res = LectureCommunication.createLecture("An awesome lecture",
+                "Jegor", time);
         assertNotNull(res);
         assertEquals(res.getName(), "An awesome lecture");
     }
 
     @Test
     public void createLectureTooLongNameTest() {
-        Lecture res = LectureCommunication.createLecture(e);
+        Lecture res = LectureCommunication.createLecture(e,"Papa Double", time);
         assertNull(res);
     }
 
     @Test
     public void createLectureServerRefusesTest() {
         stopServer();
-        Lecture res = LectureCommunication.createLecture("How to get 10 for OOPP");
+        Lecture res = LectureCommunication.createLecture("How to get 10 for OOPP",
+                "Long Island", time);
         assertNull(res);
         startServer();
     }
 
     @Test
     public void createLectureWrongResponseTest() {
-        Lecture res = LectureCommunication.createLecture("Babba booey!");
+        Lecture res = LectureCommunication.createLecture("Babba booey!",
+                "Mojito", time);
         assertNull(res);
     }
 

@@ -1,7 +1,6 @@
 package nl.tudelft.oopp.livechat.servercommunication;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
@@ -31,15 +30,15 @@ public class LectureCommunication {
     /**
      * Gson object for parsing Json
      * set to parse fields according to annotations
-     * and with specified date format.
+     * and with specified date format. // old - EEE, dd MMM yyyy HH:mm:ss zzz
      */
     private static final Gson gson = new GsonBuilder().setDateFormat(
-            "EEE, dd MMM yyyy HH:mm:ss zzz").excludeFieldsWithoutExposeAnnotation().create();
+            "yyyy-mm-dd hh:mm:ss").excludeFieldsWithoutExposeAnnotation().create();
 
     /**
      * Creates a new lecture.
-     * @param name      A name of the lecture
-     * @return          Lecture which was created, null in case of errors
+     * @param name A name of the lecture
+     * @return Lecture which was created, null in case of errors
      */
     // I AM PASSING A BLANK STRING IN THE POST METHOD, THIS SHOULD BE CHANGED
     public static Lecture createLecture(String name, String creatorName, Timestamp startTime) {
