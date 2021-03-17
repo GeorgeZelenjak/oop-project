@@ -152,4 +152,16 @@ class LectureServiceTest {
         assertEquals(-1, res);
     }
 
+    @Test
+    void getLectureByIdNotStartedTest() {
+        LectureEntity lectureFuture = new LectureEntity("name", "Codrin Socol",
+                new Timestamp(System.currentTimeMillis() + 0xFFFFFFL));
+        repository.save(lectureFuture);
+
+        LectureEntity lectureReceived = lectureService
+                .getLectureByIdNoModkey(lectureFuture.getUuid());
+        assertNull(lectureReceived);
+    }
+
+
 }

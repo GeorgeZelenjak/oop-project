@@ -535,4 +535,15 @@ class QuestionServiceTest {
         assertTrue(q.isAnswered());
         q2 = q;
     }
+
+    @Test
+    @Order(40)
+    void newQuestionLectureNotStartedTest() {
+        l2.setStartTime(new Timestamp(System.currentTimeMillis() + 0xFFFFFFFFFL));
+        lectureRepository.save(l2);
+        QuestionEntity q3 = new QuestionEntity(l2.getUuid(), "i'm in the past",
+                new Timestamp(0), 42L);
+        long result = questionService.newQuestionEntity(q3);
+        assertEquals(-1, result);
+    }
 }

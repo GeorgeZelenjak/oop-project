@@ -27,12 +27,13 @@ subprojects {
     jacocoTestReport {
         afterEvaluate {
             classDirectories.setFrom(files(classDirectories.files.collect {
-                fileTree(dir: it, exclude: [
+                fileTree(dir: it, exclude: [//client-side
                         'nl/tudelft/oopp/livechat/controllers/AlertController.class',
                         'nl/tudelft/oopp/livechat/controllers/NavigationController.class',
                         'nl/tudelft/oopp/livechat/controllers/scenecontrollers/**',
                         'nl/tudelft/oopp/livechat/views/**',
                         'nl/tudelft/oopp/livechat/uielements/**',
+                        //server-side
                         'nl/tudelft/oopp/livechat/*.class',
                         'nl/tudelft/oopp/livechat/config/**'
                 ])
