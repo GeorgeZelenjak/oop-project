@@ -21,6 +21,7 @@ public class QuestionEntity {
 
     @Id
     @Column(name = "id")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
 
     @Column(name = "lectureId")
