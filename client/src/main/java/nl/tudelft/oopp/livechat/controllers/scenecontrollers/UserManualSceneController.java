@@ -4,9 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
-
 import java.io.File;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /**
@@ -37,7 +36,7 @@ public class UserManualSceneController {
      *
      */
     public void showJoinLectureText() {
-        showCategoryX("client/src/main/resources/textFiles/joinLecture.docx");
+        showCategoryX("client/src/main/resources/textFiles/joinLecture.txt");
     }
 
     /** Displays the About Application Category.
@@ -47,24 +46,37 @@ public class UserManualSceneController {
         showCategoryX("client/src/main/resources/textFiles/about.txt");
     }
 
+    /** Displays the Share Lecture ID Category.
+     *
+     */
     public void showShareLectureIDText() {
         showCategoryX("client/src/main/resources/textFiles/shareLectureID.txt");
     }
 
+    /** Displays the Asking Questions Category.
+     *
+     */
     public void showAskingQuestionsText() {
         showCategoryX("client/src/main/resources/textFiles/askingQuestions.txt");
     }
 
+    /** Displays the Lecturer Mode Category.
+     *
+     */
     public void showLecturerModeText() {
         showCategoryX("client/src/main/resources/textFiles/lecturerMode.txt");
     }
 
+    /** Displays the Question Information Category.
+     *
+     */
     public void showQuestionInfoText() {
         showCategoryX("client/src/main/resources/textFiles/questionInfo.txt");
     }
 
     /** Helper Method that loads a File from a given path, parses it as a string and displays the
-     *      requested text of the selected help category.
+     *      requested text of the selected help category. This method catches an FileNotFoundException
+     *      in case the filepath is incorrect or file is not found.
      * @param fileName - String representing the path of the text file
      */
     public void showCategoryX(String fileName)  {
@@ -83,7 +95,7 @@ public class UserManualSceneController {
             helpText.setText(text.toString());
             helpText.setTextAlignment(TextAlignment.JUSTIFY);
 
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }

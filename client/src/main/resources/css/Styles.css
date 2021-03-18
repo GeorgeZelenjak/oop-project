@@ -10,7 +10,7 @@
         -fx-red: #C3312F;
         -fx-yellow: #F1BE3E;
         -fx-font-family: Roboto;
-        /**-fx-padding: 0px 0px 0px 0px; */
+        -fx-padding: 0px 0px 0px 0px;
     }
 
     .button {
@@ -148,19 +148,16 @@
         -fx-border-radius: 7px;
     }
 
-    .lectureScheduling {
-    }
-
-    .deleteButton:hover {
+    .debugButton:hover {
         -fx-background-color: rgb(250,250,250);
         -fx-opacity: 0.5;
     }
 
-    .participantsButton {
-        -fx-color: gray;
-        -fx-background-color: rgb(212,212,212);
-        -fx-border-radius: 7px;
+    .replyButton {
+        -fx-graphic: url(/images/reply.png);
+        -fx-background-color: Transparent;
     }
+
 
 
 

@@ -181,7 +181,7 @@ public class QuestionCommunication {
      *         -3 if unexpected response was received
      *         -4 if the question wasn't marked as answered (e.g wrong qid, wrong modkey etc.)
      */
-    public static int markedAsAnswered(long qid, UUID modkey) {
+    public static int markedAsAnswered(long qid, UUID modkey, String answer) {
         //Check if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
@@ -189,7 +189,9 @@ public class QuestionCommunication {
         }
 
         //Parameters for request
-        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("placeholder");
+        if(answer == null)
+            answer = " ";
+        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(answer);
         String address = "http://localhost:8080/api/question/answer/" + qid + "/" + modkey;
 
         //Creating request and defining response
@@ -319,6 +321,7 @@ public class QuestionCommunication {
         //Success
         return 0;
     }
+
 }
 
 
