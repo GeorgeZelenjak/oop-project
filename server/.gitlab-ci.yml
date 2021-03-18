@@ -42,6 +42,23 @@ server-test:
     when: always
     reports:
       junit: server/build/test-results/test/TEST-*.xml
+    paths:
+      - server/build/jacoco/jacoco.xml
+
+server-coverage:
+  stage: visualize
+  image: haynes/jacoco2cobertura:1.0.4
+  script:
+    # convert report from jacoco to cobertura
+    - 'python /opt/cover2cover.py server/build/jacoco/jacoco.xml server/src/main/java > server/build/cobertura.xml'
+    # read the <source></source> tag and prepend the path to every filename attribute
+    - 'python /opt/source2filename.py server/build/cobertura.xml'
+  needs: ["server-test]
+  dependencies:
+    - server-test
+  artifacts:
+    reports:
+      cobertura: server/build/cobertura.xml
 
 server-release:
   allow_failure: true
