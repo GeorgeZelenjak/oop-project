@@ -4,6 +4,7 @@ stages:
   - build
   - validate
   - test
+  - visualize
   - release
 
 variables:
