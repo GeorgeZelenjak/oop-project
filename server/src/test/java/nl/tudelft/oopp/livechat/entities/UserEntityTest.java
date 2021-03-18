@@ -150,6 +150,18 @@ public class UserEntityTest {
     }
 
     @Test
+    void hashCodeEqualsTest() {
+        UserEntity user1 = new UserEntity(uid, "root", lastTime, true, "192.168.1.1", lid);
+        assertEquals(user1.hashCode(), user.hashCode());
+    }
+
+    @Test
+    void hashCodeDifferentUidTest() {
+        UserEntity user1 = new UserEntity(uid + 1, "root", lastTime, true, "192.168.1.1", lid);
+        assertNotEquals(user1.hashCode(), user.hashCode());
+    }
+
+    @Test
     void toStringTest() {
         String userStr = "username: 'root', user id: " + uid + ", ip address: 192.168.1.1";
         assertEquals(userStr, user.toString());
