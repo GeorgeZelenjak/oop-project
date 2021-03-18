@@ -187,4 +187,11 @@ public class LectureEntityTest {
                 lectureEntity.getStartTime());
         assertEquals(hash, lectureEntity.hashCode());
     }
+
+    @Test
+    public void hashCodeDifferentObjectsTest() {
+        LectureEntity lecture = new LectureEntity("Algorithms and Data Structures: Red-black trees",
+                "Ivo van Kreveld", time);
+        assertNotEquals(lecture.hashCode(), lectureEntity.hashCode());
+    }
 }
