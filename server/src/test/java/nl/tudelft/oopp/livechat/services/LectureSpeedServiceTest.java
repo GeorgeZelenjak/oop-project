@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -174,5 +175,38 @@ public class LectureSpeedServiceTest {
                 l2.getUuid());
         assertNotNull(table);
         assertEquals("faster", table.getVoteOnLectureSpeed());
+    }
+
+    /**
+     * Tests for resetLectureSpeed.
+     */
+    @Test
+    @Order(12)
+    void resetLectureSpeedLectureNullTest() {
+        lectureRepository.deleteById(l1.getUuid());
+        assertEquals(-1, lectureSpeedService.resetLectureSpeed(l1.getUuid(), l1.getModkey()));
+        assertNotNull(userLectureSpeedRepository.findByUserIdAndLectureId(uid1, l1.getUuid()));
+
+        lectureRepository.save(l1);
+
+    }
+
+    @Test
+    @Order(13)
+    void resetLectureSpeedWrongModKeyTest() {
+        assertEquals(-1, lectureSpeedService.resetLectureSpeed(l1.getUuid(), l2.getModkey()));
+        assertNotNull(userLectureSpeedRepository.findByUserIdAndLectureId(uid1, l1.getUuid()));
+    }
+
+    @Test
+    @Order(14)
+    void resetLectureSpeedSuccessfulTest() {
+        assertEquals(0, lectureSpeedService.resetLectureSpeed(l1.getUuid(), l1.getModkey()));
+        List<UserLectureSpeedTable> t = userLectureSpeedRepository.findAllByLectureId(l1.getUuid());
+        assertTrue(t.isEmpty());
+
+        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(l1.getUuid());
+        assertEquals(0, lecture.getFasterCount());
+        assertEquals(0, lecture.getSlowerCount());
     }
 }

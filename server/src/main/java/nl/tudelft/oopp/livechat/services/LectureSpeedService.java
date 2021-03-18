@@ -76,16 +76,14 @@ public class LectureSpeedService {
      * Reset the lecture speed.
      * @param uuid the lecture id
      * @param modKey the moderator key
-     * @return  0 if everything reset successfully
-     *         -1 if unsuccessful
+     * @return  0 if everything reset successfully, -1 otherwise
      */
     public int resetLectureSpeed(UUID uuid, UUID modKey) {
-        LectureService lectureService = new LectureService(lectureRepository);
-        if (lectureService.validateModerator(uuid,modKey) != 0) {
+        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
+        if (lecture == null || !lecture.getModkey().equals(modKey)) {
             return -1;
         }
         userLectureSpeedRepository.deleteAllByLectureId(uuid);
-        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
         lecture.resetSpeedCounts();
         lectureRepository.save(lecture);
         return 0;
