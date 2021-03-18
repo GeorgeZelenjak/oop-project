@@ -38,7 +38,6 @@ public class UserService {
 
     /**
      * Luhn check for the given number.
-     *
      * @param n the number
      * @return true if checksum is valid, false otherwise
      */

@@ -68,7 +68,7 @@ public class LectureSpeedService {
 
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
         UserLectureSpeedTable userLectureSpeedTable = userLectureSpeedRepository
-                .findAllByUidAndUuid(uid,uuid);
+                .findAllByUserIdAndLectureId(uid,uuid);
 
         //Check if speed vote count does not exist yet
         if (userLectureSpeedTable == null) {
@@ -84,7 +84,7 @@ public class LectureSpeedService {
 
         //Check if voting twice for the same thing then delete the vote
         if (userLectureSpeedTable.getVoteOnLectureSpeed().equals(speed)) {
-            userLectureSpeedRepository.deleteByUidAndUuid(uid,uuid);
+            userLectureSpeedRepository.deleteByUserIdAndLectureId(uid,uuid);
             if (userLectureSpeedTable.getVoteOnLectureSpeed().equals("slower")) {
                 lecture.decrementSlowerCount();
             } else {
@@ -121,7 +121,7 @@ public class LectureSpeedService {
         if (lectureService.validateModerator(uuid,modKey) != 0) {
             return -1;
         }
-        userLectureSpeedRepository.deleteAllByUuid(uuid);
+        userLectureSpeedRepository.deleteAllByLectureId(uuid);
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
         lecture.resetSpeedCounts();
         lectureRepository.save(lecture);

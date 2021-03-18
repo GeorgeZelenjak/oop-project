@@ -1,6 +1,6 @@
 package nl.tudelft.oopp.livechat.entities;
 
-//import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.bind.v2.model.core.ID;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -10,21 +10,21 @@ import java.util.UUID;
  * The type User lecture speed table.
  */
 
-@Entity
 @Table(name = "UserLectureSpeedTable")
+@Entity
 @IdClass(UserLectureSpeedPairId.class)
 public class UserLectureSpeedTable {
 
     @Id
-    @Column(name = "User_id")
-    private long uid;
+    @Column(name = "userId")
+    private long userId;
 
     @Id
-    @Column(name = "Uuid")
-    private UUID uuid;
+    @Column(name = "lectureId")
+    private UUID lectureId;
 
 
-    @Column(name = "Vote")
+    @Column(name = "voteOnLectureSpeed")
     private String voteOnLectureSpeed;
 
     /**
@@ -35,13 +35,13 @@ public class UserLectureSpeedTable {
 
     /**
      * Creates a new UserLectureSpeedTable object.
-     * @param uid the user id
-     * @param uuid the lecture id
+     * @param userId the user id
+     * @param lectureId the lecture id
      * @param voteOnLectureSpeed the vote on lecture speed
      */
-    public UserLectureSpeedTable(long uid, UUID uuid, String voteOnLectureSpeed) {
-        this.uid = uid;
-        this.uuid = uuid;
+    public UserLectureSpeedTable(long userId, UUID lectureId, String voteOnLectureSpeed) {
+        this.userId = userId;
+        this.lectureId = lectureId;
         this.voteOnLectureSpeed = voteOnLectureSpeed;
     }
 
@@ -49,32 +49,32 @@ public class UserLectureSpeedTable {
      * Gets the user id.
      * @return the user id
      */
-    public long getUid() {
-        return this.uid;
+    public long getUserId() {
+        return this.userId;
     }
 
     /**
      * Sets the user id.
-     * @param uid the user id
+     * @param userId the user id
      */
-    public void setUid(long uid) {
-        this.uid = uid;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     /**
      * Gets the lecture id.
      * @return the lecture id
      */
-    public UUID getUuid() {
-        return this.uuid;
+    public UUID getLectureId() {
+        return this.lectureId;
     }
 
     /**
      * Sets the lecture id.
-     * @param uuid the lecture id
+     * @param lectureId the lecture id
      */
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setLectureId(UUID lectureId) {
+        this.lectureId = lectureId;
     }
 
     /**
@@ -106,7 +106,7 @@ public class UserLectureSpeedTable {
         }
         if (obj instanceof UserLectureSpeedTable) {
             UserLectureSpeedTable u = (UserLectureSpeedTable) obj;
-            return this.uid == u.uid && uuid.equals(u.uuid);
+            return this.userId == u.userId && lectureId.equals(u.lectureId);
         }
         return false;
     }
@@ -117,6 +117,6 @@ public class UserLectureSpeedTable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(uid, uuid);
+        return Objects.hash(userId, lectureId);
     }
 }

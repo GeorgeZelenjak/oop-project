@@ -12,12 +12,12 @@ import java.util.UUID;
 public interface UserLectureSpeedRepository
         extends JpaRepository<UserLectureSpeedTable, UserLectureSpeedPairId> {
 
-    UserLectureSpeedTable findAllByUidAndUuid(long uid, UUID uuid);
+    UserLectureSpeedTable findAllByUserIdAndLectureId(long uid, UUID uuid);
 
     @Transactional
-    void deleteAllByUuid(UUID uuid);
+    void deleteAllByLectureId(UUID uuid);
 
     @Transactional
-    void deleteByUidAndUuid(long uid, UUID uuid);
+    void deleteByUserIdAndLectureId(long uid, UUID uuid);
 
 }

@@ -36,31 +36,31 @@ public class UserLectureSpeedTableTest {
 
     @Test
     public void getUidTest() {
-        assertEquals(uid, speedVote.getUid());
+        assertEquals(uid, speedVote.getUserId());
     }
 
     @Test
     public void setUidTest() {
-        speedVote.setUid(123453463576234L);
-        assertEquals(123453463576234L, speedVote.getUid());
+        speedVote.setUserId(123453463576234L);
+        assertEquals(123453463576234L, speedVote.getUserId());
 
         //set back for other tests
-        speedVote.setUid(uid);
+        speedVote.setUserId(uid);
     }
 
     @Test
     public void getUuidTest() {
-        assertEquals(uuid, speedVote.getUuid());
+        assertEquals(uuid, speedVote.getLectureId());
     }
 
     @Test
     public void setUuidTest() {
         UUID newUuid = UUID.randomUUID();
-        speedVote.setUuid(newUuid);
-        assertEquals(newUuid, speedVote.getUuid());
+        speedVote.setLectureId(newUuid);
+        assertEquals(newUuid, speedVote.getLectureId());
 
         //set back for other tests
-        speedVote.setUuid(uuid);
+        speedVote.setLectureId(uuid);
     }
 
     @Test
