@@ -57,7 +57,7 @@ public class LectureSpeedService {
         }
 
         UserLectureSpeedTable userLectureSpeedTable = userLectureSpeedRepository
-                .findAllByUserIdAndLectureId(uid, uuid);
+                .findByUserIdAndLectureId(uid, uuid);
 
         //Check if speed vote count does not exist yet
         if (userLectureSpeedTable == null) {
