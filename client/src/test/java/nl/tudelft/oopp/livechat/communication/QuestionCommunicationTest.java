@@ -434,7 +434,8 @@ public class QuestionCommunicationTest {
     @Test
     public void markAsAnsweredNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey, null));
+        assertEquals(-1, QuestionCommunication.markedAsAnswered(
+                Long.parseLong(qid1), modkey, null));
     }
 
     @Test
@@ -466,7 +467,8 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Lambda expressions", "Thomas"));
         assertEquals(-4,
-                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), incorrectModkey, null));
+                QuestionCommunication.markedAsAnswered(
+                        Long.parseLong(qid1), incorrectModkey, null));
     }
 
     /**
