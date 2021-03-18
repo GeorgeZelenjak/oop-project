@@ -46,6 +46,8 @@ server-test:
 server-release:
   allow_failure: true
   stage: release
+  rules:
+    - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
   script:
     - echo 'running release_job'
     - ./gradlew :server:distTar :server:distZip :server:bootJar
@@ -55,6 +57,4 @@ server-release:
       - .gradle/
   artifacts:
     paths:
-      - server/build/distributions/server.zip
-      - server/build/distributions/server.tar
       - server/build/libs/server.jar
