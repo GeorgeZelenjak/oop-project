@@ -73,10 +73,10 @@ public class LectureSpeedService {
     }
 
     /**
-     * Reset lecture speed.
-     * @param uuid   the uuid
-     * @param modKey the mod key
-     * @return  0 if everything is fine
+     * Reset the lecture speed.
+     * @param uuid the lecture id
+     * @param modKey the moderator key
+     * @return  0 if everything reset successfully
      *         -1 if unsuccessful
      */
     public int resetLectureSpeed(UUID uuid, UUID modKey) {
@@ -159,7 +159,6 @@ public class LectureSpeedService {
      * @param lecture the lecture object
      */
     private void toggleVote(long uid, UUID uuid, String speed, LectureEntity lecture) {
-        //If the vote is different from the previous one
         if (speed.equals("faster")) {
             lecture.decrementSlowerCount();
             lecture.incrementFasterCount();

@@ -151,4 +151,28 @@ public class LectureSpeedServiceTest {
         assertNull(userLectureSpeedRepository.findByUserIdAndLectureId(uid2,
                 l2.getUuid()));
     }
+
+    @Test
+    @Order(10)
+    void setUserLectureSpeedVoteToggleFasterTest() {
+        lectureSpeedService.setUserLectureSpeedVote(uid1, l1.getUuid(), "faster");
+        assertEquals(0, lectureSpeedService.setUserLectureSpeedVote(uid1,
+                l1.getUuid(), "slower"));
+        UserLectureSpeedTable table = userLectureSpeedRepository.findByUserIdAndLectureId(uid1,
+                l1.getUuid());
+        assertNotNull(table);
+        assertEquals("slower", table.getVoteOnLectureSpeed());
+    }
+
+    @Test
+    @Order(11)
+    void setUserLectureSpeedVoteToggleSlowerTest() {
+        lectureSpeedService.setUserLectureSpeedVote(uid2, l2.getUuid(), "slower");
+        assertEquals(0, lectureSpeedService.setUserLectureSpeedVote(uid2,
+                l2.getUuid(), "faster"));
+        UserLectureSpeedTable table = userLectureSpeedRepository.findByUserIdAndLectureId(uid2,
+                l2.getUuid());
+        assertNotNull(table);
+        assertEquals("faster", table.getVoteOnLectureSpeed());
+    }
 }
