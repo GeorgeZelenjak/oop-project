@@ -46,7 +46,7 @@ client-test:
     paths:
       - client/build/jacoco/jacoco.xml
 
-server-coverage:
+client-coverage:
   stage: visualize
   image: haynes/jacoco2cobertura:1.0.4
   script:
