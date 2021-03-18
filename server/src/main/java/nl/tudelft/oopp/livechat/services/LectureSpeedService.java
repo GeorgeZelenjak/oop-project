@@ -122,6 +122,9 @@ public class LectureSpeedService {
             return -1;
         }
         userLectureSpeedRepository.deleteAllByUuid(uuid);
+        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
+        lecture.resetSpeedCounts();
+        lectureRepository.save(lecture);
         return 0;
     }
 }
