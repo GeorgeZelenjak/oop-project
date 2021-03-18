@@ -3,8 +3,7 @@ package nl.tudelft.oopp.livechat.controllers;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.junit.jupiter.api.Assertions.*;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.UserLectureSpeedRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
@@ -39,8 +38,8 @@ class UserLectureVotingControllerTest {
     private UserLectureSpeedRepository speedRepository;
 
     private static UUID uuid;
-    private static long uid1 = 526613476247652L;
-    private static long uid2 = 47687683243663L;
+    private static final long uid1 = 526613476247652L;
+    private static final long uid2 = 47687683243663L;
     private static LectureEntity lecture;
 
 
@@ -98,6 +97,7 @@ class UserLectureVotingControllerTest {
         String result = vote("/api/vote/lectureSpeed?uid="
                     + uid1 + "&uuid=" + uuid, "slower");
         assertEquals("0", result);
+        assertFalse(speedRepository.findAllByLectureId(uuid).isEmpty());
     }
 
     @Test
@@ -105,6 +105,7 @@ class UserLectureVotingControllerTest {
         String result = vote("/api/vote/lectureSpeed?uid="
                 + uid1 + "&uuid=" + uuid, "faster");
         assertEquals("0", result);
+        assertFalse(speedRepository.findAllByLectureId(uuid).isEmpty());
     }
 
     @Test
@@ -114,6 +115,7 @@ class UserLectureVotingControllerTest {
         String result = vote("/api/vote/lectureSpeed?uid="
                 + uid1 + "&uuid=" + uuid, "faster");
         assertEquals("0", result);
+        assertTrue(speedRepository.findAllByLectureId(uuid).isEmpty());
     }
 
     @Test
@@ -123,6 +125,7 @@ class UserLectureVotingControllerTest {
         String result = vote("/api/vote/lectureSpeed?uid="
                 + uid1 + "&uuid=" + uuid, "slower");
         assertEquals("0", result);
+        assertFalse(speedRepository.findAllByLectureId(uuid).isEmpty());
     }
 
     @Test
@@ -130,6 +133,7 @@ class UserLectureVotingControllerTest {
         String result = vote("/api/vote/lectureSpeed?uid="
                 + uid1 + "&uuid=" + UUID.randomUUID(), "faster");
         assertEquals("-1", result);
+        assertTrue(speedRepository.findAllByLectureId(uuid).isEmpty());
     }
 
     @Test
@@ -141,8 +145,51 @@ class UserLectureVotingControllerTest {
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
         assertEquals("Don't do this", result);
+        assertTrue(speedRepository.findAllByLectureId(uuid).isEmpty());
     }
 
+    @Test
+    public void resetSuccessful() throws Exception {
+        vote("/api/vote/lectureSpeed?uid="
+                + uid1 + "&uuid=" + uuid, "faster");
+        vote("/api/vote/lectureSpeed?uid="
+                + uid2 + "&uuid=" + uuid, "slower");
 
+        String result = mockMvc.perform(delete(("/api/vote/resetLectureSpeedVote/"
+                + uuid + "/" + lecture.getModkey())))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertEquals("0", result);
+        assertTrue(speedRepository.findAllByLectureId(uuid).isEmpty());
+    }
 
+    @Test
+    public void resetWrongModKey() throws Exception {
+        vote("/api/vote/lectureSpeed?uid="
+                + uid1 + "&uuid=" + uuid, "faster");
+        vote("/api/vote/lectureSpeed?uid="
+                + uid2 + "&uuid=" + uuid, "slower");
+
+        String result = mockMvc.perform(delete(("/api/vote/resetLectureSpeedVote/"
+                + uuid + "/" + uuid)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertEquals("-1", result);
+        assertFalse(speedRepository.findAllByLectureId(uuid).isEmpty());
+    }
+
+    @Test
+    public void resetInvalidUUID() throws Exception {
+        vote("/api/vote/lectureSpeed?uid="
+                + uid1 + "&uuid=" + uuid, "faster");
+        vote("/api/vote/lectureSpeed?uid="
+                + uid2 + "&uuid=" + uuid, "slower");
+
+        String result = mockMvc.perform(delete(("/api/vote/resetLectureSpeedVote/correctUUID"
+                + "/" + lecture.getModkey())))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+        assertEquals("Don't do this", result);
+        assertFalse(speedRepository.findAllByLectureId(uuid).isEmpty());
+    }
 }
