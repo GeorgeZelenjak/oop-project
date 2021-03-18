@@ -157,25 +157,25 @@ public class QuestionCommunicationTest {
     private static void createExpectationsForMarkAsAnswered() {
         //Success
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                        + qid1 + "/" +  modkey).withBody("placeholder"))
+                        + qid1 + "/" +  modkey).withBody(" "))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0").withHeader("Content-Type","application/json"));
 
         //invalid parameter - send 400
         //  (treat lecture id (lid) as invalid UUID here to test BAD REQUEST)
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                        + qid1 + "/" +  lid).withBody("placeholder"))
+                        + qid1 + "/" +  lid).withBody(" "))
                 .respond(HttpResponse.response().withStatusCode(400));
 
         //qid does not match
         mockServer.when(request().withMethod("PUT")
-                .withPath("/api/question/answer/" + 666 + "/" +  modkey).withBody("placeholder"))
+                .withPath("/api/question/answer/" + 666 + "/" +  modkey).withBody(" "))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
 
         //incorrect modkey
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                + qid1 + "/" +  incorrectModkey).withBody("placeholder"))
+                + qid1 + "/" +  incorrectModkey).withBody(" "))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
