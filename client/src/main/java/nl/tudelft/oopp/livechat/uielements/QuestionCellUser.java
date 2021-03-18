@@ -28,6 +28,7 @@ public class QuestionCellUser extends ListCell<Question> {
             data.setNumberOfUpvotes(question.getVotes());
 
             setGraphic(data.getBox());
+            data.setAnswerText();
             data.setUpvoteButton();
             data.setDeleteButton();
         } else {

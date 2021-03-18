@@ -41,6 +41,9 @@ public class CellDataUser {
     @FXML
     private Button deleteButton;
 
+    @FXML
+    private Text answerText;
+
     private Question question;
 
 
@@ -112,6 +115,16 @@ public class CellDataUser {
             deleteButton.setVisible(true);
             deleteButton.setOnAction((ActionEvent event) ->
                     QuestionCommunication.deleteQuestion(question.getId(), User.getUid()));
+        }
+    }
+
+    /** Method that sets the answer text of a question.
+     *
+     */
+    public void setAnswerText() {
+        if (question.isAnswered()) {
+            if (question.getAnswerText() != null && !question.getAnswerText().equals(" "))
+               answerText.setText("Answer: " + question.getAnswerText());
         }
     }
 }

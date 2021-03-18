@@ -157,25 +157,25 @@ public class QuestionCommunicationTest {
     private static void createExpectationsForMarkAsAnswered() {
         //Success
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                        + qid1 + "/" +  modkey).withBody("placeholder"))
+                        + qid1 + "/" +  modkey).withBody(" "))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0").withHeader("Content-Type","application/json"));
 
         //invalid parameter - send 400
         //  (treat lecture id (lid) as invalid UUID here to test BAD REQUEST)
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                        + qid1 + "/" +  lid).withBody("placeholder"))
+                        + qid1 + "/" +  lid).withBody(" "))
                 .respond(HttpResponse.response().withStatusCode(400));
 
         //qid does not match
         mockServer.when(request().withMethod("PUT")
-                .withPath("/api/question/answer/" + 666 + "/" +  modkey).withBody("placeholder"))
+                .withPath("/api/question/answer/" + 666 + "/" +  modkey).withBody(" "))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
 
         //incorrect modkey
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                + qid1 + "/" +  incorrectModkey).withBody("placeholder"))
+                + qid1 + "/" +  incorrectModkey).withBody(" "))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
@@ -428,13 +428,14 @@ public class QuestionCommunicationTest {
     public void markAsAnsweredSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Git", "Sebastian"));
-        assertEquals(0, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey));
+        assertEquals(0, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey, null));
     }
 
     @Test
     public void markAsAnsweredNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey));
+        assertEquals(-1, QuestionCommunication.markedAsAnswered(
+                Long.parseLong(qid1), modkey, null));
     }
 
     @Test
@@ -442,7 +443,7 @@ public class QuestionCommunicationTest {
         stopServer();
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Teamwork", "Not Sander"));
-        assertEquals(-2, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey));
+        assertEquals(-2, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey,null));
         startServer();
     }
 
@@ -451,14 +452,14 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Testing", "Andy"));
         assertEquals(-3,
-                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), lid));
+                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), lid, null));
     }
 
     @Test
     public void markAsAnsweredIncorrectQidTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "RCS", "Not Sebastian"));
-        assertEquals(-4, QuestionCommunication.markedAsAnswered(666, modkey));
+        assertEquals(-4, QuestionCommunication.markedAsAnswered(666, modkey, null));
     }
 
     @Test
@@ -466,7 +467,8 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Lambda expressions", "Thomas"));
         assertEquals(-4,
-                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), incorrectModkey));
+                QuestionCommunication.markedAsAnswered(
+                        Long.parseLong(qid1), incorrectModkey, null));
     }
 
     /**

@@ -60,7 +60,7 @@
       <Button fx:id="viewAnswered" layoutX="826.0" layoutY="522.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="232.0" styleClass="mainSceneButton" text="View Answered Questions" />
       <Button fx:id="createQuiz" layoutX="506.0" layoutY="701.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Create Quiz" />
       <Button id="leaveLecture" fx:id="closeLectureButton" layoutX="822.0" layoutY="701.0" mnemonicParsing="false" onAction="#closeLecture" prefHeight="34.0" prefWidth="234.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="End Lecture" />
-      <ListView fx:id="questionPaneListView" layoutX="209.0" layoutY="48.0" prefHeight="644.0" prefWidth="601.0" />
+      <ListView fx:id="questionPaneListView" layoutX="209.0" layoutY="48.0" prefHeight="642.0" prefWidth="602.0" />
       <Label fx:id="sortByText" layoutX="209.0" layoutY="14.0" prefHeight="18.0" prefWidth="47.0" text="Sort by:">
          <font>
             <Font name="System Bold" size="12.0" />
