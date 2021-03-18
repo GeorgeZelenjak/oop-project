@@ -428,13 +428,13 @@ public class QuestionCommunicationTest {
     public void markAsAnsweredSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Git", "Sebastian"));
-        assertEquals(0, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey));
+        assertEquals(0, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey, null));
     }
 
     @Test
     public void markAsAnsweredNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey));
+        assertEquals(-1, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey, null));
     }
 
     @Test
@@ -442,7 +442,7 @@ public class QuestionCommunicationTest {
         stopServer();
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Teamwork", "Not Sander"));
-        assertEquals(-2, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey));
+        assertEquals(-2, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey,null));
         startServer();
     }
 
@@ -451,14 +451,14 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Testing", "Andy"));
         assertEquals(-3,
-                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), lid));
+                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), lid, null));
     }
 
     @Test
     public void markAsAnsweredIncorrectQidTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "RCS", "Not Sebastian"));
-        assertEquals(-4, QuestionCommunication.markedAsAnswered(666, modkey));
+        assertEquals(-4, QuestionCommunication.markedAsAnswered(666, modkey, null));
     }
 
     @Test
@@ -466,7 +466,7 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Lambda expressions", "Thomas"));
         assertEquals(-4,
-                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), incorrectModkey));
+                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), incorrectModkey, null));
     }
 
     /**
