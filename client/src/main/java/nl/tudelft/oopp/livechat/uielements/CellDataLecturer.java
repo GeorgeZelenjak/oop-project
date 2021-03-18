@@ -1,9 +1,11 @@
 package nl.tudelft.oopp.livechat.uielements;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.scene.control.Button;
@@ -11,6 +13,7 @@ import javafx.scene.control.Button;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
@@ -44,6 +47,12 @@ public class CellDataLecturer {
 
     @FXML
     private Button deleteButton;
+
+    @FXML
+    private Text answerText;
+
+    @FXML
+    private Button replyButton;
 
     private Question question;
 
@@ -126,11 +135,13 @@ public class CellDataLecturer {
      * Sets mark as answered button.
      */
     public void setAnsweredQuestion() {
-        isAnsweredButton.setOnAction((ActionEvent event) -> {
-            QuestionCommunication.markedAsAnswered(question.getId(),
-                    Lecture.getCurrentLecture().getModkey());
-            System.out.println(question.getVotes());
-        });
+        if(question.getAnswerText() == null || question.getAnswerText().equals(" ")) {
+            isAnsweredButton.setOnAction((ActionEvent event) -> {
+                QuestionCommunication.markedAsAnswered(question.getId(),
+                        Lecture.getCurrentLecture().getModkey(), null);
+                System.out.println(question.getVotes());
+            });
+        }
     }
 
     /**
@@ -140,5 +151,38 @@ public class CellDataLecturer {
         deleteButton.setOnAction((ActionEvent event) ->
                 QuestionCommunication.modDelete(question.getId(),
                     Lecture.getCurrentLecture().getModkey()));
+    }
+
+    public void setAnswerText(String value) {
+        answerText.setText("Answer: " + value);
+    }
+
+    public void replyAnswer() {
+        replyButton.setOnAction((ActionEvent event) -> {
+            TextInputDialog td = new TextInputDialog();
+
+            //We found no workaround for making the td wider (it works so it's not stupid)
+            td.setHeaderText("\t\t\tType your Answer in the box below:\t\t\t\t");
+            td.setTitle("Enter your answer!");
+            td.setHeight(300);
+
+
+        Optional<String> text = td.showAndWait();
+
+
+            text.ifPresent(s -> QuestionCommunication.markedAsAnswered(question.getId(),
+                    Lecture.getCurrentLecture().getModkey(), s));
+
+
+        });
+
+    }
+
+    public void disableMarkedAsAnswered() {
+        if (question.isAnswered() ) {
+            isAnsweredButton.setDisable(true);
+            isAnsweredButton.setVisible(false);
+        }
+
     }
 }

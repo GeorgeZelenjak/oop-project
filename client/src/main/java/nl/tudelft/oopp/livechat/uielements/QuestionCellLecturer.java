@@ -31,6 +31,11 @@ public class QuestionCellLecturer extends ListCell<Question> {
             setGraphic(data.getBox());
             data.setAnsweredQuestion();
             data.setDeleteQuestion();
+            data.replyAnswer();
+            data.disableMarkedAsAnswered();
+            if(question.getAnswerText() != null && !question.getAnswerText().equals(" "))
+                data.setAnswerText(question.getAnswerText());
+
         } else setGraphic(null);
     }
 }

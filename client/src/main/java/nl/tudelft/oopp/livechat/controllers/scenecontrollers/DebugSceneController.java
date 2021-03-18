@@ -70,6 +70,7 @@ public class DebugSceneController {
         QuestionCommunication.askQuestion("I am confused!!!!");
         QuestionCommunication.askQuestion("We live in a soc");
         List<Question> questions = QuestionCommunication.fetchQuestions();
+        assert questions != null;
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),1);
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),2);
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),3);
