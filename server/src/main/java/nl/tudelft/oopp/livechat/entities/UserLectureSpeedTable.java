@@ -117,6 +117,6 @@ public class UserLectureSpeedTable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(uid, uuid, voteOnLectureSpeed);
+        return Objects.hash(uid, uuid);
     }
 }
