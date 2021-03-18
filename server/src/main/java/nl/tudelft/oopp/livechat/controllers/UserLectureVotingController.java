@@ -1,6 +1,8 @@
 package nl.tudelft.oopp.livechat.controllers;
 
 import nl.tudelft.oopp.livechat.services.LectureSpeedService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -42,5 +44,18 @@ public class UserLectureVotingController {
     @DeleteMapping("/resetLectureSpeedVote/{UUID}/{modkey}")
     public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("UUID") UUID uuid) {
         return service.resetLectureSpeed(uuid, modkey);
+    }
+
+    /**
+     * Exception handler.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Invalid UUID' message
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
+        System.out.println(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Invalid UUID");
     }
 }
