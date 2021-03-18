@@ -27,7 +27,7 @@ public class UserLectureVotingController {
      * @param speed the type of the vote
      * @return 0 if successful, -1 otherwise
      */
-    @PutMapping("/lectureSpeed/")
+    @PutMapping("/lectureSpeed")
     public int voteOnLectureSpeed(@RequestParam long uid, @RequestParam UUID uuid,
                                    @RequestBody String speed) {
         return service.setUserLectureSpeedVote(uid,uuid,speed);
