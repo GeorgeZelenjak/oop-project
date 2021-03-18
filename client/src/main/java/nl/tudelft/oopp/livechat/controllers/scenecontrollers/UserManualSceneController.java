@@ -75,8 +75,9 @@ public class UserManualSceneController {
     }
 
     /** Helper Method that loads a File from a given path, parses it as a string and displays the
-     *      requested text of the selected help category. This method catches an FileNotFoundException
-     *      in case the filepath is incorrect or file is not found.
+     *      requested text of the selected help category.
+     *      This method catches an FileNotFoundException in case
+     *          the filepath is incorrect or file is not found.
      * @param fileName - String representing the path of the text file
      */
     public void showCategoryX(String fileName)  {

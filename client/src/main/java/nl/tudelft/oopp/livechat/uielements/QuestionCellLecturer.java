@@ -33,7 +33,7 @@ public class QuestionCellLecturer extends ListCell<Question> {
             data.setDeleteQuestion();
             data.replyAnswer();
             data.disableMarkedAsAnswered();
-            if(question.getAnswerText() != null && !question.getAnswerText().equals(" "))
+            if (question.getAnswerText() != null && !question.getAnswerText().equals(" "))
                 data.setAnswerText(question.getAnswerText());
 
         } else setGraphic(null);

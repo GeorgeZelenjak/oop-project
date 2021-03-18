@@ -135,7 +135,7 @@ public class CellDataLecturer {
      * Sets mark as answered button.
      */
     public void setAnsweredQuestion() {
-        if(question.getAnswerText() == null || question.getAnswerText().equals(" ")) {
+        if (question.getAnswerText() == null || question.getAnswerText().equals(" ")) {
             isAnsweredButton.setOnAction((ActionEvent event) -> {
                 QuestionCommunication.markedAsAnswered(question.getId(),
                         Lecture.getCurrentLecture().getModkey(), null);
@@ -157,6 +157,10 @@ public class CellDataLecturer {
         answerText.setText("Answer: " + value);
     }
 
+    /** Method that controls the reply Button functionality.
+     * A popup will appear to enter the answer text.
+     *
+     */
     public void replyAnswer() {
         replyButton.setOnAction((ActionEvent event) -> {
             TextInputDialog td = new TextInputDialog();
@@ -167,7 +171,7 @@ public class CellDataLecturer {
             td.setHeight(300);
 
 
-        Optional<String> text = td.showAndWait();
+            Optional<String> text = td.showAndWait();
 
 
             text.ifPresent(s -> QuestionCommunication.markedAsAnswered(question.getId(),
@@ -178,8 +182,11 @@ public class CellDataLecturer {
 
     }
 
+    /** Method that disables the marked as answered button.
+     *
+     */
     public void disableMarkedAsAnswered() {
-        if (question.isAnswered() ) {
+        if (question.isAnswered()) {
             isAnsweredButton.setDisable(true);
             isAnsweredButton.setVisible(false);
         }

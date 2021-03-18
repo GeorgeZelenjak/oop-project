@@ -118,9 +118,12 @@ public class CellDataUser {
         }
     }
 
+    /** Method that sets the answer text of a question.
+     *
+     */
     public void setAnswerText() {
         if (question.isAnswered()) {
-           if(question.getAnswerText() != null && !question.getAnswerText().equals(" "))
+            if (question.getAnswerText() != null && !question.getAnswerText().equals(" "))
                answerText.setText("Answer: " + question.getAnswerText());
         }
     }

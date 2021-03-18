@@ -189,7 +189,7 @@ public class QuestionCommunication {
         }
 
         //Parameters for request
-        if(answer == null)
+        if (answer == null)
             answer = " ";
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(answer);
         String address = "http://localhost:8080/api/question/answer/" + qid + "/" + modkey;
