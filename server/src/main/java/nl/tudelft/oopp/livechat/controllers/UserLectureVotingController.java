@@ -56,6 +56,6 @@ public class UserLectureVotingController {
     private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Invalid UUID");
+                .body("Don't do this");
     }
 }
