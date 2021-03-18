@@ -53,7 +53,7 @@ server-coverage:
     - 'python /opt/cover2cover.py client/build/jacoco/jacoco.xml client/src/main/java > client/build/cobertura.xml'
     # read the <source></source> tag and prepend the path to every filename attribute
     - 'python /opt/source2filename.py client/build/cobertura.xml'
-  needs: ["client-test]
+  needs: ["client-test"]
   dependencies:
     - client-test
   artifacts:
