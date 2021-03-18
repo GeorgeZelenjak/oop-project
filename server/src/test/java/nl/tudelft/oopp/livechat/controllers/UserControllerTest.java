@@ -131,6 +131,7 @@ public class UserControllerTest {
 
     @Test
     public void newUserInvalidUUIDTest() throws Exception {
+        System.out.println(user3Json);
         String result = this.mockMvc.perform(post("/api/user/register")
                 .contentType(APPLICATION_JSON).content(user3Json).characterEncoding("utf-8"))
                 .andExpect(status().isBadRequest())
@@ -138,7 +139,7 @@ public class UserControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals("Invalid UUID", result);
+        assertEquals("Don't do this", result);
     }
 
 

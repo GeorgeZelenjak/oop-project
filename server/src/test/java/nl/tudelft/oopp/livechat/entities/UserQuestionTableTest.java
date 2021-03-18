@@ -90,4 +90,22 @@ public class UserQuestionTableTest {
         int hash = Objects.hash(54323948572543L, 1024324452432L);
         assertEquals(hash, table.hashCode());
     }
+
+    @Test
+    public void hashCodeEqualsTest() {
+        UserQuestionTable table2 = new UserQuestionTable(54323948572543L, 1024324452432L);
+        assertEquals(table2.hashCode(), table.hashCode());
+    }
+
+    @Test
+    public void hashCodeDifferentUidTest() {
+        UserQuestionTable table2 = new UserQuestionTable(54323948572544L, 1024324452432L);
+        assertNotEquals(table2.hashCode(), table.hashCode());
+    }
+
+    @Test
+    public void hashCodeDifferentQidTest() {
+        UserQuestionTable table2 = new UserQuestionTable(54323948572543L, 1024324452431L);
+        assertNotEquals(table2.hashCode(), table.hashCode());
+    }
 }

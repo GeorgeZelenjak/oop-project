@@ -125,13 +125,12 @@ public class QuestionController {
 
     /**
      * Exception handler.
-     *
      * @param exception exception that has occurred
      * @return response body with 400 and 'Invalid UUID' message
      */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
+    private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid UUID");

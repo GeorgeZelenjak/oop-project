@@ -70,7 +70,6 @@ public class LectureEntity {
 
     /**
      * Static constructor to create a lecture entity.
-     *
      * @param name        the name of the lecture
      * @param creatorName the name of the creator of the lecture
      * @param startTime   the start time
@@ -89,7 +88,6 @@ public class LectureEntity {
 
     /**
      * Gets the uuid of the lecture.
-     *
      * @return the uuid of the lecture
      */
     public UUID getUuid() {
@@ -98,7 +96,6 @@ public class LectureEntity {
 
     /**
      * Gets modkey of the lecture.
-     *
      * @return the modkey of the lecture
      */
     public UUID getModkey() {
@@ -108,7 +105,6 @@ public class LectureEntity {
     /**
      * Set modkey to null.
      * this is done only on in-memory objects and not in database
-     *
      * @param modkey the modkey
      */
     public void setModkey(UUID modkey) {
@@ -117,7 +113,6 @@ public class LectureEntity {
 
     /**
      * Gets name of the lecture.
-     *
      * @return the name of the lecture
      */
     public String getName() {
@@ -126,7 +121,6 @@ public class LectureEntity {
 
     /**
      * Gets the name of the creator of the lecture.
-     *
      * @return the name of the creator of the lecture
      */
     public String getCreatorName() {
@@ -135,7 +129,6 @@ public class LectureEntity {
 
     /**
      * Gets "faster" count.
-     *
      * @return the "faster" count
      */
     public int getFasterCount() {
@@ -144,7 +137,6 @@ public class LectureEntity {
 
     /**
      * Gets "slower" count.
-     *
      * @return the "slower" count
      */
     public int getSlowerCount() {
@@ -153,7 +145,6 @@ public class LectureEntity {
 
     /**
      * Gets the start time of the lecture.
-     *
      * @return the start time of the lecture
      */
     public Timestamp getStartTime() {
@@ -163,7 +154,6 @@ public class LectureEntity {
 
     /**
      * Sets the start time of the lecture.
-     *
      * @param startTime the start time of the lecture
      */
     public void setStartTime(Timestamp startTime) {
@@ -172,7 +162,6 @@ public class LectureEntity {
 
     /**
      * Gets the frequency of asking questions.
-     *
      * @return the frequency of asking questions
      */
     public int getFrequency() {
@@ -181,7 +170,6 @@ public class LectureEntity {
 
     /**
      * Sets the name of the lecture.
-     *
      * @param name the name of the lecture
      */
     public void setName(String name) {
@@ -196,10 +184,24 @@ public class LectureEntity {
     }
 
     /**
+     * Decrement faster count.
+     */
+    public void decrementFasterCount() {
+        --this.fasterCount;
+    }
+
+    /**
      * Increases the "slower" count by 1.
      */
     public void incrementSlowerCount() {
         ++this.slowerCount;
+    }
+
+    /**
+     * Decrement slower count.
+     */
+    public void decrementSlowerCount() {
+        --this.slowerCount;
     }
 
     /**
@@ -235,7 +237,6 @@ public class LectureEntity {
 
     /**
      * Checks whether the lecture is open.
-     *
      * @return whether the lecture is open
      */
     public boolean isOpen() {

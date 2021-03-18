@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface UserQuestionRepository extends JpaRepository<UserQuestionTable,
-        UserQuestionPairId> {
+public interface UserQuestionRepository
+        extends JpaRepository<UserQuestionTable, UserQuestionPairId> {
 
     void deleteAllByQuestionId(long qid);
 

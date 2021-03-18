@@ -110,7 +110,7 @@ public class LectureController {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
+    private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid UUID");

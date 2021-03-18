@@ -91,4 +91,22 @@ public class UserQuestionPairIdTest {
         assertEquals(hash, pair.hashCode());
     }
 
+    @Test
+    public void hashCodeEqualsTest() {
+        UserQuestionPairId pair2 = new UserQuestionPairId(123456789, 987654321);
+        assertEquals(pair2.hashCode(), pair.hashCode());
+    }
+
+    @Test
+    public void hashCodeDifferentUidTest() {
+        UserQuestionPairId pair2 = new UserQuestionPairId(123456799, 987654321);
+        assertNotEquals(pair2.hashCode(), pair.hashCode());
+    }
+
+    @Test
+    public void hashCodeDifferentQidTest() {
+        UserQuestionPairId pair2 = new UserQuestionPairId(123456789, 987654322);
+        assertNotEquals(pair2.hashCode(), pair.hashCode());
+    }
+
 }

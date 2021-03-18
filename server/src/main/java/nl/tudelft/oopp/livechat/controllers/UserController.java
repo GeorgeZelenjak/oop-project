@@ -4,6 +4,7 @@ import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -40,12 +41,12 @@ public class UserController {
      * @param exception exception that has occurred
      * @return response body with 400 and 'Invalid UUID' message
      */
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> badUUID(Exception exception) {
+    private ResponseEntity<Object> badUUID(HttpMessageNotReadableException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Invalid UUID");
+                .body("Don't do this");
     }
 
 }
