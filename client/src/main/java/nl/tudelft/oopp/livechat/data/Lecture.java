@@ -1,5 +1,6 @@
 package nl.tudelft.oopp.livechat.data;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.annotations.Expose;
 
 import java.sql.Timestamp;
@@ -33,6 +34,7 @@ public class Lecture {
     private int frequency;
 
     @Expose(serialize = true, deserialize = true)
+    //@JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss")
     private Timestamp startTime;
 
     @Expose(serialize = true, deserialize = true)
@@ -172,6 +174,7 @@ public class Lecture {
 
     /**
      * Closes the lecture.
+     * @param open the new boolean
      */
     public void setOpen(boolean open) {
         this.open = open;

@@ -27,19 +27,24 @@ subprojects {
     jacocoTestReport {
         afterEvaluate {
             classDirectories.setFrom(files(classDirectories.files.collect {
-                fileTree(dir: it, exclude: [
-                        'nl/tudelft/oopp/livechat/controllers/**',
+                fileTree(dir: it, exclude: [//client-side
+                        'nl/tudelft/oopp/livechat/controllers/AlertController.class',
+                        'nl/tudelft/oopp/livechat/controllers/NavigationController.class',
+                        'nl/tudelft/oopp/livechat/controllers/scenecontrollers/**',
                         'nl/tudelft/oopp/livechat/views/**',
                         'nl/tudelft/oopp/livechat/uielements/**',
-                        'nl/tudelft/oopp/livechat/*.class'
+                        //server-side
+                        'nl/tudelft/oopp/livechat/*.class',
+                        'nl/tudelft/oopp/livechat/config/**'
                 ])
             }))
         }
 
         reports {
-            xml.enabled false
+            xml.enabled true
             csv.enabled false
             html.destination file("${buildDir}/reports/jacoco/html")
+            xml.destination file("${buildDir}/jacoco/jacoco.xml")
         }
     }
 
@@ -50,9 +55,10 @@ subprojects {
                 element = 'CLASS'
                 includes = ['nl.tudelft.*']
                 excludes = ['nl.tudelft.oopp.livechat.views',
-                            'nl.tudelft.oopp.livechat.controllers',
                             'nl.tudelft.oopp.livechat.uielements',
-                            'nl.tudelft.oopp.livechat.MainApp']
+                            'nl.tudelft.oopp.livechat.MainApp',
+                            'nl.tudelft.oopp.livechat.config',
+                            'nl.tudelft.oopp.livechat.MainApplication']
 
                 limit {
                     counter = 'LINE'

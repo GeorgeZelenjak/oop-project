@@ -9,13 +9,14 @@ public class InputValidatorTest {
     private static String longText;
     private static String correctText;
 
+    /**
+     * Setup for the test class.
+     */
     @BeforeAll
-    private static void setup() {
+    public static void setup() {
         emptyText = "";
         StringBuilder stringBuilder = new StringBuilder("Ha");
-        for (int i = 0; i < 11; i++) {
-            stringBuilder.append(stringBuilder.toString());
-        }
+        stringBuilder.append(stringBuilder.toString().repeat(26));
         longText = stringBuilder.toString();
         System.out.println(longText.length());
         correctText = "This is a correct string!";
@@ -23,12 +24,12 @@ public class InputValidatorTest {
 
     @Test
     public void validateLengthIsZeroTest() {
-        assertEquals(-1,InputValidator.validateLength(emptyText,25));
+        assertEquals(-1, InputValidator.validateLength(emptyText,25));
     }
 
     @Test
     public void validateLengthIsTooLongTest() {
-        assertEquals(-2,InputValidator.validateLength(longText,25));
+        assertEquals(-2, InputValidator.validateLength(longText,25));
     }
 
     @Test
@@ -36,6 +37,45 @@ public class InputValidatorTest {
         assertEquals(0,InputValidator.validateLength(correctText,25));
     }
 
+    @Test
+    public void validateMinuteNotIntTest() {
+        assertEquals(-1, InputValidator.validateMinute("fortytwo"));
+    }
+
+    @Test
+    public void validateMinuteNegativeTest() {
+        assertEquals(-2, InputValidator.validateMinute("-1"));
+    }
+
+    @Test
+    public void validateMinuteTooLargeTest() {
+        assertEquals(-2, InputValidator.validateMinute("66"));
+    }
+
+    @Test
+    public void validateMinuteSuccessfulTest() {
+        assertEquals(0, InputValidator.validateMinute("42"));
+    }
+
+    @Test
+    public void validateHourNotIntTest() {
+        assertEquals(-1, InputValidator.validateHour("twelve"));
+    }
+
+    @Test
+    public void validateHourNegativeTest() {
+        assertEquals(-2, InputValidator.validateHour("-3"));
+    }
+
+    @Test
+    public void validateHourTooLargeTest() {
+        assertEquals(-2, InputValidator.validateHour("24"));
+    }
+
+    @Test
+    public void validateHourSuccessfulTest() {
+        assertEquals(0, InputValidator.validateHour("0"));
+    }
 
 
 }

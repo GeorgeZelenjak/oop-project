@@ -4,6 +4,7 @@ stages:
   - build
   - validate
   - test
+  - visualize
   - release
 
 variables:
@@ -38,10 +39,34 @@ client-test:
     - ./gradlew :client:test :client:jacocoTestReport
     - cat client/build/reports/jacoco/html/index.html | grep -Po "Total.*?([0-9]{1,3})%"
   coverage: /([0-9]{1,3})%/
+  artifacts:
+    when: always
+    reports:
+      junit: client/build/test-results/test/TEST-*.xml
+    paths:
+      - client/build/jacoco/jacoco.xml
+
+client-coverage:
+  stage: visualize
+  image: haynes/jacoco2cobertura:1.0.4
+  script:
+    # convert report from jacoco to cobertura
+    - 'python /opt/cover2cover.py client/build/jacoco/jacoco.xml client/src/main/java > client/build/cobertura.xml'
+    # read the <source></source> tag and prepend the path to every filename attribute
+    - 'python /opt/source2filename.py client/build/cobertura.xml'
+  needs: ["client-test"]
+  dependencies:
+    - client-test
+  artifacts:
+    reports:
+      cobertura: client/build/cobertura.xml
+
 
 client-release:
     allow_failure: true
     stage: release
+    rules:
+      - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
     script:
       - echo 'running release_job'
       - ./gradlew :client:distTar :client:distZip :client:fatJar
@@ -51,6 +76,4 @@ client-release:
         - .gradle/
     artifacts:
       paths:
-        - client/build/distributions/client.zip
-        - client/build/distributions/client.tar
         - client/build/libs/client-AIO.jar

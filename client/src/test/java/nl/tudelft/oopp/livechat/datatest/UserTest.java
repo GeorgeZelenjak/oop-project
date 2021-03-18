@@ -36,7 +36,7 @@ public class UserTest {
     public void setUidTest() {
         long oldUid = User.getUid();
         User.setUid();
-        assertNotEquals(oldUid, User.getUid());
+        assertEquals(oldUid, User.getUid());
     }
 
     @Test
@@ -90,5 +90,11 @@ public class UserTest {
         User.deleteQuestionId(666666666666L);
 
         assertEquals(oldSize, User.getAskedQuestionIds().size());
+    }
+
+    @Test
+    public void luhnDigitIs9Times2Test() {
+        long luhnDigit = User.getLuhnDigit(7989);
+        assertEquals(7L, luhnDigit);
     }
 }

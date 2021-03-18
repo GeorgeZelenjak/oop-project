@@ -1,11 +1,15 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.services.LectureService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 
@@ -14,20 +18,29 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api")
-public class  LectureController {
+public class LectureController {
 
     private final LectureService service;
 
     /**
+     * The Object mapper.
+     */
+    ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
      * Constructor for the lecture controller.
+     *
      * @param service lecture service
      */
     public LectureController(LectureService service) {
         this.service = service;
     }
 
+
     /**
      * GET Endpoint to retrieve a lecture.
+     *
+     * @param id the id
      * @return selected lecture
      */
     @GetMapping("/get/{id}")
@@ -35,20 +48,29 @@ public class  LectureController {
         return service.getLectureByIdNoModkey(id);
     }
 
+
     /**
      * POST Endpoint to create a new lecture.
+     *
      * @param name the name of the lecture
+     * @param info the info
      * @return a new lecture entity
+     * @throws JsonProcessingException the json processing exception
      */
     @PostMapping("/newLecture")
-    public LectureEntity newLecture(@RequestParam String name) {
-        return service.newLecture(name, "placeholder"); //these are placeholders
+    public LectureEntity newLecture(@RequestParam String name,
+                                    @RequestBody String info) throws JsonProcessingException {
+        JsonNode jsonNode = objectMapper.readTree(info);
+        String creatorName = jsonNode.get("creatorName").asText();
+        Timestamp startTime = Timestamp.valueOf(jsonNode.get("startTime").asText());
+        return service.newLecture(name, creatorName, startTime);
     }
 
     /**
      * DELETE Endpoint to delete a lecture with the specified id iff the moderator key is correct.
+     *
      * @param modkey the moderator key to authenticate
-     * @param id UUID of lecture
+     * @param id     UUID of lecture
      * @return 0 if the lecture has been deleted successfully, -1 if not
      */
     @DeleteMapping("/delete/{id}/{modkey}")
@@ -57,9 +79,10 @@ public class  LectureController {
     }
 
     /**
-     * PUT endpoint to close a lecture with the specified id iff the moderator key is correct.
+     * PUT Endpoint to close a lecture with the specified id iff the moderator key is correct.
+     *
      * @param lectureId UUID of lecture
-     * @param modkey the moderator key to authenticate
+     * @param modkey    the moderator key to authenticate
      * @return 0 if the lecture has been closed successfully, -1 if not
      */
     @PutMapping("/close/{lid}/{modkey}")
@@ -68,9 +91,10 @@ public class  LectureController {
     }
 
     /**
-     * Validate Endpoint.
+     * GET Endpoint to validate moderator key for the lecture.
+     *
      * @param modkey the moderator key to authenticate
-     * @param id UUID of lecture
+     * @param id     UUID of lecture
      * @return 0 if moderator was validated successfully, -1 if not
      */
     @GetMapping("/validate/{id}/{modkey}")
@@ -80,6 +104,7 @@ public class  LectureController {
 
     /**
      * Exception handler for requests containing invalid uuids.
+     *
      * @param exception exception that has occurred
      * @return response object with 400 Bad Request status code and 'Invalid UUID' message
      */

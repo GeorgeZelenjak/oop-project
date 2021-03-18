@@ -5,7 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class QuestionManager {
+public abstract class QuestionManager {
+
+    private QuestionManager() {
+
+    }
 
     /**
      * Sorts questions by time or number of votes according to the given arguments.

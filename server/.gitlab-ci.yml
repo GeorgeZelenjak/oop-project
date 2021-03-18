@@ -4,6 +4,7 @@ stages:
   - build
   - validate
   - test
+  - visualize
   - release
 
 variables:
@@ -38,10 +39,33 @@ server-test:
     - ./gradlew :server:test :server:jacocoTestReport
     - cat server/build/reports/jacoco/html/index.html | grep -Po "Total.*?([0-9]{1,3})%"
   coverage: /([0-9]{1,3})%/
+  artifacts:
+    when: always
+    reports:
+      junit: server/build/test-results/test/TEST-*.xml
+    paths:
+      - server/build/jacoco/jacoco.xml
+
+server-coverage:
+  stage: visualize
+  image: haynes/jacoco2cobertura:1.0.4
+  script:
+    # convert report from jacoco to cobertura
+    - 'python /opt/cover2cover.py server/build/jacoco/jacoco.xml server/src/main/java > server/build/cobertura.xml'
+    # read the <source></source> tag and prepend the path to every filename attribute
+    - 'python /opt/source2filename.py server/build/cobertura.xml'
+  needs: ["server-test"]
+  dependencies:
+    - server-test
+  artifacts:
+    reports:
+      cobertura: server/build/cobertura.xml
 
 server-release:
   allow_failure: true
   stage: release
+  rules:
+    - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
   script:
     - echo 'running release_job'
     - ./gradlew :server:distTar :server:distZip :server:bootJar
@@ -51,6 +75,4 @@ server-release:
       - .gradle/
   artifacts:
     paths:
-      - server/build/distributions/server.zip
-      - server/build/distributions/server.tar
       - server/build/libs/server.jar

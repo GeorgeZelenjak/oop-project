@@ -78,7 +78,8 @@ public class JoinLectureSceneController {
         Lecture currentLecture = Lecture.getCurrentLecture();
 
         if (currentLecture == null) {
-            AlertController.alertError("Error", "Lecture was not found.");
+            AlertController.alertError("Error",
+                    "Lecture was not found. Or it has not started yet!");
 
         } else if (modkeyCheckBox.isSelected()) {
             joinAsModerator();

@@ -22,6 +22,10 @@ import java.util.UUID;
  */
 public class QuestionCommunication {
 
+    private QuestionCommunication() {
+
+    }
+
     //Client object for sending requests
     private static final HttpClient client = HttpClient.newBuilder().build();
     /* Gson object for parsing Json

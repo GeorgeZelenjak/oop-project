@@ -1,8 +1,12 @@
 package nl.tudelft.oopp.livechat.data;
 
+import com.google.gson.annotations.Expose;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
+
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * User class.
@@ -12,15 +16,61 @@ public class User {
 
     private static long uid;
 
+    @Expose(serialize = false)
     private static Set<Long> askedQuestionIds = new HashSet<>();
+
+    private User() {
+
+    }
 
     /**
      * Sets uid.
      */
-    //TODO change this method when we come up with another authentication method
     public static void setUid() {
-        uid = ThreadLocalRandom.current().nextLong(1000000L, Long.MAX_VALUE);
+        byte[] hardwareAddress;
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            NetworkInterface ni = NetworkInterface.getByInetAddress(localHost);
+            hardwareAddress = ni.getHardwareAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertController.alertError("Error in creating User ID",
+                    "Couldn't create a valid user-id");
+            return;
+        }
+        long uidTemp = 0;
+        for (int i = 0;i < hardwareAddress.length;i++) {
+            long unsigned = (long) hardwareAddress[i] & 0xFF;
+            uidTemp += unsigned << (8 * i);
+        }
+        uid = uidTemp * 10 + getLuhnDigit(uidTemp);
     }
+
+    /**
+     * Gets luhn digit to make luhn checksum valid.
+     *
+     * @param n the number
+     * @return the luhn digit
+     */
+    public static long getLuhnDigit(long n) {
+        String number = Long.toString(n);
+        long temp = 0;
+        for (int i = number.length() - 1;i >= 0;i--) {
+            int digit;
+            if ((number.length() - i) % 2 == 1) {
+                digit = Character.getNumericValue(number.charAt(i)) * 2;
+                if (digit > 9) {
+                    digit %= 9;
+                    if (digit == 0) digit = 9;
+                }
+            } else {
+                digit = Character.getNumericValue(number.charAt(i));
+            }
+            temp += digit;
+        }
+        return (10 - (temp % 10)) % 10;
+    }
+
 
     /**
      * Gets uid.
@@ -77,10 +127,7 @@ public class User {
      * @param questionId the question id to be deleted
      */
     public static void deleteQuestionId(Long questionId) {
-        try {
-            askedQuestionIds.remove(questionId);
-        } catch (Exception e) {
-            System.err.println("Id not deleted");
-        }
+        askedQuestionIds.remove(questionId);
     }
+
 }
