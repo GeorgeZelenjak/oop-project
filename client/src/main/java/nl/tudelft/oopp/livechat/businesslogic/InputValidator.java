@@ -2,6 +2,11 @@ package nl.tudelft.oopp.livechat.businesslogic;
 
 public abstract class InputValidator {
 
+    private InputValidator() {
+
+    }
+
+
     /**
      * Validates length of user String input.
      * @param input      the user input

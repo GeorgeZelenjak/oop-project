@@ -22,6 +22,10 @@ import java.sql.Timestamp;
  */
 public class LectureCommunication {
 
+    private LectureCommunication() {
+
+    }
+
     /**
      * Client object for sending requests.
      */

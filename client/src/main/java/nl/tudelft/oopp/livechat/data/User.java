@@ -19,6 +19,10 @@ public class User {
     @Expose(serialize = false)
     private static Set<Long> askedQuestionIds = new HashSet<>();
 
+    private User() {
+
+    }
+
     /**
      * Sets uid.
      */
