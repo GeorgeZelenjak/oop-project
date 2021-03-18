@@ -1,6 +1,6 @@
 package nl.tudelft.oopp.livechat.entities;
 
-import com.sun.xml.bind.v2.model.core.ID;
+//import com.sun.xml.bind.v2.model.core.ID;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -28,16 +28,15 @@ public class UserLectureSpeedTable {
     private String voteOnLectureSpeed;
 
     /**
-     * Instantiates a new User lecture speed table.
+     * Creates a new UserLectureSpeedTable object.
      */
     public UserLectureSpeedTable() {
     }
 
     /**
-     * Instantiates a new User lecture speed table.
-     *
-     * @param uid                the uid
-     * @param uuid               the uuid
+     * Creates a new UserLectureSpeedTable object.
+     * @param uid the user id
+     * @param uuid the lecture id
      * @param voteOnLectureSpeed the vote on lecture speed
      */
     public UserLectureSpeedTable(long uid, UUID uuid, String voteOnLectureSpeed) {
@@ -47,59 +46,59 @@ public class UserLectureSpeedTable {
     }
 
     /**
-     * Gets uid.
-     *
-     * @return the uid
+     * Gets the user id.
+     * @return the user id
      */
     public long getUid() {
-        return uid;
+        return this.uid;
     }
 
     /**
-     * Sets uid.
-     *
-     * @param uid the uid
+     * Sets the user id.
+     * @param uid the user id
      */
     public void setUid(long uid) {
         this.uid = uid;
     }
 
     /**
-     * Gets uuid.
-     *
-     * @return the uuid
+     * Gets the lecture id.
+     * @return the lecture id
      */
     public UUID getUuid() {
-        return uuid;
+        return this.uuid;
     }
 
     /**
-     * Sets uuid.
-     *
-     * @param uuid the uuid
+     * Sets the lecture id.
+     * @param uuid the lecture id
      */
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 
     /**
-     * Gets vote on lecture speed.
-     *
-     * @return the vote on lecture speed
+     * Gets the vote on the lecture speed.
+     * @return the vote on the lecture speed
      */
     public String getVoteOnLectureSpeed() {
-        return voteOnLectureSpeed;
+        return this.voteOnLectureSpeed;
     }
 
     /**
-     * Sets vote on lecture speed.
-     *
-     * @param voteOnLectureSpeed the vote on lecture speed
+     * Sets the vote on the lecture speed.
+     * @param voteOnLectureSpeed the vote on the lecture speed
      */
     public void setVoteOnLectureSpeed(String voteOnLectureSpeed) {
         this.voteOnLectureSpeed = voteOnLectureSpeed;
     }
 
+    /**
+     * Compares the UserLectureSpeedTable to another object.
+     * @param obj the object to compare to
+     * @return true iff the object is also UserLectureSpeedTable
+     *      and has the same user id and lecture id. Otherwise false
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -112,10 +111,12 @@ public class UserLectureSpeedTable {
         return false;
     }
 
+    /**
+     * Generates and gets the hash code of the object.
+     * @return the hash code of the object
+     */
     @Override
     public int hashCode() {
         return Objects.hash(uid, uuid, voteOnLectureSpeed);
     }
-
-
 }
