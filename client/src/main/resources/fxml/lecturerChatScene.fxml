@@ -45,7 +45,7 @@
          </children>
       </Pane>
       <Button fx:id="createPolling" layoutX="226.0" layoutY="701.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Create Polling Question" />
-      <Button fx:id="reopenPolling" layoutX="825.0" layoutY="568.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="232.0" styleClass="mainSceneButton" text="Reopen a Polling Question" />
+      <Button fx:id="reopenPolling" layoutX="826.0" layoutY="523.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="232.0" styleClass="mainSceneButton" text="Reopen a Polling Question" />
       <Pane fx:id="speedBackground" layoutX="818.0" layoutY="247.0" prefHeight="216.0" prefWidth="247.0" styleClass="sidebar">
          <children>
             <Text fx:id="speedText" layoutX="7.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture speed Results" textAlignment="CENTER" wrappingWidth="232.20000000000005">
@@ -85,5 +85,6 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>
+      <Button fx:id="exportQA" layoutX="826.0" layoutY="615.0" mnemonicParsing="false" onAction="#exportQuestionsAndAnswers" prefHeight="34.0" prefWidth="234.0" styleClass="mainSceneButton" text="Export Questions &amp; Answers" />
    </children>
 </AnchorPane>
