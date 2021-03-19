@@ -98,6 +98,11 @@ public class LecturerChatSceneController implements Initializable {
     private Label sortByText;
     @FXML
     private CheckBox sortByTimeCheckBox;
+    @FXML
+    private Text voteCountFast;
+    @FXML
+    private Text voteCountSlow;
+
 
 
     /**
@@ -293,4 +298,5 @@ public class LecturerChatSceneController implements Initializable {
         this.copyId.setDisable(!this.copyId.isDisabled());
         this.copyId.setVisible(!this.copyId.isVisible());
     }
+
 }
