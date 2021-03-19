@@ -195,7 +195,7 @@ public class UserChatSceneController implements Initializable {
      */
     public int voteOnLectureSpeedFast() {
         voteOnLectureSpeedSlow.setSelected(false);
-        System.out.println("Vote on lecture speed fast");
+
         return LectureSpeedCommunication.voteOnLectureSpeed(
                 User.getUid(),
                 Lecture.getCurrentLecture().getUuid(),
