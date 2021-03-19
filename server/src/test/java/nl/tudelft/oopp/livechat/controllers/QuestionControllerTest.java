@@ -92,12 +92,18 @@ class QuestionControllerTest {
         q1Json = node1.toString();
     }*/
 
+    /**
+     * A helper method to convert question to json.
+     * @param q question object
+     * @return the json representing the object
+     * @throws JsonProcessingException if something goes wrong
+     */
     private String createQuestionJson(QuestionEntity q) throws JsonProcessingException {
-        String qJson = objectMapper.writeValueAsString(q);
-        JsonNode node = objectMapper.readTree(qJson);
+        String json = objectMapper.writeValueAsString(q);
+        JsonNode node = objectMapper.readTree(json);
         node = ((ObjectNode) node).put("ownerId", q.getOwnerId());
-        qJson = node.toString();
-        return qJson;
+        json = node.toString();
+        return json;
     }
 
 
@@ -124,7 +130,7 @@ class QuestionControllerTest {
     }
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         lectureRepository.save(lectureEntity1);
         lectureRepository.save(lectureEntity2);
 
@@ -176,9 +182,9 @@ class QuestionControllerTest {
         List<QuestionEntity> list = objectMapper.readValue(listLectureString,
                 new TypeReference<>(){});
         int pos = 0;
-        for (String q : listLectureString.split("(},\\{)|(}\\])")) {
+        for (String q : listLectureString.split("(},\\{)|(}])")) {
             for (String prop : q.split(",")) {
-                if(prop.startsWith("\"id\"")) {
+                if (prop.startsWith("\"id\"")) {
                     long id = Long.parseLong(prop.split(":")[1]);
                     list.get(pos++).setId(id);
                     break;
