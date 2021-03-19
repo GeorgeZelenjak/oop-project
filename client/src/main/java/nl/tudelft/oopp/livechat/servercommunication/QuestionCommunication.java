@@ -163,7 +163,7 @@ public class QuestionCommunication {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
+            System.out.println("Exception when trying to communicate with the server!");
             //e.printStackTrace();
             return -2;
         }
@@ -222,6 +222,8 @@ public class QuestionCommunication {
         }
         return result;
     }
+
+    //public static int markAsAnswered
 
     /**
      * Method that sends a request to delete a question (done by the user who asked the question).
