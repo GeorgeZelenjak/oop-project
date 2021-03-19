@@ -11,9 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
@@ -28,10 +26,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 
 /**
@@ -300,8 +295,6 @@ class QuestionControllerTest {
 
     @Test
     void fetchQuestionsTest() throws Exception {
-        List<QuestionEntity> qs = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        List<QuestionEntity> qs2 = questionRepository.findAllByLectureId(lectureEntity2.getUuid());
         List<QuestionEntity> listLecture1 = getQuestions(lectureEntity1.getUuid().toString());
         List<QuestionEntity> listLecture2 = getQuestions(lectureEntity2.getUuid().toString());
 
@@ -334,8 +327,10 @@ class QuestionControllerTest {
                                                 + "&uid=" + q1.getOwnerId());
         assertEquals(0, result);
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture1after =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+        List<QuestionEntity> listLecture2after =
+                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
         assertEquals(0, listLecture1after.size());
         assertEquals(1, listLecture2after.size());
@@ -347,8 +342,10 @@ class QuestionControllerTest {
                                                 + "&uid=" + q2.getOwnerId());
         assertEquals(-1, result);
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture1after =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+        List<QuestionEntity> listLecture2after =
+                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
         assertEquals(1, listLecture1after.size());
         assertEquals(1, listLecture2after.size());
@@ -360,8 +357,10 @@ class QuestionControllerTest {
                 + q1.getId() + "&modkey=" + lectureEntity1.getModkey().toString());
         assertEquals(0, result);
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture1after =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+        List<QuestionEntity> listLecture2after =
+                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
         assertEquals(0, listLecture1after.size());
         assertEquals(1, listLecture2after.size());
@@ -382,20 +381,22 @@ class QuestionControllerTest {
 
     @Test
     void upvoteSuccessfulTest() throws Exception {
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture1 =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+        List<QuestionEntity> listLecture2 =
+                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        final int oldVotes1 = listLecture1after.get(0).getVotes();
-        final int oldVotes2 = listLecture2after.get(0).getVotes();
+        final int oldVotes1 = listLecture1.get(0).getVotes();
+        final int oldVotes2 = listLecture2.get(0).getVotes();
 
         final int result = upvote(q1.getId(), q1.getOwnerId());
         assertEquals(0, result);
 
-        listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        listLecture1 = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+        listLecture2 = questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        int newVotes1 = listLecture1after.get(0).getVotes();
-        int newVotes2 = listLecture2after.get(0).getVotes();
+        int newVotes1 = listLecture1.get(0).getVotes();
+        int newVotes2 = listLecture2.get(0).getVotes();
 
         assertEquals(oldVotes1 + 1, newVotes1);
         assertEquals(oldVotes2, newVotes2);
@@ -403,34 +404,36 @@ class QuestionControllerTest {
 
     @Test
     void unvoteSuccessfulTest() throws Exception {
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture1 =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+        List<QuestionEntity> listLecture2 =
+                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        final int oldVotes1 = listLecture1after.get(0).getVotes();
-        final int oldVotes2 = listLecture2after.get(0).getVotes();
+        final int oldVotes1 = listLecture1.get(0).getVotes();
+        final int oldVotes2 = listLecture2.get(0).getVotes();
 
         upvote(q1.getId(), q1.getOwnerId());
         final int result = upvote(q1.getId(), q1.getOwnerId());
         assertEquals(0, result);
 
-        listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        listLecture1 = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+        listLecture2 = questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        int newVotes1 = listLecture1after.get(0).getVotes();
-        int newVotes2 = listLecture2after.get(0).getVotes();
+        int newVotes1 = listLecture1.get(0).getVotes();
+        int newVotes2 = listLecture2.get(0).getVotes();
 
         assertEquals(oldVotes1, newVotes1);
         assertEquals(oldVotes2, newVotes2);
     }
 
-    /*@Test
+    @Test
     void upvoteUnsuccessfulTest() throws Exception {
-        final long qid1 = Long.parseLong(postQuestions(q1Json));
-        final long qid2 = Long.parseLong(postQuestions(q2Json));
         long qid11 = -1;
 
-        List<QuestionEntity> listLecture1 = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2 = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture1 =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+        List<QuestionEntity> listLecture2 =
+                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
         final int oldVotes1 = listLecture1.get(0).getVotes();
         final int oldVotes2 = listLecture2.get(0).getVotes();
@@ -438,25 +441,20 @@ class QuestionControllerTest {
         final int result = upvote(qid11, q1.getOwnerId());
         assertEquals(-1, result);
 
-        listLecture1 = getQuestions(lectureEntity1.getUuid().toString());
-        listLecture2 = getQuestions(lectureEntity2.getUuid().toString());
+        listLecture1 = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+        listLecture2 = questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
         int newVotes1 = listLecture1.get(0).getVotes();
         int newVotes2 = listLecture2.get(0).getVotes();
 
         assertEquals(oldVotes1, newVotes1);
         assertEquals(oldVotes2, newVotes2);
-
-        questionRepository.deleteById(qid1);
-        questionRepository.deleteById(qid2);
     }
 
     @Test
     void editSuccessfulTest() throws Exception {
-        long qid1 = Long.parseLong(postQuestions(q1Json));
-
         ObjectNode node = objectMapper.createObjectNode();
-        node.put("id", qid1);
+        node.put("id", q1.getId());
         node.put("modkey", lectureEntity1.getModkey().toString());
         node.put("text", "this is the new text");
         node.put("uid", uid1);
@@ -470,16 +468,12 @@ class QuestionControllerTest {
         assertNotNull(question1after);
         assertEquals(question1after.getText(), "this is the new text");
         assertEquals(0, question1after.getOwnerId());       //check that owner id is not exposed
-
-        questionRepository.deleteById(qid1);
     }
 
     @Test
     void editUnsuccessfulUnauthorizedTest() throws Exception {
-        long qid1 = Long.parseLong(postQuestions(q1Json));
-
         ObjectNode node = objectMapper.createObjectNode();
-        node.put("id", qid1);
+        node.put("id", q1.getId());
         node.put("modkey", lectureEntity2.getModkey().toString());
         node.put("text", "this is the new text");
         node.put("uid", uid2);
@@ -493,16 +487,12 @@ class QuestionControllerTest {
         assertEquals(question1after.getText(),
                 "What would you do if a seagull entered in your house?");
         assertNotEquals(question1after.getOwnerId(), uid2);
-
-        questionRepository.deleteById(qid1);
     }
 
     @Test
     void editUnsuccessfulBadRequestTest() throws Exception {
-        long qid1 = Long.parseLong(postQuestions(q1Json));
-
         ObjectNode node = objectMapper.createObjectNode();
-        node.put("id", qid1);
+        node.put("id", q1.getId());
         node.put("modkey", "oh yes i know this uuid");
         node.put("text", "this is the new text");
         node.put("uid", uid2);
@@ -522,64 +512,50 @@ class QuestionControllerTest {
         assertEquals(question1after.getText(),
                 "What would you do if a seagull entered in your house?");
         assertNotEquals(question1after.getOwnerId(), uid2);
-
-        questionRepository.deleteById(qid1);
     }
 
     @Test
     void answerSuccessfulTest() throws Exception {
-        final long qid1 = Long.parseLong(postQuestions(q1Json));
-        final long qid2 = Long.parseLong(postQuestions(q2Json));
-
-        final int result = answer(qid1, lectureEntity1.getModkey().toString());
+        final int result = answer(q1.getId(), lectureEntity1.getModkey().toString());
         assertEquals(0, result);
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture1 =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+        List<QuestionEntity> listLecture2 =
+                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        assertTrue(listLecture1after.get(0).isAnswered());
-        assertFalse(listLecture2after.get(0).isAnswered());
-
-        questionRepository.deleteById(qid1);
-        questionRepository.deleteById(qid2);
+        assertTrue(listLecture1.get(0).isAnswered());
+        assertFalse(listLecture2.get(0).isAnswered());
     }
 
     @Test
     void answerUnsuccessfulTest() throws Exception {
-        final long qid1 = Long.parseLong(postQuestions(q1Json));
-        final long qid2 = Long.parseLong(postQuestions(q2Json));
-
-        final int result = answer(qid1, lectureEntity2.getModkey().toString());
+        final int result = answer(q1.getId(), lectureEntity2.getModkey().toString());
         assertEquals(-1, result);
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture1 =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+        List<QuestionEntity> listLecture2 =
+                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        assertFalse(listLecture1after.get(0).isAnswered());
-        assertFalse(listLecture2after.get(0).isAnswered());
-
-        questionRepository.deleteById(qid1);
-        questionRepository.deleteById(qid2);
+        assertFalse(listLecture1.get(0).isAnswered());
+        assertFalse(listLecture2.get(0).isAnswered());
     }
 
     @Test
     void answerUnsuccessfulInvalidModkeyTest() throws Exception {
-        final long qid1 = Long.parseLong(postQuestions(q1Json));
-        final long qid2 = Long.parseLong(postQuestions(q2Json));
-
         String resultString = this.mockMvc.perform(
-                put("/api/question/answer/" + qid1 + "/" + "modkey"))
+                put("/api/question/answer/" + q1.getId() + "/" + "modkey"))
                 .andExpect(status().is4xxClientError())
                 .andReturn().getResponse().getContentAsString();
         assertEquals("Invalid UUID", resultString);
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture1 =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+        List<QuestionEntity> listLecture2 =
+                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        assertFalse(listLecture1after.get(0).isAnswered());
-        assertFalse(listLecture2after.get(0).isAnswered());
-
-        questionRepository.deleteById(qid1);
-        questionRepository.deleteById(qid2);
-    }*/
+        assertFalse(listLecture1.get(0).isAnswered());
+        assertFalse(listLecture2.get(0).isAnswered());
+    }
 }
