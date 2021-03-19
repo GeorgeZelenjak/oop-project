@@ -29,7 +29,6 @@ public class LectureController {
 
     /**
      * Constructor for the lecture controller.
-     *
      * @param service lecture service
      */
     public LectureController(LectureService service) {
@@ -39,7 +38,6 @@ public class LectureController {
 
     /**
      * GET Endpoint to retrieve a lecture.
-     *
      * @param id the id
      * @return selected lecture
      */
@@ -51,7 +49,6 @@ public class LectureController {
 
     /**
      * POST Endpoint to create a new lecture.
-     *
      * @param name the name of the lecture
      * @param info the info
      * @return a new lecture entity
@@ -68,7 +65,6 @@ public class LectureController {
 
     /**
      * DELETE Endpoint to delete a lecture with the specified id iff the moderator key is correct.
-     *
      * @param modkey the moderator key to authenticate
      * @param id     UUID of lecture
      * @return 0 if the lecture has been deleted successfully, -1 if not
@@ -80,7 +76,6 @@ public class LectureController {
 
     /**
      * PUT Endpoint to close a lecture with the specified id iff the moderator key is correct.
-     *
      * @param lectureId UUID of lecture
      * @param modkey    the moderator key to authenticate
      * @return 0 if the lecture has been closed successfully, -1 if not
@@ -92,7 +87,6 @@ public class LectureController {
 
     /**
      * GET Endpoint to validate moderator key for the lecture.
-     *
      * @param modkey the moderator key to authenticate
      * @param id     UUID of lecture
      * @return 0 if moderator was validated successfully, -1 if not
@@ -104,15 +98,27 @@ public class LectureController {
 
     /**
      * Exception handler for requests containing invalid uuids.
-     *
      * @param exception exception that has occurred
-     * @return response object with 400 Bad Request status code and 'Invalid UUID' message
+     * @return response object with 400 Bad Request status code and 'Don't do this' message
      */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Invalid UUID");
+                .body("Don't do this");
+    }
+
+    /**
+     * Exception handler for invalid JSONs.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Don't do this' message
+     */
+    @ExceptionHandler(JsonProcessingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ResponseEntity<Object> invalidJSON(JsonProcessingException exception) {
+        System.out.println(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Don't do this");
     }
 }

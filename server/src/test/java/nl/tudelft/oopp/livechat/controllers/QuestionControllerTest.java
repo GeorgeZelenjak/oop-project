@@ -473,6 +473,7 @@ class QuestionControllerTest {
 
         assertNotNull(question1after);
         assertEquals(question1after.getText(), "this is the new text");
+        assertTrue(question1after.isEdited());
         assertEquals(0, question1after.getOwnerId());       //check that owner id is not exposed
     }
 
@@ -492,6 +493,7 @@ class QuestionControllerTest {
         assertNotNull(question1after);
         assertEquals(question1after.getText(),
                 "What would you do if a seagull entered in your house?");
+        assertFalse(question1after.isEdited());
         assertNotEquals(question1after.getOwnerId(), uid2);
     }
 
@@ -511,10 +513,11 @@ class QuestionControllerTest {
                         .characterEncoding("utf-8"))
                 .andExpect(status().is4xxClientError())
                 .andReturn().getResponse().getContentAsString();
-        assertEquals("Invalid UUID", result);
+        assertEquals("Don't do this", result);
 
         QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
         assertNotNull(question1after);
+        assertFalse(question1after.isEdited());
         assertEquals(question1after.getText(),
                 "What would you do if a seagull entered in your house?");
         assertNotEquals(question1after.getOwnerId(), uid2);
@@ -554,7 +557,7 @@ class QuestionControllerTest {
                 put("/api/question/answer/" + q1.getId() + "/" + "modkey"))
                 .andExpect(status().is4xxClientError())
                 .andReturn().getResponse().getContentAsString();
-        assertEquals("Invalid UUID", resultString);
+        assertEquals("Don't do this", resultString);
 
         List<QuestionEntity> listLecture1 =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
