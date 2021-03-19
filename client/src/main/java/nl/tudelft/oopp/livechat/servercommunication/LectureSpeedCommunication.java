@@ -2,12 +2,15 @@ package nl.tudelft.oopp.livechat.servercommunication;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import nl.tudelft.oopp.livechat.data.Lecture;
 
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.UUID;
 
 public class LectureSpeedCommunication {
@@ -18,8 +21,83 @@ public class LectureSpeedCommunication {
             "EEE, dd MMM yyyy HH:mm:ss zzz").excludeFieldsWithoutExposeAnnotation().create();
 
 
-    public static int getVotesOnLectureSpeed(UUID uuid) {
-        return 0;
+    /**
+     * Gets votes on lecture speed.
+     *
+     * @param uuid the uuid
+     * @return List of votes on lecture speed [0] is the faster count, [1] slower count
+     */
+    public static List<Integer> getVotesOnLectureSpeed(UUID uuid) {
+        //Check if current lecture has been set
+        if (Lecture.getCurrentLecture() == null) {
+            System.out.println("You are not connected to a lecture!");
+            return null;
+        }
+
+        //Parameters for request
+        //HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("");
+        String address = "http://localhost:8080/api/vote/getLectureSpeed/";
+
+        //Creating request and defining response
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(
+                URI.create(address + uuid)).build();
+
+        HttpResponse<String> response;
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.println("An exception when trying to communicate with the server!");
+            //e.printStackTrace();
+            return null;
+        }
+        int result = handleResponse(response);
+        if (result == 0) {
+            System.out.println("Lecture speed votes were retrieved successfully! "
+                    + response.body());
+        }
+        System.out.println("Result is " + result);
+        Type listType = new TypeToken<List<Integer>>(){}.getType();
+        return gson.fromJson(response.body(), listType);
+    }
+
+    /**
+     * Reset lecture speed.
+     *
+     * @param uuid   the uuid
+     * @param modkey the modkey
+     * @return the int
+     */
+    public static int resetLectureSpeed(UUID uuid, UUID modkey) {
+        //Check if current lecture has been set
+        if (Lecture.getCurrentLecture() == null) {
+            System.out.println("You are not connected to a lecture!");
+            return -1;
+        }
+
+        //Parameters for request
+        String address = "http://localhost:8080/api/vote/resetLectureSpeedVote/";
+
+        //Creating request and defining response
+        HttpRequest request = HttpRequest.newBuilder().DELETE().uri(
+                URI.create(address + uuid + "/" + modkey)).build();
+
+        HttpResponse<String> response;
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.println("An exception when trying to communicate with the server!");
+            //e.printStackTrace();
+            return -2;
+        }
+        int result = handleResponse(response);
+        if (result == 0) {
+            System.out.println("Lecture speed was reset! "
+                    + response.body());
+        }
+        System.out.println("Result is " + result);
+        return result;
     }
 
 
@@ -37,9 +115,6 @@ public class LectureSpeedCommunication {
             System.out.println("You are not connected to a lecture!");
             return -1;
         }
-        System.out.println(uid);
-        System.out.println(uuid);
-        System.out.println(speed);
 
         //Parameters for request
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(speed);
@@ -67,9 +142,6 @@ public class LectureSpeedCommunication {
         return result;
     }
 
-    private static int resetLectureSpeed(UUID uuid, UUID modkey) {
-        return 0;
-    }
 
     private static int handleResponse(HttpResponse<String> response) {
         //Unexpected response
