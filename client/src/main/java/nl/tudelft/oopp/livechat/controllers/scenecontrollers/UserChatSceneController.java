@@ -17,6 +17,7 @@ import nl.tudelft.oopp.livechat.data.Lecture;
 
 import nl.tudelft.oopp.livechat.data.Question;
 
+import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
 import nl.tudelft.oopp.livechat.uielements.QuestionCellUser;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
@@ -52,6 +53,12 @@ public class UserChatSceneController implements Initializable {
 
     @FXML
     private CheckBox unansweredCheckBox;
+
+    @FXML
+    private CheckBox voteOnLectureSpeedFast;
+
+    @FXML
+    private CheckBox voteOnLectureSpeedSlow;
 
     /**
      * The Observable list.
@@ -180,4 +187,33 @@ public class UserChatSceneController implements Initializable {
         fetchQuestions();
         return (ret);
     }
+
+    /**
+     * Vote on lecture speed fast.
+     *
+     * @return 0 if everthing is fine -1 if not
+     */
+    public int voteOnLectureSpeedFast() {
+        voteOnLectureSpeedSlow.setSelected(false);
+
+        return LectureSpeedCommunication.voteOnLectureSpeed(
+                User.getUid(),
+                Lecture.getCurrentLecture().getUuid(),
+                "faster");
+    }
+
+    /**
+     * Vote on lecture speed slow.
+     *
+     * @return 0 if everthing is fine -1 if not
+     */
+    public int voteOnLectureSpeedSlow() {
+        voteOnLectureSpeedFast.setSelected(false);
+
+        return LectureSpeedCommunication.voteOnLectureSpeed(
+                User.getUid(),
+                Lecture.getCurrentLecture().getUuid(),
+                "slower");
+    }
+
 }

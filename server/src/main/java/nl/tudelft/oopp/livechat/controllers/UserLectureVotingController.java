@@ -1,10 +1,11 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import nl.tudelft.oopp.livechat.entities.UserLectureSpeedTable;
 import nl.tudelft.oopp.livechat.services.LectureSpeedService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -33,6 +34,11 @@ public class UserLectureVotingController {
     public int voteOnLectureSpeed(@RequestParam long uid, @RequestParam UUID uuid,
                                    @RequestBody String speed) {
         return service.setUserLectureSpeedVote(uid,uuid,speed);
+    }
+
+    @GetMapping("/getLectureSpeed/{UUID}")
+    public List<Integer> getVotes(@PathVariable("UUID") UUID uuid) {
+        return service.getVotes(uuid);
     }
 
     /**

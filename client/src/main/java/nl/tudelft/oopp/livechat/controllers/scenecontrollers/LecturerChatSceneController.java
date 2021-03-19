@@ -19,6 +19,7 @@ import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
 import nl.tudelft.oopp.livechat.uielements.QuestionCellLecturer;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
@@ -97,6 +98,11 @@ public class LecturerChatSceneController implements Initializable {
     private Label sortByText;
     @FXML
     private CheckBox sortByTimeCheckBox;
+    @FXML
+    private Text voteCountFast;
+    @FXML
+    private Text voteCountSlow;
+
 
 
     /**
@@ -117,9 +123,32 @@ public class LecturerChatSceneController implements Initializable {
         userNameText.setText(User.getUserName());
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(1500),
-            ae -> fetchQuestions()));
+            ae -> {
+                fetchQuestions();
+                getVotesOnLectureSpeed();
+            }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+    }
+
+    /**
+     * Gets votes on lecture speed.
+     */
+    public void getVotesOnLectureSpeed() {
+        UUID uuid = Lecture.getCurrentLecture().getUuid();
+        voteCountFast.setText("Too fast:"
+                + LectureSpeedCommunication.getVotesOnLectureSpeed(uuid).get(0));
+        voteCountSlow.setText("Too slow:"
+                + LectureSpeedCommunication.getVotesOnLectureSpeed(uuid).get(1));
+    }
+
+    /**
+     * Reset lecture speed.
+     */
+    public void resetLectureSpeed() {
+        UUID uuid = Lecture.getCurrentLecture().getUuid();
+        UUID modkey = Lecture.getCurrentLecture().getModkey();
+        LectureSpeedCommunication.resetLectureSpeed(uuid,modkey);
     }
 
     /**
@@ -269,4 +298,5 @@ public class LecturerChatSceneController implements Initializable {
         this.copyId.setDisable(!this.copyId.isDisabled());
         this.copyId.setVisible(!this.copyId.isVisible());
     }
+
 }
