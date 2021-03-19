@@ -122,6 +122,19 @@ public class QuestionTest {
     }
 
     @Test
+    public void isEditedTest() {
+        question.setEdited(true);
+        assertTrue(question.isEdited());
+    }
+
+    @Test
+    public void setEditedTest() {
+        boolean edited = question.isEdited();
+        question.setEdited(!edited);
+        assertNotEquals(edited, question.isEdited());
+    }
+
+    @Test
     public void getAnswerTextTest() {
         assertEquals("42", question.getAnswerText());
     }
