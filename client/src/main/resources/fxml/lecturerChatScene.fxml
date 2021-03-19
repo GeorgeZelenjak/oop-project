@@ -57,7 +57,6 @@
          </children>
       </Pane>
       <Button fx:id="lectureLog" layoutX="824.0" layoutY="474.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="234.0" styleClass="mainSceneButton" text="View Lecture Log" />
-      <Button fx:id="viewAnswered" layoutX="826.0" layoutY="522.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="232.0" styleClass="mainSceneButton" text="View Answered Questions" />
       <Button fx:id="createQuiz" layoutX="506.0" layoutY="701.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Create Quiz" />
       <Button id="leaveLecture" fx:id="closeLectureButton" layoutX="822.0" layoutY="701.0" mnemonicParsing="false" onAction="#closeLecture" prefHeight="34.0" prefWidth="234.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="End Lecture" />
       <ListView fx:id="questionPaneListView" layoutX="209.0" layoutY="48.0" prefHeight="642.0" prefWidth="602.0" />
