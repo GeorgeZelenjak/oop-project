@@ -84,6 +84,11 @@
         -fx-background-color: Transparent;
     }
 
+    .editButton {
+        -fx-graphic: url(/images/edit.png);
+        -fx-background-color: Transparent;
+    }
+
     .settingsButton:hover{
         -fx-background-image: url(../images/Gear_gray.png);
         -fx-opacity: 0.5;

@@ -54,6 +54,9 @@ public class CellDataLecturer {
     @FXML
     private Button replyButton;
 
+    @FXML
+    private Button editButton;
+
     private Question question;
 
 
@@ -125,6 +128,7 @@ public class CellDataLecturer {
      *
      * @param timestamp the timestamp
      */
+    //TODO why 2 times?
     public void setTimestamp(Timestamp timestamp) {
         dateStamp.setText(timestamp.toLocalDateTime().toString());
         dateStamp.setText(timestamp.toLocalDateTime()
