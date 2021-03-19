@@ -17,6 +17,7 @@ import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
+import nl.tudelft.oopp.livechat.businesslogic.CreateFile;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
@@ -299,4 +300,31 @@ public class LecturerChatSceneController implements Initializable {
         this.copyId.setVisible(!this.copyId.isVisible());
     }
 
+    /** Method that exports all Questions
+     *      and answers of a lecture.
+     *
+     */
+    public void exportQuestionsAndAnswers() {
+
+        String alertText = "Press ok to export all questions and answers to file";
+        Alert alert = AlertController.createAlert(
+                Alert.AlertType.CONFIRMATION, "Exporting Q&A", alertText);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                CreateFile file = new CreateFile();
+
+                List<Question> list = QuestionCommunication.fetchQuestions();
+
+                if (list == null || list.size() == 0)
+                    AlertController.alertError(
+                            "Error exporting questions", "There are no questions!");
+
+                file.writeToFile(list);
+            }
+        });
+
+
+    }
 }
+
