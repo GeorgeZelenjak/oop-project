@@ -32,6 +32,10 @@ public class UserService {
         if (!luhnCheck(user.getUid())) { // use mac address checksum
             return -1;
         }
+        int count = userRepository.countAllByIp(ip);
+        if (userRepository.findById(user.getUid()).isEmpty() && count > 5) {
+            return -1;
+        }
         userRepository.save(user);
         return 0;
     }

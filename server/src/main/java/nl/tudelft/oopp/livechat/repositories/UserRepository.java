@@ -15,4 +15,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity getUserEntityByUid(long uid);
 
     UserEntity getUserEntityByUidAndLectureId(long uid, UUID uuid);
+
+    int countAllByIp(String ip);
 }
