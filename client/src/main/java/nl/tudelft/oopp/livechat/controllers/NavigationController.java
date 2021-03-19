@@ -110,12 +110,29 @@ public class NavigationController {
      * @throws IOException the io exception
      */
     private void goToSceneHelper(String javaFxFile) throws IOException {
-        backStack.push(this.main);
-        Parent root = FXMLLoader.load(getClass().getResource(javaFxFile));
-        Stage window = (Stage) main.getWindow();
-        Scene main = new Scene(root, 1080,768);
-        this.main = main;
-        window.setScene(main);
+        try {
+            backStack.push(this.main);
+            Parent root = FXMLLoader.load(getClass().getResource(javaFxFile));
+            Stage window = (Stage) main.getWindow();
+            Scene main = new Scene(root, 1080, 768);
+            this.main = main;
+            window.setScene(main);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void popupHelper(String javaFxFile) {
+        Parent root;
+        try {
+            root = FXMLLoader.load(getClass().getResource(javaFxFile));
+            Stage stage = new Stage();
+            stage.setTitle("My New Stage Title");
+            stage.setScene(new Scene(root, 600, 600));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -149,4 +166,9 @@ public class NavigationController {
         this.main = backStack.pop();
         window.setScene(main);
     }
+
+    public void popupTextAreaInputChange() {
+        popupHelper("/fxml/popupTextAreaInputChangedQuestionText.fxml");
+    }
+
 }
