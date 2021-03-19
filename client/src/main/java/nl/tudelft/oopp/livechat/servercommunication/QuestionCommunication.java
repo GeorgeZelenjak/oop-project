@@ -42,6 +42,7 @@ public class QuestionCommunication {
      *         -1 if current lecture does not exist
      *         -2 if an exception occurred when communicating with the server
      *         -3 if unexpected response was received
+     *         -4 if server rejects the question
      */
     public static int askQuestion(String questionText) {
         //Check if current lecture has been set
@@ -77,6 +78,10 @@ public class QuestionCommunication {
         if (response.statusCode() != 200) {
             System.out.println("Status: " + response.statusCode());
             return -3;
+        }
+
+        if (response.body().equals("-1")) {
+            return -4;
         }
 
         //Question has been asked successfully

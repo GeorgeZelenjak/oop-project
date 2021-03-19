@@ -88,7 +88,15 @@ public class LectureCommunication {
         }
 
         //Return object from response
-        return gson.fromJson(response.body(), Lecture.class);
+        Lecture created =  gson.fromJson(response.body(), Lecture.class);
+
+        if (created == null) return null;
+
+        if (!registerUser(created.getUuid().toString(), User.getUid(), User.getUserName())) {
+            System.out.println("Couldn't register user");
+            return null;
+        }
+        return created;
 
     }
 
@@ -124,36 +132,8 @@ public class LectureCommunication {
 
         final String lectureReceived = response.body();
 
-        //request to add user to user table
-        //Parameter for request
-        address = "http://localhost:8080/api/user/register";
-
-        JsonObject user = new JsonObject();
-        user.addProperty("userName", User.getUserName());
-        user.addProperty("uid", User.getUid());
-        user.addProperty("lectureId", lectureId);
-
-        String json = gson.toJson(user);
-        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
-
-        //Creating request and defining response
-        request = HttpRequest.newBuilder().POST(req).uri(
-                URI.create(address)).setHeader("Content-Type", "application/json").build();
-
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            //e.printStackTrace();
-            return null;
-        }
-        if (response.statusCode() != 200) {
-            System.out.println("Status second req: " + response.statusCode());
-            return null;
-        }
-
-        if (!response.body().equals("0")) {
-            System.out.println("Server rejected the request");
+        if (!registerUser(lectureId, User.getUid(), User.getUserName())) {
+            System.out.println("Couldn't register user");
             return null;
         }
 
@@ -236,4 +216,46 @@ public class LectureCommunication {
         return  response.body().equals("0");
     }
 
+    private static boolean registerUser(String lectureId, long uid, String username) {
+        //request to add user to user table
+        //Parameter for request
+        String address = "http://localhost:8080/api/user/register";
+
+        JsonObject user = new JsonObject();
+        user.addProperty("userName", username);
+        user.addProperty("uid", uid);
+        user.addProperty("lectureId", lectureId);
+
+        String json = gson.toJson(user);
+        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
+
+
+        //Creating request and defining response
+        HttpRequest request = HttpRequest.newBuilder().POST(req).uri(
+                URI.create(address)).setHeader("Content-Type", "application/json").build();
+        HttpResponse<String> response;
+
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            //e.printStackTrace();
+            return false;
+        }
+        if (response.statusCode() != 200) {
+            System.out.println("Status second req: " + response.statusCode());
+            return false;
+        }
+
+        if (!response.body().equals("0")) {
+            System.out.println("Server rejected the request with user: " + uid + " " + username);
+            return false;
+        }
+        return true;
+    }
+
+
+    public static boolean registerUserdebug(String lectureId, long uid, String username) {
+        return registerUser(lectureId, uid, username);
+    }
 }
