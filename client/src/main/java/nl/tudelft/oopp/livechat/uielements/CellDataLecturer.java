@@ -61,7 +61,7 @@ public class CellDataLecturer {
 
 
     /**
-     * Instantiates a new Cell data.
+     * Creates a new Cell data object.
      */
     public CellDataLecturer() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
@@ -74,8 +74,12 @@ public class CellDataLecturer {
         }
     }
 
-    public void setInfo(String string) {
-        questionText.setText(string);
+    /**
+     * Sets the question content.
+     * @param content the question content
+     */
+    public void setContent(String content) {
+        questionText.setText(content);
     }
 
     /**
@@ -88,26 +92,23 @@ public class CellDataLecturer {
     }
 
     /**
-     * Sets owner name.
-     *
-     * @param owner the owner
+     * Sets the owner name of the question.
+     * @param owner the owner of the question
      */
     public void setOwnerName(String owner) {
         questionOwner.setText(owner);
     }
 
     /**
-     * Gets box.
-     *
-     * @return the box
+     * Gets the anchor pane the info is in.
+     * @return the anchor pane
      */
     public AnchorPane getBox() {
         return questionBoxAnchorPane;
     }
 
     /**
-     * Sets question.
-     *
+     * Sets the question.
      * @param question the question
      */
     public void setQuestion(Question question) {
@@ -115,28 +116,24 @@ public class CellDataLecturer {
     }
 
     /**
-     * Sets number of upvotes.
-     *
-     * @param number the number
+     * Sets the number of upvotes for the question.
+     * @param number the number of upvotes for the question
      */
     public void setNumberOfUpvotes(int number) {
         numberOfUpvotes.setText(String.valueOf(number));
     }
 
     /**
-     * Sets timestamp.
-     *
-     * @param timestamp the timestamp
+     * Sets the time the question was asked.
+     * @param timestamp the time the question was asked
      */
-    //TODO why 2 times?
     public void setTimestamp(Timestamp timestamp) {
-        dateStamp.setText(timestamp.toLocalDateTime().toString());
         dateStamp.setText(timestamp.toLocalDateTime()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 
     /**
-     * Sets mark as answered button.
+     * Sets mark as answered button to mark the question as answered without a text-based reply.
      */
     public void setAnsweredQuestion() {
         if (question.getAnswerText() == null || question.getAnswerText().equals(" ")) {
@@ -149,7 +146,17 @@ public class CellDataLecturer {
     }
 
     /**
-     * Sets delete button.
+     * Sets edit button to edit the question content.
+     */
+    public void setEditButton() {
+        editButton.setOnAction((ActionEvent e) -> {
+            QuestionCommunication.edit(question.getId(),
+                    Lecture.getCurrentLecture().getModkey(), "blaha");
+        });
+    }
+
+    /**
+     * Sets delete button to delete any question.
      */
     public void setDeleteQuestion() {
         deleteButton.setOnAction((ActionEvent event) ->
@@ -157,13 +164,17 @@ public class CellDataLecturer {
                     Lecture.getCurrentLecture().getModkey()));
     }
 
+    /**
+     * Method that sets the answer text of a question
+     *  if the question was answered with a text answer.
+     */
     public void setAnswerText(String value) {
         answerText.setText("Answer: " + value);
     }
 
-    /** Method that controls the reply Button functionality.
+    /**
+     * Method that controls the reply Button functionality.
      * A popup will appear to enter the answer text.
-     *
      */
     public void replyAnswer() {
         replyButton.setOnAction((ActionEvent event) -> {
@@ -174,20 +185,17 @@ public class CellDataLecturer {
             td.setTitle("Enter your answer!");
             td.setHeight(300);
 
-
             Optional<String> text = td.showAndWait();
-
 
             text.ifPresent(s -> QuestionCommunication.markedAsAnswered(question.getId(),
                     Lecture.getCurrentLecture().getModkey(), s));
-
-
         });
 
     }
 
-    /** Method that disables the marked as answered button.
-     *
+    /**
+     * Method that disables the marked as answered button
+     *  when the question has already been answered.
      */
     public void disableMarkedAsAnswered() {
         if (question.isAnswered()) {
