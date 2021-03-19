@@ -75,8 +75,6 @@ public class DebugSceneController {
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 67, "Artjom");
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
-                18, "Giulio");
-        LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 26, "Codrin");
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 34, "Jegor");
@@ -85,7 +83,6 @@ public class DebugSceneController {
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 59, "Oleg");
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),67);
-        QuestionCommunication.upvoteQuestion(questions.get(2).getId(),18);
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),26);
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),34);
         QuestionCommunication.upvoteQuestion(questions.get(1).getId(),42);

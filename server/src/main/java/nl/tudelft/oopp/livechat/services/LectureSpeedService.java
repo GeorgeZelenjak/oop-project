@@ -5,8 +5,11 @@ import nl.tudelft.oopp.livechat.entities.UserLectureSpeedTable;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.UserLectureSpeedRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -40,6 +43,27 @@ public class LectureSpeedService {
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.userLectureSpeedRepository = userLectureSpeedRepository;
+    }
+
+
+    /**
+     * Gets votes.
+     *
+     * @param uuid the uuid
+     * @return the votes
+     */
+    public List<Integer> getVotes(UUID uuid) {
+        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
+
+        if (lecture == null || !lectureRepository.findLectureEntityByUuid(uuid).isOpen()) {
+            return null;
+        }
+
+        List<Integer> numberOfVotes = new ArrayList<>();
+        numberOfVotes.add(lecture.getFasterCount());
+        numberOfVotes.add(lecture.getSlowerCount());
+
+        return numberOfVotes;
     }
 
     /**
@@ -168,4 +192,6 @@ public class LectureSpeedService {
         lectureRepository.save(lecture);
         userLectureSpeedRepository.save(new UserLectureSpeedTable(uid, uuid, speed));
     }
+
+
 }

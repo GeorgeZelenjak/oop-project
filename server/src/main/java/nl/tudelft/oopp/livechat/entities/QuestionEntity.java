@@ -7,7 +7,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.DynamicUpdate;
 
 
@@ -21,7 +23,8 @@ public class QuestionEntity {
 
     @Id
     @Column(name = "id")
-    private long id = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "id")
+    private long id  = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
 
     @Column(name = "lectureId")
     private UUID lectureId;
