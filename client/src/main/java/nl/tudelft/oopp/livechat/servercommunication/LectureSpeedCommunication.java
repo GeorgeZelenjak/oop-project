@@ -23,8 +23,7 @@ public class LectureSpeedCommunication {
 
     /**
      * Gets votes on lecture speed.
-     *
-     * @param uuid the uuid
+     * @param uuid the id of the lecture
      * @return List of votes on lecture speed [0] is the faster count, [1] slower count
      */
     public static List<Integer> getVotesOnLectureSpeed(UUID uuid) {
@@ -87,7 +86,7 @@ public class LectureSpeedCommunication {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
+            System.out.println("Exception when communicating with the server!!!");
             //e.printStackTrace();
             return -2;
         }
