@@ -1,6 +1,6 @@
 # Code of conduct
 
-*Commitment and Ambition come first*
+*Commitment and Ambition come first, and "I will do it"*
 
 ## Our values
 - Pleasant atmosphere in the team.
