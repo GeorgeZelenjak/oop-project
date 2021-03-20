@@ -1,10 +1,9 @@
 package nl.tudelft.oopp.livechat.communication;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,10 +20,6 @@ import static org.mockserver.model.HttpRequest.request;
 
 public class LectureSeedCommunicationTest {
     public static MockServerClient mockServer;
-
-    private static final Gson gson = new GsonBuilder()
-            .setDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz")
-            .excludeFieldsWithoutExposeAnnotation().create();
 
     private static final UUID lid = UUID.randomUUID();
     private static final UUID wrongLid = UUID.randomUUID();
@@ -213,7 +208,8 @@ public class LectureSeedCommunicationTest {
 
     @Test
     public void voteInvalidIdTest() {
-        assertEquals(-3, LectureSpeedCommunication.voteOnLectureSpeed(userId, invalidUUID, "faster"));
+        assertEquals(-3,
+                LectureSpeedCommunication.voteOnLectureSpeed(userId, invalidUUID, "faster"));
     }
 
     @Test
