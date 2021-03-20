@@ -48,7 +48,7 @@ public class CellDataUser {
 
 
     /**
-     * Instantiates a new Cell data.
+     * Creates a new Cell data object.
      */
     public CellDataUser() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
@@ -61,8 +61,12 @@ public class CellDataUser {
         }
     }
 
-    public void setInfo(String string) {
-        questionText.setText(string);
+    /**
+     * Sets the question content.
+     * @param content the question content
+     */
+    public void setContent(String content) {
+        questionText.setText(content);
     }
 
     /**
@@ -74,30 +78,49 @@ public class CellDataUser {
         }
     }
 
+    /**
+     * Sets the owner name of the question.
+     * @param owner the owner of the question
+     */
     public void setOwnerName(String owner) {
         questionOwner.setText(owner);
     }
 
+    /**
+     * Gets the anchor pane the info is in.
+     * @return the anchor pane
+     */
     public AnchorPane getBox() {
         return questionBoxAnchorPane;
     }
 
+    /**
+     * Sets the question.
+     * @param question the question
+     */
     public void setQuestion(Question question) {
-
         this.question = question;
     }
 
+    /**
+     * Sets the number of upvotes for the question.
+     * @param number the number of upvotes for the question
+     */
     public void setNumberOfUpvotes(int number) {
         numberOfUpvotes.setText(String.valueOf(number));
     }
 
+    /**
+     * Sets the time the question was asked.
+     * @param timestamp the time the question was asked
+     */
     public void setTimestamp(Timestamp timestamp) {
         dateStamp.setText(timestamp.toLocalDateTime()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 
     /**
-     * Sets upvote button.
+     * Sets upvote button to upvote/unvote the question.
      */
     public void setUpvoteButton() {
         upvoteButton.setOnAction((ActionEvent event) -> {
@@ -107,7 +130,7 @@ public class CellDataUser {
     }
 
     /**
-     * Sets delete button.
+     * Sets delete button if the question was asked by the current user.
      */
     public void setDeleteButton() {
         if (User.getAskedQuestionIds().contains(question.getId())) {
@@ -118,8 +141,9 @@ public class CellDataUser {
         }
     }
 
-    /** Method that sets the answer text of a question.
-     *
+    /**
+     * Method that sets the answer text of a question
+     *  if the question was answered with a text answer.
      */
     public void setAnswerText() {
         if (question.isAnswered()) {

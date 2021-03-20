@@ -44,6 +44,9 @@ public class QuestionEntity {
     @Column(name = "answerText", length = 2000)
     private String answerText;
 
+    @Column(name = "edited")
+    private boolean edited;
+
     @Column(name = "answerTime")
     private Timestamp answerTime;
 
@@ -187,6 +190,22 @@ public class QuestionEntity {
      */
     public void setAnswered(boolean answered) {
         this.answered = answered;
+    }
+
+    /**
+     * Checks whether the question has been edited.
+     * @return true if the question has been edited, false otherwise
+     */
+    public boolean isEdited() {
+        return this.edited;
+    }
+
+    /**
+     * Sets the question as (un)edited.
+     * @param edited true or false to indicate if the question has been edited or not
+     */
+    public void setEdited(boolean edited) {
+        this.edited = edited;
     }
 
     /**

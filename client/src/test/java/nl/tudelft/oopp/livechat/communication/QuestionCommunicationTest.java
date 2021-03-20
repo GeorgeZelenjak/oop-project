@@ -2,12 +2,14 @@ package nl.tudelft.oopp.livechat.communication;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
@@ -44,6 +46,11 @@ public class QuestionCommunicationTest {
     private static String goodQuestion;
     private static String normalQuestion;
     private static String badQuestion;
+
+    private static String json1;
+    private static String json2;
+    private static String json3;
+    private static String json4;
 
     private static final String response =  "[\n"
             + "    {\n"
@@ -150,14 +157,19 @@ public class QuestionCommunicationTest {
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
 
-    //TODO change the body from "placeholder"
     /**
      * Create expectations for marking question as answered.
      */
     private static void createExpectationsForMarkAsAnswered() {
-        //Success
+        //Success without text
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
                         + qid1 + "/" +  modkey).withBody(" "))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0").withHeader("Content-Type","application/json"));
+
+        //Success with text
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
+                + qid1 + "/" +  modkey).withBody("42"))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0").withHeader("Content-Type","application/json"));
 
@@ -169,13 +181,13 @@ public class QuestionCommunicationTest {
 
         //qid does not match
         mockServer.when(request().withMethod("PUT")
-                .withPath("/api/question/answer/" + 666 + "/" +  modkey).withBody(" "))
+                .withPath("/api/question/answer/" + 666 + "/" +  modkey).withBody("answer"))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
 
         //incorrect modkey
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                + qid1 + "/" +  incorrectModkey).withBody(" "))
+                + qid1 + "/" +  incorrectModkey).withBody("the answer"))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
@@ -246,6 +258,49 @@ public class QuestionCommunicationTest {
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
 
+    /**
+     * Create expectations for editing questions (done by moderator).
+     */
+    private static void createExpectationsForEdit() {
+        //Success
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/edit")
+                .withBody(json1)).respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0").withHeader("Content-Type","application/json"));
+
+        //invalid parameter - send 400
+        //  (treat lecture id (lid) as invalid UUID here to test BAD REQUEST)
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/edit")
+                .withBody(json2)).respond(HttpResponse.response().withStatusCode(400));
+
+        //modkey does not match
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/edit")
+                .withBody(json3)).respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+
+        //qid not found
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/edit")
+                .withBody(json4)).respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+    }
+
+    /**
+     * A helper method to create JSON object for edit request.
+     * @param qid the id of the question
+     * @param modkey the moderator key
+     * @param text the new text
+     * @param uid the user id
+     * @return the JSON string with the provided values
+     */
+    private static String createJson(long qid, UUID modkey, String text, long uid) {
+        //Create a json object with the data to be sent
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", qid);
+        jsonObject.addProperty("modkey", modkey.toString());
+        jsonObject.addProperty("text", text);
+        jsonObject.addProperty("uid", uid);
+        return gson.toJson(jsonObject);
+    }
+
 
     /**
      * Starts mock server.
@@ -262,12 +317,23 @@ public class QuestionCommunicationTest {
         badQuestion = gson.toJson(
                 new Question(lid, "F*ck",  userId));
 
+        json1 = createJson(Long.parseLong(qid1), modkey, "Edited", userId);
+        json2 = createJson(Long.parseLong(qid2), lid, "Edited question", userId);
+        json3 = createJson(Long.parseLong(qid3), incorrectModkey, "Edited by ...", userId);
+        json4 = createJson(666, modkey, "Edited or not", userId);
+
         createExpectationsForAsking();
         createExpectationsForFetching();
         createExpectationsForUpvote();
         createExpectationsForMarkAsAnswered();
         createExpectationsForDeleteQuestion();
         createExpectationsForModDelete();
+        createExpectationsForEdit();
+    }
+
+    @AfterEach
+    public void clear() {
+        User.getAskedQuestionIds().clear();
     }
 
 
@@ -432,10 +498,17 @@ public class QuestionCommunicationTest {
     }
 
     @Test
+    public void markAsAnsweredSuccessfulWithAnswerTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Git", "Sebastian"));
+        assertEquals(0, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey, "42"));
+    }
+
+    @Test
     public void markAsAnsweredNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
         assertEquals(-1, QuestionCommunication.markedAsAnswered(
-                Long.parseLong(qid1), modkey, null));
+                Long.parseLong(qid1), modkey, "answer"));
     }
 
     @Test
@@ -443,7 +516,7 @@ public class QuestionCommunicationTest {
         stopServer();
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Teamwork", "Not Sander"));
-        assertEquals(-2, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey,null));
+        assertEquals(-2, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey," "));
         startServer();
     }
 
@@ -452,14 +525,14 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Testing", "Andy"));
         assertEquals(-3,
-                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), lid, null));
+                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), lid, "answer"));
     }
 
     @Test
     public void markAsAnsweredIncorrectQidTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "RCS", "Not Sebastian"));
-        assertEquals(-4, QuestionCommunication.markedAsAnswered(666, modkey, null));
+        assertEquals(-4, QuestionCommunication.markedAsAnswered(666, modkey, "answer"));
     }
 
     @Test
@@ -468,7 +541,7 @@ public class QuestionCommunicationTest {
                 modkey, "Lambda expressions", "Thomas"));
         assertEquals(-4,
                 QuestionCommunication.markedAsAnswered(
-                        Long.parseLong(qid1), incorrectModkey, null));
+                        Long.parseLong(qid1), incorrectModkey, "the answer"));
     }
 
     /**
@@ -520,6 +593,7 @@ public class QuestionCommunicationTest {
         assertEquals(-3,
                 QuestionCommunication.deleteQuestion(Long.parseLong(qid1), Long.MAX_VALUE));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
+
     }
 
     @Test
@@ -587,6 +661,59 @@ public class QuestionCommunicationTest {
     public void modDeleteIncorrectModkeyTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Caching", "Koen"));
         assertEquals(-4, QuestionCommunication.modDelete(Long.parseLong(qid1), incorrectModkey));
+    }
+
+    /**
+     * Tests for editing questions.
+     */
+
+    @Test
+    public void editSuccessfulTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Indexes", "Asterios"));
+        QuestionCommunication.askQuestion("Is there anybody?");
+        assertEquals(0, QuestionCommunication.edit(Long.parseLong(qid1), modkey, "Edited"));
+
+    }
+
+    @Test
+    public void editNoLectureExistsTest() {
+        Lecture.setCurrentLecture(null);
+        assertEquals(-1, QuestionCommunication.edit(
+                Long.parseLong(qid1), modkey, "Edited question"));
+    }
+
+    @Test
+    public void editServerRefusesTest() {
+        stopServer();
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Transactions", "Asterios"));
+        assertEquals(-2, QuestionCommunication.edit(Long.parseLong(qid1), modkey,"Not edited"));
+        startServer();
+    }
+
+    @Test
+    public void editInvalidUUIDTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Query processing", "Christoph"));
+        assertEquals(-3, QuestionCommunication.edit(Long.parseLong(qid2),
+                lid, "Edited question"));
+    }
+
+    @Test
+    public void editIncorrectQidTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "SQL", "Christoph"));
+        assertEquals(-4, QuestionCommunication.edit(666, modkey, "Edited or not"));
+    }
+
+    @Test
+    public void editIncorrectModkeyTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Relational algebra", "Christoph"));
+        assertEquals(-4,
+                QuestionCommunication.edit(Long.parseLong(qid3),
+                        incorrectModkey, "Edited by ..."));
     }
 
     /**

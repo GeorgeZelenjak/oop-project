@@ -21,6 +21,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 /**
  * Class for Question service tests.
+ * Warning: These tests depend on the order annotation because sometimes the outcome of one test
+ *  is dependent on the outcome of the test before it (like for example, adding a user or a lecture
+ *  to the repository, etc).
  */
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -318,6 +321,7 @@ class QuestionServiceTest {
         QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
         assertNotNull(q);
         assertEquals("how old?", q.getText());
+        assertFalse(q.isEdited());
 
         questionRepository.deleteById(q3.getId());
     }
@@ -334,6 +338,7 @@ class QuestionServiceTest {
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
         assertEquals("How to get 10 for testing?", q.getText());
+        assertFalse(q.isEdited());
 
         l2.reOpen();
         lectureRepository.save(l2);
@@ -347,6 +352,7 @@ class QuestionServiceTest {
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
         assertEquals("How to get 10 for testing?", q.getText());
+        assertFalse(q.isEdited());
     }
 
     @Test
@@ -357,6 +363,7 @@ class QuestionServiceTest {
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
         assertEquals("How to get 10 for testing?", q.getText());
+        assertFalse(q.isEdited());
     }
 
     @Test
@@ -368,6 +375,7 @@ class QuestionServiceTest {
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
         assertEquals("How to get 10 for testing?", q.getText());
+        assertFalse(q.isEdited());
 
         userRepository.save(user2);
     }
@@ -381,6 +389,7 @@ class QuestionServiceTest {
         assertNotNull(q);
         assertEquals("bar", q.getText());
         assertEquals(uid2, q2.getOwnerId());
+        assertTrue(q.isEdited());
 
         q2 = q;
     }

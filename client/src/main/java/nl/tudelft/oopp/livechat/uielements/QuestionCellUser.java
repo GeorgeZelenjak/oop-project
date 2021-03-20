@@ -4,7 +4,7 @@ import javafx.scene.control.ListCell;
 import nl.tudelft.oopp.livechat.data.Question;
 
 /**
- * Customizes the question cell for the user.
+ * Class that customizes the question cell for the user.
  */
 public class QuestionCellUser extends ListCell<Question> {
 
@@ -16,21 +16,27 @@ public class QuestionCellUser extends ListCell<Question> {
     @Override
     public void updateItem(Question question, boolean empty) {
         super.updateItem(question,empty);
-        if (question != null && !empty) {
 
+        if (question != null && !empty) {
             CellDataUser data = new CellDataUser();
             data.setQuestion(question);
-            data.setTimestamp(question.getTime());
 
-            data.setInfo(question.getText());
-            data.setOwnerName(question.getOwnerName());
+            //set information
+            data.setTimestamp(question.getTime());
+            if (question.isEdited()) {
+                data.setOwnerName(question.getOwnerName() + " (edited)");
+            } else {
+                data.setOwnerName(question.getOwnerName() + "not edited");
+            }
+            data.setContent(question.getText());
             data.markAnswered();
             data.setNumberOfUpvotes(question.getVotes());
 
+            //set graphic and buttons
             setGraphic(data.getBox());
-            data.setAnswerText();
             data.setUpvoteButton();
             data.setDeleteButton();
+            data.setAnswerText();
         } else {
             setGraphic(null);
         }

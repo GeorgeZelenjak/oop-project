@@ -86,6 +86,8 @@ public class CreateLectureController {
             return;
         }
 
+        User.setUserName(enterYourNameTextField.getText());
+
         Lecture lecture = LectureCommunication
                 .createLecture(enterLectureNameTextField.getText(),
                 enterYourNameTextField.getText(), new Timestamp(System.currentTimeMillis()));
@@ -100,7 +102,6 @@ public class CreateLectureController {
         AlertController.alertInformation("Creating lecture", alertText);
 
         Lecture.setCurrentLecture(lecture);
-        User.setUserName(enterYourNameTextField.getText());
         NavigationController.getCurrentController().goToLecturerChatPage();
         System.out.println(lecture);
     }

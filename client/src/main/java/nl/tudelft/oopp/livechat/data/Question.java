@@ -39,6 +39,9 @@ public class Question implements Comparable<Question> {
     @Expose(serialize = false, deserialize = true)
     private Timestamp answerTime;
 
+    @Expose(serialize = false, deserialize = true)
+    private boolean edited;
+
     @Expose(serialize = true, deserialize = true)
     private long ownerId;
 
@@ -141,6 +144,22 @@ public class Question implements Comparable<Question> {
      */
     public boolean isAnswered() {
         return this.answered;
+    }
+
+    /**
+     * Sets the question as (not) edited.
+     * @param edited boolean indicating if question has been edited
+     */
+    public void setEdited(boolean edited) {
+        this.edited = edited;
+    }
+
+    /**
+     * Checks whether the question is (not) edited.
+     * @return true if the question has been edited, false otherwise
+     */
+    public boolean isEdited() {
+        return this.edited;
     }
 
     /**

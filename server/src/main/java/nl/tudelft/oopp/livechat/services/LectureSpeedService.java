@@ -48,8 +48,7 @@ public class LectureSpeedService {
 
     /**
      * Gets votes.
-     *
-     * @param uuid the uuid
+     * @param uuid the id of the lecture
      * @return the votes
      */
     public List<Integer> getVotes(UUID uuid) {

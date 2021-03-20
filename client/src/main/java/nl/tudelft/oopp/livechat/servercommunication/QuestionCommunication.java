@@ -1,7 +1,9 @@
 package nl.tudelft.oopp.livechat.servercommunication;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
@@ -163,7 +165,7 @@ public class QuestionCommunication {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
+            System.out.println("Exception when trying to communicate with the server!");
             //e.printStackTrace();
             return -2;
         }
@@ -194,8 +196,9 @@ public class QuestionCommunication {
         }
 
         //Parameters for request
-        if (answer == null)
+        if (answer == null) {
             answer = " ";
+        }
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(answer);
         String address = "http://localhost:8080/api/question/answer/" + qid + "/" + modkey;
 
@@ -219,6 +222,57 @@ public class QuestionCommunication {
         if (result == 0) {
             System.out.println("The question was marked as answered successfully!"
                                     + response.body());
+        }
+        return result;
+    }
+
+    /**
+     * Method that sends a request to edit a question to the server.
+     * @param qid the id of the question
+     * @param modKey the moderator key
+     * @param newText the edited text of the question
+     * @return 0 if the question was edited successfully
+     *        -1 if current lecture does not exist
+     *        -2 if an exception occurred when communicating with the server
+     *        -3 if unexpected response was received
+     *        -4 if the question wasn't edited (e.g wrong qid, wrong modkey etc.)
+     */
+    public static int edit(long qid, UUID modKey, String newText) {
+        //Check if current lecture has been set
+        if (Lecture.getCurrentLecture() == null) {
+            System.out.println("You are not connected to a lecture!!!");
+            return -1;
+        }
+
+        //Create a json object with the data to be sent
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", qid);
+        jsonObject.addProperty("modkey", modKey.toString());
+        jsonObject.addProperty("text", newText);
+        jsonObject.addProperty("uid", User.getUid());
+        String json = gson.toJson(jsonObject);
+
+        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
+        String address = "http://localhost:8080/api/question/edit";
+
+        //Create request and defining response
+        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
+                URI.create(address)).setHeader("Content-Type", "application/json").build();
+        HttpResponse<String> response;
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.println("Exception when communicating with the server!");
+            //e.printStackTrace();
+            return -2;
+        }
+
+        int result = handleResponse(response);
+        System.out.println("Status: " + result);
+        if (result == 0) {
+            System.out.println("The question with id " + qid + " was modified successfully!");
+            System.out.println("New text: " + newText);
         }
         return result;
     }

@@ -71,36 +71,52 @@ public class LecturerChatSceneController implements Initializable {
 
     @FXML
     private Label showText;
+
     @FXML
     private Pane pollingBackground;
+
     @FXML
     private Pane speedBackground;
+
     @FXML
     private Text pollingText;
+
     @FXML
     private Text speedText;
+
     @FXML
     private Button pollingButton;
+
     @FXML
     private Button speedButton;
+
     @FXML
     private Button lectureLog;
+
     @FXML
     private Button viewAnswered;
+
     @FXML
     private Button reopenPolling;
+
     @FXML
     private Button goToSettingsButton;
+
     @FXML
     private Button createPolling;
+
     @FXML
     private Button createQuiz;
+
     @FXML
     private Label sortByText;
+
     @FXML
     private CheckBox sortByTimeCheckBox;
+
     @FXML
     private Text voteCountFast;
+
     @FXML
     private Text voteCountSlow;
 
@@ -301,9 +317,8 @@ public class LecturerChatSceneController implements Initializable {
         this.copyId.setVisible(!this.copyId.isVisible());
     }
 
-    /** Method that exports all Questions
-     *      and answers of a lecture.
-     *
+    /**
+     * Method that exports all Questions and answers of a lecture.
      */
     public void exportQuestionsAndAnswers() {
 

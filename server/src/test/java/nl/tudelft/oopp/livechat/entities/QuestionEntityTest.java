@@ -122,6 +122,17 @@ class QuestionEntityTest {
     }
 
     @Test
+    void isEditedTest() {
+        assertFalse(questionEntity.isEdited());
+    }
+
+    @Test
+    void setEditedTest() {
+        questionEntity.setEdited(true);
+        assertTrue(questionEntity.isEdited());
+    }
+
+    @Test
     void getAnswerTextTest() {
         questionEntity.setAnswerText("42");
         assertEquals("42", questionEntity.getAnswerText());

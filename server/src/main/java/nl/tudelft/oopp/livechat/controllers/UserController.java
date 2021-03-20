@@ -1,5 +1,6 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,19 @@ public class UserController {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<Object> badUUID(HttpMessageNotReadableException exception) {
+        System.out.println(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Don't do this");
+    }
+
+    /**
+     * Exception handler for invalid JSONs.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Don't do this' message
+     */
+    @ExceptionHandler(JsonProcessingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ResponseEntity<Object> invalidJSON(JsonProcessingException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Don't do this");

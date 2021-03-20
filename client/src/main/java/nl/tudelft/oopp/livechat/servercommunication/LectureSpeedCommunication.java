@@ -13,6 +13,9 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Class to send requests regarding lecture speed.
+ */
 public class LectureSpeedCommunication {
 
     private static final HttpClient client = HttpClient.newBuilder().build();
@@ -23,9 +26,8 @@ public class LectureSpeedCommunication {
 
     /**
      * Gets votes on lecture speed.
-     *
-     * @param uuid the uuid
-     * @return List of votes on lecture speed [0] is the faster count, [1] slower count
+     * @param uuid the id of the lecture
+     * @return List of votes on lecture speed: [0] is the faster count, [1] slower count
      */
     public static List<Integer> getVotesOnLectureSpeed(UUID uuid) {
         //Check if current lecture has been set
@@ -35,7 +37,6 @@ public class LectureSpeedCommunication {
         }
 
         //Parameters for request
-        //HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("");
         String address = "http://localhost:8080/api/vote/getLectureSpeed/";
 
         //Creating request and defining response
@@ -56,17 +57,19 @@ public class LectureSpeedCommunication {
             System.out.println("Lecture speed votes were retrieved successfully! "
                     + response.body());
         }
-        System.out.println("Result is " + result);
         Type listType = new TypeToken<List<Integer>>(){}.getType();
         return gson.fromJson(response.body(), listType);
     }
 
     /**
-     * Reset lecture speed.
-     *
-     * @param uuid   the uuid
-     * @param modkey the modkey
-     * @return the int
+     * Resets lecture speed.
+     * @param uuid the id of the lecture
+     * @param modkey the moderator key
+     * @return 0 if the lecture speed votes were reset successfully
+     *        -1 if current lecture does not exist
+     *        -2 if an exception occurred when communicating with the server
+     *        -3 if unexpected response was received
+     *        -4 if the lecture speed votes were not reset (e.g wrong qid, wrong modkey etc.)
      */
     public static int resetLectureSpeed(UUID uuid, UUID modkey) {
         //Check if current lecture has been set
@@ -87,7 +90,7 @@ public class LectureSpeedCommunication {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
+            System.out.println("Exception when communicating with the server!!!");
             //e.printStackTrace();
             return -2;
         }
@@ -102,12 +105,15 @@ public class LectureSpeedCommunication {
 
 
     /**
-     * Vote on lecture speed.
-     *
-     * @param uid   the uid
-     * @param uuid  the uuid
-     * @param speed the speed
-     * @return the int
+     * Votes on lecture speed.
+     * @param uid the id of the user
+     * @param uuid the id of the lecture
+     * @param speed the speed preference
+     * @return 0 if voted successfully
+     *        -1 if current lecture does not exist
+     *        -2 if an exception occurred when communicating with the server
+     *        -3 if unexpected response was received
+     *        -4 if not voted (e.g wrong qid, wrong speed string etc.)
      */
     public static int voteOnLectureSpeed(long uid, UUID uuid, String speed) {
         //Check if current lecture has been set
@@ -122,7 +128,8 @@ public class LectureSpeedCommunication {
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
-                URI.create(address + "?uid=" + uid + "&uuid=" + uuid)).build();
+                URI.create(address + "?uid=" + uid + "&uuid=" + uuid))
+                .setHeader("Content-Type", "application/json").build();
 
         HttpResponse<String> response;
         //Catching error when communicating with server
@@ -142,7 +149,11 @@ public class LectureSpeedCommunication {
         return result;
     }
 
-
+    /**
+     * Handles the response from the server.
+     * @param response response received from the server
+     * @return -3, -4, 0 according to the "status codes" for these methods
+     */
     private static int handleResponse(HttpResponse<String> response) {
         //Unexpected response
         if (response.statusCode() != 200) {

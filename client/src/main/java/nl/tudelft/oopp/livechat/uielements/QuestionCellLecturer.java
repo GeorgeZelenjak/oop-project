@@ -4,37 +4,46 @@ import javafx.scene.control.ListCell;
 import nl.tudelft.oopp.livechat.data.Question;
 
 /**
- * Customizes the question cell for the lecturer.
+ * Class that customizes the question cell for the lecturer.
  */
 public class QuestionCellLecturer extends ListCell<Question> {
 
     /**
      * Customizes the question cell for the lecturer.
-     *
      * @param question the question
      * @param empty set to empty
      */
     @Override
     public void updateItem(Question question, boolean empty) {
         super.updateItem(question, empty);
-        if (question != null && !empty) {
 
+        if (question != null && !empty) {
             CellDataLecturer data = new CellDataLecturer();
             data.setQuestion(question);
-            data.setTimestamp(question.getTime());
 
-            data.setInfo(question.getText());
-            data.setOwnerName(question.getOwnerName());
+            //set information
+            data.setTimestamp(question.getTime());
+            if (question.isEdited()) {
+                data.setOwnerName(question.getOwnerName() + " (edited)");
+            } else {
+                data.setOwnerName(question.getOwnerName());
+            }
+            data.setContent(question.getText());
             data.markAnswered();
             data.setNumberOfUpvotes(question.getVotes());
 
+            //set graphic and buttons
             setGraphic(data.getBox());
+            data.setEditButton();
             data.setAnsweredQuestion();
             data.setDeleteQuestion();
             data.replyAnswer();
             data.disableMarkedAsAnswered();
-            if (question.getAnswerText() != null && !question.getAnswerText().equals(" "))
+
+            //set answered text if the question has been answered
+            if (question.getAnswerText() != null && !question.getAnswerText().equals(" ")) {
                 data.setAnswerText(question.getAnswerText());
+            }
 
         } else setGraphic(null);
     }

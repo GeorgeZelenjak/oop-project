@@ -19,8 +19,8 @@ public class CreateFile {
     private final File file;
     private final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-    /*
-     * Text HighLighters
+    /**
+     * Text HighLighters.
      */
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_RED = "\u001B[31m";
@@ -28,8 +28,8 @@ public class CreateFile {
     private static final String separatorLine = "--------------------------------------";
 
 
-    /** Constructor for the CreateFile Class.
-     *
+    /**
+     * Creates a new CreateFile object.
      */
     public CreateFile() {
         Path path = Path.of("exportedQuestions/");
@@ -57,7 +57,6 @@ public class CreateFile {
     }
 
     private void createFile() {
-
         try {
             if (file.createNewFile())
                 System.out.println(ANSI_GREEN + "File created successfully" + ANSI_RESET);
@@ -68,12 +67,11 @@ public class CreateFile {
     }
 
 
-    /**Main method of the class that writes all questions to file.
-     *
-     * @param questions - list of questions
+    /**
+     * Main method of the class that writes all questions to file.
+     * @param questions list of questions
      */
     public void writeToFile(List<Question> questions) {
-
         try {
             PrintWriter writer = new PrintWriter(file);
 
@@ -106,10 +104,10 @@ public class CreateFile {
         }
     }
 
-    /** Helper method that builds the String representation of a question.
-     *
-     * @param question - The Question Object
-     * @return - the string representation
+    /**
+     * Helper method that builds the String representation of a question.
+     * @param question The Question Object
+     * @return the string representation
      */
     private String stringHelper(Question question) {
         String result = "Q: \""
@@ -126,10 +124,10 @@ public class CreateFile {
         return result;
     }
 
-    /** Helper method that builds the header of the file.
-     *
-     * @param listSize - size of question size
-     * @return - the string representation
+    /**
+     * Helper method that builds the header of the file.
+     * @param listSize size of question size
+     * @return the string representation
      */
     private String headerBuilder(int listSize) {
 
@@ -142,10 +140,10 @@ public class CreateFile {
                 + "\n";
     }
 
-    /** Method that sanitizes the filename.
-     *
-     * @param inputName - the filename
-     * @return - the sanitized filename
+    /**
+     * Method that sanitizes the filename.
+     * @param inputName the filename
+     * @return the sanitized filename
      */
     public String sanitizeFilename(String inputName) {
         return inputName.replaceAll("[^a-zA-Z0-9-]", "_");

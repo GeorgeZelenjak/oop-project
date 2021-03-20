@@ -315,7 +315,7 @@ class LectureControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals("Invalid UUID", result);
+        assertEquals("Don't do this", result);
     }
 }
 

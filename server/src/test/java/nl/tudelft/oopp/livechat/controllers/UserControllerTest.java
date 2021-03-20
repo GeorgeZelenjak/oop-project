@@ -60,7 +60,6 @@ public class UserControllerTest {
 
     /**
      * Gets luhn digit to make luhn checksum valid.
-     *
      * @param n the number
      * @return the luhn digit
      */
