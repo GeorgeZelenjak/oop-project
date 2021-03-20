@@ -97,6 +97,34 @@ public class LectureSeedCommunicationTest {
     }
 
     /**
+     * Create expectations for resetting vote on the lecture speed.
+     */
+    private static void createExpectationsForResetting() {
+        //Success
+        mockServer.when(request().withMethod("DELETE")
+                .withPath("/api/vote/resetLectureSpeedVote/" + lid + "/" + modkey))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0").withHeader("Content-Type", "application/json"));
+
+        //Invalid request
+        mockServer.when(request().withMethod("DELETE")
+                .withPath("/api/vote/resetLectureSpeedVote/" + invalidUUID + "/" + modkey))
+                .respond(HttpResponse.response().withStatusCode(400));
+
+        //Lecture not found
+        mockServer.when(request().withMethod("DELETE")
+                .withPath("/api/vote/resetLectureSpeedVote/" + wrongLid + "/" + modkey))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type", "application/json"));
+
+        //Incorrect modkey
+        mockServer.when(request().withMethod("DELETE")
+                .withPath("/api/vote/resetLectureSpeedVote/" + lid + "/" + incorrectModkey))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type", "application/json"));
+    }
+
+    /**
      * Setup for the tests.
      */
     @BeforeAll
@@ -108,6 +136,7 @@ public class LectureSeedCommunicationTest {
 
         createExpectationsForGetVotes();
         createExpectationsForVoting();
+        createExpectationsForResetting();
     }
 
     /**
@@ -190,6 +219,44 @@ public class LectureSeedCommunicationTest {
     @Test
     public void voteIncorrectIdTest() {
         assertEquals(-4, LectureSpeedCommunication.voteOnLectureSpeed(userId, wrongLid, "slower"));
+    }
+
+    /**
+     * Tests for resetting.
+     */
+    @Test
+    public void resetSuccessfulTest() {
+        assertEquals(0, LectureSpeedCommunication.resetLectureSpeed(lid, modkey));
+    }
+
+    @Test
+    public void resetNoLectureTest() {
+        Lecture.setCurrentLecture(null);
+        assertEquals(-1, LectureSpeedCommunication.resetLectureSpeed(lid, modkey));
+
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
+    }
+
+    @Test
+    public void resetServerRefusesTest() {
+        stop();
+        assertEquals(-2, LectureSpeedCommunication.resetLectureSpeed(lid, modkey));
+        setUp();
+    }
+
+    @Test
+    public void resetInvalidIdTest() {
+        assertEquals(-3, LectureSpeedCommunication.resetLectureSpeed(invalidUUID, modkey));
+    }
+
+    @Test
+    public void resetIncorrectIdTest() {
+        assertEquals(-4, LectureSpeedCommunication.resetLectureSpeed(wrongLid, modkey));
+    }
+
+    @Test
+    public void resetIncorrectModkeyTest() {
+        assertEquals(-4, LectureSpeedCommunication.resetLectureSpeed(lid, incorrectModkey));
     }
 
     @AfterAll
