@@ -2,6 +2,7 @@ package nl.tudelft.oopp.livechat.communication;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
@@ -44,6 +45,11 @@ public class QuestionCommunicationTest {
     private static String goodQuestion;
     private static String normalQuestion;
     private static String badQuestion;
+
+    private static String json1;
+    private static String json2;
+    private static String json3;
+    private static String json4;
 
     private static final String response =  "[\n"
             + "    {\n"
@@ -246,6 +252,41 @@ public class QuestionCommunicationTest {
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
 
+    /**
+     * Create expectations for editing questions (done by moderator).
+     */
+    private static void createExpectationsForEdit() {
+        //Success
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/edit")
+                .withBody(json1)).respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0").withHeader("Content-Type","application/json"));
+
+        //invalid parameter - send 400
+        //  (treat lecture id (lid) as invalid UUID here to test BAD REQUEST)
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/edit")
+                .withBody(json2)).respond(HttpResponse.response().withStatusCode(400));
+
+        //modkey does not match
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/edit")
+                .withBody(json3)).respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+
+        //qid not found
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/edit")
+                .withBody(json4)).respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+    }
+
+    private static String createJson(String qid, UUID modkey, String text, long uid) {
+        //Create a json object with the data to be sent
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", qid);
+        jsonObject.addProperty("modkey", modkey.toString());
+        jsonObject.addProperty("text", text);
+        jsonObject.addProperty("uid", uid);
+        return gson.toJson(jsonObject);
+    }
+
 
     /**
      * Starts mock server.
@@ -262,12 +303,18 @@ public class QuestionCommunicationTest {
         badQuestion = gson.toJson(
                 new Question(lid, "F*ck",  userId));
 
+        json1 = createJson(qid1, modkey, "Edited", userId);
+        json2 = createJson(qid2, lid, "Edited question", userId);
+        json3 = createJson(qid3, incorrectModkey, "Edited by ...", userId);
+        json4 = createJson("666", modkey, "Edited or not", userId);
+
         createExpectationsForAsking();
         createExpectationsForFetching();
         createExpectationsForUpvote();
         createExpectationsForMarkAsAnswered();
         createExpectationsForDeleteQuestion();
         createExpectationsForModDelete();
+        createExpectationsForEdit();
     }
 
 
@@ -587,6 +634,57 @@ public class QuestionCommunicationTest {
     public void modDeleteIncorrectModkeyTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Caching", "Koen"));
         assertEquals(-4, QuestionCommunication.modDelete(Long.parseLong(qid1), incorrectModkey));
+    }
+
+    /**
+     * Tests for editing questions.
+     */
+
+    @Test
+    public void editSuccessfulTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Indexes", "Asterios"));
+        assertEquals(0, QuestionCommunication.edit(Long.parseLong(qid1), modkey, "Edited"));
+    }
+
+    @Test
+    public void editNoLectureExistsTest() {
+        Lecture.setCurrentLecture(null);
+        assertEquals(-1, QuestionCommunication.edit(
+                Long.parseLong(qid1), modkey, "Edited question"));
+    }
+
+    @Test
+    public void editServerRefusesTest() {
+        stopServer();
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Transactions", "Asterios"));
+        assertEquals(-2, QuestionCommunication.edit(Long.parseLong(qid1), modkey,"Not edited"));
+        startServer();
+    }
+
+    @Test
+    public void editInvalidUUIDTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Query processing", "Christoph"));
+        assertEquals(-3, QuestionCommunication.edit(Long.parseLong(qid2),
+                lid, "Edited question"));
+    }
+
+    @Test
+    public void editIncorrectQidTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "SQL", "Christoph"));
+        assertEquals(-4, QuestionCommunication.edit(666, modkey, "Edited or not"));
+    }
+
+    @Test
+    public void editIncorrectModkeyTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Relational algebra", "Christoph"));
+        assertEquals(-4,
+                QuestionCommunication.edit(Long.parseLong(qid3),
+                        incorrectModkey, "Edited by ..."));
     }
 
     /**

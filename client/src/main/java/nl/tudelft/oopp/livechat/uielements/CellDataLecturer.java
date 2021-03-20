@@ -150,8 +150,16 @@ public class CellDataLecturer {
      */
     public void setEditButton() {
         editButton.setOnAction((ActionEvent e) -> {
-            QuestionCommunication.edit(question.getId(),
-                    Lecture.getCurrentLecture().getModkey(), "blaha");
+            TextInputDialog td = new TextInputDialog(questionText.getText());
+            //We found no workaround for making the td wider (it works so it's not stupid)
+            td.setHeaderText("\t\tEdit the question and press submit:\t\t");
+            td.setTitle("Edit the question");
+            td.setHeight(400);
+
+            Optional<String> text = td.showAndWait();
+
+            text.ifPresent(t -> QuestionCommunication.edit(question.getId(),
+                    Lecture.getCurrentLecture().getModkey(), t));
         });
     }
 
