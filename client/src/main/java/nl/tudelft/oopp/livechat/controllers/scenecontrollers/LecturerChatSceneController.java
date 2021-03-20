@@ -137,10 +137,11 @@ public class LecturerChatSceneController implements Initializable {
      */
     public void getVotesOnLectureSpeed() {
         UUID uuid = Lecture.getCurrentLecture().getUuid();
-        voteCountFast.setText("Too fast:"
-                + LectureSpeedCommunication.getVotesOnLectureSpeed(uuid).get(0));
-        voteCountSlow.setText("Too slow:"
-                + LectureSpeedCommunication.getVotesOnLectureSpeed(uuid).get(1));
+        List<Integer> speeds = LectureSpeedCommunication.getVotesOnLectureSpeed(uuid);
+        voteCountFast.setText("Too fast: "
+                + speeds.get(0));
+        voteCountSlow.setText("Too slow: "
+                + speeds.get(1));
     }
 
     /**
