@@ -77,9 +77,10 @@ public class UserChatSceneController implements Initializable {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
 
-        Timeline timeline = new Timeline(new KeyFrame(
-                Duration.millis(1000),
-            ae -> fetchQuestions()));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
+            fetchQuestions();
+            getVotesOnLectureSpeed();
+        }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
@@ -214,6 +215,18 @@ public class UserChatSceneController implements Initializable {
                 User.getUid(),
                 Lecture.getCurrentLecture().getUuid(),
                 "slower");
+    }
+
+    /**
+     * Gets votes on lecture speed.
+     */
+    public void getVotesOnLectureSpeed() {
+        UUID uuid = Lecture.getCurrentLecture().getUuid();
+        List<Integer> speeds = LectureSpeedCommunication.getVotesOnLectureSpeed(uuid);
+        if (speeds != null && speeds.get(0).equals(0) && speeds.get(1).equals(0)) {
+            voteOnLectureSpeedFast.setSelected(false);
+            voteOnLectureSpeedSlow.setSelected(false);
+        }
     }
 
 }
