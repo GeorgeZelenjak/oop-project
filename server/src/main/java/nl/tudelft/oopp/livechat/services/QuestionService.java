@@ -171,11 +171,13 @@ public class QuestionService {
                 return -1;
             }
             //check if the new owner is registered
-            if (userRepository.findById(newOwnerId).isEmpty()) {
+            UserEntity user = userRepository.findById(newOwnerId).orElse(null);
+            if (user == null) {
                 return -1;
             }
             q.setText(newText);
             q.setOwnerId(newOwnerId);
+            q.setOwnerName(user.getUserName());
             q.setEdited(true);
             questionRepository.save(q);
             return 0;

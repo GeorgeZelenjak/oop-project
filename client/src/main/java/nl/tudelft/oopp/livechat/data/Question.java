@@ -39,7 +39,7 @@ public class Question implements Comparable<Question> {
     @Expose(serialize = false, deserialize = true)
     private Timestamp answerTime;
 
-    @Expose(serialize = true, deserialize = true)
+    @Expose(serialize = false, deserialize = true)
     private boolean edited;
 
     @Expose(serialize = true, deserialize = true)

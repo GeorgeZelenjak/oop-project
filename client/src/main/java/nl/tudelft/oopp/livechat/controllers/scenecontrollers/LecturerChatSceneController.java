@@ -317,9 +317,8 @@ public class LecturerChatSceneController implements Initializable {
         this.copyId.setVisible(!this.copyId.isVisible());
     }
 
-    /** Method that exports all Questions
-     *      and answers of a lecture.
-     *
+    /**
+     * Method that exports all Questions and answers of a lecture.
      */
     public void exportQuestionsAndAnswers() {
 
