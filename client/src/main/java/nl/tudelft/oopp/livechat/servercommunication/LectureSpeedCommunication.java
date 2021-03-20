@@ -55,14 +55,12 @@ public class LectureSpeedCommunication {
             System.out.println("Lecture speed votes were retrieved successfully! "
                     + response.body());
         }
-        System.out.println("Result is " + result);
         Type listType = new TypeToken<List<Integer>>(){}.getType();
         return gson.fromJson(response.body(), listType);
     }
 
     /**
      * Reset lecture speed.
-     *
      * @param uuid   the uuid
      * @param modkey the modkey
      * @return the int
@@ -121,7 +119,8 @@ public class LectureSpeedCommunication {
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
-                URI.create(address + "?uid=" + uid + "&uuid=" + uuid)).build();
+                URI.create(address + "?uid=" + uid + "&uuid=" + uuid))
+                .setHeader("Content-Type", "application/json").build();
 
         HttpResponse<String> response;
         //Catching error when communicating with server

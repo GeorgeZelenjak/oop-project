@@ -3,6 +3,7 @@ package nl.tudelft.oopp.livechat.communication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
+import org.mockserver.model.Parameter;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +31,7 @@ public class LectureSeedCommunicationTest {
     private static final UUID invalidUUID = UUID.randomUUID();
     private static final UUID modkey = UUID.randomUUID();
     private static final UUID incorrectModkey = UUID.randomUUID();
+    private static long userId;
 
     /**
      * Create expectations for getting votes on the lecture speed.
@@ -54,15 +57,64 @@ public class LectureSeedCommunicationTest {
                         .withHeader("Content-Type","application/json"));
     }
 
+    /**
+     * Create expectations for voting on the lecture speed.
+     */
+    private static void createExpectationsForVoting() {
+        //Success faster
+        mockServer.when(request().withMethod("PUT").withPath("/api/vote/lectureSpeed")
+                .withQueryStringParameters(new Parameter("uid", "" + userId),
+                        new Parameter("uuid", lid.toString())).withBody("faster"))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0").withHeader("Content-Type","application/json"));
+
+        //Success slower
+        mockServer.when(request().withMethod("PUT").withPath("/api/vote/lectureSpeed")
+                .withQueryStringParameters(new Parameter("uid", "" + userId),
+                        new Parameter("uuid", lid.toString())).withBody("slower"))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0").withHeader("Content-Type","application/json"));
+
+        //Invalid request
+        mockServer.when(request().withMethod("PUT").withPath("/api/vote/lectureSpeed")
+                .withQueryStringParameters(new Parameter("uid", "" + userId),
+                        new Parameter("uuid", invalidUUID.toString())).withBody("faster"))
+                .respond(HttpResponse.response().withStatusCode(400));
+
+        //Invalid speed
+        mockServer.when(request().withMethod("PUT").withPath("/api/vote/lectureSpeed")
+                .withQueryStringParameters(new Parameter("uid", "" + userId),
+                        new Parameter("uuid", lid.toString())).withBody("a lot faster"))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+
+        //Lecture not found
+        mockServer.when(request().withMethod("PUT").withPath("/api/vote/lectureSpeed")
+                .withQueryStringParameters(new Parameter("uid", "" + userId),
+                        new Parameter("uuid", wrongLid.toString())).withBody("slower"))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("-1").withHeader("Content-Type","application/json"));
+    }
+
+    /**
+     * Setup for the tests.
+     */
     @BeforeAll
     public static void setUp() {
         mockServer = ClientAndServer.startClientAndServer(8080);
+        User.setUid();
+        userId = User.getUid();
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
+
         createExpectationsForGetVotes();
+        createExpectationsForVoting();
     }
 
+    /**
+     * Tests for get votes.
+     */
     @Test
     public void getVotesSuccessfulTest() {
-        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
         assertEquals(List.of(2,3), LectureSpeedCommunication.getVotesOnLectureSpeed(lid));
     }
 
@@ -70,28 +122,74 @@ public class LectureSeedCommunicationTest {
     public void getVotesNoLectureTest() {
         Lecture.setCurrentLecture(null);
         assertNull(LectureSpeedCommunication.getVotesOnLectureSpeed(lid));
+
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
     }
 
     @Test
     public void getVotesServerRefusesTest() {
         stop();
-
-        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
         assertNull(LectureSpeedCommunication.getVotesOnLectureSpeed(lid));
-
         setUp();
     }
 
     @Test
     public void getVotesInvalidIdTest() {
-        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
         assertNull(LectureSpeedCommunication.getVotesOnLectureSpeed(invalidUUID));
     }
 
     @Test
     public void getVotesIncorrectIdTest() {
-        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
         assertNull(LectureSpeedCommunication.getVotesOnLectureSpeed(wrongLid));
+    }
+
+    /**
+     * Tests for vote.
+     */
+    @Test
+    public void voteSuccessfulFasterTest() {
+        assertEquals(0, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
+    }
+
+    @Test
+    public void voteSuccessfulSlowerTest() {
+        assertEquals(0, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "slower"));
+    }
+
+    @Test
+    public void voteSuccessfulBothTest() {
+        assertEquals(0, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "slower"));
+        assertEquals(0, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
+    }
+
+    @Test
+    public void voteNoLectureTest() {
+        Lecture.setCurrentLecture(null);
+        assertEquals(-1, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
+
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
+    }
+
+    @Test
+    public void voteServerRefusesTest() {
+        stop();
+        assertEquals(-2, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
+        setUp();
+    }
+
+    @Test
+    public void voteWrongSpeedTest() {
+        assertEquals(-4, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "a lot faster"));
+    }
+
+    @Test
+    public void voteInvalidIdTest() {
+        assertEquals(-3, LectureSpeedCommunication.voteOnLectureSpeed(userId, invalidUUID, "faster"));
+    }
+
+    @Test
+    public void voteIncorrectIdTest() {
+        assertEquals(-4, LectureSpeedCommunication.voteOnLectureSpeed(userId, wrongLid, "slower"));
     }
 
     @AfterAll
