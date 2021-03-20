@@ -49,6 +49,9 @@ public class UserChatSceneController implements Initializable {
     private CheckBox sortByVotesCheckBox;
 
     @FXML
+    private CheckBox sortByTimeCheckBox;
+
+    @FXML
     private CheckBox answeredCheckBox;
 
     @FXML
@@ -98,7 +101,8 @@ public class UserChatSceneController implements Initializable {
         questions = Question.getCurrentQuestions();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
-        QuestionManager.sort(sortByVotesCheckBox.isSelected(), questions);
+        QuestionManager.sort(sortByVotesCheckBox.isSelected(), sortByTimeCheckBox.isSelected(), questions);
+        System.out.println("sorted");
 
         observableList.setAll(questions);
         questionPaneListView.setItems(observableList);

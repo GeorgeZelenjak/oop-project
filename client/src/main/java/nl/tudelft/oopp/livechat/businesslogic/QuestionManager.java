@@ -1,5 +1,6 @@
 package nl.tudelft.oopp.livechat.businesslogic;
 
+import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import java.util.Collections;
 import java.util.List;
@@ -13,17 +14,35 @@ public abstract class QuestionManager {
 
     /**
      * Sorts questions by time or number of votes according to the given arguments.
+     * If both are selected, another algorithm will be used:
+     *  "smaller" will be the questions with higher rank:
+     *      the product of the seconds since the start of the lecture and the number of votes
+     *      plus 228 if the question is not answered
      * @param byVotes true iff needs to sort by votes
      * @param questions the list of questions to be sorted
      */
-    public static void sort(boolean byVotes, List<Question> questions) {
-        if (byVotes) {
+    public static void sort(boolean byVotes, boolean byTime, List<Question> questions) {
+        if (byVotes && !byTime) {
             questions.sort((q1, q2) -> {
                 int result = Integer.compare(q2.getVotes(), q1.getVotes());
                 if (result != 0) return result;
                 return q2.getTime().compareTo(q1.getTime());
             });
-        } else {
+        } else if (byVotes) {
+            questions.sort((q1, q2) -> {
+                int rank1 = (q1.getTime().getNanos()
+                        - Lecture.getCurrentLecture().getStartTime().getNanos()) / 1000000000
+                        * q1.getVotes();
+                rank1 = !q1.isAnswered() ? rank1 + 228 : rank1;
+
+                int rank2 = (q2.getTime().getNanos()
+                        - Lecture.getCurrentLecture().getStartTime().getNanos()) / 1000000000
+                        * q2.getVotes();
+                rank2 = !q2.isAnswered() ? rank2 + 228 : rank2;
+
+                return Integer.compare(rank2, rank1);
+            });
+        }  else {
             Collections.sort(questions);
         }
     }
