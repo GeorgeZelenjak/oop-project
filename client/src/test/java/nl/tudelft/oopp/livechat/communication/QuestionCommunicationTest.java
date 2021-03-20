@@ -9,6 +9,7 @@ import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
@@ -277,7 +278,7 @@ public class QuestionCommunicationTest {
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
 
-    private static String createJson(String qid, UUID modkey, String text, long uid) {
+    private static String createJson(long qid, UUID modkey, String text, long uid) {
         //Create a json object with the data to be sent
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("id", qid);
@@ -303,10 +304,11 @@ public class QuestionCommunicationTest {
         badQuestion = gson.toJson(
                 new Question(lid, "F*ck",  userId));
 
-        json1 = createJson(qid1, modkey, "Edited", userId);
-        json2 = createJson(qid2, lid, "Edited question", userId);
-        json3 = createJson(qid3, incorrectModkey, "Edited by ...", userId);
-        json4 = createJson("666", modkey, "Edited or not", userId);
+        json1 = createJson(Long.parseLong(qid1), modkey, "Edited", userId);
+        //json1 = "{\"id\":5397545054934456486,\"modkey\":\"" + modkey + "\",\"text\":\"Edited\",\"uid\":"+ userId+"}";
+        json2 = createJson(Long.parseLong(qid2), lid, "Edited question", userId);
+        json3 = createJson(Long.parseLong(qid3), incorrectModkey, "Edited by ...", userId);
+        json4 = createJson(666, modkey, "Edited or not", userId);
 
         createExpectationsForAsking();
         createExpectationsForFetching();
@@ -315,6 +317,11 @@ public class QuestionCommunicationTest {
         createExpectationsForDeleteQuestion();
         createExpectationsForModDelete();
         createExpectationsForEdit();
+    }
+
+    @AfterEach
+    public void clear() {
+        User.getAskedQuestionIds().clear();
     }
 
 
@@ -567,6 +574,7 @@ public class QuestionCommunicationTest {
         assertEquals(-3,
                 QuestionCommunication.deleteQuestion(Long.parseLong(qid1), Long.MAX_VALUE));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
+
     }
 
     @Test
@@ -644,7 +652,9 @@ public class QuestionCommunicationTest {
     public void editSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Indexes", "Asterios"));
+        QuestionCommunication.askQuestion("Is there anybody?");
         assertEquals(0, QuestionCommunication.edit(Long.parseLong(qid1), modkey, "Edited"));
+
     }
 
     @Test
