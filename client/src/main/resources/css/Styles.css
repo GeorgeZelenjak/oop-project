@@ -10,7 +10,6 @@
         -fx-red: #C3312F;
         -fx-yellow: #F1BE3E;
         -fx-font-family: Roboto;
-        -fx-padding: 0px 0px 0px 0px;
     }
 
     .button {
@@ -18,6 +17,7 @@
         -fx-background-radius: 6px;
         -fx-font: 18px Roboto;
         -fx-text-fill: -fx-white;
+        -fx-padding: 0px 0px 0px 0px;
     }
 
     .button:hover {
@@ -39,6 +39,7 @@
         -fx-min-width: 228px;
         -fx-max-height: 90px;
         -fx-max-width: 228px;
+        -fx-padding: 0px 0px 0px 0px;
     }
 
     /*This should be added somewhere else!*/
@@ -51,11 +52,13 @@
         -fx-font: 18px Arial;
         -fx-prompt-text-fill: -fx-text-gray;
         -fx-text-fill: black;
+        -fx-padding: 0px 0px 0px 0px;
     }
 
 
     .headerText{
         -fx-font-size: 36px;
+        -fx-padding: 0px 0px 0px 0px;
     }
 
     .leaveLecture{
@@ -63,6 +66,7 @@
         -fx-background-radius: 10px;
         -fx-font: 18px Arial;
         -fx-text-fill: -fx-white;
+        -fx-padding: 0px 0px 0px 0px;
     }
 
     .leaveLecture:hover{
@@ -97,6 +101,7 @@
     .sidebar{
         -fx-background-color: rgb(199,199,199);
         -fx-border-color: gray;
+        -fx-padding: 0px 0px 0px 0px;
     }
 
     .textBox {
@@ -111,6 +116,7 @@
         -fx-border-width: 2px;
         -fx-border-color: -fx-border-gray;
         -fx-prompt-text-fill: -fx-text-gray;
+        -fx-padding: 0px 0px 0px 0px;
 
     }
 
