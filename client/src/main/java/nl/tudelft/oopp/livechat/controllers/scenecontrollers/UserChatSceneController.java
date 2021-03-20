@@ -101,7 +101,8 @@ public class UserChatSceneController implements Initializable {
         questions = Question.getCurrentQuestions();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
-        QuestionManager.sort(sortByVotesCheckBox.isSelected(), sortByTimeCheckBox.isSelected(), questions);
+        QuestionManager.sort(sortByVotesCheckBox.isSelected(),
+                sortByTimeCheckBox.isSelected(), questions);
         System.out.println("sorted");
 
         observableList.setAll(questions);

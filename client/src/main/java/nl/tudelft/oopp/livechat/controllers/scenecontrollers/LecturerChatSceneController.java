@@ -185,7 +185,8 @@ public class LecturerChatSceneController implements Initializable {
         questions = Question.getCurrentQuestions();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
-        QuestionManager.sort(sortByVotesCheckBox.isSelected(), sortByTimeCheckBox.isSelected(), questions);
+        QuestionManager.sort(sortByVotesCheckBox.isSelected(),
+                sortByTimeCheckBox.isSelected(), questions);
 
         observableList.setAll(questions);
         questionPaneListView.setItems(observableList);
