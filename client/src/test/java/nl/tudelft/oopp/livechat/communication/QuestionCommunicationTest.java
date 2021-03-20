@@ -157,14 +157,19 @@ public class QuestionCommunicationTest {
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
 
-    //TODO change the body from "placeholder"
     /**
      * Create expectations for marking question as answered.
      */
     private static void createExpectationsForMarkAsAnswered() {
-        //Success
+        //Success without text
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
                         + qid1 + "/" +  modkey).withBody(" "))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0").withHeader("Content-Type","application/json"));
+
+        //Success with text
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
+                + qid1 + "/" +  modkey).withBody("42"))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("0").withHeader("Content-Type","application/json"));
 
@@ -176,13 +181,13 @@ public class QuestionCommunicationTest {
 
         //qid does not match
         mockServer.when(request().withMethod("PUT")
-                .withPath("/api/question/answer/" + 666 + "/" +  modkey).withBody(" "))
+                .withPath("/api/question/answer/" + 666 + "/" +  modkey).withBody("answer"))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
 
         //incorrect modkey
         mockServer.when(request().withMethod("PUT").withPath("/api/question/answer/"
-                + qid1 + "/" +  incorrectModkey).withBody(" "))
+                + qid1 + "/" +  incorrectModkey).withBody("the answer"))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
@@ -278,6 +283,14 @@ public class QuestionCommunicationTest {
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
 
+    /**
+     * A helper method to create JSON object for edit request.
+     * @param qid the id of the question
+     * @param modkey the moderator key
+     * @param text the new text
+     * @param uid the user id
+     * @return the JSON string with the provided values
+     */
     private static String createJson(long qid, UUID modkey, String text, long uid) {
         //Create a json object with the data to be sent
         JsonObject jsonObject = new JsonObject();
@@ -305,7 +318,6 @@ public class QuestionCommunicationTest {
                 new Question(lid, "F*ck",  userId));
 
         json1 = createJson(Long.parseLong(qid1), modkey, "Edited", userId);
-        //json1 = "{\"id\":5397545054934456486,\"modkey\":\"" + modkey + "\",\"text\":\"Edited\",\"uid\":"+ userId+"}";
         json2 = createJson(Long.parseLong(qid2), lid, "Edited question", userId);
         json3 = createJson(Long.parseLong(qid3), incorrectModkey, "Edited by ...", userId);
         json4 = createJson(666, modkey, "Edited or not", userId);
@@ -486,10 +498,17 @@ public class QuestionCommunicationTest {
     }
 
     @Test
+    public void markAsAnsweredSuccessfulWithAnswerTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "Git", "Sebastian"));
+        assertEquals(0, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey, "42"));
+    }
+
+    @Test
     public void markAsAnsweredNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
         assertEquals(-1, QuestionCommunication.markedAsAnswered(
-                Long.parseLong(qid1), modkey, null));
+                Long.parseLong(qid1), modkey, "answer"));
     }
 
     @Test
@@ -497,7 +516,7 @@ public class QuestionCommunicationTest {
         stopServer();
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Teamwork", "Not Sander"));
-        assertEquals(-2, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey,null));
+        assertEquals(-2, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey," "));
         startServer();
     }
 
@@ -506,14 +525,14 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Testing", "Andy"));
         assertEquals(-3,
-                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), lid, null));
+                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), lid, "answer"));
     }
 
     @Test
     public void markAsAnsweredIncorrectQidTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "RCS", "Not Sebastian"));
-        assertEquals(-4, QuestionCommunication.markedAsAnswered(666, modkey, null));
+        assertEquals(-4, QuestionCommunication.markedAsAnswered(666, modkey, "answer"));
     }
 
     @Test
@@ -522,7 +541,7 @@ public class QuestionCommunicationTest {
                 modkey, "Lambda expressions", "Thomas"));
         assertEquals(-4,
                 QuestionCommunication.markedAsAnswered(
-                        Long.parseLong(qid1), incorrectModkey, null));
+                        Long.parseLong(qid1), incorrectModkey, "the answer"));
     }
 
     /**
