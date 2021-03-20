@@ -15,11 +15,12 @@ public abstract class QuestionManager {
     /**
      * Sorts questions by time or number of votes according to the given arguments.
      * If both are selected, another algorithm will be used:
-     *  "smaller" will be the questions with higher rank:
-     *      the product of the seconds since the start of the lecture and the number of votes
-     *      plus 228 if the question is not answered
+     *  "smaller" will be the question with smallest rank:
+     *      the difference of the seconds since the start of the lecture and the number
+     *      of votes times 42 minus 256 if the question is not answered
      * @param byVotes true iff needs to sort by votes
      * @param questions the list of questions to be sorted
+     * @author Jegor Zelenjak
      */
     public static void sort(boolean byVotes, boolean byTime, List<Question> questions) {
         if (byVotes && !byTime) {
@@ -30,17 +31,16 @@ public abstract class QuestionManager {
             });
         } else if (byVotes) {
             questions.sort((q1, q2) -> {
-                int rank1 = (q1.getTime().getNanos()
-                        - Lecture.getCurrentLecture().getStartTime().getNanos()) / 1000000000
-                        * q1.getVotes();
-                rank1 = !q1.isAnswered() ? rank1 + 228 : rank1;
+                System.out.println();
+                int rank1 = (int) (Lecture.getCurrentLecture().getStartTime().getTime()
+                        - q1.getTime().getTime()) / 1000 - (q1.getVotes() * 42);
+                rank1 = !q1.isAnswered() ? rank1 - 256 : rank1;
 
-                int rank2 = (q2.getTime().getNanos()
-                        - Lecture.getCurrentLecture().getStartTime().getNanos()) / 1000000000
-                        * q2.getVotes();
-                rank2 = !q2.isAnswered() ? rank2 + 228 : rank2;
+                int rank2 = (int) (Lecture.getCurrentLecture().getStartTime().getTime()
+                        - q2.getTime().getTime()) / 1000 - (q2.getVotes() * 42);
+                rank2 = !q2.isAnswered() ? rank2 - 256 : rank2;
 
-                return Integer.compare(rank2, rank1);
+                return Integer.compare(rank1, rank2);
             });
         }  else {
             Collections.sort(questions);

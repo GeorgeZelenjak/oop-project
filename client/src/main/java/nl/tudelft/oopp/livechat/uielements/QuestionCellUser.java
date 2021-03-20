@@ -26,10 +26,10 @@ public class QuestionCellUser extends ListCell<Question> {
             if (question.isEdited()) {
                 data.setOwnerName(question.getOwnerName() + " (edited)");
             } else {
-                data.setOwnerName(question.getOwnerName() + "not edited");
+                data.setOwnerName(question.getOwnerName());
             }
-            data.setContent(question.getText());
             data.markAnswered();
+            data.setContent(question.getText());
             data.setNumberOfUpvotes(question.getVotes());
 
             //set graphic and buttons
