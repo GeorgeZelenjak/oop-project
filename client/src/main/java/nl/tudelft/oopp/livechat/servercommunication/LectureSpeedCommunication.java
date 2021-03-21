@@ -115,6 +115,7 @@ public class LectureSpeedCommunication {
      *        -3 if unexpected response was received
      *        -4 if not voted (e.g wrong qid, wrong speed string etc.)
      */
+    //TODO Tis method should be reformatted, since handleResponse does not fit this method
     public static int voteOnLectureSpeed(long uid, UUID uuid, String speed) {
         //Check if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
