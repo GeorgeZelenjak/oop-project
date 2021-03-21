@@ -28,6 +28,7 @@ public class LectureSpeedCommunication {
      * Gets votes on lecture speed.
      * @param uuid the id of the lecture
      * @return List of votes on lecture speed: [0] is the faster count, [1] slower count
+     *         null if there was an error while trying to communicate with the server
      */
     public static List<Integer> getVotesOnLectureSpeed(UUID uuid) {
         //Check if current lecture has been set
@@ -52,11 +53,12 @@ public class LectureSpeedCommunication {
             //e.printStackTrace();
             return null;
         }
-        int result = handleResponse(response);
-        if (result == 0) {
-            System.out.println("Lecture speed votes were retrieved successfully! "
-                    + response.body());
+        if (response.statusCode() != 200) {
+            System.out.println("Status: " + response.statusCode());
+            return null;
         }
+        System.out.println("Lecture speed votes were retrieved successfully! " + response.body());
+
         Type listType = new TypeToken<List<Integer>>(){}.getType();
         return gson.fromJson(response.body(), listType);
     }
@@ -115,7 +117,6 @@ public class LectureSpeedCommunication {
      *        -3 if unexpected response was received
      *        -4 if not voted (e.g wrong qid, wrong speed string etc.)
      */
-    //TODO Tis method should be reformatted, since handleResponse does not fit this method
     public static int voteOnLectureSpeed(long uid, UUID uuid, String speed) {
         //Check if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
