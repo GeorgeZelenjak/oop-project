@@ -191,6 +191,7 @@ public class CellDataLecturer {
             //We found no workaround for making the td wider (it works so it's not stupid)
             td.setHeaderText("\t\t\tType your Answer in the box below:\t\t\t\t");
             td.setTitle("Enter your answer!");
+            td.setContentText(question.getText());
             td.setHeight(300);
 
             Optional<String> text = td.showAndWait();
