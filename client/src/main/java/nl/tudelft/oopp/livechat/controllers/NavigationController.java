@@ -167,12 +167,16 @@ public class NavigationController {
         window.setScene(main);
     }
 
-    public void popupTextAreaInputChange() {
-        popupHelper("/fxml/popupTextAreaInputChangedQuestionText.fxml", 300,300);
+    public void popupAnswerQuestion() {
+        popupHelper("/fxml/popupscenes/answerQuestionPopup.fxml", 600,400);
     }
 
     public void popupLecturerScene() {
         popupHelper("/fxml/lecturerChatScene.fxml",1080,768);
+    }
+
+    public void popupEditQuestion() {
+        popupHelper("/fxml/popupscenes/editQuestionPopup.fxml", 600,400);
     }
 
 }

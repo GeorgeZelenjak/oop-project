@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
@@ -150,16 +151,8 @@ public class CellDataLecturer {
      */
     public void setEditButton() {
         editButton.setOnAction((ActionEvent e) -> {
-            TextInputDialog td = new TextInputDialog(questionText.getText());
-            //We found no workaround for making the td wider (it works so it's not stupid)
-            td.setHeaderText("\t\tEdit the question and press submit:\t\t");
-            td.setTitle("Edit the question");
-            td.setHeight(400);
-
-            Optional<String> text = td.showAndWait();
-
-            text.ifPresent(t -> QuestionCommunication.edit(question.getId(),
-                    Lecture.getCurrentLecture().getModkey(), t));
+            Question.setCurrentQuestion(question);
+            NavigationController.getCurrentController().popupEditQuestion();
         });
     }
 
@@ -186,18 +179,8 @@ public class CellDataLecturer {
      */
     public void replyAnswer() {
         replyButton.setOnAction((ActionEvent event) -> {
-            TextInputDialog td = new TextInputDialog();
-
-            //We found no workaround for making the td wider (it works so it's not stupid)
-            td.setHeaderText("\t\t\tType your Answer in the box below:\t\t\t\t");
-            td.setTitle("Enter your answer!");
-            td.setContentText(question.getText());
-            td.setHeight(300);
-
-            Optional<String> text = td.showAndWait();
-
-            text.ifPresent(s -> QuestionCommunication.markedAsAnswered(question.getId(),
-                    Lecture.getCurrentLecture().getModkey(), s));
+            Question.setCurrentQuestion(question);
+            NavigationController.getCurrentController().popupAnswerQuestion();
         });
 
     }

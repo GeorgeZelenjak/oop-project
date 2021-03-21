@@ -14,6 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Question implements Comparable<Question> {
 
     private static List<Question> currentQuestions;
+    private static Question currentQuestion;
 
     @Expose(serialize = false, deserialize = true)
     private long id;
@@ -285,7 +286,7 @@ public class Question implements Comparable<Question> {
 
 
     /**
-     * Gets current questions.
+     * Gets the list of current questions.
      * @return the current questions
      */
     public static List<Question> getCurrentQuestions() {
@@ -293,10 +294,26 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Sets current questions.
+     * Sets the list of current questions.
      * @param questions the questions
      */
     public static void setCurrentQuestions(List<Question> questions) {
         currentQuestions = questions;
+    }
+
+    /**
+     * Gets the current question.
+     * @return the current question
+     */
+    public static Question getCurrentQuestion() {
+        return currentQuestion;
+    }
+
+    /**
+     * Sets the current question.
+     * @param currentQuestion the current question
+     */
+    public static void setCurrentQuestion(Question currentQuestion) {
+        Question.currentQuestion = currentQuestion;
     }
 }
