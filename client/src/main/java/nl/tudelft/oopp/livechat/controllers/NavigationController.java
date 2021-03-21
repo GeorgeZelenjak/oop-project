@@ -122,13 +122,13 @@ public class NavigationController {
         }
     }
 
-    private void popupHelper(String javaFxFile) {
+    private void popupHelper(String javaFxFile, int width, int height) {
         Parent root;
         try {
             root = FXMLLoader.load(getClass().getResource(javaFxFile));
             Stage stage = new Stage();
             stage.setTitle("My New Stage Title");
-            stage.setScene(new Scene(root, 600, 600));
+            stage.setScene(new Scene(root, width, height));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -168,7 +168,11 @@ public class NavigationController {
     }
 
     public void popupTextAreaInputChange() {
-        popupHelper("/fxml/popupTextAreaInputChangedQuestionText.fxml");
+        popupHelper("/fxml/popupTextAreaInputChangedQuestionText.fxml", 300,300);
+    }
+
+    public void popupLecturerScene() {
+        popupHelper("/fxml/lecturerChatScene.fxml",1080,768);
     }
 
 }

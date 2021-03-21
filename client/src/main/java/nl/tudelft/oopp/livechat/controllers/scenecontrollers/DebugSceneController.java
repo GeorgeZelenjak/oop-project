@@ -61,6 +61,11 @@ public class DebugSceneController {
         Lecture.setCurrentLecture(lecture);
     }
 
+    public void joinAsBoth() throws IOException {
+        NavigationController.getCurrentController().goToUserChatPage();
+        NavigationController.getCurrentController().popupLecturerScene();
+    }
+
     /**
      * Populate.
      */
