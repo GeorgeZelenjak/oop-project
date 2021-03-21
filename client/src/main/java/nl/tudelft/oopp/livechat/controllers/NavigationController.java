@@ -52,64 +52,50 @@ public class NavigationController {
 
     /**
      * Navigation to the main page.
-     *
-     * @throws IOException the io exception
      */
-    public void goToUserManual() throws IOException {
+    public void goToUserManual()  {
         goToSceneHelper("/fxml/userManualScene.fxml");
     }
 
     /**
      * Navigation to the main scene.
-     *
-     * @throws IOException the io exception
      */
-    public void goToMainScene() throws IOException {
+    public void goToMainScene()  {
         goToSceneHelper("/fxml/mainScene.fxml");
     }
 
     /**
      * Navigation to the create room scene.
-     *
-     * @throws IOException the io exception
      */
-    public void goToCreateRoomScene() throws IOException {
+    public void goToCreateRoomScene()  {
         goToSceneHelper("/fxml/createLectureScene.fxml");
     }
 
     /**
      * Navigation to the create room scene.
-     *
-     * @throws IOException the io exception
      */
-    public void goToJoinLecturePage() throws IOException {
+    public void goToJoinLecturePage()  {
         goToSceneHelper("/fxml/joinLectureScene.fxml");
     }
 
     /**
      * Navigation to the lecturer chat room scene.
-     *
-     * @throws IOException the io exception
      */
-    public void goToLecturerChatPage() throws IOException {
+    public void goToLecturerChatPage() {
         goToSceneHelper("/fxml/lecturerChatScene.fxml");
     }
 
     /**
      * Navigation to the user chat page.
-     *
-     * @throws IOException the io exception
      */
-    public void goToUserChatPage() throws IOException {
+    public void goToUserChatPage() {
         goToSceneHelper("/fxml/userChatScene.fxml");
     }
 
     /**
      * Go to scene helper.
-     *
-     * @throws IOException the io exception
      */
-    private void goToSceneHelper(String javaFxFile) throws IOException {
+    private void goToSceneHelper(String javaFxFile) {
         try {
             backStack.push(this.main);
             Parent root = FXMLLoader.load(getClass().getResource(javaFxFile));
@@ -137,24 +123,20 @@ public class NavigationController {
 
     /**
      * Go to settings.
-     *
-     * @throws IOException the io exception
      */
-    public void goToSettings() throws IOException {
+    public void goToSettings() {
         goToSceneHelper("/fxml/settingsScene.fxml");
     }
 
     /**
      * Go to test scene.
-     *
-     * @throws IOException the io exception
      */
     @SuppressWarnings("unused")
-    public void goToTestScene() throws IOException {
+    public void goToTestScene() {
         goToSceneHelper("/fxml/newUserChatScene.fxml");
     }
 
-    public void goToDebugScene() throws IOException {
+    public void goToDebugScene() {
         goToSceneHelper("/fxml/debugScene.fxml");
     }
 
