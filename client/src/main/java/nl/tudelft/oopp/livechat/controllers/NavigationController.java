@@ -149,14 +149,23 @@ public class NavigationController {
         window.setScene(main);
     }
 
+    /**
+     * Makes a popup to answer question.
+     */
     public void popupAnswerQuestion() {
         popupHelper("/fxml/popupscenes/answerQuestionPopup.fxml", 600,400);
     }
 
+    /**
+     * Makes a popup to the lecturer scene.
+     */
     public void popupLecturerScene() {
         popupHelper("/fxml/lecturerChatScene.fxml",1080,768);
     }
 
+    /**
+     * Makes a popup to edit question.
+     */
     public void popupEditQuestion() {
         popupHelper("/fxml/popupscenes/editQuestionPopup.fxml", 600,400);
     }
