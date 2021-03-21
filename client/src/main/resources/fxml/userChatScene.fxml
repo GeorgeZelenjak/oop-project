@@ -79,7 +79,7 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>
-      <CheckBox graphicTextGap="1.0" layoutX="332.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="20.0" text="Time">
+      <CheckBox fx:id="sortByTimeCheckBox" graphicTextGap="1.0" layoutX="332.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="20.0" text="Time">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>

@@ -66,6 +66,5 @@ public class MainSceneController {
      */
     public void goToDebug() throws IOException {
         NavigationController.getCurrentController().goToDebugScene();
-        NavigationController.getCurrentController().popupTextAreaInputChange();
     }
 }

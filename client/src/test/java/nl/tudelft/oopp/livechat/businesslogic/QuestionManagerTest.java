@@ -66,7 +66,7 @@ public class QuestionManagerTest {
         questionsSorted.add(q1);
 
         assertNotEquals(questionsSorted.get(0).getVotes(),questionsToSort.get(0).getVotes());
-        QuestionManager.sort(true,questionsToSort);
+        QuestionManager.sort(true, false, questionsToSort);
         assertEquals(questionsSorted.get(0).getVotes(),questionsToSort.get(0).getVotes());
 
     }
@@ -86,7 +86,7 @@ public class QuestionManagerTest {
         questionsSorted.add(q4);
 
         assertNotEquals(questionsSorted.get(0).getTime(),questionsToSort.get(0).getTime());
-        QuestionManager.sort(false,questionsToSort);
+        QuestionManager.sort(false, true, questionsToSort);
         assertEquals(questionsSorted.get(0).getTime(),questionsToSort.get(0).getTime());
 
     }
