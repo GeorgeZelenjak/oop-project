@@ -72,9 +72,6 @@ public class DebugSceneController {
      */
     public void populate() {
         User.setUserName("Stefan");
-        List<Question> questions = QuestionCommunication.fetchQuestions();
-        assert questions != null;
-        assert questions.size() == 4;
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 67, "Artjom");
 
@@ -97,6 +94,9 @@ public class DebugSceneController {
                 26, Lecture.getCurrentLecture().getUuid(),"I am confused!!!!");
         QuestionCommunication.askQuestion(
                 42, Lecture.getCurrentLecture().getUuid(),"We live in a soc");
+        List<Question> questions = QuestionCommunication.fetchQuestions();
+        assert questions != null;
+        assert questions.size() == 4;
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),67);
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),26);
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),34);
