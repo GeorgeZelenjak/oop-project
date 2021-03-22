@@ -143,6 +143,7 @@ public class LecturerChatSceneController implements Initializable {
     public void initialize(URL location, ResourceBundle resourceBundle) {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
+        slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(1500),
             ae -> {
