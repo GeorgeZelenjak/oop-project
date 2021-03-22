@@ -1,10 +1,10 @@
 package nl.tudelft.oopp.livechat.servercommunication;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
@@ -37,6 +37,8 @@ public class QuestionCommunication {
     private static final Gson gson = new GsonBuilder().setDateFormat(
             "EEE, dd MMM yyyy HH:mm:ss zzz").excludeFieldsWithoutExposeAnnotation().create();
 
+    private static final String ADDRESS = CommonCommunication.ADDRESS;
+
     /**
      * Sends an HTTP request to ask a question with the current Lecture id.
      * @param   uid the id of the user
@@ -61,7 +63,7 @@ public class QuestionCommunication {
         //Parameters for request
         String json = gson.toJson(question);
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
-        String address = "http://localhost:8080/api/question/ask";
+        String address = ADDRESS + "/api/question/ask";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().POST(req).uri(
@@ -108,7 +110,7 @@ public class QuestionCommunication {
         //Parameters for request
         String lectureId = URLEncoder.encode(
                 Lecture.getCurrentLecture().getUuid().toString(), StandardCharsets.UTF_8);
-        String address = "http://localhost:8080/api/question/fetch?lid=";
+        String address = ADDRESS + "/api/question/fetch?lid=";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().GET().uri(
@@ -155,7 +157,7 @@ public class QuestionCommunication {
 
         //Parameters for request
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("");
-        String address = "http://localhost:8080/api/question/upvote";
+        String address = ADDRESS + "/api/question/upvote";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
@@ -201,7 +203,7 @@ public class QuestionCommunication {
             answer = " ";
         }
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(answer);
-        String address = "http://localhost:8080/api/question/answer/" + qid + "/" + modkey;
+        String address = ADDRESS + "/api/question/answer/" + qid + "/" + modkey;
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().PUT(req)
@@ -254,7 +256,7 @@ public class QuestionCommunication {
         String json = gson.toJson(jsonObject);
 
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
-        String address = "http://localhost:8080/api/question/edit";
+        String address = ADDRESS + "/api/question/edit";
 
         //Create request and defining response
         HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
@@ -295,7 +297,7 @@ public class QuestionCommunication {
             return -1;
         }
         //Parameters for request
-        String address = "http://localhost:8080/api/question/delete";
+        String address = ADDRESS + "/api/question/delete";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().DELETE()
@@ -338,7 +340,7 @@ public class QuestionCommunication {
             return -1;
         }
         //Parameters for request
-        String address = "http://localhost:8080/api/question/moderator/delete";
+        String address = ADDRESS + "/api/question/moderator/delete";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().DELETE()

@@ -3,6 +3,7 @@ package nl.tudelft.oopp.livechat.servercommunication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication;
 import nl.tudelft.oopp.livechat.data.Lecture;
 
 import java.lang.reflect.Type;
@@ -23,6 +24,7 @@ public class LectureSpeedCommunication {
     private static final Gson gson = new GsonBuilder().setDateFormat(
             "EEE, dd MMM yyyy HH:mm:ss zzz").excludeFieldsWithoutExposeAnnotation().create();
 
+    private static final String ADDRESS = CommonCommunication.ADDRESS;
 
     /**
      * Gets votes on lecture speed.
@@ -38,7 +40,7 @@ public class LectureSpeedCommunication {
         }
 
         //Parameters for request
-        String address = "http://localhost:8080/api/vote/getLectureSpeed/";
+        String address = ADDRESS + "/api/vote/getLectureSpeed/";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().GET().uri(
@@ -81,7 +83,7 @@ public class LectureSpeedCommunication {
         }
 
         //Parameters for request
-        String address = "http://localhost:8080/api/vote/resetLectureSpeedVote/";
+        String address = ADDRESS + "/api/vote/resetLectureSpeedVote/";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().DELETE().uri(
@@ -126,7 +128,7 @@ public class LectureSpeedCommunication {
 
         //Parameters for request
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(speed);
-        String address = "http://localhost:8080/api/vote/lectureSpeed";
+        String address = ADDRESS +  "/api/vote/lectureSpeed";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
@@ -154,7 +156,9 @@ public class LectureSpeedCommunication {
     /**
      * Handles the response from the server.
      * @param response response received from the server
-     * @return -3, -4, 0 according to the "status codes" for these methods
+     * @return -3 if server response was not 200.
+     *         -4 if the response body is equal to "0"
+     *          0 otherwise
      */
     private static int handleResponse(HttpResponse<String> response) {
         //Unexpected response
