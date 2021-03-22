@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 
@@ -30,6 +31,8 @@ public class LectureCommunication {
      * Client object for sending requests.
      */
     private static final HttpClient client = HttpClient.newBuilder().build();
+
+    private static final String ADDRESS = CommonCommunication.ADDRESS;
 
     /**
      * Gson object for parsing Json
@@ -62,7 +65,7 @@ public class LectureCommunication {
 
         //Parameters for request
         HttpRequest.BodyPublisher req = HttpRequest.BodyPublishers.ofString(nodeToString);
-        String address = "http://localhost:8080/api/newLecture?name=";
+        String address = ADDRESS + "/api/newLecture?name=";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().POST(req)
@@ -107,7 +110,7 @@ public class LectureCommunication {
         lectureId = URLEncoder.encode(lectureId, StandardCharsets.UTF_8);
 
         //Parameter for request
-        String address = "http://localhost:8080/api/get/";
+        String address = ADDRESS + "/api/get/";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().GET().uri(
@@ -149,7 +152,7 @@ public class LectureCommunication {
         modKey = URLEncoder.encode(modKey, StandardCharsets.UTF_8);
 
         //Parameter for request
-        String address = "http://localhost:8080/api/validate/";
+        String address = ADDRESS + "/api/validate/";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().GET().uri(
@@ -188,9 +191,10 @@ public class LectureCommunication {
         }
 
         HttpRequest.BodyPublisher req = HttpRequest.BodyPublishers.ofString("");
+        String address = ADDRESS + "/api/close/";
 
         HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
-                URI.create("http://localhost:8080/api/close/" + uuid
+                URI.create(address + uuid
                         + "/" + modkey)).build();
 
         HttpResponse<String> response;
@@ -220,7 +224,7 @@ public class LectureCommunication {
     private static boolean registerUser(String lectureId, long uid, String username) {
         //request to add user to user table
         //Parameter for request
-        String address = "http://localhost:8080/api/user/register";
+        String address = ADDRESS + "/api/user/register";
 
         JsonObject user = new JsonObject();
         user.addProperty("userName", username);

@@ -72,13 +72,6 @@ public class DebugSceneController {
      */
     public void populate() {
         User.setUserName("Stefan");
-        QuestionCommunication.askQuestion("How do you do, fellow kids?");
-        QuestionCommunication.askQuestion("How do you find the eigen values?");
-        QuestionCommunication.askQuestion("I am confused!!!!");
-        QuestionCommunication.askQuestion("We live in a soc");
-        List<Question> questions = QuestionCommunication.fetchQuestions();
-        assert questions != null;
-        assert questions.size() == 4;
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 67, "Artjom");
 
@@ -93,6 +86,17 @@ public class DebugSceneController {
 
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 59, "Oleg");
+        QuestionCommunication.askQuestion(
+                67, Lecture.getCurrentLecture().getUuid(), "How do you do, fellow kids?");
+        QuestionCommunication.askQuestion(
+                26, Lecture.getCurrentLecture().getUuid(),"How do you find the eigen values?");
+        QuestionCommunication.askQuestion(
+                26, Lecture.getCurrentLecture().getUuid(),"I am confused!!!!");
+        QuestionCommunication.askQuestion(
+                42, Lecture.getCurrentLecture().getUuid(),"We live in a soc");
+        List<Question> questions = QuestionCommunication.fetchQuestions();
+        assert questions != null;
+        assert questions.size() == 4;
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),67);
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),26);
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),34);

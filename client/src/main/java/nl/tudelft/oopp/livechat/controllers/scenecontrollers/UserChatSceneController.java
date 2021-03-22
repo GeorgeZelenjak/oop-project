@@ -173,7 +173,8 @@ public class UserChatSceneController implements Initializable {
                     "Your question is too long! (max 2000 characters)");
             return -4;
         }
-        int ret = QuestionCommunication.askQuestion(text);
+        int ret = QuestionCommunication.askQuestion(
+                User.getUid(), Lecture.getCurrentLecture().getUuid(), text);
         //inputQuestion.setText("");
 
         System.out.println(ret);
