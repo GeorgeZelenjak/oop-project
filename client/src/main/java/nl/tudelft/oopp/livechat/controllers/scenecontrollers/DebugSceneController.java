@@ -5,6 +5,7 @@ import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
+import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.io.IOException;
@@ -80,12 +81,16 @@ public class DebugSceneController {
         assert questions.size() == 4;
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 67, "Artjom");
+
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 26, "Codrin");
+
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 34, "Jegor");
+
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 42, "Tudor");
+
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 59, "Oleg");
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),67);
@@ -93,5 +98,28 @@ public class DebugSceneController {
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),34);
         QuestionCommunication.upvoteQuestion(questions.get(1).getId(),42);
         QuestionCommunication.upvoteQuestion(questions.get(1).getId(),59);
+
+
+
+        LectureSpeedCommunication.voteOnLectureSpeed(
+                67,
+                Lecture.getCurrentLecture().getUuid(),
+                "faster");
+        LectureSpeedCommunication.voteOnLectureSpeed(
+                26,
+                Lecture.getCurrentLecture().getUuid(),
+                "faster");
+        LectureSpeedCommunication.voteOnLectureSpeed(
+                34,
+                Lecture.getCurrentLecture().getUuid(),
+                "faster");
+        LectureSpeedCommunication.voteOnLectureSpeed(
+                42,
+                Lecture.getCurrentLecture().getUuid(),
+                "slower");
+        LectureSpeedCommunication.voteOnLectureSpeed(
+                59,
+                Lecture.getCurrentLecture().getUuid(),
+                "faster");
     }
 }

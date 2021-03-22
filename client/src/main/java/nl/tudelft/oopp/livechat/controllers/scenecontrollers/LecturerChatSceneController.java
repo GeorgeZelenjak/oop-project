@@ -11,9 +11,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import nl.tudelft.oopp.livechat.businesslogic.PercentageCalculator;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
@@ -120,13 +122,16 @@ public class LecturerChatSceneController implements Initializable {
     @FXML
     private Text voteCountSlow;
 
+    @FXML
+    private Line slowerVotesPercentLine;
 
+    @FXML
+    private Line fasterVotesPercentLine;
 
-    /**
-     * The Observable list.
-     */
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
+
+    private static List<Integer> lectureSpeeds;
 
     private List<Question> questions;
 
@@ -138,11 +143,13 @@ public class LecturerChatSceneController implements Initializable {
     public void initialize(URL location, ResourceBundle resourceBundle) {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
+        slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(1500),
             ae -> {
                 fetchQuestions();
                 getVotesOnLectureSpeed();
+                adjustLectureSpeedLines();
             }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
@@ -153,11 +160,11 @@ public class LecturerChatSceneController implements Initializable {
      */
     public void getVotesOnLectureSpeed() {
         UUID uuid = Lecture.getCurrentLecture().getUuid();
-        List<Integer> speeds = LectureSpeedCommunication.getVotesOnLectureSpeed(uuid);
+        lectureSpeeds = LectureSpeedCommunication.getVotesOnLectureSpeed(uuid);
         voteCountFast.setText("Too fast: "
-                + speeds.get(0));
+                + lectureSpeeds.get(0));
         voteCountSlow.setText("Too slow: "
-                + speeds.get(1));
+                + lectureSpeeds.get(1));
     }
 
     /**
@@ -247,7 +254,7 @@ public class LecturerChatSceneController implements Initializable {
      *
      * @throws IOException if something happens
      */
-    public void goToUserManual() throws IOException {
+    public void goToUserManual() {
 
         NavigationController.getCurrentController().goToUserManual();
     }
@@ -266,7 +273,7 @@ public class LecturerChatSceneController implements Initializable {
      *
      * @throws IOException if something happens
      */
-    public void closeLecture() throws IOException {
+    public void closeLecture() {
         LectureCommunication.closeLecture(Lecture.getCurrentLecture().getUuid().toString(),
                 Lecture.getCurrentLecture().getModkey().toString());
         NavigationController.getCurrentController().goToMainScene();
@@ -340,8 +347,22 @@ public class LecturerChatSceneController implements Initializable {
                 file.writeToFile(list);
             }
         });
-
-
     }
+
+    private void adjustLectureSpeedLines() {
+        if (lectureSpeeds == null) {
+            return;
+        }
+        //Sets the
+        slowerVotesPercentLine.setStartX(PercentageCalculator.determineNewStartCoordinates(
+                fasterVotesPercentLine.getStartX(), fasterVotesPercentLine.getEndX(),
+                lectureSpeeds.get(0), lectureSpeeds.get(1)));
+
+        //Makes it so that if the blue line is just a dot, users do not see it
+        slowerVotesPercentLine.setVisible(slowerVotesPercentLine.getEndX()
+                != slowerVotesPercentLine.getStartX());
+    }
+
+
 }
 
