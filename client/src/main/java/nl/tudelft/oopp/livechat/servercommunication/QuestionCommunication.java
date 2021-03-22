@@ -39,7 +39,9 @@ public class QuestionCommunication {
 
     /**
      * Sends an HTTP request to ask a question with the current Lecture id.
-     * @param questionText the question text
+     * @param   uid the id of the user
+     * @param   lectureId the id of the lecture
+     * @param   questionText the text of the question
      * @return  0 if the question was asked successfully
      *         -1 if current lecture does not exist
      *         -2 if an exception occurred when communicating with the server
