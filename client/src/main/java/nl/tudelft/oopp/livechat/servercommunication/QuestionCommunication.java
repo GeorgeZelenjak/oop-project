@@ -46,7 +46,7 @@ public class QuestionCommunication {
      *         -3 if unexpected response was received
      *         -4 if server rejects the question
      */
-    public static int askQuestion(String questionText) {
+    public static int askQuestion(long uid, UUID lectureId, String questionText) {
         //Check if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
@@ -54,8 +54,7 @@ public class QuestionCommunication {
         }
 
         //Parameters for question
-        UUID lectureId = Lecture.getCurrentLecture().getUuid();
-        Question question = new Question(lectureId, questionText, User.getUid());
+        Question question = new Question(lectureId, questionText, uid);
 
         //Parameters for request
         String json = gson.toJson(question);

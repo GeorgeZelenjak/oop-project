@@ -345,7 +345,8 @@ public class QuestionCommunicationTest {
     public void askQuestionSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Testing", "Andy"));
         int oldSize = User.getAskedQuestionIds().size();
-        assertEquals(0, QuestionCommunication.askQuestion("Is there anybody?"));
+        assertEquals(0, QuestionCommunication.askQuestion(
+                User.getUid(),Lecture.getCurrentLecture().getUuid(), "Is there anybody?"));
         assertTrue(User.getAskedQuestionIds().contains(Long.parseLong(qid1)));
         assertEquals(oldSize + 1, User.getAskedQuestionIds().size());
     }
@@ -354,7 +355,8 @@ public class QuestionCommunicationTest {
     public void askQuestionLectureNotExistsTest() {
         int oldSize = User.getAskedQuestionIds().size();
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, QuestionCommunication.askQuestion("Is there anybody?"));
+        assertEquals(-1, QuestionCommunication.askQuestion(
+                User.getUid(),null,"Is there anybody?"));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
@@ -364,7 +366,8 @@ public class QuestionCommunicationTest {
 
         int oldSize = User.getAskedQuestionIds().size();
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "?", "???"));
-        assertEquals(-2, QuestionCommunication.askQuestion("Will we get 10 for OOPP?"));
+        assertEquals(-2, QuestionCommunication.askQuestion(
+                User.getUid(),Lecture.getCurrentLecture().getUuid(),"Will we get 10 for OOPP?"));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
 
         startServer();
@@ -374,7 +377,8 @@ public class QuestionCommunicationTest {
     public void askQuestionUnsuccessfulTest() {
         int oldSize = User.getAskedQuestionIds().size();
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "#", "$"));
-        assertEquals(-3, QuestionCommunication.askQuestion("F*ck"));
+        assertEquals(-3, QuestionCommunication.askQuestion(
+                User.getUid(),Lecture.getCurrentLecture().getUuid(),"F*ck"));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
@@ -552,7 +556,8 @@ public class QuestionCommunicationTest {
     public void deleteQuestionSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Arrays", "Andy"));
-        QuestionCommunication.askQuestion("Will we get 10?");
+        QuestionCommunication.askQuestion(
+                User.getUid(),Lecture.getCurrentLecture().getUuid(),"Will we get 10?");
         int oldSize = User.getAskedQuestionIds().size();
 
         assertEquals(0, QuestionCommunication.deleteQuestion(Long.parseLong(qid3), userId));
@@ -623,7 +628,8 @@ public class QuestionCommunicationTest {
     @Test
     public void modDeleteSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Assembly", "Otto"));
-        QuestionCommunication.askQuestion("Will we get 10?");
+        QuestionCommunication.askQuestion(
+                User.getUid(),Lecture.getCurrentLecture().getUuid(),"Will we get 10?");
 
         assertEquals(0, QuestionCommunication.modDelete(Long.parseLong(qid2), modkey));
     }
@@ -671,7 +677,8 @@ public class QuestionCommunicationTest {
     public void editSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Indexes", "Asterios"));
-        QuestionCommunication.askQuestion("Is there anybody?");
+        QuestionCommunication.askQuestion(
+                User.getUid(),Lecture.getCurrentLecture().getUuid(),"Is there anybody?");
         assertEquals(0, QuestionCommunication.edit(Long.parseLong(qid1), modkey, "Edited"));
 
     }
