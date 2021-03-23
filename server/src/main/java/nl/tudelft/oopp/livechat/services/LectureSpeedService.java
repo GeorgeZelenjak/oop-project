@@ -5,7 +5,6 @@ import nl.tudelft.oopp.livechat.entities.UserLectureSpeedTable;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.UserLectureSpeedRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
