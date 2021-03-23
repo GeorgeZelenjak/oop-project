@@ -34,8 +34,8 @@ public class QuestionCommunication {
     set to parse fields according to annotations
     and with specified date format
      */
-    private static final Gson gson = new GsonBuilder().setDateFormat(
-            "EEE, dd MMM yyyy HH:mm:ss zzz").excludeFieldsWithoutExposeAnnotation().create();
+    private static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+            .setDateFormat("yyyy-MM-dd HH:mm:ss Z").create();
 
     private static final String ADDRESS = CommonCommunication.ADDRESS;
 

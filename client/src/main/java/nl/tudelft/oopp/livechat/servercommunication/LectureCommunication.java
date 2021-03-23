@@ -17,6 +17,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  * Class for Lecture server communication.
@@ -37,10 +38,10 @@ public class LectureCommunication {
     /**
      * Gson object for parsing Json
      * set to parse fields according to annotations
-     * and with specified date format. // old - EEE, dd MMM yyyy HH:mm:ss zzz
+     * and with specified date format.
      */
     private static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-            .setDateFormat("yyyy-mm-dd hh:mm:ss").create();
+            .setDateFormat("yyyy-MM-dd HH:mm:ss Z").create();
 
     /**
      * Creates a new lecture.
@@ -55,13 +56,14 @@ public class LectureCommunication {
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
 
         //Creating node
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode node = mapper.createObjectNode();
-        node.put("creatorName", creatorName);
-        node.put("startTime", String.valueOf(startTime));      //.getTime()
+        JsonObject jsonObject = new JsonObject();
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+        String start = date.format(startTime);
+        jsonObject.addProperty("creatorName", creatorName);
+        jsonObject.addProperty("startTime", start);
 
         //Convert node to string
-        String nodeToString = node.toString();
+        String nodeToString = gson.toJson(jsonObject);
 
         //Parameters for request
         HttpRequest.BodyPublisher req = HttpRequest.BodyPublishers.ofString(nodeToString);

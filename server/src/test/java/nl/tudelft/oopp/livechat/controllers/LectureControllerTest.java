@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +33,11 @@ class LectureControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private static ObjectMapper objectMapper;
 
-    private final Timestamp time = new Timestamp(System.currentTimeMillis());
+    private final Timestamp time = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+    private static final SimpleDateFormat simpleDateFormat =
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
     /**
      * A helper method to create a JSON string representing the lecture.
@@ -46,7 +49,7 @@ class LectureControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode node = mapper.createObjectNode();
         node.put("creatorName", creatorName);
-        node.put("startTime", String.valueOf(startTime));
+        node.put("startTime", simpleDateFormat.format(startTime));
         return node.toString();
     }
 
@@ -124,8 +127,11 @@ class LectureControllerTest {
         return Integer.parseInt(result);
     }
 
-    @BeforeEach
-
+    @BeforeAll
+    static void setUp() {
+        objectMapper = new ObjectMapper();
+        objectMapper.setDateFormat(simpleDateFormat);
+    }
 
     //TODO not to hardcode 'placeholder'
     @Test

@@ -11,6 +11,7 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,6 +35,8 @@ public class LectureCommunicationTest {
             + "233829880753195251019011573834187930702154089149934884167509\n"
              + "24476146066808226\n";
     private static final Timestamp time = new Timestamp(System.currentTimeMillis());
+    private static final SimpleDateFormat simpleDateFormat =
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
     /**
      * A helper method to assign JSON string lecture.
@@ -46,10 +49,9 @@ public class LectureCommunicationTest {
         node.put("creatorName","placeholder");
         node.put("slowerCount","0");
         node.put("frequency","60");
-        node.put("startTime",String.valueOf(time));
+        node.put("startTime", simpleDateFormat.format(time));
         node.put("slowerCount","0");
         node.put("open","true");
-        //2021-03-04T15:49:27.962+0000
 
         jsonLecture = node.toString();
     }
