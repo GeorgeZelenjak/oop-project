@@ -187,7 +187,7 @@ class UserServiceTest {
 
     @Test
     public void banByIpSuccessfulTest() {
-        int result = userService.banByIp(34, "192.168.1.1", modkey1, 10);
+        int result = userService.banByIp(34, uid1, modkey1, 10);
         assertEquals(0, result);
         List<UserEntity> banned = userRepository.findAllByIp("192.168.1.1");
         banned.forEach((u) -> assertFalse(u.isAllowed()));
@@ -196,7 +196,7 @@ class UserServiceTest {
     @Test
     public void banByIpUnsuccessfulTest() {
         userService.newUser(user, "127.0.0.1");
-        int result = userService.banByIp(34, "127.0.0.1", incorrectModKey, 10);
+        int result = userService.banByIp(34, uid, incorrectModKey, 10);
         assertEquals(-2, result);
         List<UserEntity> banned = userRepository.findAllByIp("192.168.1.1");
         banned.forEach((u) -> assertTrue(u.isAllowed()));

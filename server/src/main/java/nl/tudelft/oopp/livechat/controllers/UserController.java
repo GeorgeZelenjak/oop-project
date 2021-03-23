@@ -76,13 +76,13 @@ public class UserController {
     public int banByip(@RequestBody String info) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(info);
         long modid = Long.parseLong(jsonNode.get("modid").asText());
-        String ip = jsonNode.get("userid").asText();
         UUID modkey = UUID.fromString(jsonNode.get("modkey").asText());
+        long uid = Long.parseLong(jsonNode.get("userid").asText());
         int time = Integer.parseInt(jsonNode.get("time").asText());
         if (time <= 0) {
             throw new NumberFormatException();
         }
-        return userService.banByIp(modid, ip, modkey, time);
+        return userService.banByIp(modid, uid, modkey, time);
     }
 
     /**

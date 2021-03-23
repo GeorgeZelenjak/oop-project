@@ -123,15 +123,19 @@ public class UserService {
      * Toggles ban by ip.
      *
      * @param modid  the moderator user id
-     * @param ip     the ip to ban
+     * @param uid     the user id with ip to ban
      * @param modkey the moderator key for 1 lecture 1 of the users could be in
      * @param time   the time of ban
      * @return   0 if success
      *          -1 if no users are present with that ip
      *          -2 if no lectures meeting the requirements
      */
-    public int banByIp(long modid, String ip, UUID modkey, int time) {
-        List<UserEntity> toBan = userRepository.findAllByIp(ip);
+    public int banByIp(long modid, long uid, UUID modkey, int time) {
+        UserEntity user = userRepository.findById(uid).orElse(null);
+        if (user == null) {
+            return -1;
+        }
+        List<UserEntity> toBan = userRepository.findAllByIp(user.getIp());
         if (toBan == null || toBan.size() == 0) {
             return -1;
         }
