@@ -1,14 +1,15 @@
 package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
@@ -21,7 +22,7 @@ import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 /**
  * Class for the CreateLecture Scene controller.
  */
-public class CreateLectureController {
+public class CreateLectureController implements Initializable {
 
     @FXML
     private TextField enterLectureNameTextField;
@@ -43,6 +44,28 @@ public class CreateLectureController {
 
     @FXML
     private Text dotsText;
+
+    @FXML
+    private Button goToHelpButton;
+
+    @FXML
+    private Button goToSettingsButton;
+
+    @FXML
+    private Button goBackButton;
+
+    @FXML
+    private Button createLectureButton;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        goToHelpButton.setTooltip(new Tooltip("Open Help & Documentation Page"));
+        goToSettingsButton.setTooltip(new Tooltip("Open Settings Page"));
+
+        goBackButton.setTooltip(new Tooltip("Go back to previous page"));
+        createLectureButton.setTooltip(new Tooltip("Creates a new lecture and "
+                + "\nnavigates to the lecture page"));
+    }
 
     /**
      * Creates the lecture, shows alert with lecture and creator names
