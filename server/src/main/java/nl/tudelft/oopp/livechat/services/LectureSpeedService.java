@@ -46,14 +46,14 @@ public class LectureSpeedService {
 
 
     /**
-     * Gets votes.
+     * Gets the votes for the lecture speed.
      * @param uuid the id of the lecture
-     * @return the votes
+     * @return the votes for the lecture speed (first number is for faster, second for slower)
      */
     public List<Integer> getVotes(UUID uuid) {
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
 
-        if (lecture == null || !lectureRepository.findLectureEntityByUuid(uuid).isOpen()) {
+        if (lecture == null) {
             return null;
         }
 

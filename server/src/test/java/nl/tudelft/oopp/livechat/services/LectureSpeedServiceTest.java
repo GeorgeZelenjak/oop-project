@@ -245,4 +245,42 @@ public class LectureSpeedServiceTest {
         assertEquals(0, lecture.getFasterCount());
         assertEquals(0, lecture.getSlowerCount());
     }
+
+    @Test
+    void getVotesLectureNullTest() {
+        assertNull(lectureSpeedService.getVotes(l2.getUuid()));
+    }
+
+    @Test
+    void getVotesSuccessfulBothTest() {
+        lectureSpeedService.setUserLectureSpeedVote(uid1, l1.getUuid(), "faster");
+        user2.setLectureId(l1.getUuid());
+        userRepository.save(user2);
+
+        lectureSpeedService.setUserLectureSpeedVote(uid2, l1.getUuid(), "slower");
+
+        List<Integer> expected = List.of(1, 1);
+        assertEquals(expected, lectureSpeedService.getVotes(l1.getUuid()));
+
+        userRepository.deleteById(uid2);
+        user2.setLectureId(l2.getUuid());
+        userLectureSpeedRepository.deleteAllByLectureId(l1.getUuid());
+
+    }
+
+    @Test
+    void getVotesSuccessfulOnlyOneTest() {
+        lectureSpeedService.setUserLectureSpeedVote(uid1, l1.getUuid(), "faster");
+        user2.setLectureId(l1.getUuid());
+        userRepository.save(user2);
+
+        lectureSpeedService.setUserLectureSpeedVote(uid2, l1.getUuid(), "faster");
+
+        List<Integer> expected = List.of(2, 0);
+        assertEquals(expected, lectureSpeedService.getVotes(l1.getUuid()));
+
+        userRepository.deleteById(uid2);
+        user2.setLectureId(l2.getUuid());
+        userLectureSpeedRepository.deleteAllByLectureId(l1.getUuid());
+    }
 }
