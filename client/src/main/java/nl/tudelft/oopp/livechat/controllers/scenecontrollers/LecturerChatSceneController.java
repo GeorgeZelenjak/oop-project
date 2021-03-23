@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -28,6 +29,7 @@ import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
+import javax.tools.Tool;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -129,6 +131,18 @@ public class LecturerChatSceneController implements Initializable {
     private Line fasterVotesPercentLine;
 
     @FXML
+    private Button goToLectureModeButton;
+
+    @FXML
+    private Button exportQA;
+
+    @FXML
+    private Button closeLectureButton;
+
+    @FXML
+    private Button leaveLecture;
+
+    @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
 
     private static List<Integer> lectureSpeeds;
@@ -155,6 +169,52 @@ public class LecturerChatSceneController implements Initializable {
             }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
+
+        //Tooptip
+        copyId.setTooltip(new Tooltip("Copy the lecture's ID to clipboard"));
+        copyId.getTooltip().setFont(Font.font(10));
+
+        copyKey.setTooltip(new Tooltip("Copy the moderator key to clipboard"));
+        copyKey.getTooltip().setFont(Font.font(10));
+
+        participants.setTooltip(new Tooltip("See the lecture participants"));
+        participants.getTooltip().setFont(Font.font(10));
+
+        goToLectureModeButton.setTooltip(new Tooltip("Enter lecturer mode"));
+        goToLectureModeButton.getTooltip().setFont(Font.font(10));
+
+        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+        goToSettingsButton.getTooltip().setFont(Font.font(10));
+
+        goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
+        goToUserManualButton.getTooltip().setFont(Font.font(10));
+
+        pollingButton.setTooltip(new Tooltip("Show poll's results to lecture participants"));
+        pollingButton.getTooltip().setFont(Font.font(10));
+
+        speedButton.setTooltip(new Tooltip("Open voting on lecture speed"));
+        speedButton.getTooltip().setFont(Font.font(10));
+
+        lectureLog.setTooltip(new Tooltip("See an overview of the lecture's activity"));
+        lectureLog.getTooltip().setFont(Font.font(10));
+
+        reopenPolling.setTooltip(new Tooltip("Reopen a previous polling question"));
+        reopenPolling.getTooltip().setFont(Font.font(10));
+
+        exportQA.setTooltip(new Tooltip("Export this lecture's content"));
+        exportQA.getTooltip().setFont(Font.font(10));
+
+        closeLectureButton.setTooltip(new Tooltip("Close this lecture"));
+        closeLectureButton.getTooltip().setFont(Font.font(10));
+
+        leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
+        leaveLecture.getTooltip().setFont(Font.font(10));
+
+        createPolling.setTooltip(new Tooltip("Create a polling question"));
+        createPolling.getTooltip().setFont(Font.font(10));
+
+        createQuiz.setTooltip(new Tooltip("Create a quiz"));
+        createQuiz.getTooltip().setFont(Font.font(10));
     }
 
     /**
