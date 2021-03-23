@@ -107,19 +107,12 @@ public class UserChatSceneController implements Initializable {
 
         //Tooltip
         participants.setTooltip(new Tooltip("See the lecture participants"));
-        participants.getTooltip().setFont(Font.font(10));
-
         goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
-        goToSettingsButton.getTooltip().setFont(Font.font(10));
 
         goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
-        goToUserManualButton.getTooltip().setFont(Font.font(10));
-
         gobBackButton.setTooltip(new Tooltip("Go back to the main page"));
-        gobBackButton.getTooltip().setFont(Font.font(10));
 
         leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
-        leaveLecture.getTooltip().setFont(Font.font(10));
     }
 
     /**
