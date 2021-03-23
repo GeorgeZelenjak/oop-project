@@ -156,11 +156,12 @@ public class CellDataLecturer {
 
     public void setBanUser() {
         banButton.setOnAction((ActionEvent event) -> {
+
             int[] result = showPopup();
             int time = result[0] * 60;
             boolean byIp = result[1] != 0;
             LectureCommunication.ban(Lecture.getCurrentLecture().getModkey().toString(),
-                    question.getOwnerId(), time, byIp);
+                    question.getId(), time, byIp);
         });
     }
 

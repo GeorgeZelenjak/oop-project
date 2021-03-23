@@ -85,6 +85,9 @@ public class QuestionService {
             return -1;
         }
         UserEntity userAsked = userRepository.getUserEntityByUid(q.getOwnerId());
+        if (!userAsked.isAllowed()) {
+            return -2;
+        }
         q.setOwnerName(userAsked.getUserName());
         questionRepository.save(q);
         return q.getId();

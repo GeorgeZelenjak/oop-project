@@ -216,7 +216,7 @@ public class LectureCommunication {
     /**
      * Ban/unban the user by id or ip (done by moderator).
      * @param modKey the moderator key
-     * @param toBanId the id of the user to (un)ban
+     * @param questionToBanId the id of the question whose user is to be to (un)banned
      * @param time the time of the ban
      * @param byIp true iff needs to be (un)banned by ip, false if by id
      * @return  0 if the user was banned/unbanned successfully
@@ -225,7 +225,7 @@ public class LectureCommunication {
      *         -3 if unexpected response was received //TODO to be modified
      *         -4 if the user was not banned/unbanned successfully (e.g wrong mod id, wrong modkey etc.)
      */
-    public static int ban(String modKey, long toBanId, int time, boolean byIp) {
+    public static int ban(String modKey, long questionToBanId, int time, boolean byIp) {
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!!!");
             return -1;
@@ -235,7 +235,7 @@ public class LectureCommunication {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("modid", User.getUid());
         jsonObject.addProperty("modkey", modKey);
-        jsonObject.addProperty("userid", toBanId);
+        jsonObject.addProperty("qid", questionToBanId);
         jsonObject.addProperty("time", time);
         String json = gson.toJson(jsonObject);
 
@@ -261,8 +261,9 @@ public class LectureCommunication {
         int result = handleResponse(response);
         System.out.println("Result: " + result);
         if (result == 0) {
-            System.out.println("The user with id " + toBanId + " was banned successfully!");
+            System.out.println("The user with qid " + questionToBanId + " was banned successfully!");
             System.out.println("Ban time: " + time);
+            User.addBannedQuestionId(questionToBanId, time);
         }
         return result;
     }

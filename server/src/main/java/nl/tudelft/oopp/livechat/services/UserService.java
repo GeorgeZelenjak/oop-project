@@ -179,10 +179,13 @@ public class UserService {
 
 
     private void scheduleUnban(UserEntity toUnban, int offset, long modid) {
-        taskScheduler.schedule(
-            () -> toggleBan(toUnban, modid, offset),
-                new Date(OffsetDateTime.now().plusSeconds(offset).toInstant().toEpochMilli())
-        );
+        taskScheduler.schedule(() -> {
+            UserEntity user = userRepository.findById(toUnban.getUid()).orElse(null);
+            if (user == null || user.isAllowed()) {
+                return;
+            }
+            toggleBan(toUnban, modid, offset);
+        }, new Date(OffsetDateTime.now().plusSeconds(offset).toInstant().toEpochMilli()));
     }
 
 }
