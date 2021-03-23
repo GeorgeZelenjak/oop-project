@@ -34,7 +34,7 @@ public class PollController {
     }
 
     @PutMapping("/toggle/{pollId}/{modkey}")
-    public int addOption(@PathVariable long pollId, @PathVariable UUID modkey) {
+    public int toggle(@PathVariable long pollId, @PathVariable UUID modkey) {
         return pollService.togglePoll(pollId, modkey);
     }
 
