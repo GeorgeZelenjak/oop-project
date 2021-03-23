@@ -123,7 +123,7 @@ public class QuestionController {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
-        System.out.println(exception.getMessage());
+        System.out.println("here");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Don't do this");
     }

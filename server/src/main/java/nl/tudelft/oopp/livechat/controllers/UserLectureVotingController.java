@@ -1,5 +1,6 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.tudelft.oopp.livechat.entities.UserLectureSpeedTable;
 import nl.tudelft.oopp.livechat.services.LectureSpeedService;
 import org.springframework.http.HttpStatus;

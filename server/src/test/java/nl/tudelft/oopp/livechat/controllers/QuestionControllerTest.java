@@ -300,6 +300,18 @@ class QuestionControllerTest {
     }
 
     @Test
+    public void askQuestionFailingJSONTest() throws Exception {
+        String response = this.mockMvc
+                .perform(post("/api/question/ask")
+                        .contentType(APPLICATION_JSON)
+                        .content("not a question")
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+        assertEquals("Don't do this", response);
+    }
+
+    @Test
     void fetchQuestionsTest() throws Exception {
         List<QuestionEntity> listLecture1 = getQuestions(lectureEntity1.getUuid().toString());
         List<QuestionEntity> listLecture2 = getQuestions(lectureEntity2.getUuid().toString());
