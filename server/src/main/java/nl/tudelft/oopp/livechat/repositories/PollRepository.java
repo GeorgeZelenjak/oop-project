@@ -1,7 +1,6 @@
 package nl.tudelft.oopp.livechat.repositories;
 
-import nl.tudelft.oopp.livechat.entities.PollAndOptions;
-import nl.tudelft.oopp.livechat.entities.PollEntity;
+import nl.tudelft.oopp.livechat.entities.poll.PollEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

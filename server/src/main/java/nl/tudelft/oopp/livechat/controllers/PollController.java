@@ -1,9 +1,9 @@
 package nl.tudelft.oopp.livechat.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nl.tudelft.oopp.livechat.entities.PollAndOptions;
-import nl.tudelft.oopp.livechat.entities.PollEntity;
-import nl.tudelft.oopp.livechat.entities.PollOptionEntity;
+import nl.tudelft.oopp.livechat.entities.poll.PollAndOptions;
+import nl.tudelft.oopp.livechat.entities.poll.PollEntity;
+import nl.tudelft.oopp.livechat.entities.poll.PollOptionEntity;
 import nl.tudelft.oopp.livechat.services.PollService;
 import org.springframework.web.bind.annotation.*;
 

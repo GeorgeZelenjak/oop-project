@@ -1,4 +1,4 @@
-package nl.tudelft.oopp.livechat.entities;
+package nl.tudelft.oopp.livechat.entities.poll;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package nl.tudelft.oopp.livechat.entities;
+package nl.tudelft.oopp.livechat.entities.poll;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

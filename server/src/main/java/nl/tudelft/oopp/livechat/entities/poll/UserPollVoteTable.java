@@ -1,11 +1,13 @@
-package nl.tudelft.oopp.livechat.entities;
+package nl.tudelft.oopp.livechat.entities.poll;
+
+import nl.tudelft.oopp.livechat.entities.UserQuestionPairId;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Table(name = "userPollVote")
 @Entity
-@IdClass(UserQuestionPairId.class)
+@IdClass(UserPollVotePairId.class)
 public class UserPollVoteTable {
 
     @Id

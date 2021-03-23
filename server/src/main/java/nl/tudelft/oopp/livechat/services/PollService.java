@@ -1,6 +1,9 @@
 package nl.tudelft.oopp.livechat.services;
 
-import nl.tudelft.oopp.livechat.entities.*;
+import nl.tudelft.oopp.livechat.entities.poll.PollAndOptions;
+import nl.tudelft.oopp.livechat.entities.poll.PollEntity;
+import nl.tudelft.oopp.livechat.entities.poll.PollOptionEntity;
+import nl.tudelft.oopp.livechat.entities.poll.UserPollVoteTable;
 import nl.tudelft.oopp.livechat.repositories.*;
 import org.springframework.stereotype.Service;
 
@@ -64,6 +67,7 @@ public class PollService {
         if (pollEntity == null) return -1;
         if (lectureService.validateModerator(pollEntity.getUuid(), modkey) != 0) return -2;
         pollEntity.setOpen(!pollEntity.isOpen());
+        pollRepository.save(pollEntity);
         return 0;
     }
 
@@ -102,14 +106,18 @@ public class PollService {
     public int voteOnPoll(long userId, long pollOptionId) {
         //Check if user exists
         if (userRepository.getUserEntityByUid(userId) == null) return -1;
+
         //Check if poll option exists
         PollOptionEntity pollOptionEntity = pollOptionRepository.findById(pollOptionId);
         if (pollOptionEntity == null) return -2;
+
         //Check if poll is open
         if (!pollRepository.findById(pollOptionEntity.getPollId()).isOpen()) return -3;
+
         //Check if user is in the lecture
-        if (userRepository.getUserEntityByUid(userId).getLectureId()
-                != pollRepository.findById(pollOptionId).getUuid()) return -4;
+        if (!userRepository.getUserEntityByUid(userId).getLectureId().equals(
+                pollRepository.findById(pollOptionEntity.getPollId()).getUuid())) return -4;
+
         //Check if user already voted
         List<UserPollVoteTable> listOfUserVotes = userPollVoteRepository.findAllByUserId(userId);
         for (UserPollVoteTable upvt : listOfUserVotes) {
@@ -161,6 +169,10 @@ public class PollService {
 
         for (PollOptionEntity poe : pollOptionRepository.findAllByPollId(pollId)) {
             userPollVoteRepository.deleteAllByOptionId(poe.getId());
+            //It works (Hopefully)
+            //Did not test these two lines
+            poe.setVotes(0);
+            pollOptionRepository.save(poe);
         }
         pollEntity.setVotes(0);
         pollRepository.save(pollEntity);
