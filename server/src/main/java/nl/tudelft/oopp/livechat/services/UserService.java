@@ -73,7 +73,6 @@ public class UserService {
 
     /**
      * Luhn check for the given number.
-     *
      * @param n the number
      * @return true if checksum is valid, false otherwise
      */
@@ -180,6 +179,12 @@ public class UserService {
     }
 
 
+    /**
+     * A helper method to schedule ban, or unban the user.
+     * @param toBan the user to be banned or unbanned
+     * @param modid the moderator id (not key)
+     * @param time the time of the ban in seconds (the value is not considered when unbanning)
+     */
     private void toggleBan(UserEntity toBan, long modid, int time) {
         if (toBan.isAllowed()) {
             toBan.setBannerId(modid);
@@ -192,6 +197,12 @@ public class UserService {
     }
 
 
+    /**
+     * A helper method to schedule unban.
+     * @param toUnban the user to be banned or unbanned
+     * @param offset the time of the ban in seconds (the value is not considered when unbanning)
+     * @param modid the moderator id (not key)
+     */
     private void scheduleUnban(UserEntity toUnban, int offset, long modid) {
         taskScheduler.schedule(() -> {
             UserEntity user = userRepository.findById(toUnban.getUid()).orElse(null);
@@ -203,6 +214,12 @@ public class UserService {
         }, new Date(OffsetDateTime.now().plusSeconds(offset).toInstant().toEpochMilli()));
     }
 
+    /**
+     * A helper method to save the changes and modify user- and question repositories
+     *      after the ban has happened.
+     * @param qid the id of the question asked by the banned user
+     * @param uid the id of the banned user
+     */
     private void editRepositoryAfterBanning(long qid, long uid) {
         if (questionRepository.findById(qid).isPresent()) {
             questionRepository.deleteById(qid);
@@ -216,6 +233,11 @@ public class UserService {
         questionRepository.saveAll(qs);
     }
 
+    /**
+     * A helper method to save the changes and modify user- and question repositories
+     *      after the ban has ended.
+     * @param uid the id of the banned user
+     */
     private void editRepositoryAfterUnbanning(long uid) {
         List<QuestionEntity> qs = questionRepository.findAllByOwnerId(uid);
         qs.forEach(q -> q.setOwnerName(q.getOwnerName()
