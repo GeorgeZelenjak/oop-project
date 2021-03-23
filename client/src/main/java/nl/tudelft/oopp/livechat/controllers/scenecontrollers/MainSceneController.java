@@ -4,24 +4,50 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.stage.Stage;
+import javafx.scene.control.Tooltip;
+import javafx.scene.text.Font;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 
 
 /**
  * Class for Main Scene controller.
  */
-public class MainSceneController {
+public class MainSceneController implements Initializable {
 
+    @FXML
+    private Button goToJoinLectureButton;
+
+    @FXML
+    private Button goToCreateLectureButton;
+
+    @FXML
+    private Button goToExportQAFromLectureButton;
+
+    @FXML
+    private Button goToSettingsButton;
+
+    @FXML
+    private Button goToHelpButton;
+
+    @FXML
+    private Button goToRestoreLectureButton;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        goToCreateLectureButton.setTooltip(new Tooltip("Go to Create Lecture Page"));
+        goToJoinLectureButton.setTooltip(new Tooltip("Go to Join Lecture Page"));
+
+        goToExportQAFromLectureButton.setTooltip(new Tooltip("Export Questions and Answers"));
+        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+
+        goToHelpButton.setTooltip(new Tooltip("Open Help & Documentation page"));
+        goToRestoreLectureButton.setTooltip(new Tooltip("Open the Restore Lecture Page"));
+
+    }
 
     /**
      * Navigates to lecture creation scene.
