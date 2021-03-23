@@ -11,6 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -25,7 +27,11 @@ public class CreateFileTest {
      */
     private void cleanup() throws IOException {
         File fin = new File("exportedQuestions/");
-        for (File file : fin.listFiles()) {
+        File[] files = fin.listFiles();
+        if (files == null) {
+            return;
+        }
+        for (File file : files) {
             FileDeleteStrategy.FORCE.delete(file);
         }
         Files.deleteIfExists(Path.of("exportedQuestions/"));
@@ -37,7 +43,7 @@ public class CreateFileTest {
     }
 
     @Test
-    public void constructorNoFile() throws IOException {
+    public void constructorNoFileTest() throws IOException {
         Path path = Path.of("exportedQuestions/");
 
         //check if the directory exists
@@ -52,7 +58,7 @@ public class CreateFileTest {
     }
 
     @Test
-    public void constructorNoFileNoLecture() throws IOException {
+    public void constructorNoFileNoLectureTest() throws IOException {
         Lecture.setCurrentLecture(null);
         Path path = Path.of("exportedQuestions/");
 
@@ -69,12 +75,46 @@ public class CreateFileTest {
     }
 
     @Test
-    public void testHeader() throws IOException {
+    public void testHeaderTest() throws IOException {
         Path path = Path.of("exportedQuestions/");
         CreateFile createFile = new CreateFile();
 
-        List<Question> qs = List.of(new Question(lectureId, "First", 42),
-                new Question(lectureId, "Second", 42));
+        createFile.writeToFile(new ArrayList<>());
+
+        Stream<Path> entries = Files.list(path);
+        Path p = entries.findFirst().orElse(null);
+        if (p == null) {
+            fail();
+        }
+
+        try (BufferedReader bufferedReader = new BufferedReader(
+                            new FileReader(p.toString()))) {
+            assertEquals("Lecture Name: \"" + Lecture.getCurrentLecture().getName() + "\"",
+                    bufferedReader.readLine());
+            assertEquals("Responsible Lecturer: " + Lecture.getCurrentLecture().getCreatorName(),
+                    bufferedReader.readLine());
+
+            //skip some data
+            assertNotNull(bufferedReader.readLine());
+            assertNotNull(bufferedReader.readLine());
+            assertNotNull(bufferedReader.readLine());
+
+            assertEquals("Number of questions: 0", bufferedReader.readLine());
+            assertNotNull(bufferedReader.readLine());
+        } catch (IOException e) {
+            fail();
+        }
+
+        cleanup();
+    }
+
+    @Test
+    public void testNoAnswer() throws IOException {
+        Path path = Path.of("exportedQuestions/");
+        CreateFile createFile = new CreateFile();
+
+        Question q = new Question(lectureId, "First", 42);
+        List<Question> qs = List.of(q);
         createFile.writeToFile(qs);
 
         Stream<Path> entries = Files.list(path);
@@ -84,21 +124,16 @@ public class CreateFileTest {
         }
 
         try (BufferedReader bufferedReader = new BufferedReader(
-                    new FileReader(p.toString()))) {
-            String line = bufferedReader.readLine();
-            assertEquals("Lecture Name: \"" + Lecture.getCurrentLecture().getName() + "\"", line);
-            line = bufferedReader.readLine();
-            assertEquals("Responsible Lecturer: " + Lecture.getCurrentLecture().getCreatorName(), line);
-
+                        new FileReader(p.toString()))) {
             //skip some data
-            assertNotNull(bufferedReader.readLine());
-            assertNotNull(bufferedReader.readLine());
-            assertNotNull(bufferedReader.readLine());
+            for (int i = 0; i < 5; i++) {
+                bufferedReader.readLine();
+            }
 
-            assertEquals("Number of questions: 2", bufferedReader.readLine());
-            assertNotNull(bufferedReader.readLine());
+            assertEquals("Number of questions: 1", bufferedReader.readLine());
+            bufferedReader.readLine();
 
-            String expected = "Q: \"" + qs.get(0).getText() + "\" asked on " + qs.get(0).getTime();
+            String expected = "Q: \"" + q.getText() + "\" asked on " + q.getTime();
             assertEquals(expected, bufferedReader.readLine());
             expected = "A: -> No answer available";
             assertEquals(expected, bufferedReader.readLine());
@@ -110,18 +145,129 @@ public class CreateFileTest {
     }
 
     @Test
-    public void testNoAnswer() {
+    public void testWithAnswer() throws IOException {
+        final Path path = Path.of("exportedQuestions/");
+        final CreateFile createFile = new CreateFile();
 
+        Question q = new Question(lectureId, "Second", 69);
+        final List<Question> qs = List.of(q);
+        q.setAnswered(true);
+        q.setAnswerText("42");
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        q.setAnswerTime(time);
+
+        createFile.writeToFile(qs);
+
+        Stream<Path> entries = Files.list(path);
+        Path p = entries.findFirst().orElse(null);
+        if (p == null) {
+            fail();
+        }
+
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new FileReader(p.toString()))) {
+            //skip some data
+            for (int i = 0; i < 5; i++) {
+                bufferedReader.readLine();
+            }
+
+            assertEquals("Number of questions: 1", bufferedReader.readLine());
+            bufferedReader.readLine();
+
+            String expected = "Q: \"" + q.getText() + "\" asked on " + q.getTime();
+            assertEquals(expected, bufferedReader.readLine());
+            expected = "A: -> \"" + q.getAnswerText() + "\" answered on "
+                    + q.getAnswerTime();
+            assertEquals(expected, bufferedReader.readLine());
+        } catch (IOException e) {
+            fail();
+        }
+
+        cleanup();
     }
 
     @Test
-    public void testWithAnswer() {
+    public void testMultipleAnswerOneAnsweredTest() throws IOException {
+        Path path = Path.of("exportedQuestions/");
+        CreateFile createFile = new CreateFile();
 
+        Question q1 = new Question(lectureId, "First", 42);
+        //q1.setVotes(42);
+        q1.setAnswered(true);
+        Question q2 = new Question(lectureId, "Second", 69);
+        List<Question> qs = List.of(q2, q1);
+        createFile.writeToFile(qs);
+
+        Stream<Path> entries = Files.list(path);
+        Path p = entries.findFirst().orElse(null);
+        if (p == null) {
+            fail();
+        }
+
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new FileReader(p.toString()))) {
+            //skip some data
+            for (int i = 0; i < 5; i++) {
+                bufferedReader.readLine();
+            }
+
+            assertEquals("Number of questions: 2", bufferedReader.readLine());
+            bufferedReader.readLine();
+
+            String expected = "Q: \"" + q1.getText() + "\" asked on " + q1.getTime();
+            assertEquals(expected, bufferedReader.readLine());
+            bufferedReader.readLine(); //skip the answer
+            assertEquals("--------------------------------------", bufferedReader.readLine());
+
+            expected = "Q: \"" + q2.getText() + "\" asked on " + q2.getTime();
+            assertEquals(expected, bufferedReader.readLine());
+        } catch (IOException e) {
+            fail();
+        }
+
+        cleanup();
     }
 
     @Test
-    public void testMultipleAnswer() {
+    public void testMultipleAnswerOneMoreVotesTest() throws IOException {
+        Path path = Path.of("exportedQuestions/");
+        CreateFile createFile = new CreateFile();
 
+        Question q1 = new Question(lectureId, "First", 42);
+        //q1.setVotes(42);
+        q1.setVotes(42);
+        Question q2 = new Question(lectureId, "Second", 69);
+        List<Question> qs = List.of(q2, q1);
+        createFile.writeToFile(qs);
+
+        Stream<Path> entries = Files.list(path);
+        Path p = entries.findFirst().orElse(null);
+        if (p == null) {
+            fail();
+        }
+
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new FileReader(p.toString()))) {
+            //skip some data
+            for (int i = 0; i < 5; i++) {
+                bufferedReader.readLine();
+            }
+
+            assertEquals("Number of questions: 2", bufferedReader.readLine());
+            bufferedReader.readLine();
+
+            String expected = "Q: \"" + q1.getText() + "\" asked on " + q1.getTime();
+            assertEquals(expected, bufferedReader.readLine());
+            bufferedReader.readLine(); //skip the answer
+            assertEquals("--------------------------------------", bufferedReader.readLine());
+
+            expected = "Q: \"" + q2.getText() + "\" asked on " + q2.getTime();
+            assertEquals(expected, bufferedReader.readLine());
+        } catch (IOException e) {
+            fail();
+        }
+
+        cleanup();
     }
 
 }
