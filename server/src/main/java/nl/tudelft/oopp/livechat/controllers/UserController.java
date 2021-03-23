@@ -1,6 +1,8 @@
 package nl.tudelft.oopp.livechat.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -10,14 +12,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
 
+    ObjectMapper objectMapper = new ObjectMapper();
+
     /**
      * Creates a new user controller.
+     *
      * @param userService user service object
      */
     public UserController(UserService userService) {
@@ -26,6 +33,7 @@ public class UserController {
 
     /**
      * POST endpoint to create a new user in the database.
+     *
      * @param user the new user
      * @return 0 if successful, -1 if not
      */
@@ -35,6 +43,46 @@ public class UserController {
                 RequestContextHolder.currentRequestAttributes())
                 .getRequest().getRemoteAddr();
         return userService.newUser(user, remoteAddress);
+    }
+
+    /**
+     * PUT mapping to ban by id.
+     *
+     * @param info the information needed to ban
+     * @return the result from service
+     * @throws JsonProcessingException the json processing exception
+     */
+    @PutMapping("/ban/id")
+    public int banByid(@RequestBody String info) throws JsonProcessingException {
+        JsonNode jsonNode = objectMapper.readTree(info);
+        long modid = Long.parseLong(jsonNode.get("modid").asText());
+        long userid = Long.parseLong(jsonNode.get("userid").asText());
+        UUID modkey = UUID.fromString(jsonNode.get("modkey").asText());
+        int time = Integer.parseInt(jsonNode.get("time").asText());
+        if (time <= 0) {
+            throw new NumberFormatException();
+        }
+        return userService.banById(modid, userid, modkey, time);
+    }
+
+    /**
+     * PUT mapping to ban by id.
+     *
+     * @param info the information needed to ban
+     * @return the result from service
+     * @throws JsonProcessingException the json processing exception
+     */
+    @PutMapping("/ban/ip")
+    public int banByip(@RequestBody String info) throws JsonProcessingException {
+        JsonNode jsonNode = objectMapper.readTree(info);
+        long modid = Long.parseLong(jsonNode.get("modid").asText());
+        String ip = jsonNode.get("userid").asText();
+        UUID modkey = UUID.fromString(jsonNode.get("modkey").asText());
+        int time = Integer.parseInt(jsonNode.get("time").asText());
+        if (time <= 0) {
+            throw new NumberFormatException();
+        }
+        return userService.banByIp(modid, ip, modkey, time);
     }
 
     /**
@@ -58,6 +106,19 @@ public class UserController {
     @ExceptionHandler(JsonProcessingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<Object> invalidJSON(JsonProcessingException exception) {
+        System.out.println(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Don't do this");
+    }
+
+    /**
+     * Exception handler for invalid numbers.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Don't do this' message
+     */
+    @ExceptionHandler(NumberFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ResponseEntity<Object> invalidNumber(NumberFormatException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Don't do this");

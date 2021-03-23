@@ -2,10 +2,15 @@ package nl.tudelft.oopp.livechat.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
+import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
 
+import org.h2.engine.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -22,16 +28,34 @@ import java.util.UUID;
 @SpringBootTest
 class UserServiceTest {
     private static UserEntity user;
+    private static UserEntity user1;
+    private static UserEntity user2;
+
     private static final long uid = createUid();
+    private static final long uid1 = 18;
+    private static final long uid2 = 26;
     private static final Timestamp time = new Timestamp(
             System.currentTimeMillis() / 1000 * 1000);
-    private static final UUID lid = UUID.randomUUID();
+    private static UUID lid;
+    private static UUID lid1;
+    private static UUID lid2;
+    private static LectureEntity lecture;
+    private static LectureEntity lecture1;
+    private static LectureEntity lecture2;
+    private static UUID modkey;
+    private static UUID modkey1;
+    private static UUID modkey2;
+    private static final UUID incorrectModKey = UUID.randomUUID();
+
 
     @Autowired
     private UserService userService;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private LectureRepository lectureRepository;
 
     /**
      * A method to generate user id based.
@@ -81,7 +105,39 @@ class UserServiceTest {
 
     @BeforeAll
     public static void setUp() {
+        lecture = new LectureEntity();
+        lecture1 = new LectureEntity();
+        lecture2 = new LectureEntity();
+
+        lid = lecture.getUuid();
+        lid1 = lecture1.getUuid();
+        lid2 = lecture2.getUuid();
+
         user = new UserEntity(uid, "root", time, true, null, lid);
+        user1 = new UserEntity(18, "tux", time, true, null, lid1);
+        user2 = new UserEntity(26, "gnu", time, true, null, lid2);
+
+        modkey = lecture.getModkey();
+        modkey1 = lecture1.getModkey();
+        modkey2 = lecture2.getModkey();
+    }
+
+    @BeforeEach
+    public void setupRepository() {
+        lectureRepository.save(lecture);
+        lectureRepository.save(lecture1);
+        lectureRepository.save(lecture2);
+        userService.newUser(user1, "192.168.1.1");
+        userService.newUser(user2, "192.168.1.1");
+    }
+
+    @AfterEach
+    public void clean() {
+        lectureRepository.delete(lecture);
+        lectureRepository.delete(lecture1);
+        lectureRepository.delete(lecture2);
+        userRepository.delete(user1);
+        userRepository.delete(user2);
     }
 
     @Test
@@ -117,6 +173,33 @@ class UserServiceTest {
 
         //set back for other tests
         user.setUid(uid);
+    }
+
+    @Test
+    public void banByIdSuccessfulTest() {
+        int result = userService.newUser(user, "127.0.0.1");
+        assertEquals(0, result);
+        result = userService.banById(34, uid, modkey, 10);
+        assertEquals(0, result);
+        UserEntity temp = userRepository.getUserEntityByUid(uid);
+        assertFalse(temp.isAllowed());
+    }
+
+    @Test
+    public void banByIpSuccessfulTest() {
+        int result = userService.banByIp(34, "192.168.1.1", modkey1, 10);
+        assertEquals(0, result);
+        List<UserEntity> banned = userRepository.findAllByIp("192.168.1.1");
+        banned.forEach((u) -> assertFalse(u.isAllowed()));
+    }
+
+    @Test
+    public void banByIpUnsuccessfulTest() {
+        userService.newUser(user, "127.0.0.1");
+        int result = userService.banByIp(34, "127.0.0.1", incorrectModKey, 10);
+        assertEquals(-2, result);
+        List<UserEntity> banned = userRepository.findAllByIp("192.168.1.1");
+        banned.forEach((u) -> assertTrue(u.isAllowed()));
     }
 
     @Test
