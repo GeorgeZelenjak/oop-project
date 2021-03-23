@@ -3,8 +3,10 @@ package nl.tudelft.oopp.livechat.services;
 import static org.junit.jupiter.api.Assertions.*;
 
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
+import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
+import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
 
 import org.h2.engine.User;
@@ -30,6 +32,9 @@ class UserServiceTest {
     private static UserEntity user;
     private static UserEntity user1;
     private static UserEntity user2;
+    private static QuestionEntity q;
+    private static QuestionEntity q1;
+    private static QuestionEntity q2;
 
     private static final long uid = createUid();
     private static final long uid1 = 18;
@@ -56,6 +61,9 @@ class UserServiceTest {
 
     @Autowired
     private LectureRepository lectureRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     /**
      * A method to generate user id based.
@@ -116,6 +124,9 @@ class UserServiceTest {
         user = new UserEntity(uid, "root", time, true, null, lid);
         user1 = new UserEntity(18, "tux", time, true, null, lid1);
         user2 = new UserEntity(26, "gnu", time, true, null, lid2);
+        q = new QuestionEntity(lid, "question 0", time, uid);
+        q1 = new QuestionEntity(lid, "question 1", time, uid1);
+        q2 = new QuestionEntity(lid, "question 2", time, uid2);
 
         modkey = lecture.getModkey();
         modkey1 = lecture1.getModkey();
@@ -127,6 +138,9 @@ class UserServiceTest {
         lectureRepository.save(lecture);
         lectureRepository.save(lecture1);
         lectureRepository.save(lecture2);
+        questionRepository.save(q);
+        questionRepository.save(q1);
+        questionRepository.save(q2);
         userService.newUser(user1, "192.168.1.1");
         userService.newUser(user2, "192.168.1.1");
     }
@@ -138,6 +152,10 @@ class UserServiceTest {
         lectureRepository.delete(lecture2);
         userRepository.delete(user1);
         userRepository.delete(user2);
+        questionRepository.delete(q);
+        questionRepository.delete(q1);
+        questionRepository.delete(q2);
+
     }
 
     @Test
@@ -179,7 +197,7 @@ class UserServiceTest {
     public void banByIdSuccessfulTest() {
         int result = userService.newUser(user, "127.0.0.1");
         assertEquals(0, result);
-        result = userService.banById(34, uid, modkey, 10);
+        result = userService.banById(34, q.getId(), modkey, 10);
         assertEquals(0, result);
         UserEntity temp = userRepository.getUserEntityByUid(uid);
         assertFalse(temp.isAllowed());
@@ -187,7 +205,7 @@ class UserServiceTest {
 
     @Test
     public void banByIpSuccessfulTest() {
-        int result = userService.banByIp(34, uid1, modkey1, 10);
+        int result = userService.banByIp(34, q1.getId(), modkey1, 10);
         assertEquals(0, result);
         List<UserEntity> banned = userRepository.findAllByIp("192.168.1.1");
         banned.forEach((u) -> assertFalse(u.isAllowed()));
@@ -196,7 +214,7 @@ class UserServiceTest {
     @Test
     public void banByIpUnsuccessfulTest() {
         userService.newUser(user, "127.0.0.1");
-        int result = userService.banByIp(34, uid, incorrectModKey, 10);
+        int result = userService.banByIp(34, q.getId(), incorrectModKey, 10);
         assertEquals(-2, result);
         List<UserEntity> banned = userRepository.findAllByIp("192.168.1.1");
         banned.forEach((u) -> assertTrue(u.isAllowed()));

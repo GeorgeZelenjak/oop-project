@@ -56,13 +56,13 @@ public class UserController {
     public int banByid(@RequestBody String info) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(info);
         long modid = Long.parseLong(jsonNode.get("modid").asText());
-        long userid = Long.parseLong(jsonNode.get("userid").asText());
+        long qid = Long.parseLong(jsonNode.get("qid").asText());
         UUID modkey = UUID.fromString(jsonNode.get("modkey").asText());
         int time = Integer.parseInt(jsonNode.get("time").asText());
         if (time <= 0) {
             throw new NumberFormatException();
         }
-        return userService.banById(modid, userid, modkey, time);
+        return userService.banById(modid, qid, modkey, time);
     }
 
     /**
@@ -77,12 +77,12 @@ public class UserController {
         JsonNode jsonNode = objectMapper.readTree(info);
         long modid = Long.parseLong(jsonNode.get("modid").asText());
         UUID modkey = UUID.fromString(jsonNode.get("modkey").asText());
-        long uid = Long.parseLong(jsonNode.get("userid").asText());
+        long qid = Long.parseLong(jsonNode.get("qid").asText());
         int time = Integer.parseInt(jsonNode.get("time").asText());
         if (time <= 0) {
             throw new NumberFormatException();
         }
-        return userService.banByIp(modid, uid, modkey, time);
+        return userService.banByIp(modid, qid, modkey, time);
     }
 
     /**

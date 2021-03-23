@@ -1,8 +1,10 @@
 package nl.tudelft.oopp.livechat.services;
 
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
+import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
+import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
@@ -23,6 +25,8 @@ public class UserService {
 
     final LectureRepository lectureRepository;
 
+    final QuestionRepository questionRepository;
+
     @Autowired
     private TaskScheduler taskScheduler;
 
@@ -32,9 +36,11 @@ public class UserService {
      * @param userRepository    user repository object
      * @param lectureRepository the lecture repository
      */
-    public UserService(UserRepository userRepository, LectureRepository lectureRepository) {
+    public UserService(UserRepository userRepository, LectureRepository lectureRepository,
+                       QuestionRepository questionRepository) {
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
+        this.questionRepository = questionRepository;
     }
 
     /**
@@ -89,7 +95,7 @@ public class UserService {
      * Toggles ban by id.
      *
      * @param modid  the moerator user id
-     * @param userid the user id
+     * @param qid the question id for which user we want to ban
      * @param modkey the modkey for the lecture the user is in
      * @param time   the time between bans and unban
      * @return 0 if ban/unban success
@@ -99,8 +105,12 @@ public class UserService {
      *          -4 if modkey is wrong
      *          -5 if user was already banned by someone else
      */
-    public int banById(long modid, long userid, UUID modkey, int time) {
-        UserEntity toBan = userRepository.getUserEntityByUid(userid);
+    public int banById(long modid, long qid, UUID modkey, int time) {
+        QuestionEntity incriminated = questionRepository.findById(qid).orElse(null);
+        if (incriminated == null) {
+            return -1;
+        }
+        UserEntity toBan = userRepository.getUserEntityByUid(incriminated.getOwnerId());
         if (toBan == null) {
             return -1;
         }
@@ -123,15 +133,19 @@ public class UserService {
      * Toggles ban by ip.
      *
      * @param modid  the moderator user id
-     * @param uid     the user id with ip to ban
+     * @param qid     the question id for which user we want to ban
      * @param modkey the moderator key for 1 lecture 1 of the users could be in
      * @param time   the time of ban
      * @return   0 if success
      *          -1 if no users are present with that ip
      *          -2 if no lectures meeting the requirements
      */
-    public int banByIp(long modid, long uid, UUID modkey, int time) {
-        UserEntity user = userRepository.findById(uid).orElse(null);
+    public int banByIp(long modid, long qid, UUID modkey, int time) {
+        QuestionEntity incriminated = questionRepository.findById(qid).orElse(null);
+        if (incriminated == null) {
+            return -1;
+        }
+        UserEntity user = userRepository.getUserEntityByUid(incriminated.getOwnerId());
         if (user == null) {
             return -1;
         }
