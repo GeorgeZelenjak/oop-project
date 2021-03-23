@@ -170,51 +170,30 @@ public class LecturerChatSceneController implements Initializable {
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
 
-        //Tooptip
+        //Tooltips
         copyId.setTooltip(new Tooltip("Copy the lecture's ID to clipboard"));
-        copyId.getTooltip().setFont(Font.font(10));
-
         copyKey.setTooltip(new Tooltip("Copy the moderator key to clipboard"));
-        copyKey.getTooltip().setFont(Font.font(10));
 
         participants.setTooltip(new Tooltip("See the lecture participants"));
-        participants.getTooltip().setFont(Font.font(10));
-
-        goToLectureModeButton.setTooltip(new Tooltip("Enter lecturer mode"));
-        goToLectureModeButton.getTooltip().setFont(Font.font(10));
+        goToLectureModeButton.setTooltip(new Tooltip("Enable/Disable lecturer mode"));
 
         goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
-        goToSettingsButton.getTooltip().setFont(Font.font(10));
-
         goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
-        goToUserManualButton.getTooltip().setFont(Font.font(10));
 
         pollingButton.setTooltip(new Tooltip("Show poll's results to lecture participants"));
-        pollingButton.getTooltip().setFont(Font.font(10));
-
-        speedButton.setTooltip(new Tooltip("Open voting on lecture speed"));
-        speedButton.getTooltip().setFont(Font.font(10));
+        speedButton.setTooltip(new Tooltip("Open/Reopen voting on lecture speed"));
 
         lectureLog.setTooltip(new Tooltip("See an overview of the lecture's activity"));
-        lectureLog.getTooltip().setFont(Font.font(10));
-
         reopenPolling.setTooltip(new Tooltip("Reopen a previous polling question"));
-        reopenPolling.getTooltip().setFont(Font.font(10));
 
         exportQA.setTooltip(new Tooltip("Export this lecture's content"));
-        exportQA.getTooltip().setFont(Font.font(10));
-
         closeLectureButton.setTooltip(new Tooltip("Close this lecture"));
-        closeLectureButton.getTooltip().setFont(Font.font(10));
 
         leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
-        leaveLecture.getTooltip().setFont(Font.font(10));
-
         createPolling.setTooltip(new Tooltip("Create a polling question"));
-        createPolling.getTooltip().setFont(Font.font(10));
 
         createQuiz.setTooltip(new Tooltip("Create a quiz"));
-        createQuiz.getTooltip().setFont(Font.font(10));
+
     }
 
     /**
