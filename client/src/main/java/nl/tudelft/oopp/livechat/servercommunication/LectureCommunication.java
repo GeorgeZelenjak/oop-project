@@ -1,8 +1,5 @@
 package nl.tudelft.oopp.livechat.servercommunication;
 
-//import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -217,6 +214,61 @@ public class LectureCommunication {
     }
 
     /**
+     * Ban/unban the user by id or ip (done by moderator).
+     * @param uid the id of the user
+     * @param modKey the moderator key
+     * @param toBanId the id of the user to (un)ban
+     * @param time the time of the ban
+     * @param byIp true iff needs to be (un)banned by ip, false if by id
+     * @return  0 if the user was banned/unbanned successfully
+     *         -1 if current lecture does not exist
+     *         -2 if an exception occurred when communicating with the server
+     *         -3 if unexpected response was received //TODO to be modified
+     *         -4 if the user was not banned/unbanned successfully (e.g wrong mod id, wrong modkey etc.)
+     */
+    public static int ban(long uid, String modKey, long toBanId, int time, boolean byIp) {
+        if (Lecture.getCurrentLecture() == null) {
+            System.out.println("You are not connected to a lecture!!!");
+            return -1;
+        }
+
+        //Create a json object with the data to be sent
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("modid", User.getUid());
+        jsonObject.addProperty("modkey", modKey);
+        jsonObject.addProperty("userid", toBanId);
+        jsonObject.addProperty("time", time);
+        String json = gson.toJson(jsonObject);
+
+        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
+        String address = ADDRESS + "/api/user/ban/id";
+        if (byIp) {
+            address = ADDRESS + "/api/user/ban/ip";
+        }
+
+        //Create request and define response
+        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
+                URI.create(address)).setHeader("Content-Type", "application/json").build();
+        HttpResponse<String> response;
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.println("Exception when communicating with the server!");
+            //e.printStackTrace();
+            return -2;
+        }
+
+        int result = handleResponse(response);
+        System.out.println("Result: " + result);
+        if (result == 0) {
+            System.out.println("The user with id " + toBanId + " was banned successfully!");
+            System.out.println("Ban time: " + time);
+        }
+        return result;
+    }
+
+    /**
      * A helper method to register user on the server side.
      * @param lectureId the id of the lecture the user is in
      * @param uid the user id
@@ -264,5 +316,24 @@ public class LectureCommunication {
 
     public static void registerUserdebug(String lectureId, long uid, String username) {
         registerUser(lectureId, uid, username);
+    }
+
+    /**
+     * Handles the response for upvoteQuestion and markedAsAnswered methods.
+     * @param response response received from the server
+     * @return -3, -4, 0 according to the "status codes" for these methods
+     */
+    private static int handleResponse(HttpResponse<String> response) {
+        //Unexpected response
+        if (response.statusCode() != 200) {
+            System.out.println("Status: " + response.statusCode());
+            return -3;
+        }
+        //Correct response, but not success
+        if (!response.body().equals("0")) {
+            return -4;
+        }
+        //Success
+        return 0;
     }
 }
