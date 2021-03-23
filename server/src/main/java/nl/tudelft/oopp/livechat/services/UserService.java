@@ -40,7 +40,8 @@ public class UserService {
      * @param lectureRepository the lecture repository
      */
     public UserService(UserRepository userRepository, LectureRepository lectureRepository,
-                       QuestionRepository questionRepository, UserQuestionRepository userQuestionRepository) {
+                       QuestionRepository questionRepository,
+                       UserQuestionRepository userQuestionRepository) {
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.questionRepository = questionRepository;
@@ -175,7 +176,6 @@ public class UserService {
             toggleBan(u, modid, time);
             editRepositoryAfterBanning(qid, u.getUid());
         });
-
         return 0;
     }
 
@@ -218,7 +218,8 @@ public class UserService {
 
     private void editRepositoryAfterUnbanning(long uid) {
         List<QuestionEntity> qs = questionRepository.findAllByOwnerId(uid);
-        qs.forEach(q -> q.setOwnerName(q.getOwnerName().substring(0, q.getOwnerName().length() - 9)));
+        qs.forEach(q -> q.setOwnerName(q.getOwnerName()
+                .substring(0, q.getOwnerName().length() - 9)));
         questionRepository.saveAll(qs);
     }
 

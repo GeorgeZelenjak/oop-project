@@ -202,7 +202,8 @@ public class UserEntity {
     /**
      * Sets the banner the id of the moderator that has banned th user.
      *
-     * @param bannerId the id of the moderator that has banned th user, or 0 if the user is to be unbanned
+     * @param bannerId the id of the moderator that has banned th user,
+     *                 or 0 if the user is to be unbanned
      */
     public void setBannerId(long bannerId) {
         this.bannerId = bannerId;

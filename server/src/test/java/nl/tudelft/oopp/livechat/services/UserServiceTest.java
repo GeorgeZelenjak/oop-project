@@ -216,7 +216,7 @@ class UserServiceTest {
         userService.newUser(user, "127.0.0.1");
         int result = userService.banByIp(34, q.getId(), incorrectModKey, 10);
         assertEquals(-2, result);
-        List<UserEntity> banned = userRepository.findAllByIp("192.168.1.1");
+        List<UserEntity> banned = userRepository.findAllByIp("127.0.0.1");
         banned.forEach((u) -> assertTrue(u.isAllowed()));
     }
 

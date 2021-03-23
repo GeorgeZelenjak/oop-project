@@ -223,7 +223,8 @@ public class LectureCommunication {
      *         -1 if current lecture does not exist
      *         -2 if an exception occurred when communicating with the server
      *         -3 if unexpected response was received //TODO to be modified
-     *         -4 if the user was not banned/unbanned successfully (e.g wrong mod id, wrong modkey etc.)
+     *         -4 if the user was not banned/unbanned successfully
+     *         (e.g wrong mod id, wrong modkey etc.)
      */
     public static int ban(String modKey, long questionToBanId, int time, boolean byIp) {
         if (Lecture.getCurrentLecture() == null) {
@@ -261,7 +262,8 @@ public class LectureCommunication {
         int result = handleResponse(response);
         System.out.println("Result: " + result);
         if (result == 0) {
-            System.out.println("The user with qid " + questionToBanId + " was banned successfully!");
+            System.out.println("The user with qid " + questionToBanId
+                    + " was banned successfully!");
             System.out.println("Ban time: " + time);
         }
         return result;

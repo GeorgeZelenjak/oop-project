@@ -279,24 +279,15 @@ class QuestionControllerTest {
         q2.setId(qid);
         String result = postQuestions(createQuestionJson(q2));
         long qid1 = Long.parseLong(result);
-        //check if still successful, because JSON does not deserialize the id
-        assertTrue(qid1 > 0);
+        //check if -2 because stefan is banned, because JSON does not deserialize the id
+        assertEquals(-2, qid1);
 
         //check if there are no questions with the id of q2
         QuestionEntity q = questionRepository.findById(q1.getId()).orElse(null);
         assertNull(q);
-        //check that even though q2 and the new question have different ids,
-        // they are actually the same question (in terms of text, lecture id etc)
-        q = questionRepository.findById(qid1).orElse(null);
-        assertNotNull(q);
-        assertNotEquals(q, q1);
-
-        assertEquals(q.getLectureId(), q2.getLectureId());
-        assertEquals(q.getText(), q2.getText());
 
         //delete the newly created questions to make the tests independent
         questionRepository.deleteById(qid);
-        questionRepository.deleteById(qid1);
     }
 
     @Test

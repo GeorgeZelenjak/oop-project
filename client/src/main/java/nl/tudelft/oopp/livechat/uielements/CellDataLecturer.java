@@ -161,8 +161,10 @@ public class CellDataLecturer {
     public void setBanUser() {
         banButton.setOnAction((ActionEvent event) -> {
             if (question.getOwnerName().contains(" (banned)")) {
-                boolean ban = AlertController.alertConfirmation("It looks as if the user is already banned",
-                        "However, he/she might have just played with their name and are not banned in fact.\n"
+                boolean ban = AlertController.alertConfirmation("It looks as if the user is"
+                                + "already banned",
+                        "However, he/she might have just played with their name"
+                                + "and are not banned in fact.\n"
                         + "Would you still like to ban?");
                 if (!ban) return;
             }
