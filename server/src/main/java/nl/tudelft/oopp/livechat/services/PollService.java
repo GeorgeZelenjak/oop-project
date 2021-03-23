@@ -142,6 +142,8 @@ public class PollService {
      */
     public PollAndOptions fetchPollAndOptions(UUID uuid) {
         if (lectureRepository.findLectureEntityByUuid(uuid) == null) return null;
+        //TODO
+        // WE NEED TO FIX THE FETCH QUERY IN REPOSITORY PLEASE HELP US WE WILL APPRECIATE IT GRTEATL
         PollEntity pollEntity = pollRepository.findFirstByUuidOrderByTimeDesc(uuid);
         if (pollEntity == null) return null;
         List<PollOptionEntity> pollOptions = pollOptionRepository
