@@ -169,8 +169,6 @@ public class PollService {
 
         for (PollOptionEntity poe : pollOptionRepository.findAllByPollId(pollId)) {
             userPollVoteRepository.deleteAllByOptionId(poe.getId());
-            //It works (Hopefully)
-            //Did not test these two lines
             poe.setVotes(0);
             pollOptionRepository.save(poe);
         }
