@@ -1,5 +1,7 @@
 package nl.tudelft.oopp.livechat.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.sql.Timestamp;
 
 import java.util.Objects;
@@ -36,6 +38,7 @@ public class LectureEntity {
     @Column(name = "frequency")
     private int frequency;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
     @Column(name = "startTime")
     private Timestamp startTime;
 
@@ -147,6 +150,7 @@ public class LectureEntity {
      * Gets the start time of the lecture.
      * @return the start time of the lecture
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
     public Timestamp getStartTime() {
         return startTime;
     }
@@ -156,6 +160,7 @@ public class LectureEntity {
      * Sets the start time of the lecture.
      * @param startTime the start time of the lecture
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
     public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }

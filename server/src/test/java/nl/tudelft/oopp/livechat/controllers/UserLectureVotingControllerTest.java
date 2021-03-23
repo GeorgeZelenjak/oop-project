@@ -139,7 +139,7 @@ class UserLectureVotingControllerTest {
     @Test
     public void voteOnLectureInvalidUuid() throws Exception {
         String result = mockMvc.perform(put("/api/vote/lectureSpeed?uid="
-                + uid1 + "&uuid=validUUID", "faster")
+                + uid1 + "&uuid=validUUID")
                 .content("faster")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())

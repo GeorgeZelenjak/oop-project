@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -28,6 +29,7 @@ import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
+import javax.tools.Tool;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -129,11 +131,25 @@ public class LecturerChatSceneController implements Initializable {
     private Line fasterVotesPercentLine;
 
     @FXML
+    private Button goToLectureModeButton;
+
+    @FXML
+    private Button exportQA;
+
+    @FXML
+    private Button closeLectureButton;
+
+    @FXML
+    private Button leaveLecture;
+
+    @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
 
     private static List<Integer> lectureSpeeds;
 
     private List<Question> questions;
+
+    private Timeline timelineFetch;
 
     /**
      * Method that runs at scene initalization.
@@ -144,15 +160,40 @@ public class LecturerChatSceneController implements Initializable {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
         slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
-        Timeline timeline = new Timeline(new KeyFrame(
+        timelineFetch = new Timeline(new KeyFrame(
                 Duration.millis(1500),
             ae -> {
                 fetchQuestions();
                 getVotesOnLectureSpeed();
                 adjustLectureSpeedLines();
             }));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+        timelineFetch.setCycleCount(Animation.INDEFINITE);
+        timelineFetch.play();
+
+        //Tooltips
+        copyId.setTooltip(new Tooltip("Copy the lecture's ID to clipboard"));
+        copyKey.setTooltip(new Tooltip("Copy the moderator key to clipboard"));
+
+        participants.setTooltip(new Tooltip("See the lecture participants"));
+        goToLectureModeButton.setTooltip(new Tooltip("Enable/Disable lecturer mode"));
+
+        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+        goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
+
+        pollingButton.setTooltip(new Tooltip("Show poll's results to lecture participants"));
+        speedButton.setTooltip(new Tooltip("Open/Reopen voting on lecture speed"));
+
+        lectureLog.setTooltip(new Tooltip("See an overview of the lecture's activity"));
+        reopenPolling.setTooltip(new Tooltip("Reopen a previous polling question"));
+
+        exportQA.setTooltip(new Tooltip("Export this lecture's content"));
+        closeLectureButton.setTooltip(new Tooltip("Close this lecture"));
+
+        leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
+        createPolling.setTooltip(new Tooltip("Create a polling question"));
+
+        createQuiz.setTooltip(new Tooltip("Create a quiz"));
+
     }
 
     /**
@@ -244,6 +285,7 @@ public class LecturerChatSceneController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
+            timelineFetch.stop();
             NavigationController.getCurrentController().goBack();
             NavigationController.getCurrentController().goBack();
         }
@@ -274,9 +316,16 @@ public class LecturerChatSceneController implements Initializable {
      * @throws IOException if something happens
      */
     public void closeLecture() {
-        LectureCommunication.closeLecture(Lecture.getCurrentLecture().getUuid().toString(),
-                Lecture.getCurrentLecture().getModkey().toString());
-        NavigationController.getCurrentController().goToMainScene();
+        Alert alert = AlertController.createAlert(Alert.AlertType.CONFIRMATION,
+                "Confirm your action", "Are you sure do you want to close this lecture?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            timelineFetch.stop();
+            LectureCommunication.closeLecture(Lecture.getCurrentLecture().getUuid().toString(),
+                    Lecture.getCurrentLecture().getModkey().toString());
+            NavigationController.getCurrentController().goToMainScene();
+        }
     }
 
     /**
@@ -336,7 +385,7 @@ public class LecturerChatSceneController implements Initializable {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                CreateFile file = new CreateFile();
+                CreateFile file = new CreateFile("exportedQuestions/");
 
                 List<Question> list = QuestionCommunication.fetchQuestions();
 

@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
@@ -63,6 +64,21 @@ public class UserChatSceneController implements Initializable {
     @FXML
     private CheckBox voteOnLectureSpeedSlow;
 
+    @FXML
+    private Button participants;
+
+    @FXML
+    private Button goToSettingsButton;
+
+    @FXML
+    private Button goToUserManualButton;
+
+    @FXML
+    private Button gobBackButton;
+
+    @FXML
+    private Button leaveLecture;
+
     /**
      * The Observable list.
      */
@@ -70,6 +86,8 @@ public class UserChatSceneController implements Initializable {
     ObservableList<Question> observableList = FXCollections.observableArrayList();
 
     private List<Question> questions;
+
+    private Timeline timelineFetch;
 
     /**
      * Method that runs when the scene is first initialized.
@@ -80,12 +98,21 @@ public class UserChatSceneController implements Initializable {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
+        timelineFetch = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
             fetchQuestions();
             getVotesOnLectureSpeed();
         }));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+        timelineFetch.setCycleCount(Animation.INDEFINITE);
+        timelineFetch.play();
+
+        //Tooltip
+        participants.setTooltip(new Tooltip("See the lecture participants"));
+        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+
+        goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
+        gobBackButton.setTooltip(new Tooltip("Go back to the main page"));
+
+        leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
     }
 
     /**
@@ -134,6 +161,7 @@ public class UserChatSceneController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
+            timelineFetch.stop();
             NavigationController.getCurrentController().goToMainScene();
         }
     }

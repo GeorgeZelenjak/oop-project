@@ -328,25 +328,8 @@ class QuestionServiceTest {
 
     @Test
     @Order(24)
-    void editQuestionLectureClosedTest() {
-        l2.close();
-        lectureRepository.save(l2);
-        questionRepository.save(q2);
-
-        assertEquals(-1, questionService.editQuestion(q2.getId(), l2.getModkey(), "foo", uid2));
-
-        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
-        assertNotNull(q);
-        assertEquals("How to get 10 for testing?", q.getText());
-        assertFalse(q.isEdited());
-
-        l2.reOpen();
-        lectureRepository.save(l2);
-    }
-
-    @Test
-    @Order(25)
     void editQuestionWrongModkeyTest() {
+        questionRepository.save(q2);
         assertEquals(-1, questionService.editQuestion(q2.getId(), l1.getModkey(), "foo", uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
@@ -356,7 +339,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(26)
+    @Order(25)
     void editQuestionTooLongTextTest() {
         assertEquals(-1, questionService.editQuestion(q2.getId(), l2.getModkey(), longText, uid2));
 
@@ -367,7 +350,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(27)
+    @Order(28)
     void editQuestionNewOwnerNotRegisteredTest() {
         userRepository.deleteById(uid2);
         assertEquals(-1, questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid2));
@@ -381,7 +364,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(28)
+    @Order(29)
     void editQuestionSuccessfulTest() {
         assertEquals(0, questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid2));
 
@@ -398,7 +381,7 @@ class QuestionServiceTest {
      * Tests related to upvote method.
      */
     @Test
-    @Order(29)
+    @Order(30)
     void upvoteNoQuestionTest() {
         userRepository.save(user3);
 
@@ -406,7 +389,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(30)
+    @Order(31)
     void upvoteNoLectureTest() {
         questionRepository.save(q3);
         assertEquals(-1, questionService.upvote(q3.getId(), uid3));
@@ -419,7 +402,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(31)
+    @Order(32)
     void upvoteLectureClosedTest() {
         l2.close();
         lectureRepository.save(l2);
@@ -436,7 +419,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(32)
+    @Order(33)
     void upvoteNotRegisteredTest() {
         userRepository.deleteById(uid2);
         assertEquals(-1, questionService.upvote(q2.getId(), uid2));
@@ -449,7 +432,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(33)
+    @Order(34)
     void upvoteTest() {
         assertEquals(0, questionService.upvote(q2.getId(), uid2));
 
@@ -465,7 +448,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(34)
+    @Order(35)
     void unvoteTest() {
         assertEquals(0, questionService.upvote(q2.getId(), uid2));
 
@@ -484,7 +467,7 @@ class QuestionServiceTest {
      * Tests related to answer method.
      */
     @Test
-    @Order(35)
+    @Order(36)
     void answerNoQuestionTest() {
         lectureRepository.save(l3);
 
@@ -494,7 +477,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(36)
+    @Order(37)
     void answerNoLectureTest() {
         questionRepository.save(q3);
         assertEquals(-1, questionService.answer(q3.getId(), l3.getModkey(), "42"));
@@ -509,7 +492,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(37)
+    @Order(38)
     void answerTooLongTextTest() {
         assertEquals(-1, questionService.answer(q2.getId(), l2.getModkey(), longText));
 
@@ -521,7 +504,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(38)
+    @Order(39)
     void answerWrongModKeyTest() {
         assertEquals(-1, questionService.answer(q2.getId(), l1.getModkey(), "42"));
 
@@ -533,7 +516,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(39)
+    @Order(40)
     void answerSuccessfulTest() {
         assertEquals(0, questionService.answer(q2.getId(), l2.getModkey(), "42"));
 
@@ -546,7 +529,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(40)
+    @Order(41)
     void newQuestionLectureNotStartedTest() {
         l2.setStartTime(new Timestamp(System.currentTimeMillis() + 0xFFFFFFFFFL));
         lectureRepository.save(l2);

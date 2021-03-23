@@ -21,8 +21,8 @@ public class LectureSpeedCommunication {
 
     private static final HttpClient client = HttpClient.newBuilder().build();
 
-    private static final Gson gson = new GsonBuilder().setDateFormat(
-            "EEE, dd MMM yyyy HH:mm:ss zzz").excludeFieldsWithoutExposeAnnotation().create();
+    private static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+            .setDateFormat("yyyy-MM-dd HH:mm:ss Z").create();
 
     private static final String ADDRESS = CommonCommunication.ADDRESS;
 
