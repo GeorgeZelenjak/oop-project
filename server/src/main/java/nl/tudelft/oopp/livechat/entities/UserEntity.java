@@ -65,7 +65,6 @@ public class UserEntity {
 
     /**
      * Instantiates a new User entity.
-     *
      * @param uid          the user id
      * @param username     the username
      * @param lastQuestion the last question the user asked
@@ -193,18 +192,17 @@ public class UserEntity {
 
 
     /**
-     * Gets banner id.
-     *
-     * @return the banner id
+     * Gets the id of the moderator that has banned th user.
+     * @return the id of the moderator that has banned th user, or 0 if the user is not banned
      */
     public long getBannerId() {
         return bannerId;
     }
 
     /**
-     * Sets banner id.
+     * Sets the banner the id of the moderator that has banned th user.
      *
-     * @param bannerId the banner id
+     * @param bannerId the id of the moderator that has banned th user, or 0 if the user is to be unbanned
      */
     public void setBannerId(long bannerId) {
         this.bannerId = bannerId;

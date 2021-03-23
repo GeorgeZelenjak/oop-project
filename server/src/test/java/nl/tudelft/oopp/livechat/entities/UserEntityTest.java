@@ -46,6 +46,7 @@ public class UserEntityTest {
     public static void setUp() {
         uid = createUid();
         user = new UserEntity(uid, "root", lastTime, true, "192.168.1.1", lid);
+        user.setBannerId(18);
     }
 
     @Test
@@ -141,6 +142,20 @@ public class UserEntityTest {
 
         //set it back for other tests
         user.setLectureId(lid);
+    }
+
+    @Test
+    void getBannerIdTest() {
+        assertEquals(18, user.getBannerId());
+    }
+
+    @Test
+    void setBannerIdTest() {
+        user.setBannerId(45);
+        assertEquals(45, user.getBannerId());
+
+        //set it back for other tests
+        user.setBannerId(18);
     }
 
     @Test
