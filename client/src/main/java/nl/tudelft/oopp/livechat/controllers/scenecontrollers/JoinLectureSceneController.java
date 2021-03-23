@@ -1,8 +1,12 @@
 package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.text.Font;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
@@ -11,12 +15,14 @@ import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import java.util.UUID;
 
 /**
  * Class for the JoinLecture Scene controller.
  */
-public class JoinLectureSceneController {
+public class JoinLectureSceneController implements Initializable {
 
     @FXML
     private TextField enterNameTextField;
@@ -30,11 +36,29 @@ public class JoinLectureSceneController {
     @FXML
     private CheckBox modkeyCheckBox;
 
+    @FXML
+    private Button goBackButton;
+
+    @FXML
+    private Button goToJoinLectureButton;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        goBackButton.setTooltip(new Tooltip("Go back to previous page"));
+
+        goToJoinLectureButton.setTooltip(
+                new Tooltip("Joins the lecture either as a student "
+                        + "\nor as a lecturer/moderator")
+        );
+
+        modkeyTextField.setTooltip(new Tooltip("Check this box if you are a lecturer/moderator"));
+    }
 
     /**
      * Toggles the visibility of the modKeyTextField.
      */
     public void onCheckBoxAction() {
+
         modkeyTextField.setVisible(!modkeyTextField.isVisible());
     }
 
@@ -79,7 +103,7 @@ public class JoinLectureSceneController {
 
         if (currentLecture == null) {
             AlertController.alertError("Error",
-                    "Lecture was not found. Or it has not started yet!");
+                    "Lecture was not found or it has not started yet!");
 
         } else if (modkeyCheckBox.isSelected()) {
             joinAsModerator();
