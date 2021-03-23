@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.UUID;
 
 /**
@@ -42,6 +43,8 @@ public class QuestionTest {
         question.setAnswerText("42");
         question.setAnswerTime(answerTime);
         question.setOwnerName("Eminem");
+
+        Question.setCurrentQuestion(question);
     }
 
     @Test
@@ -271,7 +274,7 @@ public class QuestionTest {
     }
 
     @Test
-    public void gerCurrentLectureSetTest() {
+    public void getCurrentLectureSetTest() {
         List<Question> newQuestionList = List.of(new Question(lectureId, "$$", 11),
                 new Question(lectureId, "$$$", 13));
         Question.setCurrentQuestions(newQuestionList);
@@ -279,5 +282,20 @@ public class QuestionTest {
 
         //set it back for other tests
         Question.setCurrentQuestions(questionList);
+    }
+
+    @Test
+    public void getCurrentQuestionTest() {
+        assertEquals(question, Question.getCurrentQuestion());
+    }
+
+    @Test
+    public void setCurrentQuestionTest() {
+        Question q = new Question(lectureId, "Hey Yo", 13);
+        Question.setCurrentQuestion(q);
+        assertEquals(q, Question.getCurrentQuestion());
+
+        //set it back for other tests
+        Question.setCurrentQuestion(question);
     }
 }

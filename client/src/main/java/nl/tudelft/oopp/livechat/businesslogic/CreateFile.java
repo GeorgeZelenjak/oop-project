@@ -46,7 +46,12 @@ public class CreateFile {
         }
         System.out.println(timeStamp);
 
-        String fileName = Lecture.getCurrentLecture().getName() + "_" + timeStamp;
+        String fileName;
+        if (Lecture.getCurrentLecture() == null) {
+            fileName = "null"  + "_" + timeStamp;
+        } else {
+            fileName = Lecture.getCurrentLecture().getName() + "_" + timeStamp;
+        }
 
         fileName = this.sanitizeFilename(fileName);
 
@@ -56,6 +61,9 @@ public class CreateFile {
 
     }
 
+    /**
+     * A helper method for creating file.
+     */
     private void createFile() {
         try {
             if (file.createNewFile())
@@ -145,7 +153,7 @@ public class CreateFile {
      * @param inputName the filename
      * @return the sanitized filename
      */
-    public String sanitizeFilename(String inputName) {
+    private String sanitizeFilename(String inputName) {
         return inputName.replaceAll("[^a-zA-Z0-9-]", "_");
     }
 
