@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import javafx.stage.Stage;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
@@ -154,10 +155,21 @@ public class CellDataLecturer {
         }
     }
 
+    /**
+     * Sets ban button to ban a user.
+     */
     public void setBanUser() {
         banButton.setOnAction((ActionEvent event) -> {
-
+            if (question.getOwnerName().contains(" (banned)")) {
+                boolean ban = AlertController.alertConfirmation("It looks as if the user is already banned",
+                        "However, he/she might have just played with their name and are not banned in fact.\n"
+                        + "Would you still like to ban?");
+                if (!ban) return;
+            }
             int[] result = showPopup();
+            if (result[2] != 1) {
+                return;
+            }
             int time = result[0] * 60;
             boolean byIp = result[1] != 0;
             LectureCommunication.ban(Lecture.getCurrentLecture().getModkey().toString(),
@@ -215,13 +227,8 @@ public class CellDataLecturer {
         }
     }
 
-    //res[0] is time, res[1] is 0 if by id, 1 if by ip
+    //res[0] is time, res[1] is 0 if by id, 1 if by ip, res[2] if the button was submitted
     private int[] showPopup() {
-        int[] res = new int[2];
-
-        Stage window = new Stage();
-        VBox box = new VBox();
-
         ToggleGroup toggleGroup = new ToggleGroup();
         RadioButton byId = new RadioButton("Ban by user id");
         RadioButton byIp = new RadioButton("Ban by user ip");
@@ -229,22 +236,23 @@ public class CellDataLecturer {
         byId.setSelected(true);
         byIp.setToggleGroup(toggleGroup);
 
-        //Button byId = new Button("Ban by user id");
-        //Button byIp = new Button("Ban by ip");
+        Spinner<Integer> time = new Spinner<>();
+        time.setEditable(true);
+        time.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 200));
 
-        //byId.setOnAction(e -> res[1] =  0);
-        //byIp.setOnAction(e -> res[1] =  1);
+        int[] res = new int[3];
+
+        Stage window = new Stage();
+        Button submit = new Button("Submit");
+        submit.setOnAction(e -> {
+            res[2] = 1;
+            window.close();
+        });
 
         Label labelHeader = new Label("Choose the way you would how you would like to ban");
         Label labelTime = new Label("Choose the number of minutes to ban");
-        Spinner<Integer> time = new Spinner<>();
-        time.setEditable(true);
-        time.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 200));
-        //time.valueProperty().addListener((v, oldValue, newValue) -> res[0] = newValue);
 
-        Button submit = new Button("Submit");
-        submit.setOnAction(e -> window.close());
-
+        VBox box = new VBox();
         box.setAlignment(Pos.CENTER);
         box.getChildren().addAll(labelHeader, byId, byIp, labelTime, time, submit);
 
@@ -253,7 +261,7 @@ public class CellDataLecturer {
         window.setScene(scene);
         window.showAndWait();
 
-        res[0] = time.getValue();
+        res[0] = time.getValue() > 200 ? 200 : time.getValue();
         res[1] = byIp.isSelected() ? 1 : 0;
         return res;
     }

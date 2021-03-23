@@ -263,7 +263,6 @@ public class LectureCommunication {
         if (result == 0) {
             System.out.println("The user with qid " + questionToBanId + " was banned successfully!");
             System.out.println("Ban time: " + time);
-            User.addBannedQuestionId(questionToBanId, time);
         }
         return result;
     }

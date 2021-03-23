@@ -25,10 +25,6 @@ public class User {
     @Expose(serialize = false)
     private static Set<Long> askedQuestionIds = new HashSet<>();
 
-    @Expose(serialize = false)
-    private static Set<Long> bannedQuestionIds = new HashSet<>();
-
-
     private User() {
 
     }
@@ -138,31 +134,6 @@ public class User {
      */
     public static void deleteQuestionId(Long questionId) {
         askedQuestionIds.remove(questionId);
-    }
-
-    /**
-     * Adds a question id which owner is banned by current user (if current user is a moderator).
-     * @param qid the question id which owner is banned
-     * @return true if added, false otherwise
-     */
-    public static boolean addBannedQuestionId(Long qid, int seconds) {
-        new Timer().schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        deleteBannedUserId(qid);
-                    }
-                },
-                seconds * 1000);
-        return bannedQuestionIds.add(uid);
-    }
-
-    /**
-     * Remove the question id which owner was banned by current user (if current user is a moderator).
-     * @param qid the question id which owner was banned
-     */
-    public static void deleteBannedUserId(Long qid) {
-        bannedQuestionIds.remove(uid);
     }
 
 }
