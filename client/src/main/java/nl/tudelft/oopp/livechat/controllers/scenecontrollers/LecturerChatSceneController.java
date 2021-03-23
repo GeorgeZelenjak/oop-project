@@ -135,6 +135,8 @@ public class LecturerChatSceneController implements Initializable {
 
     private List<Question> questions;
 
+    private Timeline timelineFetch;
+
     /**
      * Method that runs at scene initalization.
      * @param location location of scene
@@ -144,15 +146,15 @@ public class LecturerChatSceneController implements Initializable {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
         slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
-        Timeline timeline = new Timeline(new KeyFrame(
+        timelineFetch = new Timeline(new KeyFrame(
                 Duration.millis(1500),
             ae -> {
                 fetchQuestions();
                 getVotesOnLectureSpeed();
                 adjustLectureSpeedLines();
             }));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+        timelineFetch.setCycleCount(Animation.INDEFINITE);
+        timelineFetch.play();
     }
 
     /**
@@ -244,6 +246,7 @@ public class LecturerChatSceneController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
+            timelineFetch.stop();
             NavigationController.getCurrentController().goBack();
             NavigationController.getCurrentController().goBack();
         }
@@ -274,9 +277,16 @@ public class LecturerChatSceneController implements Initializable {
      * @throws IOException if something happens
      */
     public void closeLecture() {
-        LectureCommunication.closeLecture(Lecture.getCurrentLecture().getUuid().toString(),
-                Lecture.getCurrentLecture().getModkey().toString());
-        NavigationController.getCurrentController().goToMainScene();
+        Alert alert = AlertController.createAlert(Alert.AlertType.CONFIRMATION,
+                "Confirm your action", "Are you sure do you want to close this lecture?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            timelineFetch.stop();
+            LectureCommunication.closeLecture(Lecture.getCurrentLecture().getUuid().toString(),
+                    Lecture.getCurrentLecture().getModkey().toString());
+            NavigationController.getCurrentController().goToMainScene();
+        }
     }
 
     /**

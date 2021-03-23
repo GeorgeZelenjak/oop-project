@@ -71,6 +71,8 @@ public class UserChatSceneController implements Initializable {
 
     private List<Question> questions;
 
+    private Timeline timelineFetch;
+
     /**
      * Method that runs when the scene is first initialized.
      * @param location location of current scene
@@ -80,12 +82,12 @@ public class UserChatSceneController implements Initializable {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
+        timelineFetch = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
             fetchQuestions();
             getVotesOnLectureSpeed();
         }));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+        timelineFetch.setCycleCount(Animation.INDEFINITE);
+        timelineFetch.play();
     }
 
     /**
@@ -134,6 +136,7 @@ public class UserChatSceneController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
+            timelineFetch.stop();
             NavigationController.getCurrentController().goToMainScene();
         }
     }
