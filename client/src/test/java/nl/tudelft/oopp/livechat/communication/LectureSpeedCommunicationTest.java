@@ -18,7 +18,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
 
-public class LectureSeedCommunicationTest {
+public class LectureSpeedCommunicationTest {
     public static MockServerClient mockServer;
 
     private static final UUID lid = UUID.randomUUID();

@@ -18,7 +18,7 @@ public class CreateFile {
 
     private final File file;
     private final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
+    private String pathName;
     /**
      * Text HighLighters.
      */
@@ -31,8 +31,10 @@ public class CreateFile {
     /**
      * Creates a new CreateFile object.
      */
-    public CreateFile() {
-        Path path = Path.of("exportedQuestions/");
+    public CreateFile(String pathName) {
+        this.pathName = pathName;
+
+        Path path = Path.of(pathName);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
         String timeStamp = sdf.format(timestamp);

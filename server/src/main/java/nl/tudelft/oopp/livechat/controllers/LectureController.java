@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 
@@ -57,9 +59,11 @@ public class LectureController {
     @PostMapping("/newLecture")
     public LectureEntity newLecture(@RequestParam String name,
                                     @RequestBody String info) throws JsonProcessingException {
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z"));
         JsonNode jsonNode = objectMapper.readTree(info);
         String creatorName = jsonNode.get("creatorName").asText();
-        Timestamp startTime = Timestamp.valueOf(jsonNode.get("startTime").asText());
+        Timestamp startTime = objectMapper.readValue(
+                jsonNode.get("startTime").toString(),Timestamp.class);
         return service.newLecture(name, creatorName, startTime);
     }
 

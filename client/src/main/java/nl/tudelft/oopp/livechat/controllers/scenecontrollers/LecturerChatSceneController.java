@@ -346,7 +346,7 @@ public class LecturerChatSceneController implements Initializable {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                CreateFile file = new CreateFile();
+                CreateFile file = new CreateFile("exportedQuestions/");
 
                 List<Question> list = QuestionCommunication.fetchQuestions();
 
