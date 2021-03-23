@@ -38,6 +38,7 @@ public class QuestionCellLecturer extends ListCell<Question> {
             data.setAnsweredQuestion();
             data.setDeleteQuestion();
             data.replyAnswer();
+            data.setBanUser();
             data.disableMarkedAsAnswered();
 
             //set answered text if the question has been answered

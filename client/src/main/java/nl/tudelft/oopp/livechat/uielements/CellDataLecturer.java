@@ -4,20 +4,24 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.control.Button;
 
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 /**
@@ -57,6 +61,10 @@ public class CellDataLecturer {
 
     @FXML
     private Button editButton;
+
+    @FXML
+    private Button banButton;
+
 
     private Question question;
 
@@ -146,6 +154,16 @@ public class CellDataLecturer {
         }
     }
 
+    public void setBanUser() {
+        banButton.setOnAction((ActionEvent event) -> {
+            int[] result = showPopup();
+            int time = result[0] * 60;
+            boolean byIp = result[1] != 0;
+            LectureCommunication.ban(Lecture.getCurrentLecture().getModkey().toString(),
+                    question.getOwnerId(), time, byIp);
+        });
+    }
+
     /**
      * Sets edit button to edit the question content.
      */
@@ -194,6 +212,48 @@ public class CellDataLecturer {
             isAnsweredButton.setDisable(true);
             isAnsweredButton.setVisible(false);
         }
+    }
 
+    //res[0] is time, res[1] is 0 if by id, 1 if by ip
+    private int[] showPopup() {
+        int[] res = new int[2];
+
+        Stage window = new Stage();
+        VBox box = new VBox();
+
+        ToggleGroup toggleGroup = new ToggleGroup();
+        RadioButton byId = new RadioButton("Ban by user id");
+        RadioButton byIp = new RadioButton("Ban by user ip");
+        byId.setToggleGroup(toggleGroup);
+        byId.setSelected(true);
+        byIp.setToggleGroup(toggleGroup);
+
+        //Button byId = new Button("Ban by user id");
+        //Button byIp = new Button("Ban by ip");
+
+        //byId.setOnAction(e -> res[1] =  0);
+        //byIp.setOnAction(e -> res[1] =  1);
+
+        Label labelHeader = new Label("Choose the way you would how you would like to ban");
+        Label labelTime = new Label("Choose the number of minutes to ban");
+        Spinner<Integer> time = new Spinner<>();
+        time.setEditable(true);
+        time.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 200));
+        //time.valueProperty().addListener((v, oldValue, newValue) -> res[0] = newValue);
+
+        Button submit = new Button("Submit");
+        submit.setOnAction(e -> window.close());
+
+        box.setAlignment(Pos.CENTER);
+        box.getChildren().addAll(labelHeader, byId, byIp, labelTime, time, submit);
+
+        Scene scene = new Scene(box, 300, 200);
+
+        window.setScene(scene);
+        window.showAndWait();
+
+        res[0] = time.getValue();
+        res[1] = byIp.isSelected() ? 1 : 0;
+        return res;
     }
 }

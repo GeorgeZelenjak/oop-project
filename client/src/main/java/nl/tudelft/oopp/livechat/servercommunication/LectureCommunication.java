@@ -215,7 +215,6 @@ public class LectureCommunication {
 
     /**
      * Ban/unban the user by id or ip (done by moderator).
-     * @param uid the id of the user
      * @param modKey the moderator key
      * @param toBanId the id of the user to (un)ban
      * @param time the time of the ban
@@ -226,7 +225,7 @@ public class LectureCommunication {
      *         -3 if unexpected response was received //TODO to be modified
      *         -4 if the user was not banned/unbanned successfully (e.g wrong mod id, wrong modkey etc.)
      */
-    public static int ban(long uid, String modKey, long toBanId, int time, boolean byIp) {
+    public static int ban(String modKey, long toBanId, int time, boolean byIp) {
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!!!");
             return -1;
@@ -331,7 +330,7 @@ public class LectureCommunication {
         }
         //Correct response, but not success
         if (!response.body().equals("0")) {
-            return -4;
+            return Integer.parseInt(response.body());
         }
         //Success
         return 0;
