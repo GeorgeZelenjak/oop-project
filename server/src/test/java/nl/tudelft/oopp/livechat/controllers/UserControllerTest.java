@@ -141,6 +141,13 @@ public class UserControllerTest {
         assertEquals("Don't do this", result);
     }
 
-
+    @Test
+    public void newUserInvalidJSONTest() throws Exception {
+        String result = this.mockMvc.perform(post("/api/user/register")
+                .contentType(APPLICATION_JSON).content("jason").characterEncoding("utf-8"))
+                .andExpect(status().isBadRequest()).andReturn()
+                .getResponse().getContentAsString();
+        assertEquals("Don't do this", result);
+    }
 
 }

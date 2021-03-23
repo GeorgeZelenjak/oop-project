@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -140,6 +141,18 @@ class LectureControllerTest {
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         assertNotNull(lectureEntity);
         assertNotNull(lectureEntity.getModkey());
+    }
+
+    @Test
+    public void createLectureFailingJSONTest() throws Exception {
+        String response = this.mockMvc
+                .perform(post("/api/newLecture?name=test2")
+                        .contentType(APPLICATION_JSON)
+                        .content("bla")
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+        assertEquals("Don't do this", response);
     }
 
     @Test
