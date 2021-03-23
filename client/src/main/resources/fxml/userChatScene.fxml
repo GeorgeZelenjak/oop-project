@@ -32,35 +32,22 @@
                </font>
             </Button>
          </children></Pane>
-      <Pane fx:id="speedBackground" layoutX="818.0" layoutY="34.0" prefHeight="154.0" prefWidth="247.0" styleClass="sidebar">
+      <Pane layoutX="818.0" layoutY="262.0" prefHeight="166.0" prefWidth="247.0" styleClass="sidebar">
          <children>
-            <Text fill="WHITE" layoutX="7.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vote on the lecture speed" textAlignment="CENTER" wrappingWidth="232.20000000000005">
+            <Text layoutX="7.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vote on the Polling Question" textAlignment="CENTER" wrappingWidth="232.20000000000005">
                <font>
-                  <Font name="Arial Bold" size="20.0" />
+                  <Font name="Arial Bold" size="17.0" />
                </font>
             </Text>
-            <Button layoutX="14.0" layoutY="107.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="82.0" styleClass="mainSceneButton" text="Too fast" visible="false" />
-            <Button layoutX="151.0" layoutY="107.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="82.0" styleClass="mainSceneButton" text="Too slow" visible="false" />
-            <CheckBox fx:id="voteOnLectureSpeedFast" layoutX="10.0" layoutY="77.0" mnemonicParsing="false" onAction="#voteOnLectureSpeedFast" text="Too fast" />
-            <CheckBox fx:id="voteOnLectureSpeedSlow" layoutX="138.0" layoutY="77.0" mnemonicParsing="false" onAction="#voteOnLectureSpeedSlow" text="Too slow" />
+            <Button layoutX="47.0" layoutY="52.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="27.0" styleClass="mainSceneButton" text="A" />
+            <Button layoutX="173.0" layoutY="52.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="27.0" styleClass="mainSceneButton" text="B" />
+            <Button layoutX="173.0" layoutY="105.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="27.0" styleClass="mainSceneButton" text="D" />
+            <Button layoutX="47.0" layoutY="105.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="27.0" styleClass="mainSceneButton" text="C" />
          </children>
       </Pane>
-      <Pane layoutX="818.0" layoutY="199.0" prefHeight="190.0" prefWidth="247.0" styleClass="sidebar">
+      <Pane layoutX="818.0" layoutY="48.0" prefHeight="204.0" prefWidth="247.0" styleClass="sidebar">
          <children>
-            <Text fill="WHITE" layoutX="7.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vote on the Polling Question" textAlignment="CENTER" wrappingWidth="232.20000000000005">
-               <font>
-                  <Font name="Arial Bold" size="20.0" />
-               </font>
-            </Text>
-            <Button layoutX="46.0" layoutY="77.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="27.0" styleClass="mainSceneButton" text="A" />
-            <Button layoutX="172.0" layoutY="77.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="27.0" styleClass="mainSceneButton" text="B" />
-            <Button layoutX="172.0" layoutY="130.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="27.0" styleClass="mainSceneButton" text="D" />
-            <Button layoutX="46.0" layoutY="130.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="27.0" styleClass="mainSceneButton" text="C" />
-         </children>
-      </Pane>
-      <Pane layoutX="818.0" layoutY="401.0" prefHeight="204.0" prefWidth="247.0" styleClass="sidebar">
-         <children>
-            <Text fill="WHITE" layoutX="7.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Polling Question Results" textAlignment="CENTER" wrappingWidth="232.20000000000005">
+            <Text layoutX="7.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Polling Question Results" textAlignment="CENTER" wrappingWidth="232.20000000000005">
                <font>
                   <Font name="Arial Bold" size="20.0" />
                </font>
@@ -92,5 +79,18 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>
+      <Pane fx:id="speedBackground" layoutX="818.0" layoutY="558.0" prefHeight="84.0" prefWidth="247.0" styleClass="sidebar">
+         <children>
+            <Text layoutX="7.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vote on the lecture speed" textAlignment="CENTER" wrappingWidth="232.20000000000005">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Text>
+            <Button layoutX="14.0" layoutY="107.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="82.0" styleClass="mainSceneButton" text="Too fast" visible="false" />
+            <Button layoutX="151.0" layoutY="107.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="82.0" styleClass="mainSceneButton" text="Too slow" visible="false" />
+            <CheckBox fx:id="voteOnLectureSpeedFast" layoutX="22.0" layoutY="48.0" mnemonicParsing="false" onAction="#voteOnLectureSpeedFast" text="Too fast" />
+            <CheckBox fx:id="voteOnLectureSpeedSlow" layoutX="140.0" layoutY="48.0" mnemonicParsing="false" onAction="#voteOnLectureSpeedSlow" text="Too slow" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

@@ -234,5 +234,4 @@ public class UserChatSceneController implements Initializable {
             voteOnLectureSpeedSlow.setSelected(false);
         }
     }
-
 }
