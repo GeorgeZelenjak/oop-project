@@ -20,13 +20,14 @@ import java.util.stream.Stream;
 public class CreateFileTest {
     private static final UUID lectureId = UUID.randomUUID();
     private static final UUID modkey = UUID.randomUUID();
+    private static final String pathName = "questions/";
 
     /**
      * A helper method to delete files and directory after each test to make them independent.
      * @throws IOException if something goes wrong
      */
     private void cleanup() throws IOException {
-        File fin = new File("exportedQuestions/");
+        File fin = new File(pathName);
         File[] files = fin.listFiles();
         if (files == null) {
             return;
@@ -34,7 +35,7 @@ public class CreateFileTest {
         for (File file : files) {
             FileDeleteStrategy.FORCE.delete(file);
         }
-        Files.deleteIfExists(Path.of("exportedQuestions/"));
+        Files.deleteIfExists(Path.of(pathName));
     }
 
     @BeforeAll
@@ -44,10 +45,10 @@ public class CreateFileTest {
 
     @Test
     public void constructorNoFileTest() throws IOException {
-        Path path = Path.of("exportedQuestions/");
+        Path path = Path.of(pathName);
 
         //check if the directory exists
-        new CreateFile();
+        new CreateFile(pathName);
         assertTrue(Files.exists(path));
 
         //check if the file is present
@@ -60,10 +61,10 @@ public class CreateFileTest {
     @Test
     public void constructorNoFileNoLectureTest() throws IOException {
         Lecture.setCurrentLecture(null);
-        Path path = Path.of("exportedQuestions/");
+        Path path = Path.of(pathName);
 
         //check if the directory exists
-        new CreateFile();
+        new CreateFile(pathName);
         assertTrue(Files.exists(path));
 
         //check if the file is present
@@ -76,8 +77,8 @@ public class CreateFileTest {
 
     @Test
     public void testHeaderTest() throws IOException {
-        Path path = Path.of("exportedQuestions/");
-        CreateFile createFile = new CreateFile();
+        Path path = Path.of(pathName);
+        CreateFile createFile = new CreateFile(pathName);
 
         createFile.writeToFile(new ArrayList<>());
 
@@ -110,8 +111,8 @@ public class CreateFileTest {
 
     @Test
     public void testNoAnswer() throws IOException {
-        Path path = Path.of("exportedQuestions/");
-        CreateFile createFile = new CreateFile();
+        Path path = Path.of(pathName);
+        CreateFile createFile = new CreateFile(pathName);
 
         Question q = new Question(lectureId, "First", 42);
         List<Question> qs = List.of(q);
@@ -146,8 +147,8 @@ public class CreateFileTest {
 
     @Test
     public void testWithAnswer() throws IOException {
-        final Path path = Path.of("exportedQuestions/");
-        final CreateFile createFile = new CreateFile();
+        final Path path = Path.of(pathName);
+        final CreateFile createFile = new CreateFile(pathName);
 
         Question q = new Question(lectureId, "Second", 69);
         final List<Question> qs = List.of(q);
@@ -188,8 +189,8 @@ public class CreateFileTest {
 
     @Test
     public void testMultipleAnswerOneAnsweredTest() throws IOException {
-        Path path = Path.of("exportedQuestions/");
-        CreateFile createFile = new CreateFile();
+        Path path = Path.of(pathName);
+        CreateFile createFile = new CreateFile(pathName);
 
         Question q1 = new Question(lectureId, "First", 42);
         //q1.setVotes(42);
@@ -230,8 +231,8 @@ public class CreateFileTest {
 
     @Test
     public void testMultipleAnswerOneMoreVotesTest() throws IOException {
-        Path path = Path.of("exportedQuestions/");
-        CreateFile createFile = new CreateFile();
+        Path path = Path.of(pathName);
+        CreateFile createFile = new CreateFile(pathName);
 
         Question q1 = new Question(lectureId, "First", 42);
         //q1.setVotes(42);
