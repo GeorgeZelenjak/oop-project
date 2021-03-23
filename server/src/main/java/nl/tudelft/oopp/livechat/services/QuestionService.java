@@ -161,7 +161,7 @@ public class QuestionService {
         QuestionEntity q = optQuestion.get();
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
         //check if the lecture exists and is open
-        if (lecture == null || !lecture.isOpen()) {
+        if (lecture == null) {
             return -1;
         }
         //check if the modkey is correct
