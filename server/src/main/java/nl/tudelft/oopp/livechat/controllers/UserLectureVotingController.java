@@ -3,6 +3,7 @@ package nl.tudelft.oopp.livechat.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.tudelft.oopp.livechat.entities.UserLectureSpeedTable;
 import nl.tudelft.oopp.livechat.services.LectureSpeedService;
+import nl.tudelft.oopp.livechat.services.PollService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +14,14 @@ import java.util.UUID;
 @RequestMapping("/api/vote")
 public class UserLectureVotingController {
 
-    private final LectureSpeedService service;
+    private final LectureSpeedService speedService;
 
     /**
      * Constructor for lecture voting controller.
-     * @param service lecture speed service
+     * @param speedService lecture speed service
      */
-    public UserLectureVotingController(LectureSpeedService service) {
-        this.service = service;
+    public UserLectureVotingController(LectureSpeedService speedService) {
+        this.speedService = speedService;
     }
 
     // TODO reconsider user authentication
@@ -34,12 +35,12 @@ public class UserLectureVotingController {
     @PutMapping("/lectureSpeed")
     public int voteOnLectureSpeed(@RequestParam long uid, @RequestParam UUID uuid,
                                    @RequestBody String speed) {
-        return service.setUserLectureSpeedVote(uid,uuid,speed);
+        return speedService.setUserLectureSpeedVote(uid,uuid,speed);
     }
 
     @GetMapping("/getLectureSpeed/{UUID}")
     public List<Integer> getVotes(@PathVariable("UUID") UUID uuid) {
-        return service.getVotes(uuid);
+        return speedService.getVotes(uuid);
     }
 
     /**
@@ -50,7 +51,7 @@ public class UserLectureVotingController {
      */
     @DeleteMapping("/resetLectureSpeedVote/{UUID}/{modkey}")
     public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("UUID") UUID uuid) {
-        return service.resetLectureSpeed(uuid, modkey);
+        return speedService.resetLectureSpeed(uuid, modkey);
     }
 
     /**
