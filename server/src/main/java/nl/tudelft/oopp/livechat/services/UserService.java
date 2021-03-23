@@ -7,7 +7,6 @@ import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
@@ -30,30 +29,31 @@ public class UserService {
 
     final UserQuestionRepository userQuestionRepository;
 
-    @Autowired
-    private TaskScheduler taskScheduler;
+    private final TaskScheduler taskScheduler;
 
     /**
-     * Creates a new user service.
-     *
-     * @param userRepository    user repository object
+     * Creates new UserService object.
+     * @param userRepository the user repository
      * @param lectureRepository the lecture repository
+     * @param questionRepository the question repository
+     * @param userQuestionRepository the user question repository
+     * @param taskScheduler the task scheduler for banning
      */
     public UserService(UserRepository userRepository, LectureRepository lectureRepository,
                        QuestionRepository questionRepository,
-                       UserQuestionRepository userQuestionRepository) {
+                       UserQuestionRepository userQuestionRepository, TaskScheduler taskScheduler) {
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.questionRepository = questionRepository;
         this.userQuestionRepository = userQuestionRepository;
+        this.taskScheduler = taskScheduler;
     }
 
     /**
      * Creates a new user.
-     *
      * @param user the user entity representing the new user
-     * @param ip   the ip to be set
-     * @return 0 if successful,        -1 if uid is invalid or nulls were passed
+     * @param ip the ip to be set
+     * @return 0 if successful, -1 if uid is invalid or nulls were passed
      */
     public int newUser(UserEntity user, String ip) {
         if (user == null || ip == null) {
@@ -64,7 +64,7 @@ public class UserService {
             return -1;
         }
         int count = userRepository.countAllByIp(ip);
-        if (userRepository.findById(user.getUid()).isEmpty() && count > 5) {
+        if (userRepository.findById(user.getUid()).isEmpty() && count >= 5) {
             return -1;
         }
         userRepository.save(user);

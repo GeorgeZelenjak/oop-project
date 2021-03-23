@@ -41,6 +41,7 @@ class UserServiceTest {
     private static final long uid2 = 26;
     private static final Timestamp time = new Timestamp(
             System.currentTimeMillis() / 1000 * 1000);
+
     private static UUID lid;
     private static UUID lid1;
     private static UUID lid2;
@@ -191,6 +192,30 @@ class UserServiceTest {
 
         //set back for other tests
         user.setUid(uid);
+    }
+
+    @Test
+    public void newUserTooManyUsersTest() {
+        userRepository.save(new UserEntity(3253563653434523L, "root1",
+                time, true, "192.168.1.2", lid));
+        userRepository.save(new UserEntity(3523452452345512L, "root2",
+                time, true, "192.168.1.2", lid));
+        userRepository.save(new UserEntity(1458455343645123L, "root3",
+                time, true, "192.168.1.2", lid));
+        userRepository.save(new UserEntity(5234525352452545L, "root4",
+                time, true, "192.168.1.2", lid));
+        userRepository.save(new UserEntity(6346625635746253L, "root5",
+                time, true, "192.168.1.2", lid));
+        int result = userService.newUser(new UserEntity(9886625635746450L, "root5",
+                time, true, "192.168.1.2", lid), "192.168.1.2"); //this code is valid
+        assertEquals(-1, result);
+        assertNull(userRepository.findById(9886625635746450L).orElse(null));
+
+        userRepository.deleteById(3253563653434523L);
+        userRepository.deleteById(3523452452345512L);
+        userRepository.deleteById(1458455343645123L);
+        userRepository.deleteById(5234525352452545L);
+        userRepository.deleteById(6346625635746253L);
     }
 
     @Test
