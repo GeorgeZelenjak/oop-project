@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> {
     List<QuestionEntity> findAllByLectureId(UUID lectureId);
+    List<QuestionEntity> findAllByOwnerId(long ownerId);
 }

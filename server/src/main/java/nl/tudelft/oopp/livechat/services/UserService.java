@@ -5,6 +5,7 @@ import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
+import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
@@ -27,6 +28,8 @@ public class UserService {
 
     final QuestionRepository questionRepository;
 
+    final UserQuestionRepository userQuestionRepository;
+
     @Autowired
     private TaskScheduler taskScheduler;
 
@@ -37,14 +40,15 @@ public class UserService {
      * @param lectureRepository the lecture repository
      */
     public UserService(UserRepository userRepository, LectureRepository lectureRepository,
-                       QuestionRepository questionRepository) {
+                       QuestionRepository questionRepository, UserQuestionRepository userQuestionRepository) {
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.questionRepository = questionRepository;
+        this.userQuestionRepository = userQuestionRepository;
     }
 
     /**
-     * Create a new user.
+     * Creates a new user.
      *
      * @param user the user entity representing the new user
      * @param ip   the ip to be set
@@ -92,18 +96,17 @@ public class UserService {
     }
 
     /**
-     * Toggles ban by id.
-     *
-     * @param modid  the moerator user id
-     * @param qid the question id for which user we want to ban
+     * Bans the user by id.
+     * @param modid  the moderator's user id
+     * @param qid the question id which user is to be banned
      * @param modkey the modkey for the lecture the user is in
-     * @param time   the time between bans and unban
-     * @return 0 if ban/unban success
+     * @param time the time for the ban
+     * @return 0 if banned successfully
      *          -1 if no user with the chosen id
      *          -2 if no lecture is connected to the user
      *          -3 if the lecture is closed
      *          -4 if modkey is wrong
-     *          -5 if user was already banned by someone else
+     *          -5 if user was already banned
      */
     public int banById(long modid, long qid, UUID modkey, int time) {
         QuestionEntity incriminated = questionRepository.findById(qid).orElse(null);
@@ -112,6 +115,7 @@ public class UserService {
         }
         UserEntity toBan = userRepository.getUserEntityByUid(incriminated.getOwnerId());
         if (toBan == null) {
+            System.out.println("The user with this id does not exist");
             return -1;
         }
         LectureEntity lectureIsIn = lectureRepository.findLectureEntityByUuid(toBan.getLectureId());
@@ -121,24 +125,25 @@ public class UserService {
             return -3;
         } else if (!lectureIsIn.getModkey().equals(modkey)) {
             return -4;
-        } else if (toBan.getBannerId() != modid && !toBan.isAllowed()) {
+        } else if (!toBan.isAllowed()) {
             return -5;
         }
         toggleBan(toBan, modid, time);
+        editRepositoryAfterBanning(qid, toBan.getUid());
         return 0;
     }
 
 
     /**
-     * Toggles ban by ip.
-     *
-     * @param modid  the moderator user id
-     * @param qid     the question id for which user we want to ban
-     * @param modkey the moderator key for 1 lecture 1 of the users could be in
-     * @param time   the time of ban
-     * @return   0 if success
-     *          -1 if no users are present with that ip
-     *          -2 if no lectures meeting the requirements
+     * Bans the user by ip.
+     * @param modid the moderator's user id
+     * @param qid the question id which user is to be banned
+     * @param modkey the moderator key for 1 of the lectures the user could be in
+     * @param time the time for the ban
+     * @return 0 if banned successfully
+     *          -1 if no user with the chosen ip
+     *          -2 if no lectures meet the requirements
+     *          -3 if the user is already banned
      */
     public int banByIp(long modid, long qid, UUID modkey, int time) {
         QuestionEntity incriminated = questionRepository.findById(qid).orElse(null);
@@ -161,7 +166,16 @@ public class UserService {
         if (lectureIn.size() == 0) {
             return -2;
         }
-        toBan.forEach((u) -> toggleBan(u, modid, time));
+        toBan = toBan.stream().filter(UserEntity::isAllowed).collect(Collectors.toList());
+        if (toBan.isEmpty()) {
+            return -3;
+        }
+
+        toBan.forEach((u) -> {
+            toggleBan(u, modid, time);
+            editRepositoryAfterBanning(qid, u.getUid());
+        });
+
         return 0;
     }
 
@@ -181,11 +195,31 @@ public class UserService {
     private void scheduleUnban(UserEntity toUnban, int offset, long modid) {
         taskScheduler.schedule(() -> {
             UserEntity user = userRepository.findById(toUnban.getUid()).orElse(null);
-            if (user == null || user.isAllowed()) {
+            if (user == null) {
                 return;
             }
             toggleBan(toUnban, modid, offset);
+            editRepositoryAfterUnbanning(toUnban.getUid());
         }, new Date(OffsetDateTime.now().plusSeconds(offset).toInstant().toEpochMilli()));
+    }
+
+    private void editRepositoryAfterBanning(long qid, long uid) {
+        if (questionRepository.findById(qid).isPresent()) {
+            questionRepository.deleteById(qid);
+        }
+        if (!userQuestionRepository.getAllByQuestionId(qid).isEmpty()) {
+            userQuestionRepository.deleteAllByQuestionId(qid);
+        }
+
+        List<QuestionEntity> qs = questionRepository.findAllByOwnerId(uid);
+        qs.forEach(q -> q.setOwnerName(q.getOwnerName() + " (banned)"));
+        questionRepository.saveAll(qs);
+    }
+
+    private void editRepositoryAfterUnbanning(long uid) {
+        List<QuestionEntity> qs = questionRepository.findAllByOwnerId(uid);
+        qs.forEach(q -> q.setOwnerName(q.getOwnerName().substring(0, q.getOwnerName().length() - 9)));
+        questionRepository.saveAll(qs);
     }
 
 }
