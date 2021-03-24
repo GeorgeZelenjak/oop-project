@@ -73,25 +73,6 @@ class QuestionControllerTest {
     private static UserEntity user1;
     private static UserEntity user2;
 
-    /*/**
-     * A helper method to create a JSON string representing the lecture.
-     * @param creatorName the creator name
-     * @param startTime the start time
-     * @return the JSON string representing the lecture
-     */
-    /*private String createJson(String creatorName, Timestamp startTime) {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode node = mapper.createObjectNode();
-        node.put("creatorName", creatorName);
-        node.put("startTime", String.valueOf(startTime));
-        return node.toString();
-
-        q1Json = objectMapper.writeValueAsString(q1);
-        JsonNode node1 = objectMapper.readTree(q1Json);
-        node1 = ((ObjectNode) node1).put("ownerId", q1.getOwnerId());
-        q1Json = node1.toString();
-    }*/
-
     /**
      * A helper method to convert question to json.
      * @param q question object
@@ -158,7 +139,7 @@ class QuestionControllerTest {
      * @return id of the new question
      * @throws Exception if something goes wrong
      */
-    String postQuestions(String question) throws Exception {
+    String postQuestion(String question) throws Exception {
         return this.mockMvc
                 .perform(post("/api/question/ask")
                         .contentType(APPLICATION_JSON)
@@ -257,7 +238,7 @@ class QuestionControllerTest {
 
     @Test
     void askQuestionSuccessfulTest() throws Exception {
-        String qid1string = postQuestions(createQuestionJson(q1));
+        String qid1string = postQuestion(createQuestionJson(q1));
         long qid = Long.parseLong(qid1string);
         assertTrue(qid > 0);
         assertNotEquals(q1.getId(), qid);
@@ -267,27 +248,20 @@ class QuestionControllerTest {
     }
 
     @Test
-    void askQuestionSameIdTest() throws Exception {
-        //delete the questions that were set in the beforeEach
-        questionRepository.deleteById(q1.getId());
+    void askQuestionUserBannedTest() throws Exception {
         questionRepository.deleteById(q2.getId());
 
-        //post a new question
-        long qid = Long.parseLong(postQuestions(createQuestionJson(q1)));
-
-        //post a question with the same id as the newly created question
-        q2.setId(qid);
-        String result = postQuestions(createQuestionJson(q2));
-        long qid1 = Long.parseLong(result);
-        //check if -2 because stefan is banned, because JSON does not deserialize the id
-        assertEquals(-2, qid1);
+        String result = this.mockMvc.perform(post("/api/question/ask")
+                        .contentType(APPLICATION_JSON)
+                        .content(createQuestionJson(q2))
+                        .characterEncoding("utf-8"))
+                        .andExpect(status().isForbidden())
+                        .andReturn().getResponse().getErrorMessage();
+        assertEquals("This user is banned", result);
 
         //check if there are no questions with the id of q2
-        QuestionEntity q = questionRepository.findById(q1.getId()).orElse(null);
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNull(q);
-
-        //delete the newly created questions to make the tests independent
-        questionRepository.deleteById(qid);
     }
 
     @Test
@@ -316,9 +290,8 @@ class QuestionControllerTest {
 
     @Test
     void fetchQuestionsFakeIdTest() throws Exception {
-        this.mockMvc
-                .perform(get("/api/question/fetch?lid=" + "something_wrong"))
-                .andExpect(status().is4xxClientError());
+        this.mockMvc.perform(get("/api/question/fetch?lid=" + "something_wrong"))
+                    .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -347,9 +320,10 @@ class QuestionControllerTest {
 
     @Test
     void deleteQuestionUnsuccessfulTest() throws Exception {
-        int result = deleteQuestion("/api/question/delete?qid=" + q1.getId()
-                                                + "&uid=" + q2.getOwnerId());
-        assertEquals(-1, result);
+        String result = this.mockMvc.perform(delete("/api/question/delete?qid=" + q1.getId()
+                + "&uid=" + q2.getOwnerId())).andExpect(status().isForbidden())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Not allowed to delete this question", result);
 
         List<QuestionEntity> listLecture1after =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
@@ -377,9 +351,11 @@ class QuestionControllerTest {
 
     @Test
     void modDeleteUnsuccessfulTest() throws Exception {
-        final int result = deleteQuestion("/api/question/moderator/delete?qid=" + q1.getId()
-                + "&modkey=" + lectureEntity2.getModkey().toString());
-        assertEquals(-1, result);
+        String result = this.mockMvc.perform(delete("/api/question/moderator/delete?qid="
+                + q1.getId() + "&modkey=" + lectureEntity2.getModkey().toString()))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
 
         List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
         List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
@@ -437,8 +413,7 @@ class QuestionControllerTest {
 
     @Test
     void upvoteUnsuccessfulTest() throws Exception {
-        long qid11 = -1;
-
+        userRepository.deleteById(uid1);
         List<QuestionEntity> listLecture1 =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
         List<QuestionEntity> listLecture2 =
@@ -447,8 +422,10 @@ class QuestionControllerTest {
         final int oldVotes1 = listLecture1.get(0).getVotes();
         final int oldVotes2 = listLecture2.get(0).getVotes();
 
-        final int result = upvote(qid11, q1.getOwnerId());
-        assertEquals(-1, result);
+        String result = this.mockMvc.perform(put("/api/question/upvote?qid=" + q1.getId()
+                + "&uid=" + q1.getOwnerId())).andExpect(status().isConflict())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("This user is not registered", result);
 
         listLecture1 = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
         listLecture2 = questionRepository.findAllByLectureId(lectureEntity2.getUuid());
@@ -458,6 +435,8 @@ class QuestionControllerTest {
 
         assertEquals(oldVotes1, newVotes1);
         assertEquals(oldVotes2, newVotes2);
+
+        userRepository.save(user1);
     }
 
     @Test
@@ -477,7 +456,8 @@ class QuestionControllerTest {
         assertNotNull(question1after);
         assertEquals(question1after.getText(), "this is the new text");
         assertTrue(question1after.isEdited());
-        assertEquals(0, question1after.getOwnerId());       //check that owner id is not exposed
+        //check that owner id is not exposed
+        assertEquals(0, question1after.getOwnerId());
     }
 
     @Test
@@ -489,8 +469,14 @@ class QuestionControllerTest {
         node.put("uid", uid2);
         String json = node.toString();
 
-        int result = editQuestion(json);
-        assertEquals(-1, result);
+        String result = this.mockMvc
+                .perform(put("/api/question/edit")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
 
         QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
         assertNotNull(question1after);
@@ -514,7 +500,7 @@ class QuestionControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(json)
                         .characterEncoding("utf-8"))
-                .andExpect(status().is4xxClientError())
+                .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
         assertEquals("Don't do this", result);
 
@@ -542,8 +528,14 @@ class QuestionControllerTest {
 
     @Test
     void answerUnsuccessfulTest() throws Exception {
-        final int result = answer(q1.getId(), lectureEntity2.getModkey().toString());
-        assertEquals(-1, result);
+        String result = this.mockMvc.perform(put("/api/question/answer/"
+                + q1.getId() + "/" + lectureEntity2.getModkey().toString())
+                .contentType(APPLICATION_JSON)
+                .content("This is definitely a question answer dude")
+                .characterEncoding("utf-8"))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
 
         List<QuestionEntity> listLecture1 =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
@@ -558,7 +550,7 @@ class QuestionControllerTest {
     void answerUnsuccessfulInvalidModkeyTest() throws Exception {
         String resultString = this.mockMvc.perform(
                 put("/api/question/answer/" + q1.getId() + "/" + "modkey"))
-                .andExpect(status().is4xxClientError())
+                .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
         assertEquals("Don't do this", resultString);
 
