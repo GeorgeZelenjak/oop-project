@@ -3,6 +3,7 @@ package nl.tudelft.oopp.livechat.services;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
@@ -21,13 +22,13 @@ import java.util.stream.Collectors;
 @EnableScheduling
 public class UserService {
 
-    final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    final LectureRepository lectureRepository;
+    private final LectureRepository lectureRepository;
 
-    final QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
-    final UserQuestionRepository userQuestionRepository;
+    private final UserQuestionRepository userQuestionRepository;
 
     private final TaskScheduler taskScheduler;
 
@@ -55,17 +56,18 @@ public class UserService {
      * @param ip the ip to be set
      * @return 0 if successful, -1 if uid is invalid or nulls were passed
      */
-    public int newUser(UserEntity user, String ip) {
-        if (user == null || ip == null) {
-            return -1;
+    public int newUser(UserEntity user, String ip) throws UserException {
+        if (user == null) {
+            throw new UserNotRegisteredException();
         }
+
         user.setIp(ip);
         if (!luhnCheck(user.getUid())) { // use mac address checksum
-            return -1;
+            throw new UserIdNotValidException();
         }
         int count = userRepository.countAllByIp(ip);
         if (userRepository.findById(user.getUid()).isEmpty() && count >= 5) {
-            return -1;
+            throw new UserTooManyUsersException();
         }
         userRepository.save(user);
         return 0;
@@ -108,25 +110,26 @@ public class UserService {
      *          -4 if modkey is wrong
      *          -5 if user was already banned
      */
-    public int banById(long modid, long qid, UUID modkey, int time) {
+    public int banById(long modid, long qid, UUID modkey, int time)
+                        throws UserException, LectureException,
+                                QuestionException, InvalidModkeyException {
         QuestionEntity incriminated = questionRepository.findById(qid).orElse(null);
         if (incriminated == null) {
-            return -1;
+            throw new QuestionNotFoundException();
         }
         UserEntity toBan = userRepository.getUserEntityByUid(incriminated.getOwnerId());
         if (toBan == null) {
-            System.out.println("The user with this id does not exist");
-            return -1;
+            throw new UserNotRegisteredException();
         }
         LectureEntity lectureIsIn = lectureRepository.findLectureEntityByUuid(toBan.getLectureId());
         if (lectureIsIn == null) {
-            return -2;
+            throw new LectureNotFoundException();
         } else if (!lectureIsIn.isOpen()) {
-            return -3;
+            throw new LectureClosedException();
         } else if (!lectureIsIn.getModkey().equals(modkey)) {
-            return -4;
+            throw new InvalidModkeyException();
         } else if (!toBan.isAllowed()) {
-            return -5;
+            throw new UserBannedException();
         }
         toggleBan(toBan, modid, time);
         editRepositoryAfterBanning(qid, toBan.getUid());
@@ -145,14 +148,16 @@ public class UserService {
      *          -2 if no lectures meet the requirements
      *          -3 if the user is already banned
      */
-    public int banByIp(long modid, long qid, UUID modkey, int time) {
+    public int banByIp(long modid, long qid, UUID modkey, int time)
+            throws UserException, LectureException, QuestionException {
         QuestionEntity incriminated = questionRepository.findById(qid).orElse(null);
         if (incriminated == null) {
-            return -1;
+            System.out.println("No question");
+            throw new QuestionNotFoundException();
         }
         UserEntity user = userRepository.getUserEntityByUid(incriminated.getOwnerId());
         if (user == null) {
-            return -1;
+            throw new UserNotRegisteredException();
         }
         List<UserEntity> toBan = userRepository.findAllByIp(user.getIp());
         List<LectureEntity> lectureIn = toBan.stream()
@@ -161,11 +166,11 @@ public class UserService {
                 .filter((l) -> l.getModkey().equals(modkey))
                 .collect(Collectors.toList());
         if (lectureIn.size() == 0) {
-            return -2;
+            throw new LectureNotFoundException();
         }
         toBan = toBan.stream().filter(UserEntity::isAllowed).collect(Collectors.toList());
         if (toBan.isEmpty()) {
-            return -3;
+            throw new UserBannedException();
         }
 
         toBan.forEach((u) -> {

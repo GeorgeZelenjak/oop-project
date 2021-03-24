@@ -174,12 +174,6 @@ class UserServiceTest {
     }
 
     @Test
-    public void newUserIPNullTest() {
-        int result = userService.newUser(user, null);
-        assertEquals(-1, result);
-    }
-
-    @Test
     public void newUserInvalidUidTest() {
         user.setUid(420);
         int result = userService.newUser(user, localhost);
