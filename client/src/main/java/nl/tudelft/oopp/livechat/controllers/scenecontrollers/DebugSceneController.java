@@ -58,7 +58,7 @@ public class DebugSceneController {
         User.setUserName("Andy");
         Lecture lecture = LectureCommunication
                 .createLecture("A great history of zebras",
-                        "Andy", new Timestamp(System.currentTimeMillis()));
+                        "Andy", new Timestamp(System.currentTimeMillis()), 60);
         Lecture.setCurrentLecture(lecture);
     }
 

@@ -57,6 +57,9 @@ public class CreateLectureController implements Initializable {
     @FXML
     private Button createLectureButton;
 
+    @FXML
+    private TextField questionDelay;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         goToHelpButton.setTooltip(new Tooltip("Open Help & Documentation Page"));
@@ -108,25 +111,41 @@ public class CreateLectureController implements Initializable {
             createLectureScheduled();
             return;
         }
+        int frequency = 60;
+        try {
+            if (questionDelay.getText() != null && questionDelay.getText().length() > 0) {
+                int delay = Integer.parseInt(questionDelay.getText());
+                frequency = delay;
+            }
 
+        } catch (NumberFormatException e) {
+            String alert = "Invalid input. Please enter a number (in seconds) and try again.";
+
+            AlertController.alertError("Invalid input", alert);
+            return;
+        }
         User.setUserName(enterYourNameTextField.getText());
 
         Lecture lecture = LectureCommunication
                 .createLecture(enterLectureNameTextField.getText(),
-                enterYourNameTextField.getText(), new Timestamp(System.currentTimeMillis()));
-
+                enterYourNameTextField.getText(), new Timestamp(System.currentTimeMillis()), frequency);
 
         if (lecture == null) {
             return;
         }
 
+
+
+
         String alertText = "The lecture has been created successfully!"
                 + "\nPress OK to go to the lecture page.";
         AlertController.alertInformation("Creating lecture", alertText);
 
+
+
         Lecture.setCurrentLecture(lecture);
         NavigationController.getCurrentController().goToLecturerChatPage();
-        System.out.println(lecture);
+        System.out.println(Lecture.getCurrentLecture().getFrequency());
     }
 
     private void createLectureScheduled() throws IOException {
@@ -142,14 +161,26 @@ public class CreateLectureController implements Initializable {
         int minute = Integer.parseInt(lectureScheduleMinuteTextField.getText());
         Timestamp timestamp = Timestamp.valueOf(lectureSchedulingDateDatePicker
                                     .getValue().atTime(hour,minute));
+        int frequency = 60;
+        try {
+            if (questionDelay.getText() != null && questionDelay.getText().length() > 0) {
+                int delay = Integer.parseInt(questionDelay.getText());
+                frequency = delay;
+            }
+        } catch (NumberFormatException e) {
+            String alert = "Invalid input. Please enter a number (in seconds) and try again.";
 
+            AlertController.alertError("Invalid input", alert);
+            return;
+        }
         Lecture lecture = LectureCommunication
                 .createLecture(enterLectureNameTextField.getText(),
-                        enterYourNameTextField.getText(), timestamp);
+                        enterYourNameTextField.getText(), timestamp, frequency);
 
         if (lecture == null) {
             return;
         }
+
 
         String alertText = "The lecture has been scheduled successfully!"
                 + "\nPress OK to go to the lecture page.";
@@ -158,10 +189,14 @@ public class CreateLectureController implements Initializable {
         AlertController.alertInformation("Creating lecture", alertText);
         AlertController.alertWarning("ModKey Warning", alertText2.toUpperCase(Locale.ROOT));
 
+
+
         Lecture.setCurrentLecture(lecture);
         User.setUserName(enterYourNameTextField.getText());
         NavigationController.getCurrentController().goToLecturerChatPage();
         System.out.println(lecture);
+
+        System.out.println(Lecture.getCurrentLecture().getFrequency());
     }
 
     /**
@@ -211,8 +246,6 @@ public class CreateLectureController implements Initializable {
      * Hides everything concerning lecture scheduling.
      */
     public void hideLectureScheduling() {
-        dotsText.setVisible(lectureSchedulingCheckBox.isSelected());
-        dotsText.setDisable(!lectureSchedulingCheckBox.isSelected());
         lectureScheduleMinuteTextField.setDisable(!lectureSchedulingCheckBox.isSelected());
         lectureScheduleMinuteTextField.setVisible(lectureSchedulingCheckBox.isSelected());
         lectureScheduleHourTextField.setDisable(!lectureSchedulingCheckBox.isSelected());
