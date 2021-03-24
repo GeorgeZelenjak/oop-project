@@ -140,4 +140,17 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Don't do this");
     }
+
+    /**
+     * Exception handler.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Missing parameter' message
+     */
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ResponseEntity<Object> badParameter(IllegalArgumentException exception) {
+        System.out.println(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Don't do this");
+    }
 }
