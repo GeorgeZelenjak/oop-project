@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1000.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.SettingsSceneController">
+<AnchorPane prefHeight="650.0" prefWidth="1000.0" stylesheets="@../../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.SettingsSceneController">
    <children>
       <Button fx:id="goBackButton" mnemonicParsing="false" onAction="#goBack" prefHeight="34.0" prefWidth="116.0" styleClass="mainSceneButton" text="←Go Back" />
       <Text layoutX="421.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings">

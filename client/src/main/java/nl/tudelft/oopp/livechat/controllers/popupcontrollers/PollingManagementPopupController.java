@@ -38,6 +38,7 @@ public class PollingManagementPopupController {
 
         Poll poll = new Poll();
         List<PollOption> list = new ArrayList<>();
+        PollOption option1 = new PollOption();
 
         if (list == null) {
             return;

@@ -1,6 +1,7 @@
 package nl.tudelft.oopp.livechat.uielements;
 
 import javafx.scene.control.ListCell;
+import nl.tudelft.oopp.livechat.controllers.cellcontrollers.CellPollOptionController;
 import nl.tudelft.oopp.livechat.data.PollOption;
 
 public class PollOptionCell extends ListCell<PollOption> {
@@ -15,8 +16,9 @@ public class PollOptionCell extends ListCell<PollOption> {
         super.updateItem(option, empty);
 
         if (option != null && !empty) {
-            CellDataPollOption data = new CellDataPollOption();
+            CellPollOptionController data = new CellPollOptionController();
             data.setPollOption(option);
+            data.changePollOptionCellIsCorrectCheckBox();
 
             data.setOptionText(option.getOptionText());
             data.setPollOption(option);

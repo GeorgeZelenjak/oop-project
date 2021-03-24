@@ -54,42 +54,42 @@ public class NavigationController {
      * Navigation to the main page.
      */
     public void goToUserManual()  {
-        goToSceneHelper("/fxml/userManualScene.fxml");
+        goToSceneHelper("/fxml/scenes/userManualScene.fxml");
     }
 
     /**
      * Navigation to the main scene.
      */
     public void goToMainScene()  {
-        goToSceneHelper("/fxml/mainScene.fxml");
+        goToSceneHelper("/fxml/scenes/mainScene.fxml");
     }
 
     /**
      * Navigation to the create room scene.
      */
     public void goToCreateRoomScene()  {
-        goToSceneHelper("/fxml/createLectureScene.fxml");
+        goToSceneHelper("/fxml/scenes/createLectureScene.fxml");
     }
 
     /**
      * Navigation to the create room scene.
      */
     public void goToJoinLecturePage()  {
-        goToSceneHelper("/fxml/joinLectureScene.fxml");
+        goToSceneHelper("/fxml/scenes/joinLectureScene.fxml");
     }
 
     /**
      * Navigation to the lecturer chat room scene.
      */
     public void goToLecturerChatPage() {
-        goToSceneHelper("/fxml/lecturerChatScene.fxml");
+        goToSceneHelper("/fxml/scenes/lecturerChatScene.fxml");
     }
 
     /**
      * Navigation to the user chat page.
      */
     public void goToUserChatPage() {
-        goToSceneHelper("/fxml/userChatScene.fxml");
+        goToSceneHelper("/fxml/scenes/userChatScene.fxml");
     }
 
     /**
@@ -125,7 +125,7 @@ public class NavigationController {
      * Go to settings.
      */
     public void goToSettings() {
-        goToSceneHelper("/fxml/settingsScene.fxml");
+        goToSceneHelper("/fxml/scenes/settingsScene.fxml");
     }
 
     /**
@@ -133,11 +133,11 @@ public class NavigationController {
      */
     @SuppressWarnings("unused")
     public void goToTestScene() {
-        goToSceneHelper("/fxml/newUserChatScene.fxml");
+        goToSceneHelper("/fxml/scenes/newUserChatScene.fxml");
     }
 
     public void goToDebugScene() {
-        goToSceneHelper("/fxml/debugScene.fxml");
+        goToSceneHelper("/fxml/scenes/debugScene.fxml");
     }
 
     /**
@@ -160,7 +160,7 @@ public class NavigationController {
      * Makes a popup to the lecturer scene.
      */
     public void popupLecturerScene() {
-        popupHelper("/fxml/lecturerChatScene.fxml",1080,768);
+        popupHelper("/fxml/scenes/lecturerChatScene.fxml",1080,768);
     }
 
     /**

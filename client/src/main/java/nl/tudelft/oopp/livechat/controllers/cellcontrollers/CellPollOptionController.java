@@ -1,4 +1,4 @@
-package nl.tudelft.oopp.livechat.uielements;
+package nl.tudelft.oopp.livechat.controllers.cellcontrollers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -6,14 +6,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import nl.tudelft.oopp.livechat.controllers.NavigationController;
-import nl.tudelft.oopp.livechat.data.Poll;
 import nl.tudelft.oopp.livechat.data.PollOption;
-import nl.tudelft.oopp.livechat.data.Question;
 
 import java.io.IOException;
 
-public class CellDataPollOption {
+public class CellPollOptionController {
 
     @FXML
     private TextField optionText;
@@ -29,9 +26,9 @@ public class CellDataPollOption {
     /**
      * Instantiates a new Cell data poll option.
      */
-    public CellDataPollOption() {
+    public CellPollOptionController() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                "/fxml/pollOptionCell.fxml"));
+                "/fxml/cell/pollOptionCell.fxml"));
         fxmlLoader.setController(this);
         try {
             fxmlLoader.load();

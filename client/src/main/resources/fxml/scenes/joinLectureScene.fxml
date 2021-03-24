@@ -21,7 +21,7 @@
          </cursor></CheckBox>
    </children>
    <stylesheets>
-      <URL value="@../css/Styles.css" />
-      <URL value="@../css/joinLectureScene.css" />
+      <URL value="@../../css/Styles.css" />
+      <URL value="@../../css/joinLectureScene.css" />
    </stylesheets>
 </AnchorPane>
