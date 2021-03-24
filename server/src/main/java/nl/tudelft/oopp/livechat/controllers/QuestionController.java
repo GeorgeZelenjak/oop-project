@@ -148,7 +148,7 @@ public class QuestionController {
      */
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private ResponseEntity<Object> badParameter(IllegalArgumentException exception) {
+    private ResponseEntity<Object> badParameter(NullPointerException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Don't do this");
