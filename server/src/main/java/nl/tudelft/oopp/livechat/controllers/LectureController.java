@@ -75,8 +75,8 @@ public class LectureController {
      * @return 0 if the lecture has been deleted successfully, -1 if not
      */
     @DeleteMapping("/delete/{id}/{modkey}")
-    public int delete(@PathVariable("modkey") UUID modkey,
-                      @PathVariable("id") UUID id) throws Exception {
+    public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id)
+            throws LectureException, InvalidModkeyException {
         return service.delete(id, modkey);
     }
 

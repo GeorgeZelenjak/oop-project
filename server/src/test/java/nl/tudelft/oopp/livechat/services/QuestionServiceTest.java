@@ -22,9 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 /**
  * Class for Question service tests.
- * Warning: These tests depend on the order annotation because sometimes the outcome of one test
- *  is dependent on the outcome of the test before it (like for example, adding a user or a lecture
- *  to the repository, etc).
  */
 @SpringBootTest
 class QuestionServiceTest {

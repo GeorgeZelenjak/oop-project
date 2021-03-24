@@ -513,6 +513,31 @@ class QuestionControllerTest {
     }
 
     @Test
+    void editUnsuccessfulNullPointerTest() throws Exception {
+        ObjectNode node = objectMapper.createObjectNode();
+        node.put("id", q1.getId());
+        node.put("modkey", lectureEntity1.getModkey().toString());
+        node.put("uid", uid2);
+        String jason = node.toString();
+
+        String result = this.mockMvc
+                .perform(put("/api/question/edit")
+                        .contentType(APPLICATION_JSON)
+                        .content(jason)
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+        assertEquals("Missing parameter", result);
+
+        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        assertNotNull(question1after);
+        assertFalse(question1after.isEdited());
+        assertEquals(question1after.getText(),
+                "What would you do if a seagull entered in your house?");
+        assertNotEquals(question1after.getOwnerId(), uid2);
+    }
+
+    @Test
     void answerSuccessfulTest() throws Exception {
         final int result = answer(q1.getId(), lectureEntity1.getModkey().toString());
         assertEquals(0, result);

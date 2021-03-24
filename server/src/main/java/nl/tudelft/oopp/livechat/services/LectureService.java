@@ -65,8 +65,8 @@ public class LectureService {
      * @param startTime   the start time
      * @return the new lecture entity
      */
-    public LectureEntity newLecture(String name, String creatorName,
-                                    Timestamp startTime) throws LectureNotCreatedException {
+    public LectureEntity newLecture(String name, String creatorName, Timestamp startTime)
+            throws LectureNotCreatedException {
         if (name.length() <= 255 && creatorName.length() <= 255) {
             LectureEntity n = new LectureEntity(name, creatorName, startTime);
             lectureRepository.save(n);
@@ -83,7 +83,8 @@ public class LectureService {
      * @param modkey the moderator key
      * @return 0 if successful
      */
-    public int delete(UUID id, UUID modkey) throws Exception {
+    public int delete(UUID id, UUID modkey)
+            throws LectureException, InvalidModkeyException {
         LectureEntity toDelete = getLectureById(id);
         if (toDelete == null) {
             throw new LectureNotFoundException();

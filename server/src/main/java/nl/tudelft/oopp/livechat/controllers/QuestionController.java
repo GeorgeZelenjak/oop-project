@@ -162,6 +162,6 @@ public class QuestionController {
     private ResponseEntity<Object> badParameter(NullPointerException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Don't do this");
+                .body("Missing parameter");
     }
 }
