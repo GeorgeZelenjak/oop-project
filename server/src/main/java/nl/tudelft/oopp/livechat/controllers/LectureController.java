@@ -64,7 +64,8 @@ public class LectureController {
         String creatorName = jsonNode.get("creatorName").asText();
         Timestamp startTime = objectMapper.readValue(
                 jsonNode.get("startTime").toString(),Timestamp.class);
-        return service.newLecture(name, creatorName, startTime);
+        int frequency = Integer.parseInt(jsonNode.get("frequency").asText());
+        return service.newLecture(name, creatorName, startTime, frequency);
     }
 
     /**

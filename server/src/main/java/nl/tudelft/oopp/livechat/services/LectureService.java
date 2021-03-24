@@ -64,9 +64,10 @@ public class LectureService {
      * @param startTime   the start time
      * @return the new lecture entity
      */
-    public LectureEntity newLecture(String name, String creatorName, Timestamp startTime) {
+    public LectureEntity newLecture(String name, String creatorName, Timestamp startTime, int frequency) {
         if (name.length() <= 255 && creatorName.length() <= 255) {
             LectureEntity n = new LectureEntity(name, creatorName, startTime);
+            n.setFrequency(frequency);
             lectureRepository.save(n);
             return n;
         } else {
