@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="384.0" prefWidth="540.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.popupcontrollers.PollingManagementPopupController">
+   <children>
+      <TextField layoutX="55.0" layoutY="37.0" prefHeight="26.0" prefWidth="429.0" promptText="Enter your question here" />
+      <Button layoutX="409.0" layoutY="344.0" mnemonicParsing="false" text="Open" />
+      <Button layoutX="471.0" layoutY="344.0" mnemonicParsing="false" text="Close" />
+      <Button layoutX="400.0" layoutY="307.0" mnemonicParsing="false" text="New Poll" />
+      <Button layoutX="470.0" layoutY="307.0" mnemonicParsing="false" text="Reset" />
+      <ListView fx:id="popupOptionsListView" layoutX="55.0" layoutY="78.0" prefHeight="200.0" prefWidth="354.0" />
+   </children>
+</AnchorPane>
