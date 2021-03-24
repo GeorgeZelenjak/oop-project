@@ -1,0 +1,8 @@
+Students can vote on whether the live lecture is going too fast or too slow. Lecturers can see these results and adapt the teaching speed, such that all students are on track with the material presented.
+
+-> Students can either vote "Too Fast" or "Too Slow" for the speed of the lecture (or none if they think the lecture speed is good as it is).
+
+-> Lecturers can see the results real-time, both the number of votes for each category and a "slide bar" of the results where "Too Fast" is represented by the blue line and "Too Slow" by the red line.
+
+-> Lecturers can also reset this voting process by clicking the "Reopen Voting" button, beneath the results. This will reset all previous votes and students will need to recast their votes.
+
