@@ -112,10 +112,10 @@ public class CreateLectureController implements Initializable {
             return;
         }
         int frequency = 60;
+
         try {
             if (questionDelay.getText() != null && questionDelay.getText().length() > 0) {
-                int delay = Integer.parseInt(questionDelay.getText());
-                frequency = delay;
+                frequency = Integer.parseInt(questionDelay.getText());
             }
 
         } catch (NumberFormatException e) {

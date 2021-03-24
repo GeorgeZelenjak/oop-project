@@ -1,6 +1,9 @@
-Once you have created a lecture, you will be redirected to the lecture page, with moderator rights.
-To share a lecture ID with students, click on the green "Copy Lecture ID" button, located on the left sidebar.
-This action will copy the lecture id in your clipboard and you can share it with your students in any way you like.
-For other lecturers, moderators, TAs or administrators to join your lecture with full rights, you will need to provide them with both
+->Once you have created a lecture, you will be redirected to the lecture page, with moderator rights.
+
+->To share a lecture ID with students, click on the green "Copy Lecture ID" button, located on the left sidebar.
+
+->This action will copy the lecture id in your clipboard and you can share it with your students in any way you like.
+
+->For other lecturers, moderators, TAs or administrators to join your lecture with full rights, you will need to provide them with both
 the lecture ID and the moderator key (ModKey). To obtain the ModKey, press on the "Copy ModKey" button on the left
 sidebar and the code will be copied to your clipboard. Then you can share the key with them.

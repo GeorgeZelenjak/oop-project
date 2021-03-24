@@ -93,7 +93,7 @@ public class QuestionService {
         //TODO test this thing
         if (lecture.getFrequency() != 0 && userAsked.getLastQuestion() != null
                 && q.getTime().getTime() - userAsked.getLastQuestion().getTime()
-                < lecture.getFrequency() * 1000L) {
+                < (long) lecture.getFrequency() * 1000) {
             return -1;
         }
         userAsked.setLastQuestion(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
