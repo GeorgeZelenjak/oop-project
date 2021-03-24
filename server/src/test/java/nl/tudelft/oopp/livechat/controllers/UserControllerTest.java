@@ -82,6 +82,7 @@ public class UserControllerTest {
         return (10 - (temp % 10)) % 10;
     }
 
+
     /**
      * Setup for the class.
      * @throws Exception if something goes wrong
@@ -123,9 +124,9 @@ public class UserControllerTest {
     public void newUserUnsuccessfulTest() throws Exception {
         String result = this.mockMvc.perform(post("/api/user/register")
                 .contentType(APPLICATION_JSON).content(user2Json).characterEncoding("utf-8"))
-                .andExpect(status().isOk()).andReturn()
-                .getResponse().getContentAsString();
-        assertEquals(-1, Integer.parseInt(result));
+                .andExpect(status().is4xxClientError()).andReturn()
+                .getResponse().getErrorMessage();
+        assertEquals("Invalid user id, don't do this", result);
     }
 
     @Test
