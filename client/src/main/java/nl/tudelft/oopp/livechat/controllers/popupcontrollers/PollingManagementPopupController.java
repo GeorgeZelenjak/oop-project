@@ -108,6 +108,8 @@ public class PollingManagementPopupController implements Initializable {
                     poll.getId(), modkey, pollOption.isCorrect(), pollOption.getOptionText()));
             }
             PollCommunication.toggle(poll.getId(), modkey);
+            PollAndOptions.getCurrentPollAndOptions().getPoll().setOpen(true);
+
         } else if (!current.getPoll().isOpen()) {
             PollCommunication.toggle(current.getPoll().getId(), modkey);
             current.getPoll().setOpen(true);
@@ -120,8 +122,8 @@ public class PollingManagementPopupController implements Initializable {
     public void closePoll() {
         PollAndOptions current = PollAndOptions.getCurrentPollAndOptions();
         if (current != null && current.getPoll().isOpen()) {
+            PollCommunication.toggle(poll.getId(), modkey);
             current.getPoll().setOpen(false);
-            PollCommunication.toggle(current.getPoll().getId(), modkey);
         }
     }
 
