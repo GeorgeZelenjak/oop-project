@@ -57,7 +57,7 @@ public class UserController {
      * @throws JsonProcessingException the json processing exception
      */
     @PutMapping("/ban/id")
-    public int banByid(@RequestBody String info) throws JsonProcessingException,
+    public int banById(@RequestBody String info) throws JsonProcessingException,
             UserException, LectureException, QuestionException, InvalidModkeyException {
         JsonNode jsonNode = objectMapper.readTree(info);
         long modid = Long.parseLong(jsonNode.get("modid").asText());
@@ -78,7 +78,7 @@ public class UserController {
      * @throws JsonProcessingException the json processing exception
      */
     @PutMapping("/ban/ip")
-    public int banByip(@RequestBody String info) throws JsonProcessingException,
+    public int banByIp(@RequestBody String info) throws JsonProcessingException,
             UserException, LectureException, QuestionException {
         JsonNode jsonNode = objectMapper.readTree(info);
         long modid = Long.parseLong(jsonNode.get("modid").asText());

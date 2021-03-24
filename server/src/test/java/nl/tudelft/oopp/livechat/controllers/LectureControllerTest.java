@@ -4,19 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import java.net.http.HttpResponse;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -198,7 +195,8 @@ class LectureControllerTest {
 
     @Test
     void whenPostingReturns200Test() throws Exception {
-        this.mockMvc.perform(post("/api/newLecture?name=test2").content(createJson("Papa", time)))
+        this.mockMvc.perform(post("/api/newLecture?name=test2")
+                .content(createJson("Papa", time)))
                 .andExpect(status().isOk());
     }
 
@@ -232,7 +230,8 @@ class LectureControllerTest {
                 .getErrorMessage();
         assertEquals("Lecture not found", r);
 
-        String result = this.mockMvc.perform(delete("/api/delete/" + uuid + "/" + UUID.randomUUID().toString()))
+        String result = this.mockMvc.perform(delete("/api/delete/" + uuid
+                + "/" + UUID.randomUUID().toString()))
                 .andExpect(status().isNotFound())
                 .andReturn()
                 .getResponse()
@@ -248,7 +247,8 @@ class LectureControllerTest {
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
 
-        String result = this.mockMvc.perform(delete("/api/delete/" + uuid + "/" + UUID.randomUUID().toString()))
+        String result = this.mockMvc.perform(delete("/api/delete/"
+                + uuid + "/" + UUID.randomUUID().toString()))
                 .andExpect(status().isUnauthorized())
                 .andReturn()
                 .getResponse()
@@ -326,7 +326,8 @@ class LectureControllerTest {
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
 
-        String result = this.mockMvc.perform(put("/api/close/" + uuid + "/" + UUID.randomUUID().toString()))
+        String result = this.mockMvc.perform(put("/api/close/"
+                + uuid + "/" + UUID.randomUUID().toString()))
                 .andExpect(status().isUnauthorized())
                 .andReturn()
                 .getResponse()
