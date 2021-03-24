@@ -1,10 +1,12 @@
 package nl.tudelft.oopp.livechat.controllers.cellcontrollers;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import nl.tudelft.oopp.livechat.data.PollOption;
 
@@ -13,7 +15,7 @@ import java.io.IOException;
 public class CellPollOptionController {
 
     @FXML
-    private TextField optionText;
+    private TextField optionTextField;
 
     @FXML
     private CheckBox pollOptionCellIsCorrectCheckBox;
@@ -36,6 +38,20 @@ public class CellPollOptionController {
             throw new RuntimeException(e);
         }
     }
+
+
+    /**
+     * Sets listener.
+     */
+    public void setListener() {
+        optionTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                option.setOptionText(optionTextField.getText());
+            }
+        });
+    }
+
 
     /**
      * Sets poll option cell is correct check box.
@@ -66,7 +82,7 @@ public class CellPollOptionController {
      * @param value the value
      */
     public void setOptionText(String value) {
-        optionText.setText("Answer: " + value);
+        optionTextField.setText("Answer: " + value);
     }
 
     /**

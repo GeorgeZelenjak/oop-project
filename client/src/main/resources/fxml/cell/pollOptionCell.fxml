@@ -6,7 +6,7 @@
 
 <AnchorPane fx:id="optionCellAnchorPane" maxHeight="33.0" minHeight="33.0" prefHeight="33.0" prefWidth="502.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TextField fx:id="optionText" layoutX="26.0" layoutY="4.0" prefHeight="25.0" prefWidth="436.0" />
+      <TextField fx:id="optionTextField" layoutX="26.0" layoutY="4.0" prefHeight="25.0" prefWidth="436.0" />
       <CheckBox fx:id="pollOptionCellIsCorrectCheckBox" layoutX="6.0" layoutY="8.0" mnemonicParsing="false" />
       <Button layoutX="471.0" layoutY="5.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="16.0" text="🗑">
          <font>

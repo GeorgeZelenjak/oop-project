@@ -25,6 +25,7 @@ public class Poll {
     private boolean isOpen;
 
 
+
     /**
      * Instantiates a new Poll entity.
      */

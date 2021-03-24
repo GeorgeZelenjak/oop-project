@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.util.Callback;
 import nl.tudelft.oopp.livechat.data.*;
 import nl.tudelft.oopp.livechat.uielements.PollOptionCell;
@@ -15,13 +16,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * The type Polling management popup controller.
+ */
 public class PollingManagementPopupController implements Initializable {
 
     @FXML
     private ListView<PollOption> popupOptionsListView;
 
+    @FXML
+    private TextArea questionTextTextArea;
+
     private List<PollOption> options;
 
+    private Poll poll;
+
+    /**
+     * The Observable list.
+     */
     @FXML
     ObservableList<PollOption> observableList = FXCollections.observableArrayList();
 
@@ -31,30 +43,19 @@ public class PollingManagementPopupController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        fetchPollOptions();
+        resetListView();
+        addPollOptionCell();
+        addPollOptionCell();
+        addPollOptionCell();
+        addPollOptionCell();
+
     }
 
 
     /**
      * Fetch poll options.
      */
-    public void fetchPollOptions() {
-
-        List<PollOption> list = new ArrayList<>();
-        PollOption option1 = new PollOption();
-        PollOption option2 = new PollOption();
-        list.add(option1);
-        list.add(option2);
-
-        if (list == null) {
-            return;
-        }
-        if (list.size() == 0) {
-            System.out.println("There are no poll options");
-        }
-        PollOption.setCurrentPollOptions(list);
-
-        options = PollOption.getCurrentPollOptions();
+    public void initializeList() {
 
         observableList.setAll(options);
         popupOptionsListView.setItems(observableList);
@@ -66,9 +67,61 @@ public class PollingManagementPopupController implements Initializable {
                         return new PollOptionCell();
                     }
                 });
-        popupOptionsListView.getItems().clear();
         popupOptionsListView.getItems().addAll(options);
     }
 
+    /**
+     * Add poll option cell.
+     */
+    public void addPollOptionCell() {
+        popupOptionsListView.getItems().add(new PollOption());
+        options = popupOptionsListView.getItems();
+    }
 
+    /**
+     * Open polling.
+     */
+    public void openPolling() {
+        if (!PollAndOptions.getCurrentPollAndOptions().equals(
+                PollAndOptions.getInEditingPollAndOptions())) {
+            //PollCommunication.createPoll();
+            for (PollOption pollOption : PollAndOptions.getInEditingPollAndOptions().getOptions()) {
+            //     PollCommunication.addOption();
+            }
+            //  PollCommunication.toggle();
+        }
+    }
+
+    /**
+     * Close poll.
+     */
+    public void closePoll() {
+        if (PollAndOptions.getCurrentPollAndOptions().getPoll().isOpen()) {
+            PollAndOptions.getCurrentPollAndOptions().getPoll().setOpen(false);
+            // PollCommunication.toggle();
+        }
+    }
+
+    /**
+     * Restart poll.
+     */
+    public void restartPoll() {
+        //PollCommunication.resetVotes();
+    }
+
+    /**
+     * New poll.
+     */
+    public void newPoll() {
+        PollAndOptions.setInEditingPollAndOptions(
+                new PollAndOptions(new Poll(), new ArrayList<PollOption>()));
+        resetListView();
+    }
+
+    private void resetListView() {
+        poll = PollAndOptions.getInEditingPollAndOptions().getPoll();
+        options = PollAndOptions.getInEditingPollAndOptions().getOptions();
+        questionTextTextArea.setText(poll.getQuestionText());
+        initializeList();
+    }
 }
