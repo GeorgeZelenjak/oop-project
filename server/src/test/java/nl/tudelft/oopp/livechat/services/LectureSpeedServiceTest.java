@@ -3,6 +3,7 @@ package nl.tudelft.oopp.livechat.services;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.entities.UserLectureSpeedTable;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.repositories.*;
 
 import org.junit.jupiter.api.*;
@@ -87,7 +88,8 @@ public class LectureSpeedServiceTest {
      */
     @Test
     void setUserLectureSpeedVoteInvalidSpeedTest() {
-        assertEquals(-1, lectureSpeedService.setUserLectureSpeedVote(uid1,
+        assertThrows(InvalidVoteException.class,
+            () -> lectureSpeedService.setUserLectureSpeedVote(uid1,
                 l1.getUuid(), "a lot faster"));
         assertNull(userLectureSpeedRepository.findByUserIdAndLectureId(uid1,
                 l1.getUuid()));
@@ -97,7 +99,8 @@ public class LectureSpeedServiceTest {
     void setUserLectureSpeedVoteUserNotRegisteredTest() {
         lectureRepository.save(l2);
 
-        assertEquals(-1, lectureSpeedService.setUserLectureSpeedVote(uid2,
+        assertThrows(UserNotInLectureException.class,
+            () -> lectureSpeedService.setUserLectureSpeedVote(uid2,
                 l2.getUuid(), "faster"));
         assertNull(userLectureSpeedRepository.findByUserIdAndLectureId(uid2,
                 l2.getUuid()));
@@ -107,7 +110,8 @@ public class LectureSpeedServiceTest {
     @Test
     void setUserLectureSpeedVoteNoLectureTest() {
         userRepository.save(user2);
-        assertEquals(-1, lectureSpeedService.setUserLectureSpeedVote(uid2,
+        assertThrows(LectureNotFoundException.class,
+            () -> lectureSpeedService.setUserLectureSpeedVote(uid2,
                 l2.getUuid(), "faster"));
         assertNull(userLectureSpeedRepository.findByUserIdAndLectureId(uid2,
                 l2.getUuid()));
@@ -120,7 +124,8 @@ public class LectureSpeedServiceTest {
         lectureRepository.save(l2);
         userRepository.save(user2);
 
-        assertEquals(-1, lectureSpeedService.setUserLectureSpeedVote(uid2,
+        assertThrows(LectureClosedException.class,
+            () -> lectureSpeedService.setUserLectureSpeedVote(uid2,
                 l2.getUuid(), "faster"));
         assertNull(userLectureSpeedRepository.findByUserIdAndLectureId(uid2,
                 l2.getUuid()));
@@ -131,7 +136,7 @@ public class LectureSpeedServiceTest {
     }
 
     @Test
-    void setUserLectureSpeedVoteFasterTest() {
+    void setUserLectureSpeedVoteFasterTest() throws LectureException, UserException {
         assertEquals(0, lectureSpeedService.setUserLectureSpeedVote(uid1,
                 l1.getUuid(), "faster"));
         UserLectureSpeedTable table = userLectureSpeedRepository.findByUserIdAndLectureId(uid1,
@@ -143,7 +148,7 @@ public class LectureSpeedServiceTest {
     }
 
     @Test
-    void setUserLectureSpeedVoteSlowerTest() {
+    void setUserLectureSpeedVoteSlowerTest() throws LectureException, UserException {
         assertEquals(0, lectureSpeedService.setUserLectureSpeedVote(uid1,
                 l1.getUuid(), "slower"));
         UserLectureSpeedTable table = userLectureSpeedRepository.findByUserIdAndLectureId(uid1,
@@ -155,7 +160,7 @@ public class LectureSpeedServiceTest {
     }
 
     @Test
-    void setUserLectureSpeedVoteResetFasterTest() {
+    void setUserLectureSpeedVoteResetFasterTest() throws LectureException, UserException {
         lectureSpeedService.setUserLectureSpeedVote(uid1, l1.getUuid(), "faster");
 
         assertEquals(0, lectureSpeedService.setUserLectureSpeedVote(uid1,
@@ -167,7 +172,7 @@ public class LectureSpeedServiceTest {
     }
 
     @Test
-    void setUserLectureSpeedVoteResetSlowerTest() {
+    void setUserLectureSpeedVoteResetSlowerTest() throws LectureException, UserException {
         lectureSpeedService.setUserLectureSpeedVote(uid1, l1.getUuid(), "slower");
 
         assertEquals(0, lectureSpeedService.setUserLectureSpeedVote(uid1,
@@ -179,7 +184,7 @@ public class LectureSpeedServiceTest {
     }
 
     @Test
-    void setUserLectureSpeedVoteToggleFasterTest() {
+    void setUserLectureSpeedVoteToggleFasterTest() throws LectureException, UserException {
         lectureSpeedService.setUserLectureSpeedVote(uid1, l1.getUuid(), "faster");
 
         assertEquals(0, lectureSpeedService.setUserLectureSpeedVote(uid1,
@@ -193,7 +198,7 @@ public class LectureSpeedServiceTest {
     }
 
     @Test
-    void setUserLectureSpeedVoteToggleSlowerTest() {
+    void setUserLectureSpeedVoteToggleSlowerTest() throws LectureException, UserException {
         lectureSpeedService.setUserLectureSpeedVote(uid1, l1.getUuid(), "slower");
         assertEquals(0, lectureSpeedService.setUserLectureSpeedVote(uid1,
                 l1.getUuid(), "faster"));
@@ -209,13 +214,14 @@ public class LectureSpeedServiceTest {
      * Tests for resetLectureSpeed.
      */
     @Test
-    void resetLectureSpeedLectureNullTest() {
+    void resetLectureSpeedLectureNullTest() throws LectureException, UserException {
         lectureRepository.save(l2);
         userRepository.save(user2);
         lectureSpeedService.setUserLectureSpeedVote(uid2, l2.getUuid(), "slower");
         lectureRepository.deleteById(l2.getUuid());
 
-        assertEquals(-1, lectureSpeedService.resetLectureSpeed(l2.getUuid(), l2.getModkey()));
+        assertThrows(LectureNotFoundException.class,
+            () -> lectureSpeedService.resetLectureSpeed(l2.getUuid(), l2.getModkey()));
         assertNotNull(userLectureSpeedRepository.findByUserIdAndLectureId(uid2, l2.getUuid()));
 
         userRepository.deleteById(uid2);
@@ -224,17 +230,19 @@ public class LectureSpeedServiceTest {
     }
 
     @Test
-    void resetLectureSpeedWrongModKeyTest() {
+    void resetLectureSpeedWrongModKeyTest() throws LectureException, UserException {
         lectureSpeedService.setUserLectureSpeedVote(uid1, l1.getUuid(), "faster");
 
-        assertEquals(-1, lectureSpeedService.resetLectureSpeed(l1.getUuid(), l2.getModkey()));
+        assertThrows(InvalidModkeyException.class,
+            () -> lectureSpeedService.resetLectureSpeed(l1.getUuid(), l2.getModkey()));
         assertNotNull(userLectureSpeedRepository.findByUserIdAndLectureId(uid1, l1.getUuid()));
 
         userLectureSpeedRepository.deleteAllByLectureId(l1.getUuid());
     }
 
     @Test
-    void resetLectureSpeedSuccessfulTest() {
+    void resetLectureSpeedSuccessfulTest() throws LectureException, UserException,
+            InvalidModkeyException {
         lectureSpeedService.setUserLectureSpeedVote(uid1, l1.getUuid(), "faster");
 
         assertEquals(0, lectureSpeedService.resetLectureSpeed(l1.getUuid(), l1.getModkey()));
@@ -248,11 +256,12 @@ public class LectureSpeedServiceTest {
 
     @Test
     void getVotesLectureNullTest() {
-        assertNull(lectureSpeedService.getVotes(l2.getUuid()));
+        assertThrows(LectureNotFoundException.class,
+            () -> lectureSpeedService.getVotes(l2.getUuid()));
     }
 
     @Test
-    void getVotesSuccessfulBothTest() {
+    void getVotesSuccessfulBothTest() throws LectureException, UserException {
         lectureSpeedService.setUserLectureSpeedVote(uid1, l1.getUuid(), "faster");
         user2.setLectureId(l1.getUuid());
         userRepository.save(user2);
@@ -269,7 +278,7 @@ public class LectureSpeedServiceTest {
     }
 
     @Test
-    void getVotesSuccessfulOnlyOneTest() {
+    void getVotesSuccessfulOnlyOneTest() throws LectureException, UserException {
         lectureSpeedService.setUserLectureSpeedVote(uid1, l1.getUuid(), "faster");
         user2.setLectureId(l1.getUuid());
         userRepository.save(user2);

@@ -130,9 +130,13 @@ class UserLectureVotingControllerTest {
 
     @Test
     public void voteOnLectureSpeedWrongUuid() throws Exception {
-        String result = vote("/api/vote/lectureSpeed?uid="
-                + uid1 + "&uuid=" + UUID.randomUUID(), "faster");
-        assertEquals("-1", result);
+        String result = mockMvc.perform(put("/api/vote/lectureSpeed?uid="
+                + uid1 + "&uuid=" + UUID.randomUUID())
+                .content("faster")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("This user is not in the specified lecture", result);
         assertTrue(speedRepository.findAllByLectureId(uuid).isEmpty());
     }
 
@@ -172,9 +176,9 @@ class UserLectureVotingControllerTest {
 
         String result = mockMvc.perform(delete(("/api/vote/resetLectureSpeedVote/"
                 + uuid + "/" + uuid)))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        assertEquals("-1", result);
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
         assertFalse(speedRepository.findAllByLectureId(uuid).isEmpty());
     }
 

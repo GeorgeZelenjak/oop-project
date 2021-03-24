@@ -2,6 +2,7 @@ package nl.tudelft.oopp.livechat.services;
 
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.UserLectureSpeedTable;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.UserLectureSpeedRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
@@ -50,11 +51,11 @@ public class LectureSpeedService {
      * @param uuid the id of the lecture
      * @return the votes for the lecture speed (first number is for faster, second for slower)
      */
-    public List<Integer> getVotes(UUID uuid) {
+    public List<Integer> getVotes(UUID uuid) throws LectureException {
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
 
         if (lecture == null) {
-            return null;
+            throw new LectureNotFoundException();
         }
 
         List<Integer> numberOfVotes = new ArrayList<>();
@@ -72,12 +73,9 @@ public class LectureSpeedService {
      * @return  0 if everything is fine
      *         -1 if unsuccessful
      */
-    public int setUserLectureSpeedVote(long uid, UUID uuid, String speed) {
+    public int setUserLectureSpeedVote(long uid, UUID uuid, String speed)
+            throws LectureException, UserException {
         LectureEntity lecture = validateRequest(uid, uuid, speed);
-        if (lecture == null) {
-            return -1;
-        }
-
         UserLectureSpeedTable userLectureSpeedTable = userLectureSpeedRepository
                 .findByUserIdAndLectureId(uid, uuid);
 
@@ -100,10 +98,13 @@ public class LectureSpeedService {
      * @param modKey the moderator key
      * @return  0 if everything reset successfully, -1 otherwise
      */
-    public int resetLectureSpeed(UUID uuid, UUID modKey) {
+    public int resetLectureSpeed(UUID uuid, UUID modKey)
+            throws LectureException, InvalidModkeyException {
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
-        if (lecture == null || !lecture.getModkey().equals(modKey)) {
-            return -1;
+        if (lecture == null) {
+            throw new LectureNotFoundException();
+        } else if (!lecture.getModkey().equals(modKey)) {
+            throw new InvalidModkeyException();
         }
         userLectureSpeedRepository.deleteAllByLectureId(uuid);
         lecture.resetSpeedCounts();
@@ -119,19 +120,22 @@ public class LectureSpeedService {
      * @return the lecture entity object iff the indication is slower/faster,
      *         the user is registered, the lecture exists and is open. Null otherwise
      */
-    private LectureEntity validateRequest(long uid, UUID uuid, String speed) {
+    private LectureEntity validateRequest(long uid, UUID uuid, String speed)
+            throws LectureException, UserException {
         //Check if valid speed type
         if (!speed.equals("faster") && !speed.equals("slower")) {
-            return null;
+            throw new InvalidVoteException();
         }
         //Check if user exists
         if (userRepository.getUserEntityByUidAndLectureId(uid, uuid) == null) {
-            return null;
+            throw new UserNotInLectureException();
         }
         //Checks if the lecture is open
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
-        if (lecture == null || !lectureRepository.findLectureEntityByUuid(uuid).isOpen()) {
-            return null;
+        if (lecture == null) {
+            throw new LectureNotFoundException();
+        } else if (!lectureRepository.findLectureEntityByUuid(uuid).isOpen()) {
+            throw new LectureClosedException();
         }
         return lecture;
     }
