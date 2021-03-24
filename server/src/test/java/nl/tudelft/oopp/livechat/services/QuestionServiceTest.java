@@ -26,7 +26,6 @@ import org.springframework.boot.test.context.SpringBootTest;
  *  to the repository, etc).
  */
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class QuestionServiceTest {
     private static LectureEntity l1;
     private static LectureEntity l2;
@@ -89,15 +88,40 @@ class QuestionServiceTest {
 
         q1 = new QuestionEntity(l1.getUuid(), "name?",
                 new Timestamp(System.currentTimeMillis()), uid1);
-        q2 = new QuestionEntity(l2.getUuid(), longText,
+        q2 = new QuestionEntity(l2.getUuid(), "How to get 10 for testing?",
                 new Timestamp(System.currentTimeMillis()), uid2);
-        q3 = new QuestionEntity(l3.getUuid(), "how old?",
+        q3 = new QuestionEntity(l3.getUuid(), "1 OR 1=1; DROP DATABASE;",
                 new Timestamp(System.currentTimeMillis()), uid3);
+    }
 
+    @BeforeEach
+    public void setUp() {
+        lectureRepository.save(l1);
+        userRepository.save(user1);
+        lectureRepository.save(l2);
+        userRepository.save(user2);
+
+        questionRepository.save(q1);
+        questionRepository.save(q2);
+    }
+
+    @AfterEach
+    public void clean() {
+        lectureRepository.deleteById(l1.getUuid());
+        lectureRepository.deleteById(l2.getUuid());
+
+        userRepository.deleteById(uid1);
+        userRepository.deleteById(uid2);
+
+        if (questionRepository.findById(q1.getId()).isPresent()) {
+            questionRepository.deleteById(q1.getId());
+        }
+        if (questionRepository.findById(q2.getId()).isPresent()) {
+            questionRepository.deleteById(q2.getId());
+        }
     }
 
     @Test
-    @Order(1)
     void constructorTest() {
         assertNotNull(questionService);
     }
@@ -106,10 +130,8 @@ class QuestionServiceTest {
      * Tests related to newQuestionEntity method.
      */
     @Test
-    @Order(2)
-    void newQuestionEntityTestAndNonStaticSetup() {
-        lectureRepository.save(l1);
-        userRepository.save(user1);
+    void newQuestionEntityTest() {
+        questionRepository.deleteById(q1.getId());
 
         long result = questionService.newQuestionEntity(q1);
         assertTrue(result > 0);
@@ -117,44 +139,52 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(3)
     void newQuestionEntityQuestionIsAskedTest() {
         long result = questionService.newQuestionEntity(q1);
         assertEquals(-1, result);
     }
 
     @Test
-    @Order(4)
     void newQuestionEntityLectureDoesNotExistTest() {
+        questionRepository.deleteById(q2.getId());
+
+        lectureRepository.deleteById(l2.getUuid());
+
         long result = questionService.newQuestionEntity(q2);
         assertEquals(-1, result);
+
+        lectureRepository.save(l2);
     }
 
     @Test
-    @Order(5)
     void newQuestionEntityLectureClosedTest() {
         l2.close();
         lectureRepository.save(l2);
-        long result = questionService.newQuestionEntity(q2);
-        assertEquals(-1, result);
+        questionRepository.deleteById(q2.getId());
+
+        assertEquals(-1, questionService.newQuestionEntity(q2));
 
         l2.reOpen();
         lectureRepository.save(l2);
     }
 
     @Test
-    @Order(6)
     void newQuestionEntityTooLongTextTest() {
-        userRepository.save(user2);
-        long result = questionService.newQuestionEntity(q2);
+        userRepository.save(user3);
+        lectureRepository.save(l3);
+        q3.setText(longText);
+
+        long result = questionService.newQuestionEntity(q3);
         assertEquals(-1, result);
 
-        q2.setText("How to get 10 for testing?");
+        q3.setText("1 OR 1=1; DROP DATABASE;");
+        userRepository.deleteById(uid3);
+        lectureRepository.deleteById(l3.getUuid());
     }
 
     @Test
-    @Order(7)
     void newQuestionEntityOwnerNotRegisteredTest() {
+        questionRepository.deleteById(q2.getId());
         userRepository.deleteById(uid2);
 
         long result = questionService.newQuestionEntity(q2);
@@ -163,64 +193,99 @@ class QuestionServiceTest {
         userRepository.save(user2);
     }
 
+    @Test
+    void newQuestionEntityOwnerNotAllowedTest() {
+        lectureRepository.save(l3);
+        user3.setAllowed(false);
+        userRepository.save(user3);
+
+        long result = questionService.newQuestionEntity(q3);
+        assertEquals(-2, result);
+
+        userRepository.deleteById(uid3);
+        user3.setAllowed(true);
+        lectureRepository.deleteById(l3.getUuid());
+    }
+
+    @Test
+    void newQuestionLectureNotStartedTest() {
+        l2.setStartTime(new Timestamp(System.currentTimeMillis() + 0xFFFFFFFFFL));
+        lectureRepository.save(l2);
+        q3.setLectureId(l2.getUuid());
+        q3.setOwnerId(uid2);
+
+        assertEquals(-1, questionService.newQuestionEntity(q3));
+
+        q3.setOwnerId(uid3);
+        q3.setLectureId(l3.getUuid());
+        l2.setStartTime(l1.getStartTime());
+    }
+
     /**
      * Tests related to getQuestionsByLectureId method.
      */
     @Test
-    @Order(8)
     void getQuestionsByLectureIdSuccessfulTest() {
         List<QuestionEntity> qs = questionService
-                .getQuestionsByLectureId(UUID.fromString(l1.getUuid().toString()));
+                .getQuestionsByLectureId(l1.getUuid());
         assertEquals(1, qs.size());
         assertEquals(q1, qs.get(0));
     }
 
     @Test
-    @Order(9)
     void getQuestionsByLectureIdNoQuestionsTest() {
-        List<QuestionEntity> qs = questionService
-                .getQuestionsByLectureId(UUID.fromString(l2.getUuid().toString()));
+        questionRepository.deleteById(q2.getId());
+
+        List<QuestionEntity> qs = questionService.getQuestionsByLectureId(l2.getUuid());
         assertEquals(0, qs.size());
     }
 
     @Test
-    @Order(10)
     void getQuestionsByLectureIdNoLectureTest() {
+        userRepository.save(user3);
+        q3.setLectureId(UUID.randomUUID());
+        questionRepository.save(q3);
+
         List<QuestionEntity> qs = questionService
-                .getQuestionsByLectureId(UUID.fromString(l3.getUuid().toString()));
+                .getQuestionsByLectureId(l3.getUuid());
         assertEquals(0, qs.size());
+
+        userRepository.deleteById(uid3);
+        questionRepository.deleteById(q3.getId());
+        q3.setLectureId(l3.getUuid());
     }
 
     /**
      * Tests related to deleteQuestion method.
      */
     @Test
-    @Order(11)
     void deleteQuestionNoQuestionTest() {
+        userRepository.save(user3);
+        lectureRepository.save(l3);
+
         assertEquals(-1, questionService.deleteQuestion(q3.getId(), uid3));
+
+        userRepository.deleteById(uid3);
+        lectureRepository.deleteById(l3.getUuid());
     }
 
     @Test
-    @Order(12)
     void deleteQuestionWrongUidTest() {
-        assertEquals(-1, questionService.deleteQuestion(q1.getId(), uid3));
+        assertEquals(-1, questionService.deleteQuestion(q1.getId(), uid2));
         assertTrue(questionRepository.findById(q1.getId()).isPresent());
     }
 
     @Test
-    @Order(13)
     void deleteQuestionNoLectureTest() {
-        questionRepository.save(q3);
-        userRepository.save(user3);
-        assertEquals(-1, questionService.deleteQuestion(q3.getId(), uid3));
-        assertTrue(questionRepository.findById(q3.getId()).isPresent());
+        lectureRepository.deleteById(l2.getUuid());
 
-        questionRepository.deleteById(q3.getId());
-        userRepository.deleteById(uid3);
+        assertEquals(-1, questionService.deleteQuestion(q2.getId(), uid2));
+        assertTrue(questionRepository.findById(q2.getId()).isPresent());
+
+        lectureRepository.save(l2);
     }
 
     @Test
-    @Order(14)
     void deleteQuestionLectureClosedTest() {
         l2.close();
         lectureRepository.save(l2);
@@ -234,7 +299,6 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(15)
     void deleteQuestionUserNotRegisteredTest() {
         lectureRepository.save(l3);
         questionRepository.save(q3);
@@ -247,8 +311,8 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(16)
     void deleteQuestionSuccessfulTest() {
+        userQuestionRepository.save(new UserQuestionTable(uid2, q2.getId()));
         assertEquals(0, questionService.deleteQuestion(q2.getId(), uid2));
         assertTrue(questionRepository.findById(q2.getId()).isEmpty());
         assertTrue(userQuestionRepository.getAllByQuestionId(q2.getId()).isEmpty());
@@ -259,15 +323,14 @@ class QuestionServiceTest {
      */
 
     @Test
-    @Order(17)
     void deleteModeratorQuestionNoQuestionTest() {
         assertEquals(-1, questionService.deleteModeratorQuestion(q3.getId(), l3.getModkey()));
     }
 
     @Test
-    @Order(18)
     void deleteModeratorQuestionNoLectureTest() {
         questionRepository.save(q3);
+
         assertEquals(-1, questionService.deleteModeratorQuestion(q3.getId(), l3.getModkey()));
         assertTrue(questionRepository.findById(q3.getId()).isPresent());
 
@@ -275,7 +338,6 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(19)
     void deleteModeratorQuestionLectureClosedTest() {
         l2.close();
         lectureRepository.save(l2);
@@ -289,15 +351,15 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(20)
     void deleteModeratorQuestionWrongModkeyTest() {
         assertEquals(-1, questionService.deleteModeratorQuestion(q2.getId(), l1.getModkey()));
         assertTrue(questionRepository.findById(q2.getId()).isPresent());
     }
 
     @Test
-    @Order(21)
     void deleteModeratorQuestionSuccessfulTest() {
+        userQuestionRepository.save(new UserQuestionTable(uid2, q2.getId()));
+
         assertEquals(0, questionService.deleteModeratorQuestion(q2.getId(), l2.getModkey()));
         assertTrue(questionRepository.findById(q2.getId()).isEmpty());
         assertTrue(userQuestionRepository.getAllByQuestionId(q2.getId()).isEmpty());
@@ -307,29 +369,26 @@ class QuestionServiceTest {
      * Tests related to editQuestion method.
      */
     @Test
-    @Order(22)
     void editQuestionNoQuestionTest() {
         assertEquals(-1, questionService.editQuestion(q3.getId(), l3.getModkey(), "bla bla", uid1));
     }
 
     @Test
-    @Order(23)
     void editQuestionNoLectureTest() {
         questionRepository.save(q3);
+
         assertEquals(-1, questionService.editQuestion(q3.getId(), l3.getModkey(), "foo", uid1));
 
         QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
         assertNotNull(q);
-        assertEquals("how old?", q.getText());
+        assertEquals("1 OR 1=1; DROP DATABASE;", q.getText());
         assertFalse(q.isEdited());
 
         questionRepository.deleteById(q3.getId());
     }
 
     @Test
-    @Order(24)
     void editQuestionWrongModkeyTest() {
-        questionRepository.save(q2);
         assertEquals(-1, questionService.editQuestion(q2.getId(), l1.getModkey(), "foo", uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
@@ -339,7 +398,6 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(25)
     void editQuestionTooLongTextTest() {
         assertEquals(-1, questionService.editQuestion(q2.getId(), l2.getModkey(), longText, uid2));
 
@@ -350,9 +408,9 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(28)
     void editQuestionNewOwnerNotRegisteredTest() {
         userRepository.deleteById(uid2);
+
         assertEquals(-1, questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
@@ -364,34 +422,35 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(29)
     void editQuestionSuccessfulTest() {
-        assertEquals(0, questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid2));
+        assertEquals(0, questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid1));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
         assertEquals("bar", q.getText());
-        assertEquals(uid2, q2.getOwnerId());
+        assertEquals(uid1, q.getOwnerId());
         assertTrue(q.isEdited());
 
-        q2 = q;
+        q2.setOwnerId(uid2);
+        q2.setText("How to get 10 for testing?");
     }
 
     /**
      * Tests related to upvote method.
      */
     @Test
-    @Order(30)
     void upvoteNoQuestionTest() {
         userRepository.save(user3);
 
         assertEquals(-1, questionService.upvote(q3.getId(), uid3));
+
+        userRepository.deleteById(uid3);
     }
 
     @Test
-    @Order(31)
     void upvoteNoLectureTest() {
         questionRepository.save(q3);
+
         assertEquals(-1, questionService.upvote(q3.getId(), uid3));
 
         QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
@@ -402,7 +461,6 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(32)
     void upvoteLectureClosedTest() {
         l2.close();
         lectureRepository.save(l2);
@@ -419,7 +477,6 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(33)
     void upvoteNotRegisteredTest() {
         userRepository.deleteById(uid2);
         assertEquals(-1, questionService.upvote(q2.getId(), uid2));
@@ -432,7 +489,6 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(34)
     void upvoteTest() {
         assertEquals(0, questionService.upvote(q2.getId(), uid2));
 
@@ -444,12 +500,13 @@ class QuestionServiceTest {
         UserQuestionTable match = new UserQuestionTable(uid2, q2.getId());
         assertTrue(table.contains(match));
 
-        q2 = q;
+        userQuestionRepository.deleteAllByQuestionId(q2.getId());
     }
 
     @Test
-    @Order(35)
     void unvoteTest() {
+        questionService.upvote(q2.getId(), uid2);
+
         assertEquals(0, questionService.upvote(q2.getId(), uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
@@ -460,14 +517,13 @@ class QuestionServiceTest {
         UserQuestionTable match = new UserQuestionTable(uid2, q2.getId());
         assertFalse(table.contains(match));
 
-        q2 = q;
+        userQuestionRepository.deleteAllByQuestionId(q2.getId());
     }
 
     /**
      * Tests related to answer method.
      */
     @Test
-    @Order(36)
     void answerNoQuestionTest() {
         lectureRepository.save(l3);
 
@@ -477,9 +533,9 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(37)
     void answerNoLectureTest() {
         questionRepository.save(q3);
+
         assertEquals(-1, questionService.answer(q3.getId(), l3.getModkey(), "42"));
 
         QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
@@ -492,7 +548,6 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(38)
     void answerTooLongTextTest() {
         assertEquals(-1, questionService.answer(q2.getId(), l2.getModkey(), longText));
 
@@ -504,7 +559,6 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(39)
     void answerWrongModKeyTest() {
         assertEquals(-1, questionService.answer(q2.getId(), l1.getModkey(), "42"));
 
@@ -516,7 +570,6 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(40)
     void answerSuccessfulTest() {
         assertEquals(0, questionService.answer(q2.getId(), l2.getModkey(), "42"));
 
@@ -525,17 +578,16 @@ class QuestionServiceTest {
         assertEquals("42", q.getAnswerText());
         assertNotNull(q.getAnswerTime());
         assertTrue(q.isAnswered());
-        q2 = q;
     }
 
     @Test
-    @Order(41)
-    void newQuestionLectureNotStartedTest() {
-        l2.setStartTime(new Timestamp(System.currentTimeMillis() + 0xFFFFFFFFFL));
-        lectureRepository.save(l2);
-        QuestionEntity q3 = new QuestionEntity(l2.getUuid(), "i'm in the past",
-                new Timestamp(0), 42L);
-        long result = questionService.newQuestionEntity(q3);
-        assertEquals(-1, result);
+    void answerSuccessfulNoAnswerTextTest() {
+        assertEquals(0, questionService.answer(q2.getId(), l2.getModkey(), ""));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals("", q.getAnswerText());
+        assertNotNull(q.getAnswerTime());
+        assertTrue(q.isAnswered());
     }
 }
