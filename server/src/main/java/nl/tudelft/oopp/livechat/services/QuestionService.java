@@ -37,8 +37,9 @@ public class QuestionService {
      * @param userRepository user repository
      * @param userQuestionRepository user-question repository
      */
-    public QuestionService(QuestionRepository questionRepository, LectureRepository lectureRepository,
-                           UserRepository userRepository, UserQuestionRepository userQuestionRepository) {
+    public QuestionService(QuestionRepository questionRepository,
+                           LectureRepository lectureRepository, UserRepository userRepository,
+                           UserQuestionRepository userQuestionRepository) {
         this.questionRepository = questionRepository;
         this.lectureRepository = lectureRepository;
         this.userRepository = userRepository;
@@ -104,21 +105,16 @@ public class QuestionService {
     public int deleteQuestion(long id, long personId)
             throws QuestionException, LectureException, UserException {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
-        //check if the question exists and the owner ids are equal
-        if (q == null) {
-            throw new QuestionNotFoundException();
-        } else if (q.getOwnerId() != personId) {
-            throw new QuestionWrongOwnerIdException();
-        }
-
-        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        //check if the lecture exists and is open
-        if (lecture == null) {
-            throw new LectureNotFoundException();
-        } else if (!lecture.isOpen()) {
+        //check if the question and lecture exist
+        LectureEntity lecture = validateQuestionAndFindLecture(q);
+        //check if the lecture is open
+        if (!lecture.isOpen()) {
             throw new LectureClosedException();
         }
-
+        //check if the ids match
+        if (q.getOwnerId() != personId) {
+            throw new QuestionWrongOwnerIdException();
+        }
         //check if the owner is registered
         if (userRepository.findById(personId).isEmpty()) {
             throw new UserNotRegisteredException();
@@ -137,17 +133,10 @@ public class QuestionService {
     public int deleteModeratorQuestion(long id, UUID modkey)
             throws QuestionException, LectureException, InvalidModkeyException {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
-        //check if the question exists
-        if (q == null) {
-            throw new QuestionNotFoundException();
-        }
-        LectureEntity l = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        //check if the lecture exists
-        if (l == null) {
-            throw new LectureNotFoundException();
-        }
+        //check if the question and lecture exist
+        LectureEntity lecture = validateQuestionAndFindLecture(q);
         //check if the modkey is correct
-        if (l.getModkey().equals(modkey)) {
+        if (lecture.getModkey().equals(modkey)) {
             questionRepository.deleteById(id);
             userQuestionRepository.deleteAllByQuestionId(id);
             return 0;
@@ -165,17 +154,9 @@ public class QuestionService {
      */
     public int editQuestion(long id, UUID moderatorKey, String newText, long newOwnerId)
             throws QuestionException, LectureException, UserException, InvalidModkeyException {
-        Optional<QuestionEntity> optQuestion = questionRepository.findById(id);
-        //check if the question exists
-        if (optQuestion.isEmpty()) {
-            throw new QuestionNotFoundException();
-        }
-        QuestionEntity q = optQuestion.get();
-        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        //check if the lecture exists
-        if (lecture == null) {
-            throw new LectureNotFoundException();
-        }
+        QuestionEntity q = questionRepository.findById(id).orElse(null);
+        //check if the question and lecture exist
+        LectureEntity lecture = validateQuestionAndFindLecture(q);
         //check if the modkey is correct
         if (lecture.getModkey().equals(moderatorKey)) {
             //check if the question text is not too long
@@ -206,26 +187,16 @@ public class QuestionService {
     public int upvote(long id, long userId)
             throws QuestionException, LectureException, UserException {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
-        //check if the question exists
-        if (q == null) {
-            throw new QuestionNotFoundException();
-        }
-
-        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        //check if the lecture exists
-        if (lecture == null) {
-            throw new LectureNotFoundException();
-        }
+        //check if the question and lecture exist
+        LectureEntity lecture = validateQuestionAndFindLecture(q);
         //check if the lecture is open
         if (!lecture.isOpen()) {
             throw new LectureClosedException();
         }
-
         //check if the user is registered
         if (userRepository.findById(userId).isEmpty()) {
             throw new UserNotRegisteredException();
         }
-
         List<UserQuestionTable> votersPair = userQuestionRepository.getAllByQuestionId(id);
         List<Long> voters = votersPair.stream()
                 .map(UserQuestionTable::getUserId)
@@ -252,18 +223,11 @@ public class QuestionService {
     public int answer(long id, UUID modkey, String answerText)
             throws QuestionException, LectureException, InvalidModkeyException {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
-        //check if the question exists
-        if (q == null) {
-            throw new QuestionNotFoundException();
-        }
+        //check if the question and lecture exist
+        LectureEntity lecture = validateQuestionAndFindLecture(q);
         //check if the answer text is not too long
         if (answerText.length() > 2000) {
             throw new QuestionNotModifiedException();
-        }
-        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        //check if the lecture exists
-        if (lecture == null) {
-            throw new LectureNotFoundException();
         }
         //check if the modkey is correct
         if (lecture.getModkey().equals(modkey)) {
@@ -278,10 +242,12 @@ public class QuestionService {
 
     private LectureEntity validateQuestionAndFindLecture(QuestionEntity q)
             throws QuestionException, LectureNotFoundException {
+        //check if the question exists
         if (q == null) {
             throw new QuestionNotFoundException();
         }
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
+        //check if the lecture exists
         if (lecture == null) {
             throw new LectureNotFoundException();
         }
