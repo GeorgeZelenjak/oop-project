@@ -10,6 +10,7 @@ import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.entities.UserQuestionTable;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
@@ -130,7 +131,7 @@ class QuestionServiceTest {
      * Tests related to newQuestionEntity method.
      */
     @Test
-    void newQuestionEntityTest() {
+    void newQuestionEntityTest() throws Exception {
         questionRepository.deleteById(q1.getId());
 
         long result = questionService.newQuestionEntity(q1);
@@ -140,8 +141,8 @@ class QuestionServiceTest {
 
     @Test
     void newQuestionEntityQuestionIsAskedTest() {
-        long result = questionService.newQuestionEntity(q1);
-        assertEquals(-1, result);
+        assertThrows(QuestionAlreadyExistsException.class, () ->
+                questionService.newQuestionEntity(q1));
     }
 
     @Test
@@ -150,8 +151,7 @@ class QuestionServiceTest {
 
         lectureRepository.deleteById(l2.getUuid());
 
-        long result = questionService.newQuestionEntity(q2);
-        assertEquals(-1, result);
+        assertThrows(LectureNotFoundException.class, () -> questionService.newQuestionEntity(q2));
 
         lectureRepository.save(l2);
     }
@@ -162,7 +162,7 @@ class QuestionServiceTest {
         lectureRepository.save(l2);
         questionRepository.deleteById(q2.getId());
 
-        assertEquals(-1, questionService.newQuestionEntity(q2));
+        assertThrows(LectureClosedException.class, () -> questionService.newQuestionEntity(q2));
 
         l2.reOpen();
         lectureRepository.save(l2);
@@ -174,8 +174,7 @@ class QuestionServiceTest {
         lectureRepository.save(l3);
         q3.setText(longText);
 
-        long result = questionService.newQuestionEntity(q3);
-        assertEquals(-1, result);
+        assertThrows(QuestionNotAskedException.class, () -> questionService.newQuestionEntity(q3));
 
         q3.setText("1 OR 1=1; DROP DATABASE;");
         userRepository.deleteById(uid3);
@@ -187,8 +186,7 @@ class QuestionServiceTest {
         questionRepository.deleteById(q2.getId());
         userRepository.deleteById(uid2);
 
-        long result = questionService.newQuestionEntity(q2);
-        assertEquals(-1, result);
+        assertThrows(UserNotRegisteredException.class, () -> questionService.newQuestionEntity(q2));
 
         userRepository.save(user2);
     }
@@ -199,8 +197,7 @@ class QuestionServiceTest {
         user3.setAllowed(false);
         userRepository.save(user3);
 
-        long result = questionService.newQuestionEntity(q3);
-        assertEquals(-2, result);
+        assertThrows(UserBannedException.class, () -> questionService.newQuestionEntity(q3));
 
         userRepository.deleteById(uid3);
         user3.setAllowed(true);
@@ -214,7 +211,7 @@ class QuestionServiceTest {
         q3.setLectureId(l2.getUuid());
         q3.setOwnerId(uid2);
 
-        assertEquals(-1, questionService.newQuestionEntity(q3));
+        assertThrows(LectureNotStartedException.class, () -> questionService.newQuestionEntity(q3));
 
         q3.setOwnerId(uid3);
         q3.setLectureId(l3.getUuid());
@@ -263,7 +260,8 @@ class QuestionServiceTest {
         userRepository.save(user3);
         lectureRepository.save(l3);
 
-        assertEquals(-1, questionService.deleteQuestion(q3.getId(), uid3));
+        assertThrows(QuestionNotFoundException.class, () ->
+                questionService.deleteQuestion(q3.getId(), uid3));
 
         userRepository.deleteById(uid3);
         lectureRepository.deleteById(l3.getUuid());
@@ -271,7 +269,8 @@ class QuestionServiceTest {
 
     @Test
     void deleteQuestionWrongUidTest() {
-        assertEquals(-1, questionService.deleteQuestion(q1.getId(), uid2));
+        assertThrows(QuestionWrongOwnerIdException.class, () ->
+                questionService.deleteQuestion(q1.getId(), uid2));
         assertTrue(questionRepository.findById(q1.getId()).isPresent());
     }
 
@@ -279,7 +278,8 @@ class QuestionServiceTest {
     void deleteQuestionNoLectureTest() {
         lectureRepository.deleteById(l2.getUuid());
 
-        assertEquals(-1, questionService.deleteQuestion(q2.getId(), uid2));
+        assertThrows(LectureNotFoundException.class, () ->
+                questionService.deleteQuestion(q2.getId(), uid2));
         assertTrue(questionRepository.findById(q2.getId()).isPresent());
 
         lectureRepository.save(l2);
@@ -291,7 +291,8 @@ class QuestionServiceTest {
         lectureRepository.save(l2);
         questionRepository.save(q2);
 
-        assertEquals(-1, questionService.deleteQuestion(q2.getId(), uid2));
+        assertThrows(LectureClosedException.class, () ->
+                questionService.deleteQuestion(q2.getId(), uid2));
         assertTrue(questionRepository.findById(q2.getId()).isPresent());
 
         l2.reOpen();
@@ -303,7 +304,8 @@ class QuestionServiceTest {
         lectureRepository.save(l3);
         questionRepository.save(q3);
 
-        assertEquals(-1, questionService.deleteQuestion(q3.getId(), uid3));
+        assertThrows(UserNotRegisteredException.class, () ->
+                questionService.deleteQuestion(q3.getId(), uid3));
         assertTrue(questionRepository.findById(q3.getId()).isPresent());
 
         lectureRepository.deleteById(l3.getUuid());
@@ -311,7 +313,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    void deleteQuestionSuccessfulTest() {
+    void deleteQuestionSuccessfulTest() throws Exception {
         userQuestionRepository.save(new UserQuestionTable(uid2, q2.getId()));
         assertEquals(0, questionService.deleteQuestion(q2.getId(), uid2));
         assertTrue(questionRepository.findById(q2.getId()).isEmpty());
@@ -324,40 +326,30 @@ class QuestionServiceTest {
 
     @Test
     void deleteModeratorQuestionNoQuestionTest() {
-        assertEquals(-1, questionService.deleteModeratorQuestion(q3.getId(), l3.getModkey()));
+        assertThrows(QuestionNotFoundException.class, () ->
+                questionService.deleteModeratorQuestion(q3.getId(), l3.getModkey()));
     }
 
     @Test
     void deleteModeratorQuestionNoLectureTest() {
         questionRepository.save(q3);
 
-        assertEquals(-1, questionService.deleteModeratorQuestion(q3.getId(), l3.getModkey()));
+        assertThrows(LectureNotFoundException.class, () ->
+                questionService.deleteModeratorQuestion(q3.getId(), l3.getModkey()));
         assertTrue(questionRepository.findById(q3.getId()).isPresent());
 
         questionRepository.deleteById(q3.getId());
     }
 
     @Test
-    void deleteModeratorQuestionLectureClosedTest() {
-        l2.close();
-        lectureRepository.save(l2);
-        questionRepository.save(q2);
-
-        assertEquals(-1, questionService.deleteModeratorQuestion(q2.getId(), l2.getModkey()));
-        assertTrue(questionRepository.findById(q2.getId()).isPresent());
-
-        l2.reOpen();
-        lectureRepository.save(l2);
-    }
-
-    @Test
     void deleteModeratorQuestionWrongModkeyTest() {
-        assertEquals(-1, questionService.deleteModeratorQuestion(q2.getId(), l1.getModkey()));
+        assertThrows(InvalidModkeyException.class, () ->
+                questionService.deleteModeratorQuestion(q2.getId(), l1.getModkey()));
         assertTrue(questionRepository.findById(q2.getId()).isPresent());
     }
 
     @Test
-    void deleteModeratorQuestionSuccessfulTest() {
+    void deleteModeratorQuestionSuccessfulTest() throws Exception {
         userQuestionRepository.save(new UserQuestionTable(uid2, q2.getId()));
 
         assertEquals(0, questionService.deleteModeratorQuestion(q2.getId(), l2.getModkey()));
@@ -370,14 +362,16 @@ class QuestionServiceTest {
      */
     @Test
     void editQuestionNoQuestionTest() {
-        assertEquals(-1, questionService.editQuestion(q3.getId(), l3.getModkey(), "bla bla", uid1));
+        assertThrows(QuestionNotFoundException.class, () ->
+                questionService.editQuestion(q3.getId(), l3.getModkey(), "bla bla", uid1));
     }
 
     @Test
     void editQuestionNoLectureTest() {
         questionRepository.save(q3);
 
-        assertEquals(-1, questionService.editQuestion(q3.getId(), l3.getModkey(), "foo", uid1));
+        assertThrows(LectureNotFoundException.class, () ->
+                questionService.editQuestion(q3.getId(), l3.getModkey(), "foo", uid1));
 
         QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
         assertNotNull(q);
@@ -389,7 +383,8 @@ class QuestionServiceTest {
 
     @Test
     void editQuestionWrongModkeyTest() {
-        assertEquals(-1, questionService.editQuestion(q2.getId(), l1.getModkey(), "foo", uid2));
+        assertThrows(InvalidModkeyException.class, () ->
+                questionService.editQuestion(q2.getId(), l1.getModkey(), "foo", uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -399,7 +394,8 @@ class QuestionServiceTest {
 
     @Test
     void editQuestionTooLongTextTest() {
-        assertEquals(-1, questionService.editQuestion(q2.getId(), l2.getModkey(), longText, uid2));
+        assertThrows(QuestionNotModifiedException.class, () ->
+                questionService.editQuestion(q2.getId(), l2.getModkey(), longText, uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -411,7 +407,8 @@ class QuestionServiceTest {
     void editQuestionNewOwnerNotRegisteredTest() {
         userRepository.deleteById(uid2);
 
-        assertEquals(-1, questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid2));
+        assertThrows(UserNotRegisteredException.class, () ->
+                questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -422,7 +419,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    void editQuestionSuccessfulTest() {
+    void editQuestionSuccessfulTest() throws Exception {
         assertEquals(0, questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid1));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
@@ -442,7 +439,8 @@ class QuestionServiceTest {
     void upvoteNoQuestionTest() {
         userRepository.save(user3);
 
-        assertEquals(-1, questionService.upvote(q3.getId(), uid3));
+        assertThrows(QuestionNotFoundException.class, () ->
+                questionService.upvote(q3.getId(), uid3));
 
         userRepository.deleteById(uid3);
     }
@@ -451,7 +449,8 @@ class QuestionServiceTest {
     void upvoteNoLectureTest() {
         questionRepository.save(q3);
 
-        assertEquals(-1, questionService.upvote(q3.getId(), uid3));
+        assertThrows(LectureNotFoundException.class, () ->
+                questionService.upvote(q3.getId(), uid3));
 
         QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
         assertNotNull(q);
@@ -466,7 +465,7 @@ class QuestionServiceTest {
         lectureRepository.save(l2);
         questionRepository.save(q2);
 
-        assertEquals(-1, questionService.upvote(q2.getId(), uid2));
+        assertThrows(LectureClosedException.class, () -> questionService.upvote(q2.getId(), uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -479,7 +478,8 @@ class QuestionServiceTest {
     @Test
     void upvoteNotRegisteredTest() {
         userRepository.deleteById(uid2);
-        assertEquals(-1, questionService.upvote(q2.getId(), uid2));
+        assertThrows(UserNotRegisteredException.class, () ->
+                questionService.upvote(q2.getId(), uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -489,7 +489,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    void upvoteTest() {
+    void upvoteTest() throws Exception {
         assertEquals(0, questionService.upvote(q2.getId(), uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
@@ -504,7 +504,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    void unvoteTest() {
+    void unvoteTest() throws Exception {
         questionService.upvote(q2.getId(), uid2);
 
         assertEquals(0, questionService.upvote(q2.getId(), uid2));
@@ -527,7 +527,8 @@ class QuestionServiceTest {
     void answerNoQuestionTest() {
         lectureRepository.save(l3);
 
-        assertEquals(-1, questionService.answer(q3.getId(), l3.getModkey(), "42"));
+        assertThrows(QuestionNotFoundException.class, () ->
+                questionService.answer(q3.getId(), l3.getModkey(), "42"));
 
         lectureRepository.deleteById(l3.getUuid());
     }
@@ -536,7 +537,8 @@ class QuestionServiceTest {
     void answerNoLectureTest() {
         questionRepository.save(q3);
 
-        assertEquals(-1, questionService.answer(q3.getId(), l3.getModkey(), "42"));
+        assertThrows(LectureNotFoundException.class, () ->
+                questionService.answer(q3.getId(), l3.getModkey(), "42"));
 
         QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
         assertNotNull(q);
@@ -549,7 +551,8 @@ class QuestionServiceTest {
 
     @Test
     void answerTooLongTextTest() {
-        assertEquals(-1, questionService.answer(q2.getId(), l2.getModkey(), longText));
+        assertThrows(QuestionNotModifiedException.class, () ->
+                questionService.answer(q2.getId(), l2.getModkey(), longText));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -560,7 +563,8 @@ class QuestionServiceTest {
 
     @Test
     void answerWrongModKeyTest() {
-        assertEquals(-1, questionService.answer(q2.getId(), l1.getModkey(), "42"));
+        assertThrows(InvalidModkeyException.class, () ->
+                questionService.answer(q2.getId(), l1.getModkey(), "42"));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -570,7 +574,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    void answerSuccessfulTest() {
+    void answerSuccessfulTest() throws Exception {
         assertEquals(0, questionService.answer(q2.getId(), l2.getModkey(), "42"));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
@@ -581,7 +585,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    void answerSuccessfulNoAnswerTextTest() {
+    void answerSuccessfulNoAnswerTextTest() throws Exception {
         assertEquals(0, questionService.answer(q2.getId(), l2.getModkey(), ""));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
