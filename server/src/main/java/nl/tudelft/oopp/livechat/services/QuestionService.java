@@ -81,7 +81,7 @@ public class QuestionService {
             return -1;
         }
 
-        Optional <UserEntity> user = userRepository.findById(q.getOwnerId());
+        Optional<UserEntity> user = userRepository.findById(q.getOwnerId());
 
         //check if the owner is registered
         if (user.isEmpty()) {
@@ -91,14 +91,16 @@ public class QuestionService {
 
         UserEntity userAsked = userRepository.getUserEntityByUid(q.getOwnerId());
         //TODO test this thing
-        if (lecture.getFrequency() != 0 && userAsked.getLastQuestion() != null && q.getTime().getTime() - userAsked.getLastQuestion().getTime() < lecture.getFrequency() * 1000) {
+        if (lecture.getFrequency() != 0 && userAsked.getLastQuestion() != null
+                && q.getTime().getTime() - userAsked.getLastQuestion().getTime()
+                < lecture.getFrequency() * 1000L) {
             return -1;
         }
-            userAsked.setLastQuestion(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
-            q.setOwnerName(userAsked.getUserName());
-            questionRepository.save(q);
-            userRepository.save(userAsked);
-            return q.getId();
+        userAsked.setLastQuestion(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
+        q.setOwnerName(userAsked.getUserName());
+        questionRepository.save(q);
+        userRepository.save(userAsked);
+        return q.getId();
 
 
     }

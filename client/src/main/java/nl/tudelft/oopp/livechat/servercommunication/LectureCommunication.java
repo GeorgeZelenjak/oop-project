@@ -50,7 +50,8 @@ public class LectureCommunication {
      * @param startTime the start time
      * @return Lecture which was created, null in case of errors
      */
-    public static Lecture createLecture(String name, String creatorName, Timestamp startTime, int frequency) {
+    public static Lecture createLecture(String name, String creatorName,
+                                        Timestamp startTime, int frequency) {
 
         //Encoding the lecture name into url compatible format
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);

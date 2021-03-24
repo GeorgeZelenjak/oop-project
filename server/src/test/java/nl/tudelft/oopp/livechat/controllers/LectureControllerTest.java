@@ -193,7 +193,8 @@ class LectureControllerTest {
 
     @Test
     void whenPostingReturns200Test() throws Exception {
-        this.mockMvc.perform(post("/api/newLecture?name=test2").content(createJson("Papa", time, 60)))
+        this.mockMvc.perform(post("/api/newLecture?name=test2")
+                .content(createJson("Papa", time, 60)))
                 .andExpect(status().isOk());
     }
 

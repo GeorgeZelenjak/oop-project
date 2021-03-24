@@ -128,7 +128,8 @@ public class CreateLectureController implements Initializable {
 
         Lecture lecture = LectureCommunication
                 .createLecture(enterLectureNameTextField.getText(),
-                enterYourNameTextField.getText(), new Timestamp(System.currentTimeMillis()), frequency);
+                enterYourNameTextField.getText(),
+                        new Timestamp(System.currentTimeMillis()), frequency);
 
         if (lecture == null) {
             return;
