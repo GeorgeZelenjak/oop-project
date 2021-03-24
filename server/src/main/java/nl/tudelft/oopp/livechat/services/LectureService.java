@@ -3,6 +3,7 @@ package nl.tudelft.oopp.livechat.services;
 import java.sql.Timestamp;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import org.springframework.stereotype.Service;
 
@@ -33,15 +34,15 @@ public class LectureService {
      * @param id the id of the lecture
      * @return the lecture if the id is found in the database
      */
-    public LectureEntity getLectureByIdNoModkey(UUID id) {
+    public LectureEntity getLectureByIdNoModkey(UUID id) throws LectureException {
         LectureEntity toSend =  lectureRepository.findLectureEntityByUuid(id);
         if (toSend == null) {
-            return null;
+            throw new LectureNotFoundException();
         }
 
         //check if lecture has started
         if (toSend.getStartTime().compareTo(new Timestamp(System.currentTimeMillis())) >= 0) {
-            return null;
+            throw new LectureNotStartedException();
         }
         toSend.setModkey(null);
         return toSend;
@@ -64,13 +65,13 @@ public class LectureService {
      * @param startTime   the start time
      * @return the new lecture entity
      */
-    public LectureEntity newLecture(String name, String creatorName, Timestamp startTime) {
+    public LectureEntity newLecture(String name, String creatorName, Timestamp startTime) throws LectureNotCreatedException {
         if (name.length() <= 255 && creatorName.length() <= 255) {
             LectureEntity n = new LectureEntity(name, creatorName, startTime);
             lectureRepository.save(n);
             return n;
         } else {
-            return null;
+            throw new LectureNotCreatedException();
         }
     }
 
@@ -79,15 +80,17 @@ public class LectureService {
      *
      * @param id     the id of the lecture
      * @param modkey the moderator key
-     * @return 0 if successful, -1 otherwise
+     * @return 0 if successful
      */
-    public int delete(UUID id, UUID modkey) {
+    public int delete(UUID id, UUID modkey) throws Exception {
         LectureEntity toDelete = getLectureById(id);
-        if (toDelete != null && toDelete.getModkey().equals(modkey)) {
+        if (toDelete == null) {
+            throw new LectureNotFoundException();
+        } else if (toDelete.getModkey().equals(modkey)) {
             lectureRepository.deleteById(id);
             return 0;
         }
-        return -1;
+        throw new InvalidModkeyException();
     }
 
     /**
@@ -97,14 +100,16 @@ public class LectureService {
      * @param modkey the modkey
      * @return 0 if successful, -1 otherwise
      */
-    public int close(UUID id, UUID modkey) {
+    public int close(UUID id, UUID modkey) throws LectureException, InvalidModkeyException {
         LectureEntity toClose = getLectureById(id);
-        if (toClose != null && toClose.getModkey().equals(modkey)) {
+        if (toClose == null) {
+            throw new LectureNotFoundException();
+        } else if (toClose.getModkey().equals(modkey)) {
             toClose.close();
             lectureRepository.save(toClose);
             return 0;
         }
-        return -1;
+        throw new InvalidModkeyException();
     }
 
     /**
@@ -114,11 +119,13 @@ public class LectureService {
      * @param modkey the moderator key
      * @return 0 if successful, -1 otherwise
      */
-    public int validateModerator(UUID id, UUID modkey) {
+    public int validateModerator(UUID id, UUID modkey) throws LectureException, InvalidModkeyException{
         LectureEntity l = getLectureById(id);
-        if (l != null && l.getModkey().equals(modkey)) {
+        if (l == null) {
+            throw new LectureNotFoundException();
+        } else if (l.getModkey().equals(modkey)) {
             return 0;
         }
-        return -1;
+        throw new InvalidModkeyException();
     }
 }

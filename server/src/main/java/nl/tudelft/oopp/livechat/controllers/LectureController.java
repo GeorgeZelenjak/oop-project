@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
+import nl.tudelft.oopp.livechat.exceptions.InvalidModkeyException;
+import nl.tudelft.oopp.livechat.exceptions.LectureException;
+import nl.tudelft.oopp.livechat.exceptions.LectureNotFoundException;
 import nl.tudelft.oopp.livechat.services.LectureService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +47,7 @@ public class LectureController {
      * @return selected lecture
      */
     @GetMapping("/get/{id}")
-    public LectureEntity getLecturesByID(@PathVariable("id") UUID id) {
+    public LectureEntity getLecturesByID(@PathVariable("id") UUID id) throws LectureException {
         return service.getLectureByIdNoModkey(id);
     }
 
@@ -58,7 +61,7 @@ public class LectureController {
      */
     @PostMapping("/newLecture")
     public LectureEntity newLecture(@RequestParam String name,
-                                    @RequestBody String info) throws JsonProcessingException {
+                                    @RequestBody String info) throws JsonProcessingException, LectureException {
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z"));
         JsonNode jsonNode = objectMapper.readTree(info);
         String creatorName = jsonNode.get("creatorName").asText();
@@ -74,7 +77,7 @@ public class LectureController {
      * @return 0 if the lecture has been deleted successfully, -1 if not
      */
     @DeleteMapping("/delete/{id}/{modkey}")
-    public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) {
+    public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) throws Exception {
         return service.delete(id, modkey);
     }
 
@@ -85,7 +88,7 @@ public class LectureController {
      * @return 0 if the lecture has been closed successfully, -1 if not
      */
     @PutMapping("/close/{lid}/{modkey}")
-    public int close(@PathVariable("lid") UUID lectureId, @PathVariable("modkey") UUID modkey) {
+    public int close(@PathVariable("lid") UUID lectureId, @PathVariable("modkey") UUID modkey) throws LectureException, InvalidModkeyException {
         return service.close(lectureId, modkey);
     }
 
@@ -96,7 +99,7 @@ public class LectureController {
      * @return 0 if moderator was validated successfully, -1 if not
      */
     @GetMapping("/validate/{id}/{modkey}")
-    public int validate(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) {
+    public int validate(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) throws LectureException, InvalidModkeyException {
         return service.validateModerator(id, modkey);
     }
 

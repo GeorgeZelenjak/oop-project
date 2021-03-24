@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import java.net.http.HttpResponse;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -186,8 +188,12 @@ class LectureControllerTest {
         createLecture("/api/newLecture?name=test1", createJson("mops", time));
 
         String uuid = UUID.randomUUID().toString();
-        String m = getLecture("/api/get/" + uuid);
-        assertEquals("", m);
+        String r = this.mockMvc.perform(get("/api/get/" + uuid))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+        assertEquals("Lecture not found", r);
     }
 
     @Test
@@ -219,11 +225,20 @@ class LectureControllerTest {
         int m = deleteLecture("/api/delete/" + uuid + "/" + modkey);
         assertEquals(0, m);
 
-        String lecture = getLecture("/api/get/" + uuid);
-        assertEquals("", lecture);
+        String r = this.mockMvc.perform(get("/api/get/" + uuid))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+        assertEquals("Lecture not found", r);
 
-        m = deleteLecture("/api/delete/" + uuid + "/" + modkey);
-        assertEquals(-1, m);
+        String result = this.mockMvc.perform(delete("/api/delete/" + uuid + "/" + UUID.randomUUID().toString()))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+
+        assertEquals("Lecture not found", result);
     }
 
     @Test
@@ -233,8 +248,13 @@ class LectureControllerTest {
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
 
-        int m = deleteLecture("/api/delete/" + uuid + "/" + UUID.randomUUID().toString());
-        assertEquals(-1, m);
+        String result = this.mockMvc.perform(delete("/api/delete/" + uuid + "/" + UUID.randomUUID().toString()))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+
+        assertEquals("Wrong modkey, don't do this", result);
 
         String lecture = getLecture("/api/get/" + uuid);
         assertNotEquals("", lecture);
@@ -258,8 +278,12 @@ class LectureControllerTest {
         String uuid = lectureEntity.getUuid().toString();
         String modkey = UUID.randomUUID().toString();
 
-        int m = validateModkey("/api/validate/" + uuid + "/" + modkey);
-        assertEquals(-1, m);
+        String result = this.mockMvc.perform(get("/api/validate/" + uuid + "/" + modkey))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
     }
 
     @Test
@@ -271,8 +295,12 @@ class LectureControllerTest {
 
         deleteLecture("/api/delete/" + uuid + "/" + modkey);
 
-        int m = validateModkey("/api/validate/" + uuid + "/" + modkey);
-        assertEquals(-1, m);
+        String result = this.mockMvc.perform(get("/api/validate/" + uuid + "/" + modkey))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+        assertEquals("Lecture not found", result);
     }
 
     @Test
@@ -298,8 +326,12 @@ class LectureControllerTest {
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
 
-        int m = closeLecture("/api/close/" + uuid + "/" + UUID.randomUUID().toString());
-        assertEquals(-1, m);
+        String result = this.mockMvc.perform(put("/api/close/" + uuid + "/" + UUID.randomUUID().toString()))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
 
         String lecture = getLecture("/api/get/" + uuid);
         LectureEntity l = objectMapper.readValue(lecture, LectureEntity.class);
@@ -315,9 +347,12 @@ class LectureControllerTest {
 
         deleteLecture("/api/delete/" + uuid + "/" + lectureEntity.getModkey().toString());
 
-        int m = closeLecture("/api/close/" + uuid
-                + "/" + lectureEntity.getModkey().toString());
-        assertEquals(-1, m);
+        String result = this.mockMvc.perform(put("/api/close/" + uuid
+                + "/" + lectureEntity.getModkey().toString()))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse().getErrorMessage();
+        assertEquals("Lecture not found", result);
     }
 
     @Test

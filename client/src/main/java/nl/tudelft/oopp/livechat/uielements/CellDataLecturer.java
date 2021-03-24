@@ -1,37 +1,28 @@
 package nl.tudelft.oopp.livechat.uielements;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.Tooltip;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Font;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
-import java.io.IOException;
-import java.net.URL;
-import java.sql.Timestamp;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
 import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
-import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
+
+import java.io.IOException;
+import java.net.URL;
+import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
+import java.util.ResourceBundle;
 
 /**
  * Class for Cell data for the lecturer.
