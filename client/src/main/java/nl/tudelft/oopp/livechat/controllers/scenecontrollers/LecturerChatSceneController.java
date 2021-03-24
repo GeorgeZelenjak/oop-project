@@ -373,6 +373,8 @@ public class LecturerChatSceneController implements Initializable {
                 != slowerVotesPercentLine.getStartX());
     }
 
-
+    public void popupPollingManagement() {
+        NavigationController.getCurrentController().popupPollingManagement();
+    }
 }
 
