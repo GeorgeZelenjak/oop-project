@@ -55,6 +55,13 @@
         -fx-padding: 0px 0px 0px 0px;
     }
 
+    .mainSceneButtonCopy {
+        -fx-background-color: #46a20b;
+    }
+
+    .mainSceneButtonCopy:hover {
+        -fx-background-color: #388108;
+    }
 
     .headerText{
         -fx-font-size: 36px;
@@ -81,6 +88,10 @@
     .deleteButton{
         -fx-graphic: url(/images/trash.png);
         -fx-background-color: Transparent;
+    }
+
+    .deleteButton:hover {
+        -fx-background-color: rgb(212,212,212);
     }
 
     .markAsAnsweredButton {
@@ -136,9 +147,9 @@
     }
 
     .upvoteButton {
-        -fx-background-color: lightgreen;
+        -fx-background-color: rgb(212,212,212);
         -fx-background-radius: 10px;
-        -fx-font: 10px Arial;
+        -fx-font: 18px Arial;
         -fx-text-fill: black;
     }
 
@@ -165,6 +176,8 @@
         -fx-graphic: url(/images/reply.png);
         -fx-background-color: Transparent;
     }
+
+
 
 
 

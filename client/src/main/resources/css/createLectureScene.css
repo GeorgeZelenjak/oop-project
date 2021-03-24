@@ -1,12 +1,10 @@
     .createLectureButton {
-
         -fx-background-color: -fx-blue;
         -fx-background-radius: 7px;
         -fx-font-size: 36px;
         -fx-text-fill: -fx-white;
         -fx-pref-width: 455.25px;
         -fx-pref-height: 50.25px;
-
     }
 
     .createLectureButton:hover{

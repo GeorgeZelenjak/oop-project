@@ -208,6 +208,5 @@ public class CellDataLecturer implements Initializable {
             isAnsweredButton.setDisable(true);
             isAnsweredButton.setVisible(false);
         }
-
     }
 }

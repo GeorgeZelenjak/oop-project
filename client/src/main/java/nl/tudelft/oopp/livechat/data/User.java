@@ -19,8 +19,36 @@ public class User {
     @Expose(serialize = false)
     private static Set<Long> askedQuestionIds = new HashSet<>();
 
+    @Expose(serialize = false)
+    private static Set<Long> upvotedQuestionIds = new HashSet<>();
+
     private User() {
 
+    }
+
+    /**
+     * Gets upvoted question ids.
+     * @return the upvoted question ids
+     */
+    public static Set<Long> getUpvotedQuestionIds() {
+        return upvotedQuestionIds;
+    }
+
+    /**
+     * Adds upvoted question to the set.
+     * @param qid the qid
+     * @return the boolean
+     */
+    public static boolean addUpvotedQuestionId(Long qid) {
+        return upvotedQuestionIds.add(qid);
+    }
+
+    /**
+     * Deletes upvoted question id from the set.
+     * @param questionId the question id to be deleted
+     */
+    public static void deleteUpvotedQuestionId(Long questionId) {
+        upvotedQuestionIds.remove(questionId);
     }
 
     /**
@@ -129,5 +157,6 @@ public class User {
     public static void deleteQuestionId(Long questionId) {
         askedQuestionIds.remove(questionId);
     }
+
 
 }

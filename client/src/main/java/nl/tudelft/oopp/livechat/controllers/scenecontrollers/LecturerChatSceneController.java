@@ -74,7 +74,7 @@ public class LecturerChatSceneController implements Initializable {
     private Button goToUserManualButton;
 
     @FXML
-    private Label showText;
+    private Label showLabel;
 
     @FXML
     private Pane pollingBackground;
@@ -141,6 +141,9 @@ public class LecturerChatSceneController implements Initializable {
 
     @FXML
     private Button leaveLecture;
+
+    @FXML
+    private Label sortByLabel;
 
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
@@ -332,44 +335,72 @@ public class LecturerChatSceneController implements Initializable {
      * Lecturer mode.
      */
     public void lecturerMode() {
-        this.goToUserManualButton.setDisable(!this.goToUserManualButton.isDisabled());
-        this.goToUserManualButton.setVisible(!this.goToUserManualButton.isVisible());
-        this.unansweredCheckBox.setDisable((!this.unansweredCheckBox.isDisabled()));
-        this.sortByVotesCheckBox.setDisable(!this.sortByVotesCheckBox.isDisabled());
-        this.sortByVotesCheckBox.setVisible(!this.sortByVotesCheckBox.isVisible());
-        this.goToSettingsButton.setDisable(!this.goToSettingsButton.isDisabled());
-        this.sortByTimeCheckBox.setDisable(!this.sortByTimeCheckBox.isDisabled());
-        this.unansweredCheckBox.setVisible(!this.unansweredCheckBox.isVisible());
-        this.goToSettingsButton.setVisible(!this.goToSettingsButton.isVisible());
-        this.sortByTimeCheckBox.setVisible(!this.sortByTimeCheckBox.isVisible());
-        this.pollingBackground.setDisable(!this.pollingBackground.isDisabled());
-        this.pollingBackground.setVisible(!this.pollingBackground.isVisible());
-        this.answeredCheckBox.setDisable(!this.answeredCheckBox.isDisabled());
-        this.answeredCheckBox.setVisible(!this.answeredCheckBox.isVisible());
-        this.speedBackground.setDisable(!this.speedBackground.isDisabled());
-        this.speedBackground.setVisible(!this.speedBackground.isVisible());
-        this.reopenPolling.setDisable(!this.reopenPolling.isDisabled());
-        this.createPolling.setDisable(!this.createPolling.isDisabled());
-        this.reopenPolling.setVisible(!this.reopenPolling.isVisible());
-        this.createPolling.setVisible(!this.createPolling.isVisible());
-        this.participants.setDisable(!this.participants.isDisabled());
-        this.viewAnswered.setDisable(!this.viewAnswered.isDisabled());
-        this.participants.setVisible(!this.participants.isVisible());
-        this.viewAnswered.setVisible(!this.viewAnswered.isVisible());
-        this.pollingText.setDisable(!this.pollingText.isDisabled());
-        this.pollingText.setVisible(!this.pollingText.isVisible());
-        this.createQuiz.setDisable(!this.createQuiz.isDisabled());
-        this.sortByText.setDisable(!this.sortByText.isDisabled());
         this.lectureLog.setDisable(!this.lectureLog.isDisabled());
         this.lectureLog.setVisible(!this.lectureLog.isVisible());
+
+        this.exportQA.setDisable(!this.exportQA.isDisabled());
+        this.exportQA.setVisible(!this.exportQA.isVisible());
+
+        this.sortByLabel.setDisable(!this.sortByLabel.isDisabled());
+        this.sortByLabel.setVisible(!this.sortByLabel.isVisible());
+
+        this.goToUserManualButton.setDisable(!this.goToUserManualButton.isDisabled());
+        this.goToUserManualButton.setVisible(!this.goToUserManualButton.isVisible());
+
+        this.sortByVotesCheckBox.setDisable(!this.sortByVotesCheckBox.isDisabled());
+        this.sortByVotesCheckBox.setVisible(!this.sortByVotesCheckBox.isVisible());
+
+        this.sortByTimeCheckBox.setDisable(!this.sortByTimeCheckBox.isDisabled());
+        this.sortByTimeCheckBox.setVisible(!this.sortByTimeCheckBox.isVisible());
+
+        this.unansweredCheckBox.setDisable((!this.unansweredCheckBox.isDisabled()));
+        this.unansweredCheckBox.setVisible(!this.unansweredCheckBox.isVisible());
+
+        this.goToSettingsButton.setDisable(!this.goToSettingsButton.isDisabled());
+        this.goToSettingsButton.setVisible(!this.goToSettingsButton.isVisible());
+
+        this.pollingBackground.setDisable(!this.pollingBackground.isDisabled());
+        this.pollingBackground.setVisible(!this.pollingBackground.isVisible());
+
+        this.answeredCheckBox.setDisable(!this.answeredCheckBox.isDisabled());
+        this.answeredCheckBox.setVisible(!this.answeredCheckBox.isVisible());
+
+        this.speedBackground.setDisable(!this.speedBackground.isDisabled());
+        this.speedBackground.setVisible(!this.speedBackground.isVisible());
+
+        this.reopenPolling.setDisable(!this.reopenPolling.isDisabled());
+        this.reopenPolling.setVisible(!this.reopenPolling.isVisible());
+
+        this.createPolling.setDisable(!this.createPolling.isDisabled());
+        this.createPolling.setVisible(!this.createPolling.isVisible());
+
+        this.participants.setDisable(!this.participants.isDisabled());
+        this.participants.setVisible(!this.participants.isVisible());
+
+        this.viewAnswered.setDisable(!this.viewAnswered.isDisabled());
+        this.viewAnswered.setVisible(!this.viewAnswered.isVisible());
+
+        this.pollingText.setDisable(!this.pollingText.isDisabled());
+        this.pollingText.setVisible(!this.pollingText.isVisible());
+
+        this.createQuiz.setDisable(!this.createQuiz.isDisabled());
         this.createQuiz.setVisible(!this.createQuiz.isVisible());
+
+        this.lectureLog.setDisable(!this.lectureLog.isDisabled());
+        this.lectureLog.setVisible(!this.lectureLog.isVisible());
+
+        this.sortByText.setDisable(!this.sortByText.isDisabled());
         this.sortByText.setVisible(!this.sortByText.isVisible());
+
         this.speedText.setDisable(!this.speedText.isDisabled());
         this.speedText.setVisible(!this.speedText.isVisible());
-        this.showText.setDisable(!this.showText.isDisabled());
-        this.showText.setVisible(!this.showText.isVisible());
+
+        this.showLabel.setDisable(!this.showLabel.isDisabled());
+        this.showLabel.setVisible(!this.showLabel.isVisible());
+
         this.copyKey.setDisable(!this.copyKey.isDisabled());
         this.copyKey.setVisible(!this.copyKey.isVisible());
+
         this.copyId.setDisable(!this.copyId.isDisabled());
         this.copyId.setVisible(!this.copyId.isVisible());
     }

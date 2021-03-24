@@ -7,17 +7,17 @@
 
 <AnchorPane fx:id="questionBoxAnchorPane" prefWidth="590.0" styleClass="mainSceneButton" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-      <Text layoutX="14.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asked By: ">
+      <Text layoutX="60.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asked By: ">
          <font>
             <Font name="Arial Bold" size="10.0" />
          </font>
       </Text>
-      <Text fx:id="questionOwner" layoutX="66.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="103.0">
+      <Text fx:id="questionOwner" layoutX="112.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="103.0">
          <font>
             <Font name="Arial" size="10.0" />
          </font>
       </Text>
-      <Text fx:id="dateStamp" layoutX="235.0" layoutY="12.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="163.44822692871094">
+      <Text fx:id="dateStamp" layoutX="251.0" layoutY="12.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="163.44822692871094">
          <font>
             <Font name="Arial Italic" size="10.0" />
          </font>
@@ -43,7 +43,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Label>
-      <Text fx:id="numberOfUpvotes" fill="#cf0a49" layoutX="453.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1000" textAlignment="CENTER" wrappingWidth="31.0">
+      <Text fx:id="numberOfUpvotes" fill="#cf0a49" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1000" textAlignment="CENTER" wrappingWidth="31.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
@@ -56,7 +56,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <FlowPane hgap="15.0" layoutX="23.0" layoutY="32.0" prefWidth="380.0">
+      <FlowPane hgap="15.0" layoutX="55.0" layoutY="34.0" prefWidth="380.0">
          <children>
               <Text fx:id="questionText" strokeType="OUTSIDE" strokeWidth="0.0" text="question" wrappingWidth="369.00682830810547" />
             <Text fx:id="answerText" fill="#07b20d" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="370.107421875">
