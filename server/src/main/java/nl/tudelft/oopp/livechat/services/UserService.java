@@ -155,9 +155,6 @@ public class UserService {
             return -1;
         }
         List<UserEntity> toBan = userRepository.findAllByIp(user.getIp());
-        if (toBan == null || toBan.size() == 0) {
-            return -1;
-        }
         List<LectureEntity> lectureIn = toBan.stream()
                 .map((u) -> lectureRepository.findLectureEntityByUuid(u.getLectureId()))
                 .filter(LectureEntity::isOpen)

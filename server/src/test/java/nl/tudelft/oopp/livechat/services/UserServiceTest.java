@@ -11,7 +11,6 @@ import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
 
-import org.h2.engine.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +47,8 @@ class UserServiceTest {
     private static LectureEntity lecture1;
     private static LectureEntity lecture2;
     private static final UUID incorrectModKey = UUID.randomUUID();
+    private static final String localhost = "127.0.0.1";
+    private static final String ip = "192.168.1.1";
 
 
     @Autowired
@@ -133,8 +134,8 @@ class UserServiceTest {
         questionRepository.save(q);
         questionRepository.save(q1);
         questionRepository.save(q2);
-        userService.newUser(user1, "192.168.1.1");
-        userService.newUser(user2, "192.168.1.1");
+        userService.newUser(user1, ip);
+        userService.newUser(user2, ip);
     }
 
     @AfterEach
@@ -157,7 +158,7 @@ class UserServiceTest {
 
     @Test
     public void newUserSuccessfulTest() {
-        int result = userService.newUser(user, "127.0.0.1");
+        int result = userService.newUser(user, localhost);
         assertEquals(0, result);
         assertNotNull(userRepository.getUserEntityByUid(uid));
 
@@ -166,7 +167,7 @@ class UserServiceTest {
 
     @Test
     public void newUserUserNullTest() {
-        int result = userService.newUser(null, "127.0.0.1");
+        int result = userService.newUser(null, localhost);
         assertEquals(-1, result);
     }
 
@@ -179,7 +180,7 @@ class UserServiceTest {
     @Test
     public void newUserInvalidUidTest() {
         user.setUid(420);
-        int result = userService.newUser(user, "127.0.0.1");
+        int result = userService.newUser(user, localhost);
         assertEquals(-1, result);
 
         //set back for other tests
@@ -276,7 +277,7 @@ class UserServiceTest {
 
     @Test
     public void banByIdSuccessfulTest() {
-        int result = userService.newUser(user, "127.0.0.1");
+        int result = userService.newUser(user, localhost);
         assertEquals(0, result);
         result = userService.banById(34, q.getId(), lecture.getModkey(), 10);
         assertEquals(0, result);
@@ -337,8 +338,14 @@ class UserServiceTest {
         int result = userService.banById(34, q2.getId(), lecture2.getModkey(), 5);
         assertEquals(0, result);
 
+        //check if the question for which the user was banned is deleted
         assertNull(questionRepository.findById(q2.getId()).orElse(null));
+
+        //check if the question-user pairs (voting) for the question
+        //  for which the user was banned are deleted
         assertTrue(userQuestionRepository.getAllByQuestionId(q2.getId()).isEmpty());
+
+        //check that all the questions have their owner name modified and are not deleted
         List<QuestionEntity> qs = questionRepository.findAllByOwnerId(uid2);
         assertTrue(qs.size() > 0);
         assertTrue(qs.get(0).getOwnerName().contains(" (banned)"));
@@ -352,7 +359,7 @@ class UserServiceTest {
 
     @Test
     public void banByIdSuccessfulRepositoryChangesAfterTest() throws InterruptedException {
-        //change the second user to be the owner of the first question
+        //change the second user to be the owner of the zeroth question
         q.setOwnerName(user2.getUserName());
         q.setOwnerId(user2.getUid());
         questionRepository.save(q);
@@ -361,8 +368,10 @@ class UserServiceTest {
         int result = userService.banById(34, q2.getId(), lecture2.getModkey(), 5);
         assertEquals(0, result);
 
+        //wait for the ban to end
         Thread.sleep(6000);
 
+        //check that all the questions of user2 have their owner name changed back
         List<QuestionEntity> qs = questionRepository.findAllByOwnerId(uid2);
         assertTrue(qs.size() > 0);
         assertFalse(qs.get(0).getOwnerName().contains(" (banned)"));
@@ -375,22 +384,160 @@ class UserServiceTest {
     }
 
     @Test
-    public void banByIpSuccessfulTest() {
+    public void banByIpNoQuestionTest() {
+        questionRepository.deleteById(q1.getId());
+
         int result = userService.banByIp(34, q1.getId(), lecture1.getModkey(), 10);
-        assertEquals(0, result);
-        List<UserEntity> banned = userRepository.findAllByIp("192.168.1.1");
-        banned.forEach((u) -> assertFalse(u.isAllowed()));
+        assertEquals(-1, result);
+        List<UserEntity> banned = userRepository.findAllByIp(ip);
+        banned.forEach((u) -> assertTrue(u.isAllowed()));
+
+        questionRepository.save(q1);
     }
 
     @Test
-    public void banByIpUnsuccessfulTest() {
-        userService.newUser(user, "127.0.0.1");
-        int result = userService.banByIp(34, q.getId(), incorrectModKey, 10);
-        assertEquals(-2, result);
-        List<UserEntity> banned = userRepository.findAllByIp("127.0.0.1");
+    public void banByIpNoOwnerTest() {
+        userRepository.deleteById(uid1);
+
+        int result = userService.banByIp(34, q1.getId(), lecture1.getModkey(), 10);
+        assertEquals(-1, result);
+        List<UserEntity> banned = userRepository.findAllByIp(ip);
         banned.forEach((u) -> assertTrue(u.isAllowed()));
 
-        userRepository.deleteById(uid);
+        userRepository.save(user1);
+    }
+
+    @Test
+    public void banByIpClosedLecturesTest() {
+        lecture1.close();
+        lecture2.close();
+        lectureRepository.save(lecture1);
+        lectureRepository.save(lecture2);
+
+        int result = userService.banByIp(34, q1.getId(), lecture1.getModkey(), 10);
+        assertEquals(-2, result);
+        List<UserEntity> banned = userRepository.findAllByIp(ip);
+        banned.forEach((u) -> assertTrue(u.isAllowed()));
+
+        lecture1.reOpen();
+        lecture2.reOpen();
+        lectureRepository.save(lecture1);
+        lectureRepository.save(lecture2);
+    }
+
+    @Test
+    public void banByIpWrongModKeyTest() {
+        int result = userService.banByIp(34, q1.getId(), incorrectModKey, 10);
+        assertEquals(-2, result);
+        List<UserEntity> banned = userRepository.findAllByIp(ip);
+        banned.forEach((u) -> assertTrue(u.isAllowed()));
+    }
+
+    @Test
+    public void banByIpAlreadyBannedTest() {
+        user1.setAllowed(false);
+        user2.setAllowed(false);
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        int result = userService.banByIp(34, q1.getId(), lecture1.getModkey(), 10);
+        assertEquals(-3, result);
+        List<UserEntity> banned = userRepository.findAllByIp("192.168.1.1");
+        banned.forEach((u) -> assertFalse(u.isAllowed()));
+
+        user1.setAllowed(true);
+        user2.setAllowed(true);
+        userRepository.save(user1);
+        userRepository.save(user2);
+    }
+
+    @Test
+    public void banByIpSuccessfulAndResetTest() throws InterruptedException {
+        int result = userService.banByIp(34, q1.getId(), lecture1.getModkey(), 4);
+        assertEquals(0, result);
+        List<UserEntity> banned = userRepository.findAllByIp(ip);
+        banned.forEach((u) -> {
+            assertFalse(u.isAllowed());
+            assertEquals(34, u.getBannerId());
+        });
+
+        Thread.sleep(5000);
+
+        banned = userRepository.findAllByIp(ip);
+        banned.forEach((u) -> {
+            assertTrue(u.isAllowed());
+            assertEquals(0, u.getBannerId());
+        });
+    }
+
+    @Test
+    public void banByIpSuccessfulRepositoryCheckBeforeTest() {
+        //change the second user to be the owner of the zeroth question
+        q.setOwnerName(user2.getUserName());
+        q.setOwnerId(user2.getUid());
+        questionRepository.save(q);
+        userQuestionRepository.save(new UserQuestionTable(uid2, q2.getId()));
+        userQuestionRepository.save(new UserQuestionTable(uid1, q2.getId()));
+
+        int result = userService.banByIp(34, q2.getId(), lecture2.getModkey(), 4);
+        assertEquals(0, result);
+
+        //check if the question for which the user was banned is deleted
+        assertNull(questionRepository.findById(q2.getId()).orElse(null));
+
+        //check if the question-user pairs (voting) for the question
+        //  for which the user was banned are deleted
+        assertTrue(userQuestionRepository.getAllByQuestionId(q2.getId()).isEmpty());
+
+        //check that all the questions of user2 have their owner name modified and are not deleted
+        List<QuestionEntity> qs = questionRepository.findAllByOwnerId(uid2);
+        assertTrue(qs.size() > 0);
+        qs.forEach(q -> assertTrue(q.getOwnerName().contains(" (banned)")));
+
+        //check that all the questions of user1 have their owner name modified and are not deleted
+        // (since user1 and user2 have the same ip)
+        qs = questionRepository.findAllByOwnerId(uid1);
+        assertTrue(qs.size() > 0);
+        qs.forEach(q -> assertTrue(q.getOwnerName().contains(" (banned)")));
+
+        //set everything back to make the tests independent
+        userRepository.deleteById(uid2);
+        questionRepository.deleteById(q.getId());
+        q.setOwnerName(user.getUserName());
+        q.setOwnerId(uid);
+    }
+
+    @Test
+    public void banByIpSuccessfulRepositoryCheckAfterTest() throws InterruptedException {
+        //change the second user to be the owner of the zeroth question
+        q.setOwnerName(user2.getUserName());
+        q.setOwnerId(user2.getUid());
+        questionRepository.save(q);
+        userQuestionRepository.save(new UserQuestionTable(uid2, q2.getId()));
+        userQuestionRepository.save(new UserQuestionTable(uid1, q2.getId()));
+
+        int result = userService.banByIp(34, q2.getId(), lecture2.getModkey(), 3);
+        assertEquals(0, result);
+
+        //wait for the ban to end
+        Thread.sleep(4000);
+
+        //check that all the questions of user2 have their owner name changed back
+        List<QuestionEntity> qs = questionRepository.findAllByOwnerId(uid2);
+        assertTrue(qs.size() > 0);
+        qs.forEach(q -> assertFalse(q.getOwnerName().contains(" (banned)")));
+
+        //check that all the questions of user1 have their owner name changed back
+        // (since user1 and user2 have the same ip)
+        qs = questionRepository.findAllByOwnerId(uid1);
+        assertTrue(qs.size() > 0);
+        qs.forEach(q -> assertFalse(q.getOwnerName().contains(" (banned)")));
+
+        //set everything back to make the tests independent
+        userRepository.deleteById(uid2);
+        questionRepository.deleteById(q.getId());
+        q.setOwnerName(user.getUserName());
+        q.setOwnerId(uid);
     }
 
     @Test
