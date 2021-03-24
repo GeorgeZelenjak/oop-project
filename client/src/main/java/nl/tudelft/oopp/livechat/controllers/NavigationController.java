@@ -170,4 +170,10 @@ public class NavigationController {
         popupHelper("/fxml/popupscenes/editQuestionPopup.fxml", 600,400);
     }
 
+    /**
+     * Popup polling management.
+     */
+    public void popupPollingManagement() {
+        popupHelper("/fxml/popupscenes/pollingManagementPopup.fxml", 540, 384);
+    }
 }
