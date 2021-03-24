@@ -130,7 +130,7 @@ class UserServiceTest {
     }
 
     @BeforeEach
-    public void setupRepository() throws UserException {
+    public void setupRepository() throws UserException, NoDataReceivedException {
         lectureRepository.save(lecture);
         lectureRepository.save(lecture1);
         lectureRepository.save(lecture2);
@@ -170,7 +170,7 @@ class UserServiceTest {
 
     @Test
     public void newUserUserNullTest() {
-        assertThrows(UserNotRegisteredException.class, () -> userService.newUser(null, localhost));
+        assertThrows(NoDataReceivedException.class, () -> userService.newUser(null, localhost));
     }
 
     @Test

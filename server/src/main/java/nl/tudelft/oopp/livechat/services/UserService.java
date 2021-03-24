@@ -51,14 +51,15 @@ public class UserService {
     }
 
     /**
-     * Creates a new user.
-     * @param user the user entity representing the new user
-     * @param ip the ip to be set
-     * @return 0 if successful, -1 if uid is invalid or nulls were passed
+     * Registers a user to the repository.
+     * @param user the new user
+     * @param ip the ip address of the user
+     * @return 0 iff the user is registered successfully
+     * @throws UserException if an error occurs (user not registered, user id is invalid)
      */
-    public int newUser(UserEntity user, String ip) throws UserException {
+    public int newUser(UserEntity user, String ip) throws UserException, NoDataReceivedException {
         if (user == null) {
-            throw new UserNotRegisteredException();
+            throw new NoDataReceivedException();
         }
 
         user.setIp(ip);

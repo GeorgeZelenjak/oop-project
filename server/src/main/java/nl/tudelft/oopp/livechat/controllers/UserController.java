@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
-import nl.tudelft.oopp.livechat.exceptions.InvalidModkeyException;
-import nl.tudelft.oopp.livechat.exceptions.LectureException;
-import nl.tudelft.oopp.livechat.exceptions.QuestionException;
-import nl.tudelft.oopp.livechat.exceptions.UserException;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +39,7 @@ public class UserController {
      * @return 0 if successful, -1 if not
      */
     @PostMapping("/register")
-    public int newUser(@RequestBody UserEntity user) throws UserException {
+    public int newUser(@RequestBody UserEntity user) throws UserException, NoDataReceivedException {
         String remoteAddress = ((ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes())
                 .getRequest().getRemoteAddr();
