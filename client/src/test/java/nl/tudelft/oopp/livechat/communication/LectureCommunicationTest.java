@@ -192,14 +192,14 @@ public class LectureCommunicationTest {
     @Test
     public void createLectureSuccessfulTest() {
         Lecture res = LectureCommunication.createLecture("An awesome lecture",
-                "Jegor", time);
+                "Jegor", time, 10);
         assertNotNull(res);
         assertEquals(res.getName(), "An awesome lecture");
     }
 
     @Test
     public void createLectureTooLongNameTest() {
-        Lecture res = LectureCommunication.createLecture(e,"Papa Double", time);
+        Lecture res = LectureCommunication.createLecture(e,"Papa Double", time, 10);
         assertNull(res);
     }
 
@@ -207,7 +207,7 @@ public class LectureCommunicationTest {
     public void createLectureServerRefusesTest() {
         stopServer();
         Lecture res = LectureCommunication.createLecture("How to get 10 for OOPP",
-                "Long Island", time);
+                "Long Island", time, 10);
         assertNull(res);
         startServer();
     }
@@ -215,7 +215,7 @@ public class LectureCommunicationTest {
     @Test
     public void createLectureWrongResponseTest() {
         Lecture res = LectureCommunication.createLecture("Babba booey!",
-                "Mojito", time);
+                "Mojito", time, 10);
         assertNull(res);
     }
 
