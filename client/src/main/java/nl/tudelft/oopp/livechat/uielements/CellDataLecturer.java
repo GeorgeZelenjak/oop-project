@@ -4,18 +4,25 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
@@ -29,7 +36,7 @@ import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 /**
  * Class for Cell data for the lecturer.
  */
-public class CellDataLecturer {
+public class CellDataLecturer implements Initializable {
 
     @FXML
     private Text questionText;
@@ -70,6 +77,15 @@ public class CellDataLecturer {
 
     private Question question;
 
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        deleteButton.setTooltip(new Tooltip("Delete this question"));
+        replyButton.setTooltip(new Tooltip("Answer this question"));
+
+        editButton.setTooltip(new Tooltip("Edit this question"));
+        isAnsweredButton.setTooltip(new Tooltip("Mark this question as answered"));
+    }
 
     /**
      * Creates a new Cell data object.

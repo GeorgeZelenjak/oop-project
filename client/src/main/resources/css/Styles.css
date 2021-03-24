@@ -133,10 +133,7 @@
     .backButton {
         -fx-background-color: -fx-blue;
         -fx-background-radius: 7px;
-        -fx-font: 27px Roboto;
         -fx-text-fill: -fx-white;
-        -fx-pref-width: 136.5px;
-        -fx-pref-height: 50.25px;
     }
 
     .backButton:hover {

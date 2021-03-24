@@ -3,8 +3,10 @@ package nl.tudelft.oopp.livechat.uielements;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import nl.tudelft.oopp.livechat.data.Question;
@@ -12,10 +14,12 @@ import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
+import java.util.ResourceBundle;
 
-public class CellDataUser {
+public class CellDataUser implements Initializable {
 
     @FXML
     private Text questionText;
@@ -59,6 +63,12 @@ public class CellDataUser {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        deleteButton.setTooltip(new Tooltip("Delete this question"));
+        upvoteButton.setTooltip(new Tooltip("Upvote this question"));
     }
 
     /**

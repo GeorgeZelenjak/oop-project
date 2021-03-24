@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
@@ -63,6 +64,21 @@ public class UserChatSceneController implements Initializable {
     @FXML
     private CheckBox voteOnLectureSpeedSlow;
 
+    @FXML
+    private Button participants;
+
+    @FXML
+    private Button goToSettingsButton;
+
+    @FXML
+    private Button goToUserManualButton;
+
+    @FXML
+    private Button gobBackButton;
+
+    @FXML
+    private Button leaveLecture;
+
     /**
      * The Observable list.
      */
@@ -88,6 +104,15 @@ public class UserChatSceneController implements Initializable {
         }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
+
+        //Tooltip
+        participants.setTooltip(new Tooltip("See the lecture participants"));
+        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+
+        goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
+        gobBackButton.setTooltip(new Tooltip("Go back to the main page"));
+
+        leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
     }
 
     /**
