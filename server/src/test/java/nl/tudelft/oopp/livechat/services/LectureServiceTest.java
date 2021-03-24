@@ -48,21 +48,21 @@ class LectureServiceTest {
 
     @Test
     void newLectureTest() {
-        LectureEntity lectureEntity = lectureService.newLecture("name", "Artjom Pugatsov", time);
+        LectureEntity lectureEntity = lectureService.newLecture("name", "Artjom Pugatsov", time, 10);
         assertNotNull(lectureEntity);
         repository.deleteById(lectureEntity.getUuid());
     }
 
     @Test
     void newLectureLongCreatorTest() {
-        LectureEntity lectureEntity = lectureService.newLecture("name", longString, time);
+        LectureEntity lectureEntity = lectureService.newLecture("name", longString, time, 10);
         assertNull(lectureEntity);
     }
 
     @Test
     void newLectureLongNameTest() {
         LectureEntity lectureEntity = lectureService.newLecture(longString,
-                "Artjom Pugatsov", time);
+                "Artjom Pugatsov", time, 10);
         assertNull(lectureEntity);
     }
 
