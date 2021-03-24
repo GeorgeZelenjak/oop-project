@@ -9,12 +9,14 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.util.Callback;
 import nl.tudelft.oopp.livechat.data.*;
+import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
 import nl.tudelft.oopp.livechat.uielements.PollOptionCell;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 /**
  * The type Polling management popup controller.
@@ -31,6 +33,10 @@ public class PollingManagementPopupController implements Initializable {
 
     private Poll poll;
 
+    private UUID lectureId;
+
+    private UUID modkey;
+
     /**
      * The Observable list.
      */
@@ -44,6 +50,9 @@ public class PollingManagementPopupController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         resetListView();
+        lectureId = Lecture.getCurrentLecture().getUuid();
+        modkey = Lecture.getCurrentLecture().getModkey();
+
         addPollOptionCell();
         addPollOptionCell();
         addPollOptionCell();
@@ -59,6 +68,7 @@ public class PollingManagementPopupController implements Initializable {
 
         observableList.setAll(options);
         popupOptionsListView.setItems(observableList);
+
 
         popupOptionsListView.setCellFactory(
                 new Callback<ListView<PollOption>, ListCell<PollOption>>() {
@@ -82,13 +92,25 @@ public class PollingManagementPopupController implements Initializable {
      * Open polling.
      */
     public void openPolling() {
-        if (!PollAndOptions.getCurrentPollAndOptions().equals(
-                PollAndOptions.getInEditingPollAndOptions())) {
-            //PollCommunication.createPoll();
-            for (PollOption pollOption : PollAndOptions.getInEditingPollAndOptions().getOptions()) {
-            //     PollCommunication.addOption();
+        PollAndOptions current = PollAndOptions.getCurrentPollAndOptions();
+        if (current == null || !poll.equals(current.getPoll())) {
+
+            PollAndOptions.setCurrentPollAndOptions(
+                    new PollAndOptions(new Poll(), new ArrayList<PollOption>()));
+
+            poll = PollCommunication.createPoll(lectureId, modkey, questionTextTextArea.getText());
+            PollAndOptions.getCurrentPollAndOptions().setPoll(poll);
+
+            for (PollOption pollOption : options) {
+                System.out.println(pollOption.getOptionText());
+                PollAndOptions.getCurrentPollAndOptions().getOptions().add(
+                    PollCommunication.addOption(
+                    poll.getId(), modkey, pollOption.isCorrect(), pollOption.getOptionText()));
             }
-            //  PollCommunication.toggle();
+            PollCommunication.toggle(poll.getId(), modkey);
+        } else if (!current.getPoll().isOpen()) {
+            PollCommunication.toggle(current.getPoll().getId(), modkey);
+            current.getPoll().setOpen(true);
         }
     }
 
@@ -96,9 +118,10 @@ public class PollingManagementPopupController implements Initializable {
      * Close poll.
      */
     public void closePoll() {
-        if (PollAndOptions.getCurrentPollAndOptions().getPoll().isOpen()) {
-            PollAndOptions.getCurrentPollAndOptions().getPoll().setOpen(false);
-            // PollCommunication.toggle();
+        PollAndOptions current = PollAndOptions.getCurrentPollAndOptions();
+        if (current != null && current.getPoll().isOpen()) {
+            current.getPoll().setOpen(false);
+            PollCommunication.toggle(current.getPoll().getId(), modkey);
         }
     }
 
@@ -106,13 +129,20 @@ public class PollingManagementPopupController implements Initializable {
      * Restart poll.
      */
     public void restartPoll() {
-        //PollCommunication.resetVotes();
+        PollAndOptions current = PollAndOptions.getCurrentPollAndOptions();
+        PollCommunication.resetVotes(current.getPoll().getId(), modkey);
     }
 
     /**
      * New poll.
      */
     public void newPoll() {
+        try {
+            closePoll();
+        } catch (Exception e) {
+            System.out.println("Current poll is null");
+        }
+
         PollAndOptions.setInEditingPollAndOptions(
                 new PollAndOptions(new Poll(), new ArrayList<PollOption>()));
         resetListView();

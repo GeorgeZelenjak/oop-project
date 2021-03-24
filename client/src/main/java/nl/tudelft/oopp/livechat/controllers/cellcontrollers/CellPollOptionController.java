@@ -1,5 +1,7 @@
 package nl.tudelft.oopp.livechat.controllers.cellcontrollers;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -44,9 +46,10 @@ public class CellPollOptionController {
      * Sets listener.
      */
     public void setListener() {
-        optionTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        optionTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
-            public void handle(KeyEvent event) {
+            public void changed(ObservableValue<? extends Boolean> arg0,
+                                Boolean oldPropertyValue, Boolean newPropertyValue) {
                 option.setOptionText(optionTextField.getText());
             }
         });
@@ -82,7 +85,9 @@ public class CellPollOptionController {
      * @param value the value
      */
     public void setOptionText(String value) {
-        optionTextField.setText("Answer: " + value);
+        if (value != null) {
+            optionTextField.setText(value);
+        }
     }
 
     /**
