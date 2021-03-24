@@ -44,7 +44,7 @@
             <Button fx:id="pollingButton" layoutX="58.0" layoutY="175.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="131.0" styleClass="mainSceneButton" text="Release Results" />
          </children>
       </Pane>
-      <Button fx:id="createPolling" layoutX="226.0" layoutY="701.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Create Polling Question" />
+      <Button fx:id="createPolling" layoutX="226.0" layoutY="701.0" mnemonicParsing="false" onAction="#popupPollingManagement" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Manage polling" />
       <Button fx:id="reopenPolling" layoutX="826.0" layoutY="523.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="232.0" styleClass="mainSceneButton" text="Reopen a Polling Question" />
       <Pane fx:id="speedBackground" layoutX="818.0" layoutY="247.0" prefHeight="216.0" prefWidth="247.0" styleClass="sidebar">
          <children>
