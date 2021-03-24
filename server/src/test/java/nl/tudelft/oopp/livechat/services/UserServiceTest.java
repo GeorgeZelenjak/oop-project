@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -28,6 +29,7 @@ import java.util.UUID;
 /**
  * Class for Question service tests.
  */
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @SpringBootTest
 class UserServiceTest {
     private static UserEntity user;
