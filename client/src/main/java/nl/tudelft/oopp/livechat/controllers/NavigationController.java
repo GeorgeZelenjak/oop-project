@@ -174,6 +174,6 @@ public class NavigationController {
      * Popup polling management.
      */
     public void popupPollingManagement() {
-        popupHelper("/fxml/popupscenes/pollingManagementPopup.fxml", 540, 384);
+        popupHelper("/fxml/popupscenes/pollingManagementPopup.fxml", 720, 512);
     }
 }
