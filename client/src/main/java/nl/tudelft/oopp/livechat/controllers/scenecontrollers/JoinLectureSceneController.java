@@ -102,9 +102,7 @@ public class JoinLectureSceneController implements Initializable {
         Lecture currentLecture = Lecture.getCurrentLecture();
 
         if (currentLecture == null) {
-            AlertController.alertError("Error",
-                    "Lecture was not found or it has not started yet!");
-
+            System.out.println("no lecture joined");
         } else if (modkeyCheckBox.isSelected()) {
             joinAsModerator();
         } else {
@@ -167,7 +165,6 @@ public class JoinLectureSceneController implements Initializable {
                 .validateModerator(enterLectureCodeTextField.getText(),modkeyString);
 
         if (!result) {
-            AlertController.alertError("Invalid moderator key","Wrong moderator key!");
             return;
         }
         Lecture.getCurrentLecture().setModkey(UUID.fromString(modkeyString));
