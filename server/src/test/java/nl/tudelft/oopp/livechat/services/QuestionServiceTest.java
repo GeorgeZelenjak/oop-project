@@ -18,11 +18,13 @@ import nl.tudelft.oopp.livechat.repositories.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 
 /**
  * Class for Question service tests.
  */
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @SpringBootTest
 class QuestionServiceTest {
     private static LectureEntity l1;
