@@ -194,6 +194,8 @@ class UserServiceTest {
                 time, true, "192.168.1.2", lecture.getUuid()));
         userRepository.save(new UserEntity(6346625635746253L, "root5",
                 time, true, "192.168.1.2", lecture.getUuid()));
+        userRepository.save(new UserEntity(234234512343248L, "root6",
+                time, true, "192.168.1.2", lecture.getUuid()));
 
         UserEntity u = new UserEntity(9886625635746450L, "root5",
                 time, true, "192.168.1.2", lecture.getUuid()); //this code is valid

@@ -151,7 +151,7 @@ class UserLectureVotingControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
-        assertEquals("Don't do this", result);
+        assertEquals("UUID is not in the correct format", result);
         assertTrue(speedRepository.findAllByLectureId(uuid).isEmpty());
     }
 
@@ -196,7 +196,7 @@ class UserLectureVotingControllerTest {
                 + "/" + lecture.getModkey())))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
-        assertEquals("Don't do this", result);
+        assertEquals("UUID is not in the correct format", result);
         assertFalse(speedRepository.findAllByLectureId(uuid).isEmpty());
     }
 

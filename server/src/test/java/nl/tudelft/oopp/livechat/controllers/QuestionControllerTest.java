@@ -504,7 +504,7 @@ class QuestionControllerTest {
                         .characterEncoding("utf-8"))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
-        assertEquals("Don't do this", result);
+        assertEquals("UUID is not in the correct format", result);
 
         QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
         assertNotNull(question1after);
@@ -579,7 +579,7 @@ class QuestionControllerTest {
                 put("/api/question/answer/" + q1.getId() + "/" + "modkey"))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
-        assertEquals("Don't do this", resultString);
+        assertEquals("UUID is not in the correct format", resultString);
 
         List<QuestionEntity> listLecture1 =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
