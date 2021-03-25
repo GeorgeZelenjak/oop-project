@@ -6,6 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
+import nl.tudelft.oopp.livechat.exceptions.InvalidModkeyException;
+import nl.tudelft.oopp.livechat.exceptions.LectureException;
+import nl.tudelft.oopp.livechat.exceptions.QuestionException;
+import nl.tudelft.oopp.livechat.exceptions.UserException;
 import nl.tudelft.oopp.livechat.services.QuestionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +53,8 @@ public class QuestionController {
      * @return the id assigned by the server for that question
      */
     @PostMapping("/ask")
-    public long askQuestion(@RequestBody QuestionEntity question) {
+    public long askQuestion(@RequestBody QuestionEntity question)
+            throws UserException, LectureException, QuestionException {
         return questionService.newQuestionEntity(question);
     }
 
@@ -60,7 +65,8 @@ public class QuestionController {
      * @return 0 if successful, -1 otherwise
      */
     @DeleteMapping("/delete")
-    public int deleteQuestion(@RequestParam long qid, @RequestParam long uid) {
+    public int deleteQuestion(@RequestParam long qid, @RequestParam long uid)
+            throws UserException, LectureException, QuestionException {
         return questionService.deleteQuestion(qid, uid);
     }
 
@@ -71,7 +77,8 @@ public class QuestionController {
      * @return 0 if successful, -1 otherwise
      */
     @DeleteMapping("/moderator/delete")
-    public int modDelete(@RequestParam long qid, @RequestParam UUID modkey) {
+    public int modDelete(@RequestParam long qid, @RequestParam UUID modkey)
+            throws InvalidModkeyException, LectureException, QuestionException {
         return questionService.deleteModeratorQuestion(qid, modkey);
     }
 
@@ -82,7 +89,8 @@ public class QuestionController {
      * @return 0 if successful, -1 otherwise
      */
     @PutMapping("/upvote")
-    public int vote(@RequestParam long qid, @RequestParam long uid) {
+    public int vote(@RequestParam long qid, @RequestParam long uid)
+            throws UserException, LectureException, QuestionException {
         return questionService.upvote(qid, uid);
     }
 
@@ -93,7 +101,9 @@ public class QuestionController {
      * @throws JsonProcessingException the json processing exception
      */
     @PutMapping("/edit")
-    public int edit(@RequestBody String newQuestion) throws JsonProcessingException {
+    public int edit(@RequestBody String newQuestion)
+            throws JsonProcessingException, InvalidModkeyException,
+                    QuestionException, LectureException, UserException {
         JsonNode jsonNode = objectMapper.readTree(newQuestion);
         long id = jsonNode.get("id").asLong();
         UUID modkey = UUID.fromString(jsonNode.get("modkey").asText());
@@ -111,7 +121,8 @@ public class QuestionController {
      */
     @PutMapping("/answer/{qid}/{modkey}")
     public int markAsAnswered(@PathVariable long qid, @PathVariable UUID modkey,
-                              @RequestBody String answerText) {
+                              @RequestBody String answerText)
+            throws InvalidModkeyException, LectureException, QuestionException {
         return questionService.answer(qid, modkey, answerText);
     }
 
@@ -123,9 +134,9 @@ public class QuestionController {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
-        System.out.println("here");
+        System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Don't do this");
+                .body("UUID is not in the correct format");
     }
 
     /**
@@ -139,5 +150,18 @@ public class QuestionController {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Don't do this");
+    }
+
+    /**
+     * Exception handler.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Missing parameter' message
+     */
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ResponseEntity<Object> badParameter(NullPointerException exception) {
+        System.out.println(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Missing parameter");
     }
 }

@@ -2,10 +2,10 @@ package nl.tudelft.oopp.livechat.services;
 
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.UserLectureSpeedTable;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.UserLectureSpeedRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -47,38 +47,35 @@ public class LectureSpeedService {
 
 
     /**
-     * Gets votes.
+     * Gets the votes for the lecture speed.
      * @param uuid the id of the lecture
-     * @return the votes
+     * @return the votes for the lecture speed (first number is for faster, second for slower)
+     * @throws LectureException when the lecture is not found
      */
-    public List<Integer> getVotes(UUID uuid) {
+    public List<Integer> getVotes(UUID uuid) throws LectureException {
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
-
-        if (lecture == null || !lectureRepository.findLectureEntityByUuid(uuid).isOpen()) {
-            return null;
+        if (lecture == null) {
+            throw new LectureNotFoundException();
         }
-
         List<Integer> numberOfVotes = new ArrayList<>();
         numberOfVotes.add(lecture.getFasterCount());
         numberOfVotes.add(lecture.getSlowerCount());
-
         return numberOfVotes;
     }
 
     /**
-     * Records a user voting.
+     * Records a user vote for the lecture speed.
      * @param uid the id of the user
      * @param uuid the id of the lecture
-     * @param speed the indication of the lecture speed
-     * @return  0 if everything is fine
-     *         -1 if unsuccessful
+     * @param speed the indication of the lecture speed (faster or slower)
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found, is closed or the vote
+     *          is incorrect (not "faster" or "slower")
+     * @throws UserException when the user is not in the lecture
      */
-    public int setUserLectureSpeedVote(long uid, UUID uuid, String speed) {
+    public int setUserLectureSpeedVote(long uid, UUID uuid, String speed)
+            throws LectureException, UserException {
         LectureEntity lecture = validateRequest(uid, uuid, speed);
-        if (lecture == null) {
-            return -1;
-        }
-
         UserLectureSpeedTable userLectureSpeedTable = userLectureSpeedRepository
                 .findByUserIdAndLectureId(uid, uuid);
 
@@ -96,15 +93,20 @@ public class LectureSpeedService {
     }
 
     /**
-     * Reset the lecture speed.
-     * @param uuid the lecture id
+     * Reset the vote for the lecture speed.
+     * @param uuid the id of the lecture
      * @param modKey the moderator key
-     * @return  0 if everything reset successfully, -1 otherwise
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
-    public int resetLectureSpeed(UUID uuid, UUID modKey) {
+    public int resetLectureSpeed(UUID uuid, UUID modKey)
+            throws LectureException, InvalidModkeyException {
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
-        if (lecture == null || !lecture.getModkey().equals(modKey)) {
-            return -1;
+        if (lecture == null) {
+            throw new LectureNotFoundException();
+        } else if (!lecture.getModkey().equals(modKey)) {
+            throw new InvalidModkeyException();
         }
         userLectureSpeedRepository.deleteAllByLectureId(uuid);
         lecture.resetSpeedCounts();
@@ -117,32 +119,37 @@ public class LectureSpeedService {
      * @param uid the id of the user
      * @param uuid the id of the lecture
      * @param speed the indication of the lecture speed
-     * @return the lecture entity object iff the indication is slower/faster,
-     *         the user is registered, the lecture exists and is open. Null otherwise
+     * @return the lecture entity object if successful
+     * @throws LectureException when the lecture is not found, is closed or the vote
+     *          is incorrect (not "faster" or "slower")
+     * @throws UserException when the user is not in the lecture
      */
-    private LectureEntity validateRequest(long uid, UUID uuid, String speed) {
+    private LectureEntity validateRequest(long uid, UUID uuid, String speed)
+            throws LectureException, UserException {
         //Check if valid speed type
         if (!speed.equals("faster") && !speed.equals("slower")) {
-            return null;
+            throw new InvalidVoteException();
         }
         //Check if user exists
         if (userRepository.getUserEntityByUidAndLectureId(uid, uuid) == null) {
-            return null;
+            throw new UserNotInLectureException();
         }
         //Checks if the lecture is open
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(uuid);
-        if (lecture == null || !lectureRepository.findLectureEntityByUuid(uuid).isOpen()) {
-            return null;
+        if (lecture == null) {
+            throw new LectureNotFoundException();
+        } else if (!lectureRepository.findLectureEntityByUuid(uuid).isOpen()) {
+            throw new LectureClosedException();
         }
         return lecture;
     }
 
     /**
-     * A helper method too set the vote for the lecture.
+     * A helper method to set the vote for the lecture.
      * @param uid the id of the user
      * @param uuid the id of the lecture
      * @param speed the indication of the lecture speed
-     * @param lecture the lecture object
+     * @param lecture the lecture the user is in
      */
     private void setVote(long uid, UUID uuid, String speed, LectureEntity lecture) {
         if (speed.equals("faster")) {
@@ -158,11 +165,11 @@ public class LectureSpeedService {
      * A helper method to remove the vote for the lecture speed.
      * @param uid the id of the user
      * @param uuid the id of the lecture
-     * @param lecture the lecture object
-     * @param table UserLectureSpeedTable object
+     * @param lecture the lecture the user is in
+     * @param table UserLectureSpeedTable object for recording the user's votes
      */
     private void removeVote(long uid, UUID uuid, LectureEntity lecture,
-                            UserLectureSpeedTable table) {
+                UserLectureSpeedTable table) {
         userLectureSpeedRepository.deleteByUserIdAndLectureId(uid, uuid);
         if (table.getVoteOnLectureSpeed().equals("slower")) {
             lecture.decrementSlowerCount();
@@ -173,11 +180,11 @@ public class LectureSpeedService {
     }
 
     /**
-     * A helper method too validate the request.
+     * A helper method to toggle the vote from "faster" to "slower" and vice versa.
      * @param uid the id of the user
      * @param uuid the id of the lecture
      * @param speed the indication of the lecture speed
-     * @param lecture the lecture object
+     * @param lecture the lecture the user is in
      */
     private void toggleVote(long uid, UUID uuid, String speed, LectureEntity lecture) {
         if (speed.equals("faster")) {
@@ -187,7 +194,6 @@ public class LectureSpeedService {
             lecture.decrementFasterCount();
             lecture.incrementSlowerCount();
         }
-
         lectureRepository.save(lecture);
         userLectureSpeedRepository.save(new UserLectureSpeedTable(uid, uuid, speed));
     }

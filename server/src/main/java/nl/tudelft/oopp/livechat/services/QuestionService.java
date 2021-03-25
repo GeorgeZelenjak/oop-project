@@ -8,6 +8,7 @@ import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.entities.UserQuestionTable;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
@@ -37,8 +38,7 @@ public class QuestionService {
      * @param userQuestionRepository user-question repository
      */
     public QuestionService(QuestionRepository questionRepository,
-                           LectureRepository lectureRepository,
-                           UserRepository userRepository,
+                           LectureRepository lectureRepository, UserRepository userRepository,
                            UserQuestionRepository userQuestionRepository) {
         this.questionRepository = questionRepository;
         this.lectureRepository = lectureRepository;
@@ -58,75 +58,86 @@ public class QuestionService {
     /**
      * Creates new question entity in the database.
      * @param q the question entity
-     * @return the id of the question entity created, -1 if not
+     * @return the id of the question entity created
+     * @throws LectureException when the lecture is not found, is closed or is not started
+     * @throws QuestionException when the question with the same id already exists, the question
+     *          text is too long, or the user asks questions too frequently
+     * @throws UserException when the user is not registered or banned
      */
-    public long newQuestionEntity(QuestionEntity q) {
+    public long newQuestionEntity(QuestionEntity q)
+            throws LectureException, QuestionException, UserException {
         //check if the question already exists
         if (questionRepository.findById(q.getId()).isPresent()) {
-            return -1;
+            throw new QuestionAlreadyExistsException();
         }
         //check if the lecture exists and is open
         LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        if (lecture == null || !lecture.isOpen()) {
-            return -1;
+        if (lecture == null) {
+            throw new LectureNotFoundException();
+        } else if (!lecture.isOpen()) {
+            throw new LectureClosedException();
         }
 
         //check if lecture has started
         if (lecture.getStartTime().compareTo(new Timestamp(System.currentTimeMillis())) >= 0) {
-            return -1;
+            throw new LectureNotStartedException();
         }
 
         //check if the question text is not too long
         if (q.getText().length() > 2000) {
-            return -1;
+            throw new QuestionNotAskedException();
         }
 
         Optional<UserEntity> user = userRepository.findById(q.getOwnerId());
 
         //check if the owner is registered
         if (user.isEmpty()) {
-            return -1;
+            throw new UserNotRegisteredException();
         }
 
 
         UserEntity userAsked = userRepository.getUserEntityByUid(q.getOwnerId());
-        //TODO test this thing
-        if (lecture.getFrequency() != 0 && userAsked.getLastQuestion() != null
-                && q.getTime().getTime() - userAsked.getLastQuestion().getTime()
-                < (long) lecture.getFrequency() * 1000) {
-            return -1;
+        if (!userAsked.isAllowed()) {
+            throw new UserBannedException();
+        }
+        if (userAsked.getLastQuestion() != null
+                && System.currentTimeMillis() - userAsked.getLastQuestion().getTime()
+                < lecture.getFrequency() * 1000) {
+            throw new QuestionFrequencyTooFastException();
         }
         userAsked.setLastQuestion(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
         q.setOwnerName(userAsked.getUserName());
         questionRepository.save(q);
         userRepository.save(userAsked);
         return q.getId();
-
-
     }
 
     /**
      * Delete question from the database.
      * @param id the id of the question
      * @param personId the id of the person
-     * @return 0 if the question is deleted successfully, -1 otherwise
+     * @return 0 if the question is deleted successfully
+     * @throws QuestionException when the question is not found
+     *          or the owner id doesn't match the provided id
+     * @throws LectureException when the lecture is not found or is closed
+     * @throws UserException when the user is not registered
      */
-    public int deleteQuestion(long id, long personId) {
+    public int deleteQuestion(long id, long personId)
+            throws QuestionException, LectureException, UserException {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
-        //check if the question exists and the owner ids are equal
-        if (q == null || q.getOwnerId() != personId) {
-            return -1;
+        //check if the question and lecture exist
+        LectureEntity lecture = validateQuestionAndFindLecture(q);
+        //check if the lecture is open
+        if (!lecture.isOpen()) {
+            throw new LectureClosedException();
         }
-
-        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        //check if the lecture exists and is open
-        if (lecture == null || !lecture.isOpen()) {
-            return -1;
+        //check if the ids match
+        if (q.getOwnerId() != personId) {
+            throw new QuestionWrongOwnerIdException();
         }
-
         //check if the owner is registered
         if (userRepository.findById(personId).isEmpty()) {
-            return -1;
+            throw new UserNotRegisteredException();
         }
         questionRepository.deleteById(id);
         userQuestionRepository.deleteAllByQuestionId(id);
@@ -137,26 +148,23 @@ public class QuestionService {
      * Delete any question (done by a moderator).
      * @param id the id of the question
      * @param modkey the moderator key
-     * @return 0 if the question is deleted successfully, -1 otherwise
+     * @return 0 if the question is deleted successfully
+     * @throws QuestionException when the question is not found
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
-    public int deleteModeratorQuestion(long id, UUID modkey) {
+    public int deleteModeratorQuestion(long id, UUID modkey)
+            throws QuestionException, LectureException, InvalidModkeyException {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
-        //check if the question exists
-        if (q == null) {
-            return -1;
-        }
-        LectureEntity l = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        //check if the lecture exists and is open
-        if (l == null || !l.isOpen()) {
-            return -1;
-        }
+        //check if the question and lecture exist
+        LectureEntity lecture = validateQuestionAndFindLecture(q);
         //check if the modkey is correct
-        if (l.getModkey().equals(modkey)) {
+        if (lecture.getModkey().equals(modkey)) {
             questionRepository.deleteById(id);
             userQuestionRepository.deleteAllByQuestionId(id);
             return 0;
         }
-        return -1;
+        throw new InvalidModkeyException();
     }
 
     /**
@@ -165,30 +173,27 @@ public class QuestionService {
      * @param moderatorKey the moderator key
      * @param newText the new question text
      * @param newOwnerId the id of the new owner of the question
-     * @return 0 if question is edited successfully, -1 otherwise
+     * @return 0 if question is edited successfully
+     * @throws QuestionException when the question is not found or the new question text is too long
+     * @throws LectureException when the lecture is not found
+     * @throws UserException when the new owner is not registered
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
-    public int editQuestion(long id, UUID moderatorKey, String newText, long newOwnerId) {
-        Optional<QuestionEntity> optQuestion = questionRepository.findById(id);
-        //check if the question exists
-        if (optQuestion.isEmpty()) {
-            return -1;
-        }
-        QuestionEntity q = optQuestion.get();
-        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        //check if the lecture exists and is open
-        if (lecture == null) {
-            return -1;
-        }
+    public int editQuestion(long id, UUID moderatorKey, String newText, long newOwnerId)
+            throws QuestionException, LectureException, UserException, InvalidModkeyException {
+        QuestionEntity q = questionRepository.findById(id).orElse(null);
+        //check if the question and lecture exist
+        LectureEntity lecture = validateQuestionAndFindLecture(q);
         //check if the modkey is correct
         if (lecture.getModkey().equals(moderatorKey)) {
             //check if the question text is not too long
             if (newText.length() > 2000) {
-                return -1;
+                throw new QuestionNotModifiedException();
             }
             //check if the new owner is registered
             UserEntity user = userRepository.findById(newOwnerId).orElse(null);
             if (user == null) {
-                return -1;
+                throw new UserNotRegisteredException();
             }
             q.setText(newText);
             q.setOwnerId(newOwnerId);
@@ -197,37 +202,31 @@ public class QuestionService {
             questionRepository.save(q);
             return 0;
         }
-        return -1;
+        throw new InvalidModkeyException();
     }
 
     /**
      * Upvote question.
      * @param id the id of the question
      * @param userId the id of the user
-     * @return 0 if question is upvoted successfully, -1 otherwise
+     * @return 0 if question is upvoted successfully
+     * @throws QuestionException when the question is not found
+     * @throws LectureException when the lecture is not found or is closed
+     * @throws UserException when the user is not registered
      */
-    public int upvote(long id, long userId) {
+    public int upvote(long id, long userId)
+            throws QuestionException, LectureException, UserException {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
-        //check if the question exists
-        if (q == null) {
-            return -1;
-        }
-
-        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        //check if the lecture exists
-        if (lecture == null) {
-            return -1;
-        }
+        //check if the question and lecture exist
+        LectureEntity lecture = validateQuestionAndFindLecture(q);
         //check if the lecture is open
         if (!lecture.isOpen()) {
-            return -1;
+            throw new LectureClosedException();
         }
-
-        //check if the new owner is registered
+        //check if the user is registered
         if (userRepository.findById(userId).isEmpty()) {
-            return -1;
+            throw new UserNotRegisteredException();
         }
-
         List<UserQuestionTable> votersPair = userQuestionRepository.getAllByQuestionId(id);
         List<Long> voters = votersPair.stream()
                 .map(UserQuestionTable::getUserId)
@@ -249,22 +248,19 @@ public class QuestionService {
      * @param id the question id
      * @param modkey the modkey
      * @param answerText the answer text
-     * @return 0 if successful, -1 otherwise
+     * @return 0 if successful
+     * @throws QuestionException when the question is not found or the answer text is too long
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
-    public int answer(long id, UUID modkey, String answerText) {
+    public int answer(long id, UUID modkey, String answerText)
+            throws QuestionException, LectureException, InvalidModkeyException {
         QuestionEntity q = questionRepository.findById(id).orElse(null);
-        //check if the question exists
-        if (q == null) {
-            return -1;
-        }
+        //check if the question and lecture exist
+        LectureEntity lecture = validateQuestionAndFindLecture(q);
         //check if the answer text is not too long
         if (answerText.length() > 2000) {
-            return -1;
-        }
-        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
-        //check if the lecture exists
-        if (lecture == null) {
-            return -1;
+            throw new QuestionNotModifiedException();
         }
         //check if the modkey is correct
         if (lecture.getModkey().equals(modkey)) {
@@ -274,7 +270,27 @@ public class QuestionService {
             questionRepository.save(q);
             return 0;
         }
-        return -1;
+        throw new InvalidModkeyException();
+    }
 
+    /**
+     * A helper method to check if the question and the lecture exist in the database.
+     * @param q the question to check
+     * @return the lecture in which the question was asked if it exists
+     * @throws QuestionException when the question is not found
+     * @throws LectureNotFoundException when the lecture is not found
+     */
+    private LectureEntity validateQuestionAndFindLecture(QuestionEntity q)
+            throws QuestionException, LectureNotFoundException {
+        //check if the question exists
+        if (q == null) {
+            throw new QuestionNotFoundException();
+        }
+        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(q.getLectureId());
+        //check if the lecture exists
+        if (lecture == null) {
+            throw new LectureNotFoundException();
+        }
+        return lecture;
     }
 }

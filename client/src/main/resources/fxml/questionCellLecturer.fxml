@@ -22,7 +22,7 @@
             <Font name="Arial Italic" size="10.0" />
          </font>
       </Text>
-      <Button fx:id="deleteButton" layoutX="420.0" layoutY="41.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
+      <Button fx:id="deleteButton" layoutX="465.0" layoutY="35.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
          <font>
             <Font size="9.0" />
          </font>
@@ -30,7 +30,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button fx:id="isAnsweredButton" layoutX="420.0" layoutY="7.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="markAsAnsweredButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
+      <Button fx:id="isAnsweredButton" layoutX="465.0" layoutY="7.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="30.0" styleClass="markAsAnsweredButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
          <font>
             <Font name="System Bold" size="9.0" />
          </font>
@@ -43,12 +43,12 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Label>
-      <Text fx:id="numberOfUpvotes" fill="#cf0a49" layoutX="453.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1000" textAlignment="CENTER" wrappingWidth="31.0">
+      <Text fx:id="numberOfUpvotes" fill="#cf0a49" layoutX="508.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1000" textAlignment="CENTER" wrappingWidth="31.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Text>
-      <Button fx:id="replyButton" layoutX="524.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="replyButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
+      <Button fx:id="replyButton" layoutX="554.0" layoutY="7.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="replyButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
          <font>
             <Font size="9.0" />
          </font>
@@ -56,7 +56,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <FlowPane hgap="15.0" layoutX="23.0" layoutY="32.0" prefWidth="380.0">
+      <FlowPane hgap="15.0" layoutX="14.0" layoutY="28.0" prefWidth="380.0">
          <children>
               <Text fx:id="questionText" strokeType="OUTSIDE" strokeWidth="0.0" text="question" wrappingWidth="369.00682830810547" />
             <Text fx:id="answerText" fill="#07b20d" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="370.107421875">
@@ -66,6 +66,7 @@
             </Text>
          </children>
       </FlowPane>
-      <Button fx:id="editButton" layoutX="524.0" layoutY="35.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="editButton" />
+      <Button fx:id="editButton" layoutX="554.0" layoutY="34.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="editButton" />
+      <Button fx:id="banButton" layoutX="508.0" layoutY="35.0" mnemonicParsing="false" prefHeight="15.0" prefWidth="30.0" styleClass="banButton" />
     </children>
 </AnchorPane>

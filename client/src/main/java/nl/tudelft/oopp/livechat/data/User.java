@@ -1,6 +1,10 @@
 package nl.tudelft.oopp.livechat.data;
 
 import com.google.gson.annotations.Expose;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 
 import java.net.InetAddress;
@@ -9,6 +13,8 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * User class.

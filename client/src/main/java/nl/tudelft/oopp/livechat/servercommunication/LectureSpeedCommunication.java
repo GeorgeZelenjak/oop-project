@@ -14,6 +14,8 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.UUID;
 
+import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponse;
+
 /**
  * Class to send requests regarding lecture speed.
  */
@@ -55,8 +57,8 @@ public class LectureSpeedCommunication {
             //e.printStackTrace();
             return null;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
+        int result = handleResponse(response);
+        if (result != 0) {
             return null;
         }
         System.out.println("Lecture speed votes were retrieved successfully! " + response.body());
@@ -153,27 +155,6 @@ public class LectureSpeedCommunication {
         return result;
     }
 
-    /**
-     * Handles the response from the server.
-     * @param response response received from the server
-     * @return -3 if server response was not 200.
-     *         -4 if the response body is equal to "0"
-     *          0 otherwise
-     */
-    private static int handleResponse(HttpResponse<String> response) {
-        //Unexpected response
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return -3;
-        }
 
-        //Correct response, but not success
-        if (!response.body().equals("0")) {
-            System.out.println("Response body " + response.body());
-            return -4;
-        }
 
-        //Success
-        return 0;
-    }
 }

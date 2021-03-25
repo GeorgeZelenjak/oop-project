@@ -1,6 +1,5 @@
 package nl.tudelft.oopp.livechat.data;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.annotations.Expose;
 
 import java.sql.Timestamp;
