@@ -1,13 +1,21 @@
 package nl.tudelft.oopp.livechat.controllers.popupcontrollers;
 
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.*;
 import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
 import nl.tudelft.oopp.livechat.uielements.PollOptionCell;
@@ -29,9 +37,25 @@ public class PollingManagementPopupController implements Initializable {
     @FXML
     private TextArea questionTextTextArea;
 
+    public static List<PollOption> getInEditingOptions() {
+        return inEditingOptions;
+    }
+
+    public static void setInEditingOptions(List<PollOption> inEditingOptions) {
+        PollingManagementPopupController.inEditingOptions = inEditingOptions;
+    }
+
+    public static Poll getInEditingPoll() {
+        return inEditingPoll;
+    }
+
+    public static void setInEditingPoll(Poll inEditingPoll) {
+        PollingManagementPopupController.inEditingPoll = inEditingPoll;
+    }
+
     //Setup for ease of access
-    private List<PollOption> inEditingOptions;
-    private Poll inEditingPoll;
+    private static List<PollOption> inEditingOptions;
+    private static Poll inEditingPoll;
 
 
     private List<PollOption> fetchedOptions;
@@ -55,11 +79,17 @@ public class PollingManagementPopupController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        questionTextTextArea.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0,
+                                Boolean oldPropertyValue, Boolean newPropertyValue) {
+                inEditingPoll.setQuestionText(questionTextTextArea.getText());
+            }
+        });
+
         //Set for ease of access
         lectureId = Lecture.getCurrentLecture().getUuid();
         modkey = Lecture.getCurrentLecture().getModkey();
-        inEditingOptions = PollAndOptions.getInEditingPollAndOptions().getOptions();
-        inEditingPoll = PollAndOptions.getInEditingPollAndOptions().getPoll();
 
         //Sets page to match whats was in editing
         setAsInEditing();
@@ -72,7 +102,6 @@ public class PollingManagementPopupController implements Initializable {
     public void addPollOptionCell() {
         pollOptionsListView.getItems().add(new PollOption());
         inEditingOptions = pollOptionsListView.getItems();
-        saveEdited();
     }
 
     /**
@@ -81,14 +110,12 @@ public class PollingManagementPopupController implements Initializable {
     public void openPolling() {
         if (!inEditingPoll.equals(fetchedPoll)) {
             publishPoll();
-            saveEdited();
             return;
         }
 
         if (!inEditingPoll.isOpen()) {
             PollCommunication.toggle(inEditingPoll.getId(), modkey);
             inEditingPoll.setOpen(true);
-            saveEdited();
         }
     }
 
@@ -99,7 +126,6 @@ public class PollingManagementPopupController implements Initializable {
         if (fetchedPoll != null && fetchedPoll.isOpen()) {
             PollCommunication.toggle(fetchedPoll.getId(), modkey);
             fetchedPoll.setOpen(false);
-            saveEdited();
         }
     }
 
@@ -108,7 +134,6 @@ public class PollingManagementPopupController implements Initializable {
      */
     public void restartPoll() {
         PollCommunication.resetVotes(inEditingPoll.getId(), modkey);
-        saveEdited();
     }
 
     /**
@@ -124,7 +149,6 @@ public class PollingManagementPopupController implements Initializable {
         inEditingPoll = new Poll();
         inEditingOptions = new ArrayList<PollOption>();
         setAsInEditing();
-        saveEdited();
     }
 
     /**
@@ -151,6 +175,7 @@ public class PollingManagementPopupController implements Initializable {
                         return new PollOptionCell();
                     }
                 });
+        pollOptionsListView.getItems().clear();
         pollOptionsListView.getItems().addAll(inEditingOptions);
     }
 
@@ -181,12 +206,7 @@ public class PollingManagementPopupController implements Initializable {
             inEditingOptions = sentPollOptions;
             inEditingPoll = sentPoll;
             forceUpdateFetch();
-            saveEdited();
         }
     }
 
-    private void saveEdited() {
-        PollAndOptions.getInEditingPollAndOptions().setOptions(inEditingOptions);
-        PollAndOptions.getInEditingPollAndOptions().setPoll(inEditingPoll);
-    }
 }

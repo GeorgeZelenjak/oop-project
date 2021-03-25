@@ -1,10 +1,15 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import nl.tudelft.oopp.livechat.controllers.popupcontrollers.PollingManagementPopupController;
 
+import javax.sql.PooledConnection;
 import java.io.IOException;
 import java.util.Stack;
 
@@ -103,6 +108,15 @@ public class NavigationController {
             Scene main = new Scene(root, 1080, 768);
             this.main = main;
             window.setScene(main);
+
+            //Closes the entire program when the main scene is closed
+            window.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent e) {
+                    Platform.exit();
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,6 +130,7 @@ public class NavigationController {
             stage.setTitle("My New Stage Title");
             stage.setScene(new Scene(root, width, height));
             stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

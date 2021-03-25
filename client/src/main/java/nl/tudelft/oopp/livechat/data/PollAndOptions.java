@@ -8,13 +8,6 @@ public class PollAndOptions {
     private Poll poll;
     private List<PollOption> options;
 
-    public static PollAndOptions getInEditingPollAndOptions() {
-        return inEditingPollAndOptions;
-    }
-
-    public static void setInEditingPollAndOptions(PollAndOptions inEditingPollAndOptions) {
-        PollAndOptions.inEditingPollAndOptions = inEditingPollAndOptions;
-    }
 
     public static PollAndOptions getCurrentPollAndOptions() {
         return currentPollAndOptions;
@@ -23,8 +16,6 @@ public class PollAndOptions {
     public static void setCurrentPollAndOptions(PollAndOptions currentPollAndOptions) {
         PollAndOptions.currentPollAndOptions = currentPollAndOptions;
     }
-
-    private static PollAndOptions inEditingPollAndOptions;
 
     private static PollAndOptions currentPollAndOptions;
 

@@ -21,6 +21,7 @@ import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
 import nl.tudelft.oopp.livechat.businesslogic.CreateFile;
+import nl.tudelft.oopp.livechat.controllers.popupcontrollers.PollingManagementPopupController;
 import nl.tudelft.oopp.livechat.data.*;
 import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
 import nl.tudelft.oopp.livechat.uielements.QuestionCellLecturer;
@@ -167,31 +168,7 @@ public class LecturerChatSceneController implements Initializable {
             }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
-
-        //Tooltips
-        copyId.setTooltip(new Tooltip("Copy the lecture's ID to clipboard"));
-        copyKey.setTooltip(new Tooltip("Copy the moderator key to clipboard"));
-
-        participants.setTooltip(new Tooltip("See the lecture participants"));
-        goToLectureModeButton.setTooltip(new Tooltip("Enable/Disable lecturer mode"));
-
-        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
-        goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
-
-        pollingButton.setTooltip(new Tooltip("Show poll's results to lecture participants"));
-        speedButton.setTooltip(new Tooltip("Open/Reopen voting on lecture speed"));
-
-        lectureLog.setTooltip(new Tooltip("See an overview of the lecture's activity"));
-        reopenPolling.setTooltip(new Tooltip("Reopen a previous polling question"));
-
-        exportQA.setTooltip(new Tooltip("Export this lecture's content"));
-        closeLectureButton.setTooltip(new Tooltip("Close this lecture"));
-
-        leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
-        createPolling.setTooltip(new Tooltip("Create a polling question"));
-
-        createQuiz.setTooltip(new Tooltip("Create a quiz"));
-
+        setTooltips();
     }
 
     /**
@@ -415,11 +392,37 @@ public class LecturerChatSceneController implements Initializable {
      * Popup polling management.
      */
     public void popupPollingManagement() {
-        if (PollAndOptions.getInEditingPollAndOptions() == null) {
-            PollAndOptions.setInEditingPollAndOptions(
-                    new PollAndOptions(new Poll(), new ArrayList<PollOption>()));
+        if (PollingManagementPopupController.getInEditingPoll() == null) {
+            PollingManagementPopupController.setInEditingPoll(new Poll());
+            PollingManagementPopupController.setInEditingOptions(new ArrayList<PollOption>());
         }
         NavigationController.getCurrentController().popupPollingManagement();
+    }
+
+    private void setTooltips() {
+        //Tooltips
+        copyId.setTooltip(new Tooltip("Copy the lecture's ID to clipboard"));
+        copyKey.setTooltip(new Tooltip("Copy the moderator key to clipboard"));
+
+        participants.setTooltip(new Tooltip("See the lecture participants"));
+        goToLectureModeButton.setTooltip(new Tooltip("Enable/Disable lecturer mode"));
+
+        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+        goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
+
+        pollingButton.setTooltip(new Tooltip("Show poll's results to lecture participants"));
+        speedButton.setTooltip(new Tooltip("Open/Reopen voting on lecture speed"));
+
+        lectureLog.setTooltip(new Tooltip("See an overview of the lecture's activity"));
+        reopenPolling.setTooltip(new Tooltip("Reopen a previous polling question"));
+
+        exportQA.setTooltip(new Tooltip("Export this lecture's content"));
+        closeLectureButton.setTooltip(new Tooltip("Close this lecture"));
+
+        leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
+        createPolling.setTooltip(new Tooltip("Create a polling question"));
+
+        createQuiz.setTooltip(new Tooltip("Create a quiz"));
     }
 }
 
