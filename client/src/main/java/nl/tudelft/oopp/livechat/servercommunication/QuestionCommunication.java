@@ -83,7 +83,7 @@ public class QuestionCommunication {
 
         int result = handleResponse(response);
         if (result != 0) {
-            return -3;
+            return -1;
         }
         //Question has been asked successfully
         System.out.println("The question was asked successfully! " + response.body());
@@ -172,8 +172,7 @@ public class QuestionCommunication {
 
         int result = handleResponse(response);
         if (result == 0) {
-            System.out.println("The question was upvoted/downvoted successfully! "
-                                    + response.body());
+            System.out.println("The question was upvoted/downvoted successfully! " + response.body());
         }
         return result;
     }
@@ -220,8 +219,7 @@ public class QuestionCommunication {
 
         int result = handleResponse(response);
         if (result == 0) {
-            System.out.println("The question was marked as answered successfully!"
-                                    + response.body());
+            System.out.println("The question was marked as answered successfully!" + response.body());
         }
         return result;
     }
@@ -311,7 +309,6 @@ public class QuestionCommunication {
         }
 
         int result = handleResponse(response);
-        System.out.println("Deleted: " + result);
         if (result == 0) {
             System.out.println("The question with id " + qid + " was deleted successfully!");
             User.deleteQuestionId(qid);

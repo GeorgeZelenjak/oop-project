@@ -25,7 +25,6 @@ import static org.mockserver.model.HttpRequest.request;
 /**
  * Class for Lecture communication tests.
  */
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LectureCommunicationTest {
 
     public static MockServerClient mockServer;
@@ -88,9 +87,7 @@ public class LectureCommunicationTest {
         //lecture name is too long
         mockServer.when(request().withMethod("POST").withPath("/api/newLecture")
                 .withQueryStringParameter("name",e))
-                .respond(HttpResponse.response().withStatusCode(400)
-                        .withBody("")
-                        .withHeader("Content-Type","application/json"));
+                .respond(HttpResponse.response().withStatusCode(400));
     }
 
     /**
@@ -112,16 +109,13 @@ public class LectureCommunicationTest {
         //no lecture exists
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/get/" + modkey))
-                .respond(HttpResponse.response().withStatusCode(400)
-                        .withBody("")
-                        .withHeader("Content-Type","application/json"));
+                .respond(HttpResponse.response().withStatusCode(400));
 
         //registration
         mockServer.when(request().withMethod("POST")
                 .withPath("/api/user/register")
                 .withBody(jsonUser))
-                .respond(HttpResponse.response().withStatusCode(200)
-                        .withBody("0"));
+                .respond(HttpResponse.response().withStatusCode(200));
     }
 
     /**
@@ -137,20 +131,17 @@ public class LectureCommunicationTest {
         //Invalid lecture id
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/validate/validUUID" + "/" + modkey))
-                .respond(HttpResponse.response().withStatusCode(400)
-                        .withBody("Invalid UUID"));
+                .respond(HttpResponse.response().withStatusCode(400));
 
         //Invalid modkey
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/validate/" + lid + "/validModkey"))
-                .respond(HttpResponse.response().withStatusCode(400)
-                        .withBody("Invalid UUID"));
+                .respond(HttpResponse.response().withStatusCode(400));
 
         //Incorrect modkey
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/validate/" + lid + "/" + incorrectModkey))
-                .respond(HttpResponse.response().withStatusCode(400)
-                        .withBody("-1"));
+                .respond(HttpResponse.response().withStatusCode(400));
     }
 
     /**
@@ -166,25 +157,24 @@ public class LectureCommunicationTest {
         //Invalid lecture id
         mockServer.when(request().withMethod("PUT")
                 .withPath("/api/close/validUUID" + "/" + modkey).withBody(""))
-                .respond(HttpResponse.response().withStatusCode(400)
-                        .withBody("Invalid UUID"));
+                .respond(HttpResponse.response().withStatusCode(400));
 
         //Invalid modkey
         mockServer.when(request().withMethod("PUT")
                 .withPath("/api/close/" + lid + "/validModkey").withBody(""))
-                .respond(HttpResponse.response().withStatusCode(400)
-                        .withBody("Invalid UUID"));
+                .respond(HttpResponse.response().withStatusCode(400));
 
         //Incorrect modkey
         mockServer.when(request().withMethod("PUT")
                 .withPath("/api/close/" + lid + "/" + incorrectModkey).withBody(""))
-                .respond(HttpResponse.response().withStatusCode(400)
-                        .withBody("-1"));
+                .respond(HttpResponse.response().withStatusCode(400));
     }
 
-    //Starts the server and assigns expectations
+    /**
+     * Starts the server and assigns expectations.
+     */
     @BeforeAll
-    private static void startServer() {
+    public static void startServer() {
         assignJsonLecture();
         assignJsonUser();
         mockServer = ClientAndServer.startClientAndServer(8080);
@@ -197,7 +187,7 @@ public class LectureCommunicationTest {
             alertControllerMockedStatic.when(() -> AlertController.alertError(any(String.class),
                     any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Exception caught");
         }
     }
 
@@ -220,7 +210,7 @@ public class LectureCommunicationTest {
 
     @Test
     public void createLectureServerRefusesTest() {
-        stopServer();
+        mockServer.stop();
         Lecture res = LectureCommunication.createLecture("How to get 10 for OOPP",
                 "Long Island", time, 10);
         assertNull(res);
@@ -258,7 +248,7 @@ public class LectureCommunicationTest {
 
     @Test
     public void joinLectureByIdServerRefusesTest() {
-        stopServer();
+        mockServer.stop();
         Lecture res = LectureCommunication.joinLectureById(lid);
         assertNull(res);
         startServer();
@@ -296,7 +286,7 @@ public class LectureCommunicationTest {
     @Test
     public void validateModeratorServerRefusesTest() {
         Lecture.setCurrentLecture(new Lecture());
-        stopServer();
+        mockServer.stop();
         assertFalse(LectureCommunication.validateModerator(lid, modkey));
         startServer();
     }
@@ -345,14 +335,16 @@ public class LectureCommunicationTest {
     @Test
     public void closeLectureServerRefusesTest() {
         Lecture.setCurrentLecture(new Lecture());
-        stopServer();
+        mockServer.stop();
         assertFalse(LectureCommunication.closeLecture(lid, modkey));
         startServer();
     }
 
-    //Stops the server
+    /**
+     * Stops the server and closes mock alert controller.
+     */
     @AfterAll
-    private static void stopServer() {
+    public static void stopServer() {
         mockServer.stop();
         alertControllerMockedStatic.close();
     }
