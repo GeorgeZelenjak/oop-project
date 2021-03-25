@@ -163,7 +163,6 @@ public class LecturerChatSceneController implements Initializable {
             ae -> {
                 fetchQuestions();
                 getVotesOnLectureSpeed();
-                fetchVotes();
                 adjustLectureSpeedLines();
             }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
@@ -426,30 +425,7 @@ public class LecturerChatSceneController implements Initializable {
         createQuiz.setTooltip(new Tooltip("Create a quiz"));
     }
 
-    private void fetchVotes() {
 
-        PollAndOptions fetched = (
-                PollCommunication.fetchPollAndOptionsModerator(
-                        Lecture.getCurrentLecture().getUuid(),
-                        Lecture.getCurrentLecture().getModkey()));
-        if (fetched == null) {
-            return;
-        }
-        if (!fetched.equals(PollAndOptions.getCurrentPollAndOptions())) {
-            PollAndOptions.setCurrentPollAndOptions(fetched);
-            NavigationController.getCurrentController().popupPollVoting();
-            return;
-        }
-        if (fetched.getPoll().isOpen()) {
-            return;
-        }
-        if (PollAndOptions.getCurrentPollAndOptions()
-                .getPoll().isOpen() && !fetched.getPoll().isOpen()) {
-            PollAndOptions.setCurrentPollAndOptions(fetched);
-            NavigationController.getCurrentController().popupPollResult();
-        }
-
-    }
 
 }
 

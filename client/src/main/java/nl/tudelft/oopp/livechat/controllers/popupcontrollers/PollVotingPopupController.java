@@ -59,7 +59,6 @@ public class PollVotingPopupController implements Initializable {
                 });
         votingListView.getItems().clear();
         votingListView.getItems().addAll(list);
-        System.out.println("Something");
     }
 
 }

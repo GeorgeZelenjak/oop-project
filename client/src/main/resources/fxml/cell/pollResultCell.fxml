@@ -4,7 +4,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="cellAnchorPane" minHeight="66.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.cell.PollResultCell">
+<AnchorPane fx:id="cellAnchorPane" minHeight="66.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Rectangle fx:id="resultBarRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" layoutX="263.0" layoutY="13.0" stroke="BLACK" strokeType="INSIDE" width="317.0" />
       <Text fx:id="resultOptionText" layoutX="14.0" strokeType="OUTSIDE" strokeWidth="0.0" text="sadasdfsadgfsatygjtarhyuifhtarweyuhutyfarewuyhjtaryhjuarweyjhtgwreadytjuherwdtyjuherwtadyuhjtrdewayuxhytuhaerwdxyhturaewhtyukreayukhdwhyturwaedxttyuhdrweaxytuhwaedtryktwa4rkydjtykh4awtyuihd4atyihuda4wyiuhtad4ewiyuhkt4aedwykuhita4uykrhdweyutkhra4dewytuhk4adyuhtj4awdertyuhtj" wrappingWidth="240.0" AnchorPane.bottomAnchor="13.0" AnchorPane.topAnchor="12.0" />

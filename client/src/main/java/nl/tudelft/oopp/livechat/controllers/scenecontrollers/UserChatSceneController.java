@@ -16,9 +16,11 @@ import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 
+import nl.tudelft.oopp.livechat.data.PollAndOptions;
 import nl.tudelft.oopp.livechat.data.Question;
 
 import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
+import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
 import nl.tudelft.oopp.livechat.uielements.QuestionCellUser;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
@@ -101,6 +103,7 @@ public class UserChatSceneController implements Initializable {
         timelineFetch = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
             fetchQuestions();
             getVotesOnLectureSpeed();
+            fetchVotes();
         }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
@@ -260,6 +263,27 @@ public class UserChatSceneController implements Initializable {
             voteOnLectureSpeedFast.setSelected(false);
             voteOnLectureSpeedSlow.setSelected(false);
         }
+    }
+
+    private void fetchVotes() {
+
+        PollAndOptions fetched = (
+                PollCommunication.fetchPollAndOptionsStudent(
+                        Lecture.getCurrentLecture().getUuid()));
+        if (fetched == null) {
+            return;
+        }
+        if (!fetched.equals(PollAndOptions.getCurrentPollAndOptions())) {
+            PollAndOptions.setCurrentPollAndOptions(fetched);
+            NavigationController.getCurrentController().popupPollVoting();
+            return;
+        }
+        System.out.println(fetched.getPoll().isOpen());
+        if (!fetched.getPoll().isOpen()) {
+            PollAndOptions.setCurrentPollAndOptions(fetched);
+            NavigationController.getCurrentController().popupPollResult();
+        }
+
     }
 
 }
