@@ -172,7 +172,8 @@ public class QuestionCommunication {
 
         int result = handleResponse(response);
         if (result == 0) {
-            System.out.println("The question was upvoted/downvoted successfully! " + response.body());
+            System.out.println("The question was upvoted/downvoted successfully! "
+                    + response.body());
         }
         return result;
     }
@@ -219,7 +220,8 @@ public class QuestionCommunication {
 
         int result = handleResponse(response);
         if (result == 0) {
-            System.out.println("The question was marked as answered successfully!" + response.body());
+            System.out.println("The question was marked as answered successfully!"
+                    + response.body());
         }
         return result;
     }
