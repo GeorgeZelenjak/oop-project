@@ -159,15 +159,44 @@ public class PollService {
     }
 
     /**
-     * Fetch poll and poll options.
+     * Fetch poll and poll options without modkey.
      *
      * @param uuid the uuid
      * @return the poll and options
      * @throws LectureNotFoundException the lecture not found exception
      * @throws PollNotFoundException    the poll not found exception
      */
-    public PollAndOptions fetchPollAndOptions(UUID uuid)
+    public PollAndOptions fetchPollAndOptionsStudent(UUID uuid)
             throws LectureNotFoundException, PollNotFoundException {
+        if (lectureRepository.findLectureEntityByUuid(uuid) == null)
+            throw new LectureNotFoundException();
+        PollEntity pollEntity = pollRepository.findAllByUuidOrderByTimeDesc(uuid).get(0);
+        if (pollEntity == null) throw new PollNotFoundException();
+        List<PollOptionEntity> pollOptions = pollOptionRepository
+                .findAllByPollId(pollEntity.getId());
+        if (!pollEntity.isOpen()) {
+            for (PollOptionEntity option : pollOptions) {
+                option.setCorrect(false);
+                //-2 is just for fun
+                option.setVotes(-2);
+            }
+        }
+        return new PollAndOptions(pollEntity, pollOptions);
+    }
+
+    /**
+     * Fetch poll and poll options with modkey.
+     *
+     * @param uuid   the uuid
+     * @param modkey the modkey
+     * @return the poll and options
+     * @throws LectureException       the lecture exception
+     * @throws PollNotFoundException  the poll not found exception
+     * @throws InvalidModkeyException the invalid modkey exception
+     */
+    public PollAndOptions fetchPollAndOptionsLecturer(UUID uuid, UUID modkey)
+            throws LectureException, PollNotFoundException, InvalidModkeyException {
+        lectureService.validateModerator(uuid, modkey);
         if (lectureRepository.findLectureEntityByUuid(uuid) == null)
             throw new LectureNotFoundException();
         PollEntity pollEntity = pollRepository.findAllByUuidOrderByTimeDesc(uuid).get(0);

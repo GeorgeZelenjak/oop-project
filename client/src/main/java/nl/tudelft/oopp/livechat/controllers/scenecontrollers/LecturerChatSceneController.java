@@ -24,6 +24,7 @@ import nl.tudelft.oopp.livechat.businesslogic.CreateFile;
 import nl.tudelft.oopp.livechat.controllers.popupcontrollers.PollingManagementPopupController;
 import nl.tudelft.oopp.livechat.data.*;
 import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
+import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
 import nl.tudelft.oopp.livechat.uielements.QuestionCellLecturer;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
@@ -164,12 +165,14 @@ public class LecturerChatSceneController implements Initializable {
             ae -> {
                 fetchQuestions();
                 getVotesOnLectureSpeed();
+                fetchVotes();
                 adjustLectureSpeedLines();
             }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
         setTooltips();
     }
+
 
     /**
      * Gets votes on lecture speed.
@@ -424,5 +427,19 @@ public class LecturerChatSceneController implements Initializable {
 
         createQuiz.setTooltip(new Tooltip("Create a quiz"));
     }
+
+    private void fetchVotes() {
+
+        PollAndOptions.setCurrentPollAndOptions(
+                PollCommunication.fetchPollAndOptionsModerator(
+                        Lecture.getCurrentLecture().getUuid(),
+                        Lecture.getCurrentLecture().getModkey()));
+
+        System.out.println(
+                PollAndOptions.getCurrentPollAndOptions().getPoll().getQuestionText());
+        System.out.println(
+                PollAndOptions.getCurrentPollAndOptions().getOptions().get(0).getOptionText());
+    }
+
 }
 

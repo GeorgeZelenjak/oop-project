@@ -10,12 +10,13 @@
       <Button layoutX="653.0" layoutY="459.0" mnemonicParsing="false" onAction="#closePoll" text="Close" />
       <Button layoutX="578.0" layoutY="415.0" mnemonicParsing="false" onAction="#newPoll" text="New Poll" />
       <Button layoutX="662.0" layoutY="415.0" mnemonicParsing="false" onAction="#restartPoll" text="Reset" />
-      <ListView fx:id="pollOptionsListView" layoutX="47.0" layoutY="106.0" prefHeight="373.0" prefWidth="521.0" />
+      <ListView fx:id="pollOptionsListView" layoutX="47.0" layoutY="124.0" prefHeight="355.0" prefWidth="521.0" />
       <TextArea fx:id="questionTextTextArea" layoutX="47.0" layoutY="15.0" prefHeight="73.0" prefWidth="521.0" promptText="Imput your question text here" />
       <Button layoutX="50.0" layoutY="482.0" mnemonicParsing="false" onAction="#addPollOptionCell" prefHeight="16.0" prefWidth="21.0" text="+">
          <font>
             <Font size="10.0" />
          </font>
       </Button>
+      <Text layoutX="47.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Is this option correct" />
    </children>
 </AnchorPane>

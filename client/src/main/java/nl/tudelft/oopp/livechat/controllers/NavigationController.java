@@ -191,4 +191,18 @@ public class NavigationController {
     public void popupPollingManagement() {
         popupHelper("/fxml/popupscenes/pollingManagementPopup.fxml", 720, 512);
     }
+
+    /**
+     * Popup poll result.
+     */
+    public void popupPollResult() {
+        popupHelper("/fxml/popupscenes/pollResultsPopup.fxml", 720, 512);
+    }
+
+    /**
+     * Popup poll voting.
+     */
+    public void popupPollVoting() {
+        popupHelper("/fxml/popupscenes/pollVotingPopup.fxml", 720, 512);
+    }
 }

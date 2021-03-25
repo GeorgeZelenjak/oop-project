@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="512.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.popupscenes.PopupResults">
+   <children>
+      <ListView fx:id="resultsListView" layoutX="40.0" layoutY="60.0" prefHeight="420.0" prefWidth="640.0" />
+      <Text layoutX="304.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Results">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>

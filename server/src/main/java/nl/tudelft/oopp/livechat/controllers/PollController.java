@@ -45,10 +45,17 @@ public class PollController {
         return pollService.togglePoll(pollId, modkey);
     }
 
-    @GetMapping("/fetch/{uuid}")
-    public PollAndOptions fetchPollAndOptions(@PathVariable UUID uuid)
+    @GetMapping("/fetchStudent/{uuid}")
+    public PollAndOptions fetchPollAndOptionsStudent(@PathVariable UUID uuid)
             throws LectureNotFoundException, PollNotFoundException {
-        return pollService.fetchPollAndOptions(uuid);
+        return pollService.fetchPollAndOptionsStudent(uuid);
+    }
+
+    @GetMapping("/fetchMod/{uuid}/{modkey}")
+    public PollAndOptions fetchPollAndOptionsStudent(
+            @PathVariable UUID uuid, @PathVariable UUID modkey)
+            throws LectureException, PollNotFoundException, InvalidModkeyException {
+        return pollService.fetchPollAndOptionsLecturer(uuid, modkey);
     }
 
     @PutMapping("/vote/{userId}/{pollOptionId}")

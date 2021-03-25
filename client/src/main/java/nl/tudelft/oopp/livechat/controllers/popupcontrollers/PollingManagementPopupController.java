@@ -15,6 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.*;
 import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
@@ -186,6 +187,10 @@ public class PollingManagementPopupController implements Initializable {
 
     private void publishPoll() {
 
+        if (!checkIfNotEmpty()) {
+            AlertController.alertWarning("Emty fields", "You have empty fields");
+            return;
+        }
         //Sends request for poll
         Poll sentPoll = PollCommunication.createPoll(
                 lectureId, modkey, questionTextTextArea.getText());
@@ -207,6 +212,18 @@ public class PollingManagementPopupController implements Initializable {
             inEditingPoll = sentPoll;
             forceUpdateFetch();
         }
+    }
+
+    private boolean checkIfNotEmpty() {
+        if (inEditingPoll.getQuestionText() == null || inEditingPoll.getQuestionText().equals("")) {
+            return false;
+        }
+        for (PollOption pollOption : inEditingOptions) {
+            if (pollOption.getOptionText() == null || pollOption.getOptionText().equals("")) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

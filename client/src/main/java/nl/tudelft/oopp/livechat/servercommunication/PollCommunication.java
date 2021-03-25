@@ -136,11 +136,11 @@ public class PollCommunication {
      * @param uuid the uuid
      * @return the poll and options
      */
-    public static PollAndOptions fetchPollAndOptions(UUID uuid) {
+    public static PollAndOptions fetchPollAndOptionsStudent(UUID uuid) {
         //Check if current lecture has been set
 
         //Parameters for request
-        String address = ADDRESS + "/api/poll/fetch/";
+        String address = ADDRESS + "/api/poll/fetchStudent/";
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().GET().uri(
@@ -156,7 +156,40 @@ public class PollCommunication {
             return null;
         }
 
-        if (handleResponse(response) != 0) {
+        if (CommonCommunication.handleResponseNoAlerts(response) != 0) {
+            return null;
+        }
+        return gson.fromJson(response.body(), PollAndOptions.class);
+    }
+
+    /**
+     * Fetch poll and options poll and options.
+     *
+     * @param uuid   the uuid
+     * @param modkey the modkey
+     * @return the poll and options
+     */
+    public static PollAndOptions fetchPollAndOptionsModerator(UUID uuid, UUID modkey) {
+        //Check if current lecture has been set
+
+        //Parameters for request
+        String address = ADDRESS + "/api/poll/fetchMod/";
+
+        //Creating request and defining response
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(
+                URI.create(address + uuid + "/" + modkey)).build();
+
+        HttpResponse<String> response;
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.println("An exception when trying to communicate with the server!");
+            //e.printStackTrace();
+            return null;
+        }
+
+        if (CommonCommunication.handleResponseNoAlerts(response) != 0) {
             return null;
         }
         return gson.fromJson(response.body(), PollAndOptions.class);
