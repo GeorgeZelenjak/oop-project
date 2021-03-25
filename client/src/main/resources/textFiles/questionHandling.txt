@@ -1,0 +1,9 @@
+As lecturer, you can handle the questions students ask during a lecture in multiple ways.
+
+-> If you answer the question during the live presentation, you can mark that question as answered by clicking the green tick button.
+
+-> If you wish to answer the question in the chat application, press the blue reply button and a pop-up will appear to type in your answer. If this action succeeds, the answer will appear under the respective question with green text.
+
+-> If you want to edit a question of one of the students, press on the black pencil button and make your edits to the questions. Note that after the edit, that respective lecturer/moderator who edited the question will become the new question owner.
+
+-> If a student abuses the question functionality (for example bullying, off-topic, spam, harassment etc.), you can permanently delete that question for all participants of the lecture.

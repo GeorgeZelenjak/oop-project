@@ -74,13 +74,25 @@ public class UserManualSceneController {
         showCategoryX("client/src/main/resources/textFiles/questionInfo.txt");
     }
 
+    public void showQuestionHandlingText() {
+        showCategoryX("client/src/main/resources/textFiles/questionHandling.txt");
+    }
+
+    public void showExportingQuestionsText() {
+        showCategoryX("client/src/main/resources/textFiles/questionExporting.txt");
+    }
+
+    public void showLectureSpeedVotingText() {
+        showCategoryX("client/src/main/resources/textFiles/lectureSpeedVoting.txt");
+    }
+
     /** Helper Method that loads a File from a given path, parses it as a string and displays the
      *      requested text of the selected help category.
      *      This method catches an FileNotFoundException in case
      *          the filepath is incorrect or file is not found.
      * @param fileName - String representing the path of the text file
      */
-    public void showCategoryX(String fileName)  {
+    public void showCategoryX(String fileName) {
         File file = new File(fileName);
 
         StringBuilder text = new StringBuilder();

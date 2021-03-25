@@ -1,15 +1,15 @@
 package nl.tudelft.oopp.livechat.servercommunication;
 
-//import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import javafx.scene.control.Alert;
 import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
-
+import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.*;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -18,6 +18,8 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+
+import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponse;
 
 /**
  * Class for Lecture server communication.
@@ -50,7 +52,8 @@ public class LectureCommunication {
      * @param startTime the start time
      * @return Lecture which was created, null in case of errors
      */
-    public static Lecture createLecture(String name, String creatorName, Timestamp startTime) {
+    public static Lecture createLecture(String name, String creatorName,
+                                        Timestamp startTime, int frequency) {
 
         //Encoding the lecture name into url compatible format
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
@@ -61,6 +64,7 @@ public class LectureCommunication {
         String start = date.format(startTime);
         jsonObject.addProperty("creatorName", creatorName);
         jsonObject.addProperty("startTime", start);
+        jsonObject.addProperty("frequency", frequency);
 
         //Convert node to string
         String nodeToString = gson.toJson(jsonObject);
@@ -82,17 +86,13 @@ public class LectureCommunication {
             return null;
         }
 
-        // Prints the status code if the communication
-        // if server gives an unexpected response
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
+        int result = handleResponse(response);
+        if (result != 0) {
             return null;
         }
 
         //Return object from response
         Lecture created =  gson.fromJson(response.body(), Lecture.class);
-
-        if (created == null) return null;
 
         if (!registerUser(created.getUuid().toString(), User.getUid(), User.getUserName())) {
             System.out.println("Couldn't register user");
@@ -126,8 +126,8 @@ public class LectureCommunication {
             e.printStackTrace();
             return null;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status first req: " + response.statusCode());
+        int result = handleResponse(response);
+        if (result != 0) {
             return null;
         }
 
@@ -169,12 +169,8 @@ public class LectureCommunication {
             //e.printStackTrace();
             return false;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return false;
-        }
-
-        return response.body().equals("0");
+        int result = handleResponse(response);
+        return result == 0;
 
     }
 
@@ -207,13 +203,55 @@ public class LectureCommunication {
             //e.printStackTrace();
             return false;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            System.out.println(response.body());
-            return false;
+        int result = handleResponse(response);
+        return result == 0;
+    }
+
+    /**
+     * Ban/unban the user by id or ip (done by moderator).
+     * @param modKey the moderator key
+     * @param questionToBanId the id of the question whose user is to be to (un)banned
+     * @param time the time of the ban
+     * @param byIp true iff needs to be (un)banned by ip, false if by id
+     * @return  0 if the user was banned/unbanned successfully
+     *         -1 if current lecture does not exist
+     *         -2 if an exception occurred when communicating with the server
+     *         -3 if unexpected response was received //TODO to be modified
+     *         -4 if the user was not banned/unbanned successfully
+     *         (e.g wrong mod id, wrong modkey etc.)
+     */
+    public static int ban(String modKey, long questionToBanId, int time, boolean byIp) {
+        if (Lecture.getCurrentLecture() == null) {
+            System.out.println("You are not connected to a lecture!!!");
+            return -1;
         }
 
-        return response.body().equals("0");
+        //Create a json object with the data to be sent
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("modid", User.getUid());
+        jsonObject.addProperty("modkey", modKey);
+        jsonObject.addProperty("qid", questionToBanId);
+        jsonObject.addProperty("time", time);
+        String json = gson.toJson(jsonObject);
+
+        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
+        String address = ADDRESS + "/api/user/ban/id";
+        if (byIp) {
+            address = ADDRESS + "/api/user/ban/ip";
+        }
+
+        //Create request and define response
+        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
+                URI.create(address)).setHeader("Content-Type", "application/json").build();
+        HttpResponse<String> response;
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.println("Error when communicating with the server!");
+            return -2;
+        }
+        return handleResponse(response);
     }
 
     /**
@@ -249,20 +287,13 @@ public class LectureCommunication {
             //e.printStackTrace();
             return false;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status second req: " + response.statusCode());
-            return false;
-        }
-
-        if (!response.body().equals("0")) {
-            System.out.println("Server rejected the request with user: " + uid + " " + username);
-            return false;
-        }
-        return true;
+        return handleResponse(response) == 0;
     }
 
 
     public static void registerUserdebug(String lectureId, long uid, String username) {
         registerUser(lectureId, uid, username);
     }
+
+
 }

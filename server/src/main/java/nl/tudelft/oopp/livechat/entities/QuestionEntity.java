@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
 /**
@@ -19,6 +20,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity(name = "question")
 @Table(name = "questions")
 @DynamicUpdate
+@EnableTransactionManagement
 public class QuestionEntity {
 
     @Id

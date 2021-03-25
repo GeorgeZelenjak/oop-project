@@ -2,10 +2,14 @@ package nl.tudelft.oopp.livechat.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import org.junit.jupiter.api.*;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
@@ -15,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.model.HttpRequest.request;
 
 /**
@@ -37,6 +42,8 @@ public class LectureCommunicationTest {
     private static final Timestamp time = new Timestamp(System.currentTimeMillis());
     private static final SimpleDateFormat simpleDateFormat =
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+
+    private static MockedStatic<AlertController> alertControllerMockedStatic;
 
     /**
      * A helper method to assign JSON string lecture.
@@ -81,7 +88,7 @@ public class LectureCommunicationTest {
         //lecture name is too long
         mockServer.when(request().withMethod("POST").withPath("/api/newLecture")
                 .withQueryStringParameter("name",e))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(400)
                         .withBody("")
                         .withHeader("Content-Type","application/json"));
     }
@@ -105,10 +112,11 @@ public class LectureCommunicationTest {
         //no lecture exists
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/get/" + modkey))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(400)
                         .withBody("")
                         .withHeader("Content-Type","application/json"));
 
+        //registration
         mockServer.when(request().withMethod("POST")
                 .withPath("/api/user/register")
                 .withBody(jsonUser))
@@ -141,7 +149,7 @@ public class LectureCommunicationTest {
         //Incorrect modkey
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/validate/" + lid + "/" + incorrectModkey))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(400)
                         .withBody("-1"));
     }
 
@@ -170,7 +178,7 @@ public class LectureCommunicationTest {
         //Incorrect modkey
         mockServer.when(request().withMethod("PUT")
                 .withPath("/api/close/" + lid + "/" + incorrectModkey).withBody(""))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(400)
                         .withBody("-1"));
     }
 
@@ -184,6 +192,13 @@ public class LectureCommunicationTest {
         createExpectationsForJoinLectureById();
         createExpectationsForValidateModerator();
         createExpectationsForCloseLecture();
+        try {
+            alertControllerMockedStatic = Mockito.mockStatic(AlertController.class);
+            alertControllerMockedStatic.when(() -> AlertController.alertError(any(String.class),
+                    any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -192,14 +207,14 @@ public class LectureCommunicationTest {
     @Test
     public void createLectureSuccessfulTest() {
         Lecture res = LectureCommunication.createLecture("An awesome lecture",
-                "Jegor", time);
+                "Jegor", time, 10);
         assertNotNull(res);
         assertEquals(res.getName(), "An awesome lecture");
     }
 
     @Test
     public void createLectureTooLongNameTest() {
-        Lecture res = LectureCommunication.createLecture(e,"Papa Double", time);
+        Lecture res = LectureCommunication.createLecture(e,"Papa Double", time, 10);
         assertNull(res);
     }
 
@@ -207,7 +222,7 @@ public class LectureCommunicationTest {
     public void createLectureServerRefusesTest() {
         stopServer();
         Lecture res = LectureCommunication.createLecture("How to get 10 for OOPP",
-                "Long Island", time);
+                "Long Island", time, 10);
         assertNull(res);
         startServer();
     }
@@ -215,7 +230,7 @@ public class LectureCommunicationTest {
     @Test
     public void createLectureWrongResponseTest() {
         Lecture res = LectureCommunication.createLecture("Babba booey!",
-                "Mojito", time);
+                "Mojito", time, 10);
         assertNull(res);
     }
 
@@ -288,7 +303,8 @@ public class LectureCommunicationTest {
 
     /**
      * Tests for closing a lecture.
-     */
+     * */
+
 
     @Test
     public void closeLectureSuccessfulTest() {
@@ -338,5 +354,6 @@ public class LectureCommunicationTest {
     @AfterAll
     private static void stopServer() {
         mockServer.stop();
+        alertControllerMockedStatic.close();
     }
 }

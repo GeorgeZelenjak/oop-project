@@ -97,6 +97,11 @@
         -fx-background-color: Transparent;
     }
 
+    .banButton {
+        -fx-graphic: url(/images/ban.png);
+        -fx-background-color: Transparent;
+    }
+
     .settingsButton:hover{
         -fx-background-image: url(../images/Gear_gray.png);
         -fx-opacity: 0.5;
@@ -132,10 +137,7 @@
     .backButton {
         -fx-background-color: -fx-blue;
         -fx-background-radius: 7px;
-        -fx-font: 27px Roboto;
         -fx-text-fill: -fx-white;
-        -fx-pref-width: 136.5px;
-        -fx-pref-height: 50.25px;
     }
 
     .backButton:hover {
@@ -171,6 +173,13 @@
     .replyButton {
         -fx-graphic: url(/images/reply.png);
         -fx-background-color: Transparent;
+    }
+
+    .questionCell {
+        -fx-border-color: #00A6D6;
+        -fx-border-style: solid;
+        -fx-border-radius: 15px;
+        -fx-border-width: 2px;
     }
 
 

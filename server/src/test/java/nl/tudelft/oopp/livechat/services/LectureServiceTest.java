@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.sql.Timestamp;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ class LectureServiceTest {
 
 
     @Test
-    void getLectureByIdSuccessfulTest() {
+    void getLectureByIdSuccessfulTest() throws LectureException {
         LectureEntity lecture1 = new LectureEntity("name", "Codrin Socol", time);
         repository.save(lecture1);
 
@@ -40,41 +41,40 @@ class LectureServiceTest {
         LectureEntity lecture1 = new LectureEntity("name", "Giulio Segalini", time);
         repository.save(lecture1);
 
-        LectureEntity lecture2 = lectureService.getLectureByIdNoModkey(UUID.randomUUID());
-        assertNull(lecture2);
+        assertThrows(LectureNotFoundException.class, () ->
+                lectureService.getLectureByIdNoModkey(UUID.randomUUID()));
 
         repository.deleteById(lecture1.getUuid());
     }
 
     @Test
-    void newLectureTest() {
-        LectureEntity lectureEntity = lectureService.newLecture("name", "Artjom Pugatsov", time);
+    void newLectureTest() throws LectureException {
+        LectureEntity lectureEntity = lectureService.newLecture("name", "Artjom Pugatsov",
+                time, 10);
         assertNotNull(lectureEntity);
         repository.deleteById(lectureEntity.getUuid());
     }
 
     @Test
     void newLectureLongCreatorTest() {
-        LectureEntity lectureEntity = lectureService.newLecture("name", longString, time);
-        assertNull(lectureEntity);
+        assertThrows(LectureNotCreatedException.class, () ->
+                lectureService.newLecture("name", longString, time, 10));
     }
 
     @Test
     void newLectureLongNameTest() {
-        LectureEntity lectureEntity = lectureService.newLecture(longString,
-                "Artjom Pugatsov", time);
-        assertNull(lectureEntity);
+        assertThrows(LectureNotCreatedException.class, () -> lectureService.newLecture(longString,
+                "Artjom Pugatsov", time, 10));
     }
 
     @Test
-    void deleteSuccessfulTest() {
+    void deleteSuccessfulTest() throws Exception {
         LectureEntity lecture1 = new LectureEntity("name", "Tudor Popica", time);
         repository.save(lecture1);
 
         lectureService.delete(lecture1.getUuid(), lecture1.getModkey());
-
-        LectureEntity lecture2 = lectureService.getLectureByIdNoModkey(lecture1.getUuid());
-        assertNull(lecture2);
+        assertThrows(LectureNotFoundException.class, () ->
+                lectureService.getLectureByIdNoModkey(lecture1.getUuid()));
     }
 
     @Test
@@ -82,16 +82,14 @@ class LectureServiceTest {
         LectureEntity lecture1 = new LectureEntity("name", "Tudor Popica", time);
         repository.save(lecture1);
 
-        lectureService.delete(lecture1.getUuid(), UUID.randomUUID());
-
-        LectureEntity lecture2 = lectureService.getLectureByIdNoModkey(lecture1.getUuid());
-        assertNotNull(lecture2);
+        assertThrows(InvalidModkeyException.class, () ->
+                lectureService.delete(lecture1.getUuid(), UUID.randomUUID()));
 
         repository.deleteById(lecture1.getUuid());
     }
 
     @Test
-    void closeLectureTest() {
+    void closeLectureTest() throws Exception {
         LectureEntity lecture1 = new LectureEntity("name", "creator_name", time);
         repository.save(lecture1);
 
@@ -103,11 +101,12 @@ class LectureServiceTest {
     }
 
     @Test
-    void closeLectureUnsuccessfulTest() {
+    void closeLectureUnsuccessfulTest() throws Exception {
         LectureEntity lecture1 = new LectureEntity("name", "creator_name", time);
         repository.save(lecture1);
 
-        lectureService.close(lecture1.getUuid(), UUID.randomUUID());
+        assertThrows(InvalidModkeyException.class, () ->
+                lectureService.close(lecture1.getUuid(), UUID.randomUUID()));
         LectureEntity lecture2 = lectureService.getLectureByIdNoModkey(lecture1.getUuid());
         assertTrue(lecture2.isOpen());
 
@@ -118,12 +117,12 @@ class LectureServiceTest {
     void closeLectureNoLectureTest() {
         LectureEntity lecture = new LectureEntity("name", "creator_name", time);
 
-        int result = lectureService.close(lecture.getUuid(), lecture.getModkey());
-        assertEquals(-1, result);
+        assertThrows(LectureNotFoundException.class, () ->
+                lectureService.close(lecture.getUuid(), lecture.getModkey()));
     }
 
     @Test
-    void validateModeratorKeySuccessfulTest() {
+    void validateModeratorKeySuccessfulTest() throws Exception {
         LectureEntity lecture = new LectureEntity("name", "Jegor Zelenjak", time);
         repository.save(lecture);
 
@@ -138,8 +137,8 @@ class LectureServiceTest {
         LectureEntity lecture = new LectureEntity("name", "Stefan Hugtenburg", time);
         repository.save(lecture);
 
-        int res = lectureService.validateModerator(lecture.getUuid(), UUID.randomUUID());
-        assertEquals(-1, res);
+        assertThrows(InvalidModkeyException.class, () ->
+                lectureService.validateModerator(lecture.getUuid(), UUID.randomUUID()));
 
         repository.deleteById(lecture.getUuid());
     }
@@ -148,8 +147,8 @@ class LectureServiceTest {
     void validateModeratorKeyNoLectureTest() {
         LectureEntity lecture = new LectureEntity("name", "Andy Zaidman", time);
 
-        int res = lectureService.validateModerator(lecture.getUuid(), lecture.getModkey());
-        assertEquals(-1, res);
+        assertThrows(LectureNotFoundException.class, () ->
+                lectureService.validateModerator(lecture.getUuid(), lecture.getModkey()));
     }
 
     @Test
@@ -158,9 +157,8 @@ class LectureServiceTest {
                 new Timestamp(System.currentTimeMillis() + 0xFFFFFFL));
         repository.save(lectureFuture);
 
-        LectureEntity lectureReceived = lectureService
-                .getLectureByIdNoModkey(lectureFuture.getUuid());
-        assertNull(lectureReceived);
+        assertThrows(LectureNotStartedException.class, () ->
+            lectureService.getLectureByIdNoModkey(lectureFuture.getUuid()));
     }
 
 

@@ -1,5 +1,7 @@
 package nl.tudelft.oopp.livechat.entities;
 
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 import java.io.Serializable;
 import java.util.Objects;
 

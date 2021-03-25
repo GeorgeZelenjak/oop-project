@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="questionBoxAnchorPane" prefWidth="590.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="questionBoxAnchorPane" prefWidth="578.0" styleClass="questionCell" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Button fx:id="upvoteButton" layoutX="516.0" layoutY="3.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="upvoteButton" stylesheets="@../../css/Styles.css" text="⬆">
+        <Button fx:id="upvoteButton" layoutX="501.0" layoutY="3.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="upvoteButton" stylesheets="@../../css/Styles.css" text="⬆">
          <font>
             <Font size="9.0" />
          </font>
@@ -24,7 +24,7 @@
             <Font name="Arial" size="10.0" />
          </font>
       </Text>
-      <Text fx:id="numberOfUpvotes" fill="#cf0a49" layoutX="543.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1000" textAlignment="CENTER" wrappingWidth="42.0">
+      <Text fx:id="numberOfUpvotes" fill="#cf0a49" layoutX="533.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1000" textAlignment="CENTER" wrappingWidth="42.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font></Text>

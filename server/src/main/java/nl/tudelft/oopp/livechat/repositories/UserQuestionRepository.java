@@ -12,6 +12,7 @@ import java.util.List;
 public interface UserQuestionRepository
         extends JpaRepository<UserQuestionTable, UserQuestionPairId> {
 
+    @Transactional
     void deleteAllByQuestionId(long qid);
 
     List<UserQuestionTable> getAllByQuestionId(long qid);
