@@ -7,9 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -39,6 +37,9 @@ public class QuestionEntity {
 
     @Column(name = "text", length = 2000)
     private String text;
+
+    @Column(name = "status")
+    private String status = "new";
 
     @Column(name = "answered")
     private boolean answered;
@@ -176,6 +177,22 @@ public class QuestionEntity {
      */
     public void setText(String text) {
         this.text = text;
+    }
+
+    /**
+     * Gets the status of the question.
+     * @return the status of the question (e.g new, editing etc.)
+     */
+    public String getStatus() {
+        return this.status;
+    }
+
+    /**
+     * Sets the status of the question.
+     * @param status the new status of the question (e.g new, editing etc.)
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     /**

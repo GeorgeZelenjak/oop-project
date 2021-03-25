@@ -29,10 +29,10 @@ public class LectureService {
     }
 
     /**
-     * Gets lecture by id.
-     *
+     * Gets lecture by id without the moderator key.
      * @param id the id of the lecture
      * @return the lecture if the id is found in the database
+     * @throws LectureException when the lecture is not found or is not started yet
      */
     public LectureEntity getLectureByIdNoModkey(UUID id) throws LectureException {
         LectureEntity toSend =  lectureRepository.findLectureEntityByUuid(id);
@@ -49,9 +49,9 @@ public class LectureService {
     }
 
     /**
-     * Gets lecture by id.
-     * @param id the id
-     * @return the lecture
+     * Gets lecture by id and exposes the moderator key.
+     * @param id the id of the lecture
+     * @return the lecture entity
      */
     private LectureEntity getLectureById(UUID id) {
         return lectureRepository.findLectureEntityByUuid(id);
@@ -59,15 +59,15 @@ public class LectureService {
 
     /**
      * Creates a new lecture in the database.
-     *
-     * @param name        the name of the lecture
+     * @param name the name of the lecture
      * @param creatorName the name of the creator
-     * @param startTime   the start time
+     * @param startTime the start time of the lecture
+     * @param frequency the frequency of asking questions
      * @return the new lecture entity
+     * @throws LectureNotCreatedException when the name is too long
      */
     public LectureEntity newLecture(String name, String creatorName, Timestamp startTime,
-                                    int frequency)
-            throws LectureNotCreatedException {
+                                    int frequency) throws LectureNotCreatedException {
         if (name.length() <= 255 && creatorName.length() <= 255) {
             LectureEntity n = new LectureEntity(name, creatorName, startTime);
             n.setFrequency(frequency);
@@ -79,14 +79,14 @@ public class LectureService {
     }
 
     /**
-     * Deletes a lecture if the moderator key is found in the database.
-     *
-     * @param id     the id of the lecture
+     * Deletes a lecture from the database.
+     * @param id the id of the lecture
      * @param modkey the moderator key
      * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
-    public int delete(UUID id, UUID modkey)
-            throws LectureException, InvalidModkeyException {
+    public int delete(UUID id, UUID modkey) throws LectureException, InvalidModkeyException {
         LectureEntity toDelete = getLectureById(id);
         if (toDelete == null) {
             throw new LectureNotFoundException();
@@ -98,11 +98,12 @@ public class LectureService {
     }
 
     /**
-     * Close a lecture for future uses.
-     *
-     * @param id     the lecture id
-     * @param modkey the modkey
-     * @return 0 if successful, -1 otherwise
+     * Close a lecture.
+     * @param id the id of the lecture
+     * @param modkey the moderator key
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     public int close(UUID id, UUID modkey) throws LectureException, InvalidModkeyException {
         LectureEntity toClose = getLectureById(id);
@@ -117,11 +118,12 @@ public class LectureService {
     }
 
     /**
-     * Checks if moderator.
-     *
-     * @param id     the id of the lecture
+     * Checks if the provided moderator key matches the moderator key of the lecture.
+     * @param id the id of the lecture
      * @param modkey the moderator key
-     * @return 0 if successful, -1 otherwise
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     public int validateModerator(UUID id, UUID modkey)
             throws LectureException, InvalidModkeyException {

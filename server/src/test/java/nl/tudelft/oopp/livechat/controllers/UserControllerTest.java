@@ -177,7 +177,7 @@ public class UserControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals("Don't do this", result);
+        assertEquals("UUID is not in the correct format", result);
     }
 
     @Test

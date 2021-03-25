@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -138,12 +137,11 @@ class LectureControllerTest {
     @Test
     void createLectureTest() {
         assertDoesNotThrow(() -> createLecture("/api/newLecture?name=test1",
-                createJson("Papa", time, 60)));
+                createJson("Papa", time, 70)));
     }
 
     @Test
     void createLectureModkeyTest() throws Exception {
-        objectMapper.registerModule(new JavaTimeModule());
         String json = createLecture("/api/newLecture?name=test2", createJson("Mama", time, 60));
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         assertNotNull(lectureEntity);
@@ -386,6 +384,21 @@ class LectureControllerTest {
                 .andExpect(status().isBadRequest()).andReturn().getResponse()
                 .getContentAsString();
         assertEquals("Missing parameter", result);
+    }
+
+    @Test
+    void numberFormatExceptionHandlerTest() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode node = mapper.createObjectNode();
+        node.put("creatorName", "sudo");
+        node.put("startTime", simpleDateFormat.format(time));
+        node.put("frequency", "five");
+
+        String result = this.mockMvc.perform(post("/api/newLecture?name=test1")
+                .content(node.toString()).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest()).andReturn().getResponse()
+                .getContentAsString();
+        assertEquals("Not a number", result);
     }
 }
 

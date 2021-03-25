@@ -58,7 +58,11 @@ public class QuestionService {
     /**
      * Creates new question entity in the database.
      * @param q the question entity
-     * @return the id of the question entity created, -1 if not
+     * @return the id of the question entity created
+     * @throws LectureException when the lecture is not found, is closed or is not started
+     * @throws QuestionException when the question with the same id already exists, the question
+     *          text is too long, or the user asks questions too frequently
+     * @throws UserException when the user is not registered or banned
      */
     public long newQuestionEntity(QuestionEntity q)
             throws LectureException, QuestionException, UserException {
@@ -96,9 +100,9 @@ public class QuestionService {
         if (!userAsked.isAllowed()) {
             throw new UserBannedException();
         }
-        if (lecture.getFrequency() != 0 && userAsked.getLastQuestion() != null
-                && q.getTime().getTime() - userAsked.getLastQuestion().getTime()
-                < (long) lecture.getFrequency() * 1000) {
+        if (userAsked.getLastQuestion() != null
+                && System.currentTimeMillis() - userAsked.getLastQuestion().getTime()
+                < lecture.getFrequency() * 1000) {
             throw new QuestionFrequencyTooFastException();
         }
         userAsked.setLastQuestion(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
@@ -106,15 +110,17 @@ public class QuestionService {
         questionRepository.save(q);
         userRepository.save(userAsked);
         return q.getId();
-
-
     }
 
     /**
      * Delete question from the database.
      * @param id the id of the question
      * @param personId the id of the person
-     * @return 0 if the question is deleted successfully, -1 otherwise
+     * @return 0 if the question is deleted successfully
+     * @throws QuestionException when the question is not found
+     *          or the owner id doesn't match the provided id
+     * @throws LectureException when the lecture is not found or is closed
+     * @throws UserException when the user is not registered
      */
     public int deleteQuestion(long id, long personId)
             throws QuestionException, LectureException, UserException {
@@ -142,7 +148,10 @@ public class QuestionService {
      * Delete any question (done by a moderator).
      * @param id the id of the question
      * @param modkey the moderator key
-     * @return 0 if the question is deleted successfully, -1 otherwise
+     * @return 0 if the question is deleted successfully
+     * @throws QuestionException when the question is not found
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     public int deleteModeratorQuestion(long id, UUID modkey)
             throws QuestionException, LectureException, InvalidModkeyException {
@@ -164,7 +173,11 @@ public class QuestionService {
      * @param moderatorKey the moderator key
      * @param newText the new question text
      * @param newOwnerId the id of the new owner of the question
-     * @return 0 if question is edited successfully, -1 otherwise
+     * @return 0 if question is edited successfully
+     * @throws QuestionException when the question is not found or the new question text is too long
+     * @throws LectureException when the lecture is not found
+     * @throws UserException when the new owner is not registered
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     public int editQuestion(long id, UUID moderatorKey, String newText, long newOwnerId)
             throws QuestionException, LectureException, UserException, InvalidModkeyException {
@@ -196,7 +209,10 @@ public class QuestionService {
      * Upvote question.
      * @param id the id of the question
      * @param userId the id of the user
-     * @return 0 if question is upvoted successfully, -1 otherwise
+     * @return 0 if question is upvoted successfully
+     * @throws QuestionException when the question is not found
+     * @throws LectureException when the lecture is not found or is closed
+     * @throws UserException when the user is not registered
      */
     public int upvote(long id, long userId)
             throws QuestionException, LectureException, UserException {
@@ -232,7 +248,10 @@ public class QuestionService {
      * @param id the question id
      * @param modkey the modkey
      * @param answerText the answer text
-     * @return 0 if successful, -1 otherwise
+     * @return 0 if successful
+     * @throws QuestionException when the question is not found or the answer text is too long
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     public int answer(long id, UUID modkey, String answerText)
             throws QuestionException, LectureException, InvalidModkeyException {
@@ -254,6 +273,13 @@ public class QuestionService {
         throw new InvalidModkeyException();
     }
 
+    /**
+     * A helper method to check if the question and the lecture exist in the database.
+     * @param q the question to check
+     * @return the lecture in which the question was asked if it exists
+     * @throws QuestionException when the question is not found
+     * @throws LectureNotFoundException when the lecture is not found
+     */
     private LectureEntity validateQuestionAndFindLecture(QuestionEntity q)
             throws QuestionException, LectureNotFoundException {
         //check if the question exists

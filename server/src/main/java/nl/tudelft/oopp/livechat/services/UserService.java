@@ -55,7 +55,9 @@ public class UserService {
      * @param user the new user
      * @param ip the ip address of the user
      * @return 0 iff the user is registered successfully
-     * @throws UserException if an error occurs (user not registered, user id is invalid)
+     * @throws UserException when the user id is not a valid mac address
+     *              or there are more that 5 users with the same IP-address
+     * @throws NoDataReceivedException when the user object is null
      */
     public int newUser(UserEntity user, String ip) throws UserException, NoDataReceivedException {
         if (user == null) {
@@ -100,16 +102,15 @@ public class UserService {
 
     /**
      * Bans the user by id.
-     * @param modid  the moderator's user id
+     * @param modid the moderator's user id
      * @param qid the question id which user is to be banned
      * @param modkey the modkey for the lecture the user is in
      * @param time the time for the ban
      * @return 0 if banned successfully
-     *          -1 if no user with the chosen id
-     *          -2 if no lecture is connected to the user
-     *          -3 if the lecture is closed
-     *          -4 if modkey is wrong
-     *          -5 if user was already banned
+     * @throws UserException when the user is not registered or already banned
+     * @throws LectureException when the lecture is not found or is closed
+     * @throws QuestionException when the question is not found
+     * @throws InvalidModkeyException when the modkey is incorrect
      */
     public int banById(long modid, long qid, UUID modkey, int time)
                         throws UserException, LectureException,
@@ -142,12 +143,12 @@ public class UserService {
      * Bans the user by ip.
      * @param modid the moderator's user id
      * @param qid the question id which user is to be banned
-     * @param modkey the moderator key for 1 of the lectures the user could be in
+     * @param modkey the moderator key for one of the lectures the user could be in
      * @param time the time for the ban
      * @return 0 if banned successfully
-     *          -1 if no user with the chosen ip
-     *          -2 if no lectures meet the requirements
-     *          -3 if the user is already banned
+     * @throws UserException when the user(s) is not registered or already banned
+     * @throws LectureException when the lecture is not found
+     * @throws QuestionException when the question is not found
      */
     public int banByIp(long modid, long qid, UUID modkey, int time)
             throws UserException, LectureException, QuestionException {
