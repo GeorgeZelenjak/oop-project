@@ -1,5 +1,7 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 
@@ -15,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -93,7 +96,7 @@ class UserLectureVotingControllerTest {
 
 
     @Test
-    public void voteOnLectureSlowerSpeedCorrect() throws Exception {
+    public void voteOnLectureSlowerSpeedCorrectTest() throws Exception {
         String result = vote("/api/vote/lectureSpeed?uid="
                     + uid1 + "&uuid=" + uuid, "slower");
         assertEquals("0", result);
@@ -101,7 +104,7 @@ class UserLectureVotingControllerTest {
     }
 
     @Test
-    public void voteOnLectureFasterSpeedCorrect() throws Exception {
+    public void voteOnLectureFasterSpeedCorrectTest() throws Exception {
         String result = vote("/api/vote/lectureSpeed?uid="
                 + uid1 + "&uuid=" + uuid, "faster");
         assertEquals("0", result);
@@ -109,7 +112,7 @@ class UserLectureVotingControllerTest {
     }
 
     @Test
-    public void voteOnLectureTwiceSame() throws Exception {
+    public void voteOnLectureTwiceSameTest() throws Exception {
         vote("/api/vote/lectureSpeed?uid="
                 + uid1 + "&uuid=" + uuid, "faster");
         String result = vote("/api/vote/lectureSpeed?uid="
@@ -119,7 +122,7 @@ class UserLectureVotingControllerTest {
     }
 
     @Test
-    public void voteOnLectureTwiceDifferent() throws Exception {
+    public void voteOnLectureTwiceDifferentTest() throws Exception {
         vote("/api/vote/lectureSpeed?uid="
                 + uid1 + "&uuid=" + uuid, "faster");
         String result = vote("/api/vote/lectureSpeed?uid="
@@ -129,7 +132,7 @@ class UserLectureVotingControllerTest {
     }
 
     @Test
-    public void voteOnLectureSpeedWrongUuid() throws Exception {
+    public void voteOnLectureSpeedWrongUuidTest() throws Exception {
         String result = mockMvc.perform(put("/api/vote/lectureSpeed?uid="
                 + uid1 + "&uuid=" + UUID.randomUUID())
                 .content("faster")
@@ -141,7 +144,7 @@ class UserLectureVotingControllerTest {
     }
 
     @Test
-    public void voteOnLectureInvalidUuid() throws Exception {
+    public void voteOnLectureInvalidUuidTest() throws Exception {
         String result = mockMvc.perform(put("/api/vote/lectureSpeed?uid="
                 + uid1 + "&uuid=validUUID")
                 .content("faster")
@@ -153,7 +156,7 @@ class UserLectureVotingControllerTest {
     }
 
     @Test
-    public void resetSuccessful() throws Exception {
+    public void resetSuccessfulTest() throws Exception {
         vote("/api/vote/lectureSpeed?uid="
                 + uid1 + "&uuid=" + uuid, "faster");
         vote("/api/vote/lectureSpeed?uid="
@@ -168,7 +171,7 @@ class UserLectureVotingControllerTest {
     }
 
     @Test
-    public void resetWrongModKey() throws Exception {
+    public void resetWrongModKeyTest() throws Exception {
         vote("/api/vote/lectureSpeed?uid="
                 + uid1 + "&uuid=" + uuid, "faster");
         vote("/api/vote/lectureSpeed?uid="
@@ -183,7 +186,7 @@ class UserLectureVotingControllerTest {
     }
 
     @Test
-    public void resetInvalidUUID() throws Exception {
+    public void resetInvalidUUIDTest() throws Exception {
         vote("/api/vote/lectureSpeed?uid="
                 + uid1 + "&uuid=" + uuid, "faster");
         vote("/api/vote/lectureSpeed?uid="
@@ -195,5 +198,34 @@ class UserLectureVotingControllerTest {
                 .andReturn().getResponse().getContentAsString();
         assertEquals("Don't do this", result);
         assertFalse(speedRepository.findAllByLectureId(uuid).isEmpty());
+    }
+
+    @Test
+    public void getVotesSuccessfulTest() throws Exception {
+        vote("/api/vote/lectureSpeed?uid="
+                + uid1 + "&uuid=" + uuid, "faster");
+        vote("/api/vote/lectureSpeed?uid="
+                + uid2 + "&uuid=" + uuid, "slower");
+
+        String result = mockMvc.perform(get(("/api/vote/getLectureSpeed/"
+                + "/" + lecture.getUuid())))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Integer> list = objectMapper.readValue(result,
+                new TypeReference<>(){});
+        assertEquals(List.of(1,1), list);
+    }
+
+    @Test
+    public void getVotesUnsuccessfulTest() throws Exception {
+        lectureRepository.deleteById(uuid);
+
+        String result = mockMvc.perform(get(("/api/vote/getLectureSpeed/"
+                + "/" + uuid))).andExpect(status().isNotFound())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Lecture not found", result);
+
+        lectureRepository.save(lecture);
     }
 }

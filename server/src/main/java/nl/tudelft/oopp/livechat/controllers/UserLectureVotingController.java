@@ -1,7 +1,5 @@
 package nl.tudelft.oopp.livechat.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import nl.tudelft.oopp.livechat.entities.UserLectureSpeedTable;
 import nl.tudelft.oopp.livechat.exceptions.InvalidModkeyException;
 import nl.tudelft.oopp.livechat.exceptions.LectureException;
 import nl.tudelft.oopp.livechat.exceptions.UserException;
@@ -38,7 +36,7 @@ public class UserLectureVotingController {
     public int voteOnLectureSpeed(@RequestParam long uid,
                                   @RequestParam UUID uuid, @RequestBody String speed)
             throws LectureException, UserException {
-        return service.setUserLectureSpeedVote(uid,uuid,speed);
+        return service.setUserLectureSpeedVote(uid, uuid, speed);
     }
 
     @GetMapping("/getLectureSpeed/{UUID}")
@@ -67,19 +65,6 @@ public class UserLectureVotingController {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
-        System.out.println(exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Don't do this");
-    }
-
-    /**
-     * Exception handler.
-     * @param exception exception that has occurred
-     * @return response body with 400 and 'Missing parameter' message
-     */
-    @ExceptionHandler(NullPointerException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private ResponseEntity<Object> badParameter(NullPointerException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Don't do this");
