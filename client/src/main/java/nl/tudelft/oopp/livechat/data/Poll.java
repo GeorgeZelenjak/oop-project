@@ -16,7 +16,7 @@ public class Poll {
 
     private UUID uuid;
 
-    private String questionText;
+    private String questionText = "";
 
     private Timestamp time;
 
@@ -167,7 +167,8 @@ public class Poll {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Poll that = (Poll) o;
-        return id == that.id;
+        //IT IS VERY IMPORTANT TO CHECK THE TEXT ON CLIENT
+        return (id == that.id && questionText.equals(that.questionText));
     }
 
     @Override

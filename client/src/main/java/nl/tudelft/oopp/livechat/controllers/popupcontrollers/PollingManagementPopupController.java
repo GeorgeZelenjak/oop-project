@@ -24,14 +24,19 @@ import java.util.UUID;
 public class PollingManagementPopupController implements Initializable {
 
     @FXML
-    private ListView<PollOption> popupOptionsListView;
+    private ListView<PollOption> pollOptionsListView;
 
     @FXML
     private TextArea questionTextTextArea;
 
-    private List<PollOption> options;
+    //Setup for ease of access
+    private List<PollOption> inEditingOptions;
+    private Poll inEditingPoll;
 
-    private Poll poll;
+
+    private List<PollOption> fetchedOptions;
+    private Poll fetchedPoll;
+
 
     private UUID lectureId;
 
@@ -49,70 +54,38 @@ public class PollingManagementPopupController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        resetListView();
+
+        //Set for ease of access
         lectureId = Lecture.getCurrentLecture().getUuid();
         modkey = Lecture.getCurrentLecture().getModkey();
+        inEditingOptions = PollAndOptions.getInEditingPollAndOptions().getOptions();
+        inEditingPoll = PollAndOptions.getInEditingPollAndOptions().getPoll();
 
-        addPollOptionCell();
-        addPollOptionCell();
-        addPollOptionCell();
-        addPollOptionCell();
-
+        //Sets page to match whats was in editing
+        setAsInEditing();
     }
 
 
     /**
-     * Fetch poll options.
-     */
-    public void initializeList() {
-
-        observableList.setAll(options);
-        popupOptionsListView.setItems(observableList);
-
-
-        popupOptionsListView.setCellFactory(
-                new Callback<ListView<PollOption>, ListCell<PollOption>>() {
-                    @Override
-                    public ListCell<PollOption> call(ListView<PollOption> listView) {
-                        return new PollOptionCell();
-                    }
-                });
-        popupOptionsListView.getItems().addAll(options);
-    }
-
-    /**
-     * Add poll option cell.
+     * Add poll option cell to inEditingOptions.
      */
     public void addPollOptionCell() {
-        popupOptionsListView.getItems().add(new PollOption());
-        options = popupOptionsListView.getItems();
+        pollOptionsListView.getItems().add(new PollOption());
+        inEditingOptions = pollOptionsListView.getItems();
     }
 
     /**
      * Open polling.
      */
     public void openPolling() {
-        PollAndOptions current = PollAndOptions.getCurrentPollAndOptions();
-        if (current == null || !poll.equals(current.getPoll())) {
+        if (!inEditingPoll.equals(fetchedPoll)) {
+            publishPoll();
+            return;
+        }
 
-            PollAndOptions.setCurrentPollAndOptions(
-                    new PollAndOptions(new Poll(), new ArrayList<PollOption>()));
-
-            poll = PollCommunication.createPoll(lectureId, modkey, questionTextTextArea.getText());
-            PollAndOptions.getCurrentPollAndOptions().setPoll(poll);
-
-            for (PollOption pollOption : options) {
-                System.out.println(pollOption.getOptionText());
-                PollAndOptions.getCurrentPollAndOptions().getOptions().add(
-                    PollCommunication.addOption(
-                    poll.getId(), modkey, pollOption.isCorrect(), pollOption.getOptionText()));
-            }
-            PollCommunication.toggle(poll.getId(), modkey);
-            PollAndOptions.getCurrentPollAndOptions().getPoll().setOpen(true);
-
-        } else if (!current.getPoll().isOpen()) {
-            PollCommunication.toggle(current.getPoll().getId(), modkey);
-            current.getPoll().setOpen(true);
+        if (!inEditingPoll.isOpen()) {
+            PollCommunication.toggle(inEditingPoll.getId(), modkey);
+            inEditingPoll.setOpen(true);
         }
     }
 
@@ -120,10 +93,9 @@ public class PollingManagementPopupController implements Initializable {
      * Close poll.
      */
     public void closePoll() {
-        PollAndOptions current = PollAndOptions.getCurrentPollAndOptions();
-        if (current != null && current.getPoll().isOpen()) {
-            PollCommunication.toggle(poll.getId(), modkey);
-            current.getPoll().setOpen(false);
+        if (fetchedPoll != null && fetchedPoll.isOpen()) {
+            PollCommunication.toggle(fetchedPoll.getId(), modkey);
+            fetchedPoll.setOpen(false);
         }
     }
 
@@ -145,15 +117,65 @@ public class PollingManagementPopupController implements Initializable {
             System.out.println("Current poll is null");
         }
 
-        PollAndOptions.setInEditingPollAndOptions(
-                new PollAndOptions(new Poll(), new ArrayList<PollOption>()));
-        resetListView();
+        inEditingPoll = new Poll();
+        inEditingOptions = new ArrayList<PollOption>();
+        setAsInEditing();
     }
 
-    private void resetListView() {
-        poll = PollAndOptions.getInEditingPollAndOptions().getPoll();
-        options = PollAndOptions.getInEditingPollAndOptions().getOptions();
-        questionTextTextArea.setText(poll.getQuestionText());
-        initializeList();
+    /**
+     * Resets user input to match what is in inEditing variable.
+     */
+    private void setAsInEditing() {
+        //Sets question text
+        questionTextTextArea.setText(inEditingPoll.getQuestionText());
+
+        //Sets options
+        setListViewAsInEditing();
+    }
+
+    private void setListViewAsInEditing() {
+
+        observableList.setAll(inEditingOptions);
+        pollOptionsListView.setItems(observableList);
+
+        //Setup cellFactory
+        pollOptionsListView.setCellFactory(
+                new Callback<ListView<PollOption>, ListCell<PollOption>>() {
+                    @Override
+                    public ListCell<PollOption> call(ListView<PollOption> listView) {
+                        return new PollOptionCell();
+                    }
+                });
+        pollOptionsListView.getItems().addAll(inEditingOptions);
+    }
+
+    private void forceUpdateFetch() {
+        fetchedPoll = inEditingPoll;
+        fetchedOptions = inEditingOptions;
+    }
+
+    private void publishPoll() {
+
+        //Sends request for poll
+        Poll sentPoll = PollCommunication.createPoll(
+                lectureId, modkey, questionTextTextArea.getText());
+
+        if (sentPoll != null) {
+            List<PollOption> sentPollOptions = new ArrayList<PollOption>();
+
+            //Sends requests for every pollOption
+            for (PollOption pollOption : inEditingOptions) {
+                System.out.println(pollOption.getOptionText());
+                sentPollOptions.add(PollCommunication.addOption(sentPoll.getId(),
+                        modkey, pollOption.isCorrect(), pollOption.getOptionText()));
+            }
+            PollCommunication.toggle(sentPoll.getId(), modkey);
+            sentPoll.setOpen(true);
+
+            //Set in editing variables to match the server responses
+            inEditingOptions = sentPollOptions;
+            inEditingPoll = sentPoll;
+            forceUpdateFetch();
+        }
     }
 }

@@ -15,7 +15,7 @@ public class PollOption implements Comparable<PollOption> {
 
     private long pollId;
 
-    private String optionText;
+    private String optionText = "";
 
     private long votes;
 
@@ -128,7 +128,8 @@ public class PollOption implements Comparable<PollOption> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PollOption that = (PollOption) o;
-        return id == that.id;
+        //IT IS VERY IMPORTANT TO CHECK THE TEXT ON CLIENT
+        return (id == that.id && optionText.equals(that.optionText));
     }
 
     @Override
