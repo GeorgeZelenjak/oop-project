@@ -10,6 +10,11 @@ public abstract class CommonCommunication {
 
     public static final String ADDRESS = "http://localhost:8080";
 
+
+    private CommonCommunication() {
+
+    }
+
     /**
      * Handle response given response codes and error messages by server.
      *
