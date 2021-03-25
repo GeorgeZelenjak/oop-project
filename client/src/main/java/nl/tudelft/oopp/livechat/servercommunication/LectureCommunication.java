@@ -3,7 +3,10 @@ package nl.tudelft.oopp.livechat.servercommunication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import javafx.scene.control.Alert;
 import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 
@@ -79,17 +82,13 @@ public class LectureCommunication {
             return null;
         }
 
-        // Prints the status code if the communication
-        // if server gives an unexpected response
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
+        int result = handleResponse(response);
+        if (result != 0) {
             return null;
         }
 
         //Return object from response
         Lecture created =  gson.fromJson(response.body(), Lecture.class);
-
-        if (created == null) return null;
 
         if (!registerUser(created.getUuid().toString(), User.getUid(), User.getUserName())) {
             System.out.println("Couldn't register user");
@@ -123,8 +122,8 @@ public class LectureCommunication {
             e.printStackTrace();
             return null;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status first req: " + response.statusCode());
+        int result = handleResponse(response);
+        if (result != 0) {
             return null;
         }
 
@@ -166,12 +165,8 @@ public class LectureCommunication {
             //e.printStackTrace();
             return false;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return false;
-        }
-
-        return response.body().equals("0");
+        int result = handleResponse(response);
+        return result == 0;
 
     }
 
@@ -204,13 +199,8 @@ public class LectureCommunication {
             //e.printStackTrace();
             return false;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            System.out.println(response.body());
-            return false;
-        }
-
-        return response.body().equals("0");
+        int result = handleResponse(response);
+        return result == 0;
     }
 
     /**
@@ -254,19 +244,10 @@ public class LectureCommunication {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            System.out.println("Exception when communicating with the server!");
-            //e.printStackTrace();
+            System.out.println("Error when communicating with the server!");
             return -2;
         }
-
-        int result = handleResponse(response);
-        System.out.println("Result: " + result);
-        if (result == 0) {
-            System.out.println("The user with qid " + questionToBanId
-                    + " was banned successfully!");
-            System.out.println("Ban time: " + time);
-        }
-        return result;
+        return handleResponse(response);
     }
 
     /**
@@ -302,16 +283,7 @@ public class LectureCommunication {
             //e.printStackTrace();
             return false;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status second req: " + response.statusCode());
-            return false;
-        }
-
-        if (!response.body().equals("0")) {
-            System.out.println("Server rejected the request with user: " + uid + " " + username);
-            return false;
-        }
-        return true;
+        return handleResponse(response) == 0;
     }
 
 
@@ -324,7 +296,7 @@ public class LectureCommunication {
      * @param response response received from the server
      * @return -3, -4, 0 according to the "status codes" for these methods
      */
-    private static int handleResponse(HttpResponse<String> response) {
+    /*private static int handleResponse(HttpResponse<String> response) {
         //Unexpected response
         if (response.statusCode() != 200) {
             System.out.println("Status: " + response.statusCode());
@@ -335,6 +307,21 @@ public class LectureCommunication {
             return Integer.parseInt(response.body());
         }
         //Success
+        return 0;
+    }*/
+
+    private static int handleResponse(HttpResponse<String> response) {
+        if (response.statusCode() != 200) {
+            if (response.body().contains("{")) {
+                JsonObject res = JsonParser.parseString(response.body()).getAsJsonObject();
+                String reason = res.get("message").getAsString();
+                String error = res.get("error").getAsString();
+                AlertController.alertError(error, reason);
+            } else {
+                AlertController.alertError("Error", response.body());
+            }
+            return -1;
+        }
         return 0;
     }
 }
