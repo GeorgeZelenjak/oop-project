@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="512.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.popupscenes.PopupResults">
+<AnchorPane prefHeight="512.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ListView fx:id="resultsListView" layoutX="40.0" layoutY="60.0" prefHeight="420.0" prefWidth="640.0" />
       <Text layoutX="304.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Results">
@@ -12,5 +12,6 @@
             <Font size="36.0" />
          </font>
       </Text>
+      <Text fx:id="questionText" layoutX="54.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="183.13671875" />
    </children>
 </AnchorPane>

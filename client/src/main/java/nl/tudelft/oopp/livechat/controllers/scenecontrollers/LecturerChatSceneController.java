@@ -12,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -29,7 +28,6 @@ import nl.tudelft.oopp.livechat.uielements.QuestionCellLecturer;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
-import javax.tools.Tool;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -430,11 +428,26 @@ public class LecturerChatSceneController implements Initializable {
 
     private void fetchVotes() {
 
-        PollAndOptions.setCurrentPollAndOptions(
+        PollAndOptions fetched = (
                 PollCommunication.fetchPollAndOptionsModerator(
                         Lecture.getCurrentLecture().getUuid(),
                         Lecture.getCurrentLecture().getModkey()));
-
+        if (fetched == null) {
+            return;
+        }
+        if (!fetched.equals(PollAndOptions.getCurrentPollAndOptions())) {
+            PollAndOptions.setCurrentPollAndOptions(fetched);
+            NavigationController.getCurrentController().popupPollVoting();
+            return;
+        }
+        if (fetched.getPoll().isOpen()) {
+            return;
+        }
+        if (PollAndOptions.getCurrentPollAndOptions()
+                .getPoll().isOpen() && !fetched.getPoll().isOpen()) {
+            PollAndOptions.setCurrentPollAndOptions(fetched);
+            NavigationController.getCurrentController().popupPollResult();
+        }
 
     }
 
