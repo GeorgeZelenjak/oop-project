@@ -24,7 +24,7 @@ import org.springframework.test.annotation.DirtiesContext;
 /**
  * Class for Question service tests.
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 class QuestionServiceTest {
     private static LectureEntity l1;
@@ -101,6 +101,9 @@ class QuestionServiceTest {
 
     @BeforeEach
     public void setUp() {
+        lectureRepository.deleteAll();
+        userRepository.deleteAll();
+        questionRepository.deleteAll();
         lectureRepository.save(l1);
         userRepository.save(user1);
         lectureRepository.save(l2);
@@ -210,15 +213,15 @@ class QuestionServiceTest {
 
     @Test
     void newQuestionEntityTooFrequentlyTest() throws Exception {
-        l3.setFrequency(3);
-        lectureRepository.save(l3);
         userRepository.save(user3);
-
+        lectureRepository.save(l3);
 
         QuestionEntity q = new QuestionEntity(l3.getUuid(), "name???",
                 new Timestamp(System.currentTimeMillis()), uid3);
         questionService.newQuestionEntity(q);
 
+        l3.setFrequency(3);
+        lectureRepository.save(l3);
         //test that one cannot fake the question time
         QuestionEntity qq = new QuestionEntity(l3.getUuid(), "name???",
                 new Timestamp(0), uid3);
@@ -234,13 +237,14 @@ class QuestionServiceTest {
 
     @Test
     void newQuestionEntityFrequencySuccessfulTest() throws Exception {
-        l3.setFrequency(3);
-        lectureRepository.save(l3);
         userRepository.save(user3);
+        lectureRepository.save(l3);
 
         QuestionEntity q = new QuestionEntity(l3.getUuid(), "name???",
                 new Timestamp(System.currentTimeMillis()), uid3);
         questionService.newQuestionEntity(q);
+        l3.setFrequency(3);
+        lectureRepository.save(l3);
 
         Thread.sleep(3500);
 
