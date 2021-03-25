@@ -161,7 +161,7 @@ public class LecturerChatSceneController implements Initializable {
         userNameText.setText(User.getUserName());
         slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
         timelineFetch = new Timeline(new KeyFrame(
-                Duration.millis(1500),
+                Duration.millis(3000),
             ae -> {
                 fetchQuestions();
                 getVotesOnLectureSpeed();
@@ -435,10 +435,7 @@ public class LecturerChatSceneController implements Initializable {
                         Lecture.getCurrentLecture().getUuid(),
                         Lecture.getCurrentLecture().getModkey()));
 
-        System.out.println(
-                PollAndOptions.getCurrentPollAndOptions().getPoll().getQuestionText());
-        System.out.println(
-                PollAndOptions.getCurrentPollAndOptions().getOptions().get(0).getOptionText());
+
     }
 
 }

@@ -170,8 +170,9 @@ public class PollService {
             throws LectureNotFoundException, PollNotFoundException {
         if (lectureRepository.findLectureEntityByUuid(uuid) == null)
             throw new LectureNotFoundException();
-        PollEntity pollEntity = pollRepository.findAllByUuidOrderByTimeDesc(uuid).get(0);
-        if (pollEntity == null) throw new PollNotFoundException();
+        List<PollEntity> polls = pollRepository.findAllByUuidOrderByTimeDesc(uuid);
+        if (polls.size() == 0) throw new PollNotFoundException();
+        PollEntity pollEntity = polls.get(0);
         List<PollOptionEntity> pollOptions = pollOptionRepository
                 .findAllByPollId(pollEntity.getId());
         if (!pollEntity.isOpen()) {
@@ -199,8 +200,9 @@ public class PollService {
         lectureService.validateModerator(uuid, modkey);
         if (lectureRepository.findLectureEntityByUuid(uuid) == null)
             throw new LectureNotFoundException();
-        PollEntity pollEntity = pollRepository.findAllByUuidOrderByTimeDesc(uuid).get(0);
-        if (pollEntity == null) throw new PollNotFoundException();
+        List<PollEntity> polls = pollRepository.findAllByUuidOrderByTimeDesc(uuid);
+        if (polls.size() == 0) throw new PollNotFoundException();
+        PollEntity pollEntity = polls.get(0);
         List<PollOptionEntity> pollOptions = pollOptionRepository
                 .findAllByPollId(pollEntity.getId());
         return new PollAndOptions(pollEntity, pollOptions);
