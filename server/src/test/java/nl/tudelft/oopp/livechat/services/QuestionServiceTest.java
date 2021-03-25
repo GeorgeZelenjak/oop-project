@@ -207,6 +207,54 @@ class QuestionServiceTest {
     }
 
     @Test
+    void newQuestionEntityTooFrequentlyTest() throws Exception {
+        l3.setFrequency(3);
+        lectureRepository.save(l3);
+        userRepository.save(user3);
+
+
+        QuestionEntity q = new QuestionEntity(l3.getUuid(), "name???",
+                new Timestamp(System.currentTimeMillis()), uid3);
+        questionService.newQuestionEntity(q);
+
+        //test that one cannot fake the question time
+        QuestionEntity qq = new QuestionEntity(l3.getUuid(), "name???",
+                new Timestamp(0), uid3);
+
+        assertThrows(QuestionFrequencyTooFastException.class, () ->
+                questionService.newQuestionEntity(qq));
+
+        questionRepository.deleteById(q.getId());
+        l3.setFrequency(0);
+        lectureRepository.deleteById(l3.getUuid());
+        userRepository.deleteById(uid3);
+    }
+
+    @Test
+    void newQuestionEntityFrequencySuccessfulTest() throws Exception {
+        l3.setFrequency(3);
+        lectureRepository.save(l3);
+        userRepository.save(user3);
+
+        QuestionEntity q = new QuestionEntity(l3.getUuid(), "name???",
+                new Timestamp(System.currentTimeMillis()), uid3);
+        questionService.newQuestionEntity(q);
+
+        Thread.sleep(3500);
+
+        QuestionEntity qq = new QuestionEntity(l3.getUuid(), "name???",
+                new Timestamp(System.currentTimeMillis()), uid3);
+
+        assertTrue(questionService.newQuestionEntity(qq) > 0);
+
+        questionRepository.deleteById(q.getId());
+        questionRepository.deleteById(qq.getId());
+        l3.setFrequency(0);
+        lectureRepository.deleteById(l3.getUuid());
+        userRepository.deleteById(uid3);
+    }
+
+    @Test
     void newQuestionLectureNotStartedTest() {
         l2.setStartTime(new Timestamp(System.currentTimeMillis() + 0xFFFFFFFFFL));
         lectureRepository.save(l2);

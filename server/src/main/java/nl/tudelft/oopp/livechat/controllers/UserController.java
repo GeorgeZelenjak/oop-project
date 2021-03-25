@@ -3,6 +3,7 @@ package nl.tudelft.oopp.livechat.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.services.UserService;
@@ -89,26 +90,13 @@ public class UserController {
     }
 
     /**
-     * Exception handler.
-     * @param exception exception that has occurred
-     * @return response body with 400 and 'Invalid UUID' message
-     */
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private ResponseEntity<Object> badUUID(HttpMessageNotReadableException exception) {
-        System.out.println(exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Don't do this");
-    }
-
-    /**
      * Exception handler for requests containing invalid uuids.
      * @param exception exception that has occurred
      * @return response object with 400 Bad Request status code and 'Don't do this' message
      */
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(InvalidFormatException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
+    private ResponseEntity<Object> badUUID(InvalidFormatException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("UUID is not in the correct format");
