@@ -2,10 +2,14 @@ package nl.tudelft.oopp.livechat.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import org.junit.jupiter.api.*;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
@@ -15,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.model.HttpRequest.request;
 
 /**
@@ -23,7 +28,7 @@ import static org.mockserver.model.HttpRequest.request;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LectureCommunicationTest {
 
-    /*public static MockServerClient mockServer;
+    public static MockServerClient mockServer;
     public static String jsonLecture;
     public static String jsonUser;
     private static final String lid = "0ee81155-96fc-4045-bfe9-dd7ca714b5e8";
@@ -38,9 +43,11 @@ public class LectureCommunicationTest {
     private static final SimpleDateFormat simpleDateFormat =
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
-    *
-     * A helper method to assign JSON string lecture.
+    private static MockedStatic<AlertController> alertControllerMockedStatic;
 
+    /**
+     * A helper method to assign JSON string lecture.
+     */
     private static void assignJsonLecture() {
         ObjectNode node = new ObjectMapper().createObjectNode();
         node.put("uuid",lid);
@@ -67,9 +74,9 @@ public class LectureCommunicationTest {
 
     }
 
-    *
+    /**
      * Create expectations for creating a new lecture.
-
+     */
     private static void createExpectationsForCreateLecture() {
         //Success
         mockServer.when(request().withMethod("POST").withPath("/api/newLecture")
@@ -81,14 +88,14 @@ public class LectureCommunicationTest {
         //lecture name is too long
         mockServer.when(request().withMethod("POST").withPath("/api/newLecture")
                 .withQueryStringParameter("name",e))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(400)
                         .withBody("")
                         .withHeader("Content-Type","application/json"));
     }
 
-    *
+    /**
      * Create expectations for joining a lecture.
-
+     */
     private static void createExpectationsForJoinLectureById() {
         //success
         mockServer.when(request().withMethod("GET")
@@ -105,10 +112,11 @@ public class LectureCommunicationTest {
         //no lecture exists
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/get/" + modkey))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(400)
                         .withBody("")
                         .withHeader("Content-Type","application/json"));
 
+        //registration
         mockServer.when(request().withMethod("POST")
                 .withPath("/api/user/register")
                 .withBody(jsonUser))
@@ -116,9 +124,9 @@ public class LectureCommunicationTest {
                         .withBody("0"));
     }
 
-    *
+    /**
      * Create expectations for validating a moderator.
-
+     */
     private static void createExpectationsForValidateModerator() {
         //Success
         mockServer.when(request().withMethod("GET")
@@ -141,13 +149,13 @@ public class LectureCommunicationTest {
         //Incorrect modkey
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/validate/" + lid + "/" + incorrectModkey))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(400)
                         .withBody("-1"));
     }
 
-    *
+    /**
      * Create expectations for closing a lecture.
-
+     */
     private static void createExpectationsForCloseLecture() {
         //Success
         mockServer.when(request().withMethod("PUT")
@@ -170,7 +178,7 @@ public class LectureCommunicationTest {
         //Incorrect modkey
         mockServer.when(request().withMethod("PUT")
                 .withPath("/api/close/" + lid + "/" + incorrectModkey).withBody(""))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(400)
                         .withBody("-1"));
     }
 
@@ -184,11 +192,18 @@ public class LectureCommunicationTest {
         createExpectationsForJoinLectureById();
         createExpectationsForValidateModerator();
         createExpectationsForCloseLecture();
+        try {
+            alertControllerMockedStatic = Mockito.mockStatic(AlertController.class);
+            alertControllerMockedStatic.when(() -> AlertController.alertError(any(String.class),
+                    any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    *
+    /**
      * Tests for creating a new lecture.
-
+     */
     @Test
     public void createLectureSuccessfulTest() {
         Lecture res = LectureCommunication.createLecture("An awesome lecture",
@@ -219,9 +234,9 @@ public class LectureCommunicationTest {
         assertNull(res);
     }
 
-    *
+    /**
      * Tests for joining a lecture.
-
+     */
     @Test
     public void joinLectureByIdSuccessfulTest() {
         Lecture res = LectureCommunication.joinLectureById(lid);
@@ -249,9 +264,9 @@ public class LectureCommunicationTest {
         startServer();
     }
 
-    *
+    /**
      * Tests for validating a moderator.
-
+     */
 
     @Test
     public void validateModeratorSuccessfulTest() {
@@ -286,8 +301,9 @@ public class LectureCommunicationTest {
         startServer();
     }
 
-    *
+    /**
      * Tests for closing a lecture.
+     * */
 
 
     @Test
@@ -338,5 +354,6 @@ public class LectureCommunicationTest {
     @AfterAll
     private static void stopServer() {
         mockServer.stop();
-    }*/
+        alertControllerMockedStatic.close();
+    }
 }

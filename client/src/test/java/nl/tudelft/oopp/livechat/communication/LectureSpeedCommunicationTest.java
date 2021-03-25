@@ -1,5 +1,6 @@
 package nl.tudelft.oopp.livechat.communication;
 
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
@@ -7,6 +8,9 @@ import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
@@ -16,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.model.HttpRequest.request;
 
 public class LectureSpeedCommunicationTest {
@@ -27,6 +32,9 @@ public class LectureSpeedCommunicationTest {
     private static final UUID modkey = UUID.randomUUID();
     private static final UUID incorrectModkey = UUID.randomUUID();
     private static long userId;
+
+    private static MockedStatic<AlertController> alertControllerMockedStatic;
+
 
     /**
      * Create expectations for getting votes on the lecture speed.
@@ -47,7 +55,7 @@ public class LectureSpeedCommunicationTest {
         //Lecture not found
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/vote/getLectureSpeed/" + wrongLid))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(404)
                         .withBody("")
                         .withHeader("Content-Type","application/json"));
     }
@@ -80,14 +88,14 @@ public class LectureSpeedCommunicationTest {
         mockServer.when(request().withMethod("PUT").withPath("/api/vote/lectureSpeed")
                 .withQueryStringParameters(new Parameter("uid", "" + userId),
                         new Parameter("uuid", lid.toString())).withBody("a lot faster"))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(400)
                         .withBody("-1").withHeader("Content-Type","application/json"));
 
         //Lecture not found
         mockServer.when(request().withMethod("PUT").withPath("/api/vote/lectureSpeed")
                 .withQueryStringParameters(new Parameter("uid", "" + userId),
                         new Parameter("uuid", wrongLid.toString())).withBody("slower"))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(404)
                         .withBody("-1").withHeader("Content-Type","application/json"));
     }
 
@@ -109,13 +117,13 @@ public class LectureSpeedCommunicationTest {
         //Lecture not found
         mockServer.when(request().withMethod("DELETE")
                 .withPath("/api/vote/resetLectureSpeedVote/" + wrongLid + "/" + modkey))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(404)
                         .withBody("-1").withHeader("Content-Type", "application/json"));
 
         //Incorrect modkey
         mockServer.when(request().withMethod("DELETE")
                 .withPath("/api/vote/resetLectureSpeedVote/" + lid + "/" + incorrectModkey))
-                .respond(HttpResponse.response().withStatusCode(200)
+                .respond(HttpResponse.response().withStatusCode(400)
                         .withBody("-1").withHeader("Content-Type", "application/json"));
     }
 
@@ -132,6 +140,13 @@ public class LectureSpeedCommunicationTest {
         createExpectationsForGetVotes();
         createExpectationsForVoting();
         createExpectationsForResetting();
+        try {
+            alertControllerMockedStatic = Mockito.mockStatic(AlertController.class);
+            alertControllerMockedStatic.when(() -> AlertController.alertError(any(String.class),
+                    any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -203,18 +218,18 @@ public class LectureSpeedCommunicationTest {
 
     @Test
     public void voteWrongSpeedTest() {
-        assertEquals(-4, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "a lot faster"));
+        assertEquals(-1, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "a lot faster"));
     }
 
     @Test
     public void voteInvalidIdTest() {
-        assertEquals(-3,
+        assertEquals(-1,
                 LectureSpeedCommunication.voteOnLectureSpeed(userId, invalidUUID, "faster"));
     }
 
     @Test
     public void voteIncorrectIdTest() {
-        assertEquals(-4, LectureSpeedCommunication.voteOnLectureSpeed(userId, wrongLid, "slower"));
+        assertEquals(-1, LectureSpeedCommunication.voteOnLectureSpeed(userId, wrongLid, "slower"));
     }
 
     /**
@@ -242,21 +257,22 @@ public class LectureSpeedCommunicationTest {
 
     @Test
     public void resetInvalidIdTest() {
-        assertEquals(-3, LectureSpeedCommunication.resetLectureSpeed(invalidUUID, modkey));
+        assertEquals(-1, LectureSpeedCommunication.resetLectureSpeed(invalidUUID, modkey));
     }
 
     @Test
     public void resetIncorrectIdTest() {
-        assertEquals(-4, LectureSpeedCommunication.resetLectureSpeed(wrongLid, modkey));
+        assertEquals(-1, LectureSpeedCommunication.resetLectureSpeed(wrongLid, modkey));
     }
 
     @Test
     public void resetIncorrectModkeyTest() {
-        assertEquals(-4, LectureSpeedCommunication.resetLectureSpeed(lid, incorrectModkey));
+        assertEquals(-1, LectureSpeedCommunication.resetLectureSpeed(lid, incorrectModkey));
     }
 
     @AfterAll
     public static void stop() {
         mockServer.stop();
+        alertControllerMockedStatic.close();
     }
 }
