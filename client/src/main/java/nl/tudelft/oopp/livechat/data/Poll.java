@@ -1,8 +1,5 @@
 package nl.tudelft.oopp.livechat.data;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.List;

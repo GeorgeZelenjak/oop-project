@@ -4,6 +4,8 @@ import nl.tudelft.oopp.livechat.entities.poll.PollAndOptions;
 import nl.tudelft.oopp.livechat.entities.poll.PollEntity;
 import nl.tudelft.oopp.livechat.entities.poll.PollOptionEntity;
 import nl.tudelft.oopp.livechat.entities.poll.UserPollVoteTable;
+import nl.tudelft.oopp.livechat.exceptions.InvalidModkeyException;
+import nl.tudelft.oopp.livechat.exceptions.LectureException;
 import nl.tudelft.oopp.livechat.repositories.*;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +48,8 @@ public class PollService {
      * @param questionText the question text
      * @return the poll entity
      */
-    public PollEntity createPoll(UUID uuid, UUID modkey, String questionText) {
+    public PollEntity createPoll(UUID uuid, UUID modkey, String questionText)
+            throws LectureException, InvalidModkeyException {
         if (lectureService.validateModerator(uuid, modkey) != 0) return null;
         PollEntity pollEntity = new PollEntity(uuid, questionText);
         pollRepository.save(pollEntity);
@@ -62,7 +65,8 @@ public class PollService {
      *        -1 if poll does not exist
      *        -2 if invalid modkey
      */
-    public int togglePoll(long pollId, UUID modkey) {
+    public int togglePoll(long pollId, UUID modkey)
+            throws LectureException, InvalidModkeyException {
         PollEntity pollEntity = pollRepository.findById(pollId);
         if (pollEntity == null) return -1;
         if (lectureService.validateModerator(pollEntity.getUuid(), modkey) != 0) return -2;
@@ -82,7 +86,8 @@ public class PollService {
      * @return the poll option entity
      */
     public PollOptionEntity addOption(long pollId, UUID modkey, String optionText,
-                                      boolean isCorrect) {
+                                      boolean isCorrect)
+            throws LectureException, InvalidModkeyException {
         PollEntity pollEntity = pollRepository.findById(pollId);
         if (pollEntity == null
                 || lectureService.validateModerator(pollEntity.getUuid(), modkey) != 0) return null;
@@ -162,7 +167,8 @@ public class PollService {
      *        -4 if the user is not in the lecture
      *        -5 if the user already voted
      */
-    public int resetVotes(long pollId, UUID modkey) {
+    public int resetVotes(long pollId, UUID modkey)
+            throws LectureException, InvalidModkeyException {
         PollEntity pollEntity = pollRepository.findById(pollId);
         if (pollEntity == null) return -1;
         if (lectureService.validateModerator(pollEntity.getUuid(), modkey) != 0) return -2;

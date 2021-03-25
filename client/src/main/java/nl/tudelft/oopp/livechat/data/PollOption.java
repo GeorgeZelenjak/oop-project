@@ -1,7 +1,5 @@
 package nl.tudelft.oopp.livechat.data;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;

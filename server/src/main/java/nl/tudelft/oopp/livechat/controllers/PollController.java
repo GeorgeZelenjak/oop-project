@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.tudelft.oopp.livechat.entities.poll.PollAndOptions;
 import nl.tudelft.oopp.livechat.entities.poll.PollEntity;
 import nl.tudelft.oopp.livechat.entities.poll.PollOptionEntity;
+import nl.tudelft.oopp.livechat.exceptions.InvalidModkeyException;
+import nl.tudelft.oopp.livechat.exceptions.LectureException;
 import nl.tudelft.oopp.livechat.services.PollService;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,19 +24,22 @@ public class PollController {
 
     @PutMapping("/create/{uuid}/{modkey}")
     public PollEntity createPoll(@PathVariable UUID uuid, @PathVariable UUID modkey,
-                                 @RequestBody String questionText) {
+                                 @RequestBody String questionText)
+            throws LectureException, InvalidModkeyException {
         return pollService.createPoll(uuid, modkey, questionText);
     }
 
     @PutMapping("/addOption/{pollId}/{modkey}/{isCorrect}")
     public PollOptionEntity addOption(@PathVariable long pollId, @PathVariable UUID modkey,
                                       @PathVariable boolean isCorrect,
-                                      @RequestBody String optionText) {
+                                      @RequestBody String optionText)
+            throws LectureException, InvalidModkeyException {
         return pollService.addOption(pollId, modkey, optionText, isCorrect);
     }
 
     @PutMapping("/toggle/{pollId}/{modkey}")
-    public int toggle(@PathVariable long pollId, @PathVariable UUID modkey) {
+    public int toggle(@PathVariable long pollId, @PathVariable UUID modkey)
+            throws LectureException, InvalidModkeyException {
         return pollService.togglePoll(pollId, modkey);
     }
 
@@ -49,7 +54,8 @@ public class PollController {
     }
 
     @DeleteMapping("/reset/{pollId}/{modkey}")
-    public int resetVotes(@PathVariable long pollId, @PathVariable UUID modkey) {
+    public int resetVotes(@PathVariable long pollId, @PathVariable UUID modkey)
+            throws LectureException, InvalidModkeyException {
         return pollService.resetVotes(pollId,modkey);
     }
 
