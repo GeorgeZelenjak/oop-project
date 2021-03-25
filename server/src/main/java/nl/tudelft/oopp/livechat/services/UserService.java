@@ -67,7 +67,7 @@ public class UserService {
             throw new UserIdNotValidException();
         }
         int count = userRepository.countAllByIp(ip);
-        if (userRepository.findById(user.getUid()).isEmpty() && count >= 5) {
+        if (userRepository.findById(user.getUid()).isEmpty() && count > 5) {
             throw new UserTooManyUsersException();
         }
         userRepository.save(user);

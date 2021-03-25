@@ -49,7 +49,8 @@ class LectureServiceTest {
 
     @Test
     void newLectureTest() throws LectureException {
-        LectureEntity lectureEntity = lectureService.newLecture("name", "Artjom Pugatsov", time, 10);
+        LectureEntity lectureEntity = lectureService.newLecture("name", "Artjom Pugatsov",
+                time, 10);
         assertNotNull(lectureEntity);
         repository.deleteById(lectureEntity.getUuid());
     }

@@ -99,7 +99,7 @@ public class QuestionService {
         if (lecture.getFrequency() != 0 && userAsked.getLastQuestion() != null
                 && q.getTime().getTime() - userAsked.getLastQuestion().getTime()
                 < (long) lecture.getFrequency() * 1000) {
-            return -1;
+            throw new QuestionFrequencyTooFastException();
         }
         userAsked.setLastQuestion(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
         q.setOwnerName(userAsked.getUserName());
