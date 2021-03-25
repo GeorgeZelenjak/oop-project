@@ -3,6 +3,7 @@ package nl.tudelft.oopp.livechat.controllers.cellcontrollers;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import nl.tudelft.oopp.livechat.data.PollOption;
@@ -12,13 +13,13 @@ import java.io.IOException;
 public class PollVoteCellController {
 
     @FXML
-    AnchorPane cellAnchorPane;
+    private AnchorPane cellAnchorPane;
 
     @FXML
     private Text optionText;
 
     @FXML
-    private Button answerButton;
+    private ToggleButton answerButton;
 
     private PollOption option;
 
