@@ -10,7 +10,7 @@
    <children>
       <Pane prefHeight="768.0" prefWidth="200.0" style="-fx-background-color: rgba(14, 114, 237, 0.45);" styleClass="sidebar">
          <children>
-            <Button fx:id="participants" layoutX="16.0" layoutY="201.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButton" text="Show Participants" />
+            <Button fx:id="participants" layoutX="16.0" layoutY="139.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="168.0" styleClass="participantsButton" text="Show Participants" />
             <Button id="leaveLecture" fx:id="leaveLecture" layoutX="16.0" layoutY="721.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="Leave Lecture" />
             <Line endX="100.0" layoutX="99.0" layoutY="72.0" opacity="0.5" startX="-100.0" stroke="#1a75ff" />
             <Text fx:id="lectureNameText" layoutX="16.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Name" textAlignment="CENTER" wrappingWidth="168.0703125">

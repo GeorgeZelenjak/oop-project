@@ -22,7 +22,7 @@
             <Font name="Arial Italic" size="10.0" />
          </font>
       </Text>
-      <Button fx:id="deleteButton" layoutX="420.0" layoutY="41.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
+      <Button fx:id="deleteButton" layoutX="480.0" layoutY="5.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
          <font>
             <Font size="9.0" />
          </font>
@@ -30,7 +30,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button fx:id="isAnsweredButton" layoutX="420.0" layoutY="7.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="markAsAnsweredButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
+      <Button fx:id="isAnsweredButton" layoutX="450.0" layoutY="6.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="27.0" styleClass="markAsAnsweredButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
          <font>
             <Font name="System Bold" size="9.0" />
          </font>
@@ -48,7 +48,7 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Text>
-      <Button fx:id="replyButton" layoutX="524.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="replyButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
+      <Button fx:id="replyButton" layoutX="509.0" layoutY="5.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="replyButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
          <font>
             <Font size="9.0" />
          </font>
@@ -66,6 +66,6 @@
             </Text>
          </children>
       </FlowPane>
-      <Button fx:id="editButton" layoutX="524.0" layoutY="35.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="editButton" />
+      <Button fx:id="editButton" layoutX="539.0" layoutY="5.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="editButton" />
     </children>
 </AnchorPane>

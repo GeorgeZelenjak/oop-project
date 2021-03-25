@@ -63,6 +63,14 @@
         -fx-background-color: #388108;
     }
 
+    .lectureModeButton {
+        -fx-background-color: rgb(241,190,62);
+    }
+
+    .lectureModeButton:hover {
+        -fx-background-color: #C19832;
+    }
+
     .headerText{
         -fx-font-size: 36px;
         -fx-padding: 0px 0px 0px 0px;
@@ -77,7 +85,7 @@
     }
 
     .leaveLecture:hover{
-        -fx-background-color:  #fa6866;
+        -fx-background-color: #af2c2a;
     }
 
     .settingsButton{
@@ -99,9 +107,17 @@
         -fx-background-color: Transparent;
     }
 
+    .markAsAnsweredButton:hover {
+        -fx-background-color: rgb(212,212,212);
+    }
+
     .editButton {
         -fx-graphic: url(/images/edit.png);
         -fx-background-color: Transparent;
+    }
+
+    .editButton:hover {
+        -fx-background-color: rgb(212,212,212);
     }
 
     .settingsButton:hover{
@@ -150,7 +166,11 @@
         -fx-background-color: rgb(212,212,212);
         -fx-background-radius: 10px;
         -fx-font: 18px Arial;
-        -fx-text-fill: black;
+        -fx-text-fill: #464646;
+    }
+
+    .upvoteButton:hover {
+        -fx-background-color: #aaaaaa;
     }
 
     .answeredTick {
@@ -177,7 +197,17 @@
         -fx-background-color: Transparent;
     }
 
+    .replyButton:hover {
+        -fx-background-color: rgb(212,212,212);
+    }
 
+    .participantsButton {
+        -fx-background-color: rgb(212,212,212);
+    }
+
+    .participantsButton:hover {
+        -fx-background-color: #aaaaaa;
+    }
 
 
 

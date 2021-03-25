@@ -24,7 +24,7 @@
             <Font name="Arial" size="10.0" />
          </font>
       </Text>
-      <Text fx:id="numberOfUpvotes" fill="#cf0a49" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1000" textAlignment="CENTER" wrappingWidth="42.0">
+      <Text fx:id="numberOfUpvotes" fill="#464646" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1000" textAlignment="CENTER" wrappingWidth="42.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font></Text>

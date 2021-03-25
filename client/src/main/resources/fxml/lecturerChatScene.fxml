@@ -9,7 +9,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1080.0" styleClass="mainScenePane" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.LecturerChatSceneController">
    <children>
       <Pane prefHeight="768.0" prefWidth="200.0" style="-fx-background-color: rgba(14, 114, 237, 0.45);" styleClass="sidebar">         <children>
-            <Button fx:id="participants" layoutX="16.0" layoutY="205.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="168.0" style="-fx-background-color: rgb(212,212,212);" styleClass="participantsButton" text="Show Participants" />
+            <Button fx:id="participants" layoutX="16.0" layoutY="149.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="168.0" styleClass="participantsButton" text="Show Participants" />
             <Button id="leaveLecture" fx:id="leaveLecture" layoutX="14.0" layoutY="679.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="34.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="Leave Lecture" />
             <Line endX="100.0" layoutX="100.0" layoutY="72.0" opacity="0.5" startX="-100.0" stroke="#1a75ff" />
             <Text fx:id="lectureNameText" layoutX="16.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Name" textAlignment="CENTER" wrappingWidth="168.0703125">
@@ -23,9 +23,9 @@
                </font>
             </Text>
             <Line endX="100.0" layoutX="98.0" layoutY="125.0" opacity="0.5" startX="-100.0" stroke="#1a75ff" />
-            <Button fx:id="goToLectureModeButton" layoutX="16.0" layoutY="154.0" mnemonicParsing="false" onAction="#lecturerMode" prefHeight="33.0" prefWidth="168.0" style="-fx-background-color: rgb(241,190,62); -fx-text-fill: #ffffff;" styleClass="mainSceneButton" text="Lecturer Mode" textFill="WHITE" />
-            <Button fx:id="copyId" layoutX="14.0" layoutY="312.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy lecture id" />
-            <Button fx:id="copyKey" layoutX="14.0" layoutY="273.0" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy modkey" />
+            <Button fx:id="goToLectureModeButton" layoutX="14.0" layoutY="293.0" mnemonicParsing="false" onAction="#lecturerMode" prefHeight="33.0" prefWidth="168.0" style="-fx-text-fill: #ffffff;" styleClass="lectureModeButton" text="Lecturer Mode" textFill="WHITE" />
+            <Button fx:id="copyId" layoutX="14.0" layoutY="402.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy lecture id" />
+            <Button fx:id="copyKey" layoutX="14.0" layoutY="363.0" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy modkey" />
             <Button id="leaveLecture" fx:id="closeLectureButton" layoutX="14.0" layoutY="720.0" mnemonicParsing="false" onAction="#closeLecture" prefHeight="34.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="End Lecture" />
          </children></Pane>
       <Pane fx:id="pollingBackground" layoutX="819.0" layoutY="48.0" prefHeight="216.0" prefWidth="247.0" styleClass="sidebar">
