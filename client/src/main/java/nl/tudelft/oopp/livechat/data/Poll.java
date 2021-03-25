@@ -1,5 +1,7 @@
 package nl.tudelft.oopp.livechat.data;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.List;
@@ -19,7 +21,7 @@ public class Poll {
 
     private long votes;
 
-    private boolean isOpen;
+    private boolean open;
 
 
 
@@ -43,7 +45,7 @@ public class Poll {
         this.questionText = questionText;
         this.time = time;
         this.votes = votes;
-        this.isOpen = isOpen;
+        this.open = isOpen;
     }
 
     /**
@@ -57,7 +59,7 @@ public class Poll {
         this.questionText = questionText;
         this.time = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
         this.votes = 0;
-        this.isOpen = false;
+        this.open = false;
     }
 
     /**
@@ -147,7 +149,7 @@ public class Poll {
      * @return true if the poll is open, false otherwise
      */
     public boolean isOpen() {
-        return isOpen;
+        return open;
     }
 
     /**
@@ -156,7 +158,7 @@ public class Poll {
      * @param open true if poll is open, false if poll is closed
      */
     public void setOpen(boolean open) {
-        isOpen = open;
+        this.open = open;
     }
 
     @Override
@@ -170,6 +172,6 @@ public class Poll {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, uuid, questionText, time, votes, isOpen);
+        return Objects.hash(id, uuid, questionText, time, votes, open);
     }
 }

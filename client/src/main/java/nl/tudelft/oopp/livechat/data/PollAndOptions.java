@@ -1,11 +1,14 @@
 package nl.tudelft.oopp.livechat.data;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 import java.util.Objects;
 
 public class PollAndOptions {
 
     private Poll poll;
+
     private List<PollOption> options;
 
 

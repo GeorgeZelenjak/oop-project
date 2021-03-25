@@ -99,6 +99,8 @@ public class UserChatSceneController implements Initializable {
     public void initialize(URL location, ResourceBundle resourceBundle) {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
+        fetchVotes();
+        fetchVotes();
 
         timelineFetch = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
             fetchQuestions();
@@ -279,7 +281,8 @@ public class UserChatSceneController implements Initializable {
             return;
         }
         System.out.println(fetched.getPoll().isOpen());
-        if (!fetched.getPoll().isOpen()) {
+        if (!fetched.getPoll().isOpen()
+                && PollAndOptions.getCurrentPollAndOptions().getPoll().isOpen()) {
             PollAndOptions.setCurrentPollAndOptions(fetched);
             NavigationController.getCurrentController().popupPollResult();
         }

@@ -175,7 +175,7 @@ public class PollService {
         PollEntity pollEntity = polls.get(0);
         List<PollOptionEntity> pollOptions = pollOptionRepository
                 .findAllByPollId(pollEntity.getId());
-        if (!pollEntity.isOpen()) {
+        if (pollEntity.isOpen()) {
             for (PollOptionEntity option : pollOptions) {
                 option.setCorrect(false);
                 //-2 is just for fun
