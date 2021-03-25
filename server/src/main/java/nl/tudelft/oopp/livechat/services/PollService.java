@@ -4,21 +4,28 @@ import nl.tudelft.oopp.livechat.entities.poll.PollAndOptions;
 import nl.tudelft.oopp.livechat.entities.poll.PollEntity;
 import nl.tudelft.oopp.livechat.entities.poll.PollOptionEntity;
 import nl.tudelft.oopp.livechat.entities.poll.UserPollVoteTable;
-import nl.tudelft.oopp.livechat.exceptions.InvalidModkeyException;
-import nl.tudelft.oopp.livechat.exceptions.LectureException;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.repositories.*;
+import org.apache.tomcat.jni.Poll;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+
 @Service
 public class PollService {
+
     final PollOptionRepository pollOptionRepository;
+
     final PollRepository pollRepository;
+
     final UserPollVoteRepository userPollVoteRepository;
+
     final LectureRepository lectureRepository;
+
     final UserRepository userRepository;
+
     final LectureService lectureService;
 
     /**
@@ -27,6 +34,8 @@ public class PollService {
      * @param pollOptionRepository   the poll option repository
      * @param pollRepository         the poll repository
      * @param userPollVoteRepository the user poll vote repository
+     * @param lectureRepository      the lecture repository
+     * @param userRepository         the user repository
      */
     public PollService(PollOptionRepository pollOptionRepository, PollRepository pollRepository,
                        UserPollVoteRepository userPollVoteRepository,
@@ -47,10 +56,12 @@ public class PollService {
      * @param modkey       the modkey
      * @param questionText the question text
      * @return the poll entity
+     * @throws LectureException       the lecture exception
+     * @throws InvalidModkeyException the invalid modkey exception
      */
     public PollEntity createPoll(UUID uuid, UUID modkey, String questionText)
             throws LectureException, InvalidModkeyException {
-        if (lectureService.validateModerator(uuid, modkey) != 0) return null;
+        lectureService.validateModerator(uuid, modkey);
         PollEntity pollEntity = new PollEntity(uuid, questionText);
         pollRepository.save(pollEntity);
         return pollEntity;
@@ -62,14 +73,16 @@ public class PollService {
      * @param pollId the poll id
      * @param modkey the modkey
      * @return 0 if the poll was toggled successfully
-     *        -1 if poll does not exist
-     *        -2 if invalid modkey
+     * @throws LectureException       the lecture exception
+     * @throws InvalidModkeyException the invalid modkey exception
+     * @throws PollException          the poll exception
      */
     public int togglePoll(long pollId, UUID modkey)
-            throws LectureException, InvalidModkeyException {
+            throws LectureException, InvalidModkeyException, PollException {
         PollEntity pollEntity = pollRepository.findById(pollId);
-        if (pollEntity == null) return -1;
-        if (lectureService.validateModerator(pollEntity.getUuid(), modkey) != 0) return -2;
+        if (pollEntity == null) throw new PollNotFoundException();
+        if (lectureService.validateModerator(pollEntity.getUuid(), modkey) != 0)
+            throw new InvalidModkeyException();
         pollEntity.setOpen(!pollEntity.isOpen());
         pollRepository.save(pollEntity);
         return 0;
@@ -84,13 +97,16 @@ public class PollService {
      * @param optionText the option text
      * @param isCorrect  boolean indicating if the option is correct
      * @return the poll option entity
+     * @throws LectureException       the lecture exception
+     * @throws InvalidModkeyException the invalid modkey exception
+     * @throws PollException          the poll exception
      */
     public PollOptionEntity addOption(long pollId, UUID modkey, String optionText,
                                       boolean isCorrect)
-            throws LectureException, InvalidModkeyException {
+            throws LectureException, InvalidModkeyException, PollException {
         PollEntity pollEntity = pollRepository.findById(pollId);
-        if (pollEntity == null
-                || lectureService.validateModerator(pollEntity.getUuid(), modkey) != 0) return null;
+        if (pollEntity == null) throw new PollNotFoundException();
+        lectureService.validateModerator(pollEntity.getUuid(), modkey);
         PollOptionEntity pollOptionEntity = new PollOptionEntity(pollId, optionText, 0, isCorrect);
         pollOptionRepository.save(pollOptionEntity);
         return pollOptionEntity;
@@ -102,33 +118,36 @@ public class PollService {
      * @param userId       the user id
      * @param pollOptionId the poll option id
      * @return 0 if the poll was toggled successfully
-     *        -1 if the user does not exist
-     *        -2 if the poll option doesn't exist
-     *        -3 if the poll is closed
-     *        -4 if the user is not in the lecture
-     *        -5 if the user already voted
+     * @throws UserNotRegisteredException the user not registered exception
+     * @throws PollNotFoundException      the poll not found exception
+     * @throws PollNotOpenException       the poll not open exception
+     * @throws PollAlreadyVotedException  the poll already voted exception
      */
-    public int voteOnPoll(long userId, long pollOptionId) {
+    public int voteOnPoll(long userId, long pollOptionId) throws UserNotRegisteredException,
+            PollNotFoundException, PollNotOpenException, PollAlreadyVotedException {
         //Check if user exists
-        if (userRepository.getUserEntityByUid(userId) == null) return -1;
+        if (userRepository.getUserEntityByUid(userId) == null)
+            throw new UserNotRegisteredException();
 
         //Check if poll option exists
         PollOptionEntity pollOptionEntity = pollOptionRepository.findById(pollOptionId);
-        if (pollOptionEntity == null) return -2;
+        if (pollOptionEntity == null) throw new PollNotFoundException();
 
         //Check if poll is open
-        if (!pollRepository.findById(pollOptionEntity.getPollId()).isOpen()) return -3;
+        if (!pollRepository.findById(pollOptionEntity.getPollId()).isOpen())
+            throw new PollNotOpenException();
 
         //Check if user is in the lecture
         if (!userRepository.getUserEntityByUid(userId).getLectureId().equals(
-                pollRepository.findById(pollOptionEntity.getPollId()).getUuid())) return -4;
+                pollRepository.findById(pollOptionEntity.getPollId()).getUuid()))
+            throw new UserNotRegisteredException();
 
         //Check if user already voted
         List<UserPollVoteTable> listOfUserVotes = userPollVoteRepository.findAllByUserId(userId);
         for (UserPollVoteTable upvt : listOfUserVotes) {
             if (pollOptionRepository.findById(upvt.getOptionId()).getPollId()
                     == pollOptionRepository.findById(pollOptionId).getPollId()
-            ) return -5;
+            ) throw new PollAlreadyVotedException();
         }
         pollOptionEntity.setVotes(pollOptionEntity.getVotes() + 1);
         PollEntity poll = pollRepository.findById(pollOptionEntity.getPollId());
@@ -144,11 +163,15 @@ public class PollService {
      *
      * @param uuid the uuid
      * @return the poll and options
+     * @throws LectureNotFoundException the lecture not found exception
+     * @throws PollNotFoundException    the poll not found exception
      */
-    public PollAndOptions fetchPollAndOptions(UUID uuid) {
-        if (lectureRepository.findLectureEntityByUuid(uuid) == null) return null;
+    public PollAndOptions fetchPollAndOptions(UUID uuid)
+            throws LectureNotFoundException, PollNotFoundException {
+        if (lectureRepository.findLectureEntityByUuid(uuid) == null)
+            throw new LectureNotFoundException();
         PollEntity pollEntity = pollRepository.findAllByUuidOrderByTimeDesc(uuid).get(0);
-        if (pollEntity == null) return null;
+        if (pollEntity == null) throw new PollNotFoundException();
         List<PollOptionEntity> pollOptions = pollOptionRepository
                 .findAllByPollId(pollEntity.getId());
         return new PollAndOptions(pollEntity, pollOptions);
@@ -161,17 +184,17 @@ public class PollService {
      * @param pollId the poll id
      * @param modkey the modkey
      * @return 0 if the poll votes were resest successfully
-     *        -1 if the poll does not exist
-     *        -2 if the modkey is invalid
-     *        -3 if the poll is closed
-     *        -4 if the user is not in the lecture
-     *        -5 if the user already voted
+     * @throws LectureException       the lecture exception
+     * @throws InvalidModkeyException the invalid modkey exception
+     * @throws PollNotFoundException  the poll not found exception
      */
     public int resetVotes(long pollId, UUID modkey)
-            throws LectureException, InvalidModkeyException {
+            throws LectureException, InvalidModkeyException, PollNotFoundException {
         PollEntity pollEntity = pollRepository.findById(pollId);
-        if (pollEntity == null) return -1;
-        if (lectureService.validateModerator(pollEntity.getUuid(), modkey) != 0) return -2;
+
+        if (pollEntity == null) throw new PollNotFoundException();
+
+        lectureService.validateModerator(pollEntity.getUuid(), modkey);
 
         for (PollOptionEntity poe : pollOptionRepository.findAllByPollId(pollId)) {
             userPollVoteRepository.deleteAllByOptionId(poe.getId());

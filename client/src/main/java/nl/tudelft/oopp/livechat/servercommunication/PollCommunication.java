@@ -7,13 +7,13 @@ import nl.tudelft.oopp.livechat.data.Poll;
 import nl.tudelft.oopp.livechat.data.PollAndOptions;
 import nl.tudelft.oopp.livechat.data.PollOption;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 import java.util.UUID;
+
+import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponse;
 
 /**
  * The type Poll communication.
@@ -36,12 +36,13 @@ public class PollCommunication {
      * @return the votes on lecture speed
      */
     public static Poll createPoll(UUID uuid, UUID modkey, String questionText) {
-        //Check if current lecture has been set
 
         //Parameters for request
         String address = ADDRESS + "/api/poll/create/";
+        if (questionText == null || questionText.equals("")) {
+            return  null;
+        }
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(questionText);
-
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
                 URI.create(address + uuid + "/" + modkey)).build();
@@ -55,8 +56,7 @@ public class PollCommunication {
             //e.printStackTrace();
             return null;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
+        if (handleResponse(response) != 0) {
             return null;
         }
         return gson.fromJson(response.body(), Poll.class);
@@ -93,8 +93,7 @@ public class PollCommunication {
             //e.printStackTrace();
             return null;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
+        if (handleResponse(response) != 0) {
             return null;
         }
         return gson.fromJson(response.body(), PollOption.class);
@@ -128,11 +127,7 @@ public class PollCommunication {
             //e.printStackTrace();
             return -1;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return -1;
-        }
-        return Integer.parseInt(response.body());
+        return handleResponse(response);
     }
 
     /**
@@ -160,8 +155,8 @@ public class PollCommunication {
             //e.printStackTrace();
             return null;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
+
+        if (handleResponse(response) != 0) {
             return null;
         }
         return gson.fromJson(response.body(), PollAndOptions.class);
@@ -194,11 +189,8 @@ public class PollCommunication {
             //e.printStackTrace();
             return -1;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return -1;
-        }
-        return Integer.parseInt(response.body());
+
+        return handleResponse(response);
     }
 
     /**
@@ -227,10 +219,6 @@ public class PollCommunication {
             //e.printStackTrace();
             return -1;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return -1;
-        }
-        return Integer.parseInt(response.body());
+        return handleResponse(response);
     }
 }

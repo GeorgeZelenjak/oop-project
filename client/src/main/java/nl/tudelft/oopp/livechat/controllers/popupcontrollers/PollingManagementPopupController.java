@@ -107,8 +107,7 @@ public class PollingManagementPopupController implements Initializable {
      * Restart poll.
      */
     public void restartPoll() {
-        PollAndOptions current = PollAndOptions.getCurrentPollAndOptions();
-        PollCommunication.resetVotes(current.getPoll().getId(), modkey);
+        PollCommunication.resetVotes(inEditingPoll.getId(), modkey);
         saveEdited();
     }
 
