@@ -52,7 +52,8 @@ public class LectureCommunication {
      * @param startTime the start time
      * @return Lecture which was created, null in case of errors
      */
-    public static Lecture createLecture(String name, String creatorName, Timestamp startTime) {
+    public static Lecture createLecture(String name, String creatorName,
+                                        Timestamp startTime, int frequency) {
 
         //Encoding the lecture name into url compatible format
         name = URLEncoder.encode(name, StandardCharsets.UTF_8);
@@ -63,6 +64,7 @@ public class LectureCommunication {
         String start = date.format(startTime);
         jsonObject.addProperty("creatorName", creatorName);
         jsonObject.addProperty("startTime", start);
+        jsonObject.addProperty("frequency", frequency);
 
         //Convert node to string
         String nodeToString = gson.toJson(jsonObject);

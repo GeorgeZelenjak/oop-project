@@ -49,7 +49,7 @@ class LectureServiceTest {
 
     @Test
     void newLectureTest() throws LectureException {
-        LectureEntity lectureEntity = lectureService.newLecture("name", "Artjom Pugatsov", time);
+        LectureEntity lectureEntity = lectureService.newLecture("name", "Artjom Pugatsov", time, 10);
         assertNotNull(lectureEntity);
         repository.deleteById(lectureEntity.getUuid());
     }
@@ -57,13 +57,13 @@ class LectureServiceTest {
     @Test
     void newLectureLongCreatorTest() {
         assertThrows(LectureNotCreatedException.class, () ->
-                lectureService.newLecture("name", longString, time));
+                lectureService.newLecture("name", longString, time, 10));
     }
 
     @Test
     void newLectureLongNameTest() {
         assertThrows(LectureNotCreatedException.class, () -> lectureService.newLecture(longString,
-                "Artjom Pugatsov", time));
+                "Artjom Pugatsov", time, 10));
     }
 
     @Test

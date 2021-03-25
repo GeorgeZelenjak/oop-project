@@ -67,8 +67,13 @@ class QuestionServiceTest {
     @BeforeAll
     public static void setup() {
         l1 = new LectureEntity("Lecture 1", "Ivo van Kreveld", time);
+        l1.setFrequency(0);
+
         l2 = new LectureEntity("Lecture 2", "Stefan Hugtenburg", time);
+        l2.setFrequency(0);
+
         l3 = new LectureEntity("Lecture 3", "Joana Gonçalves", time);
+        l3.setFrequency(0);
 
         user1 = new UserEntity(uid1, "Koen", new Timestamp(
                 System.currentTimeMillis()), true,

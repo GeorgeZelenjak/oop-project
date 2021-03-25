@@ -171,6 +171,13 @@
         -fx-background-color: Transparent;
     }
 
+    .questionCell {
+        -fx-border-color: #00A6D6;
+        -fx-border-style: solid;
+        -fx-border-radius: 15px;
+        -fx-border-width: 2px;
+    }
+
 
 
 

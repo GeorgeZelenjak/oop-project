@@ -83,17 +83,31 @@ public class QuestionService {
         if (q.getText().length() > 2000) {
             throw new QuestionNotAskedException();
         }
+
+        Optional<UserEntity> user = userRepository.findById(q.getOwnerId());
+
         //check if the owner is registered
-        if (userRepository.findById(q.getOwnerId()).isEmpty()) {
+        if (user.isEmpty()) {
             throw new UserNotRegisteredException();
         }
+
+
         UserEntity userAsked = userRepository.getUserEntityByUid(q.getOwnerId());
         if (!userAsked.isAllowed()) {
             throw new UserBannedException();
         }
+        if (lecture.getFrequency() != 0 && userAsked.getLastQuestion() != null
+                && q.getTime().getTime() - userAsked.getLastQuestion().getTime()
+                < (long) lecture.getFrequency() * 1000) {
+            return -1;
+        }
+        userAsked.setLastQuestion(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
         q.setOwnerName(userAsked.getUserName());
         questionRepository.save(q);
+        userRepository.save(userAsked);
         return q.getId();
+
+
     }
 
     /**

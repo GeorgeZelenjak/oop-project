@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -44,11 +45,12 @@ class LectureControllerTest {
      * @param startTime the start time
      * @return the JSON string representing the lecture
      */
-    private String createJson(String creatorName, Timestamp startTime) {
+    private String createJson(String creatorName, Timestamp startTime, int frequency) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode node = mapper.createObjectNode();
         node.put("creatorName", creatorName);
         node.put("startTime", simpleDateFormat.format(startTime));
+        node.put("frequency", frequency);
         return node.toString();
     }
 
@@ -132,16 +134,17 @@ class LectureControllerTest {
         objectMapper.setDateFormat(simpleDateFormat);
     }
 
+    //TODO not to hardcode 'placeholder'
     @Test
     void createLectureTest() {
         assertDoesNotThrow(() -> createLecture("/api/newLecture?name=test1",
-                createJson("Papa", time)));
+                createJson("Papa", time, 60)));
     }
 
     @Test
     void createLectureModkeyTest() throws Exception {
         objectMapper.registerModule(new JavaTimeModule());
-        String json = createLecture("/api/newLecture?name=test2", createJson("Mama", time));
+        String json = createLecture("/api/newLecture?name=test2", createJson("Mama", time, 60));
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         assertNotNull(lectureEntity);
         assertNotNull(lectureEntity.getModkey());
@@ -161,7 +164,7 @@ class LectureControllerTest {
 
     @Test
     void getLecturesByIDSuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test1", createJson("Mim", time));
+        String json = createLecture("/api/newLecture?name=test1", createJson("Mim", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
 
@@ -181,7 +184,7 @@ class LectureControllerTest {
 
     @Test
     void getLecturesByIDUnsuccessfulTest() throws Exception {
-        createLecture("/api/newLecture?name=test1", createJson("mops", time));
+        createLecture("/api/newLecture?name=test1", createJson("mops", time, 60));
 
         String uuid = UUID.randomUUID().toString();
         String r = this.mockMvc.perform(get("/api/get/" + uuid))
@@ -195,7 +198,7 @@ class LectureControllerTest {
     @Test
     void whenPostingReturns200Test() throws Exception {
         this.mockMvc.perform(post("/api/newLecture?name=test2")
-                .content(createJson("Papa", time)))
+                .content(createJson("Papa", time, 60)))
                 .andExpect(status().isOk());
     }
 
@@ -213,7 +216,7 @@ class LectureControllerTest {
 
     @Test
     void deleteLectureSuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test3", createJson("Nina", time));
+        String json = createLecture("/api/newLecture?name=test3", createJson("Nina", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
@@ -241,7 +244,7 @@ class LectureControllerTest {
 
     @Test
     void deleteLectureUnsuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test3", createJson("Pavel", time));
+        String json = createLecture("/api/newLecture?name=test3", createJson("Pavel", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
@@ -261,7 +264,7 @@ class LectureControllerTest {
 
     @Test
     void validateModkeySuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=ads", createJson("Sasha", time));
+        String json = createLecture("/api/newLecture?name=ads", createJson("Sasha", time, 60));
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
         String modkey = lectureEntity.getModkey().toString();
@@ -272,7 +275,7 @@ class LectureControllerTest {
 
     @Test
     void validateModkeyUnsuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=ads", createJson("Petja", time));
+        String json = createLecture("/api/newLecture?name=ads", createJson("Petja", time, 60));
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
         String modkey = UUID.randomUUID().toString();
@@ -287,7 +290,7 @@ class LectureControllerTest {
 
     @Test
     void validateModkeyNoLectureTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=ads", createJson("Masha", time));
+        String json = createLecture("/api/newLecture?name=ads", createJson("Masha", time, 60));
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
         String modkey = lectureEntity.getModkey().toString();
@@ -304,7 +307,7 @@ class LectureControllerTest {
 
     @Test
     void closeLectureSuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test4", createJson("Gosha", time));
+        String json = createLecture("/api/newLecture?name=test4", createJson("Gosha", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
@@ -320,7 +323,7 @@ class LectureControllerTest {
 
     @Test
     void closeLectureUnsuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test4", createJson("Katja", time));
+        String json = createLecture("/api/newLecture?name=test4", createJson("Katja", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
@@ -340,7 +343,7 @@ class LectureControllerTest {
 
     @Test
     void closeLectureNoLectureTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test4", createJson("Vova", time));
+        String json = createLecture("/api/newLecture?name=test4", createJson("Vova", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
@@ -357,7 +360,7 @@ class LectureControllerTest {
 
     @Test
     void exceptionHandlerTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=ads", createJson("Bill", time));
+        String json = createLecture("/api/newLecture?name=ads", createJson("Bill", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String modkey = lectureEntity.getModkey().toString();

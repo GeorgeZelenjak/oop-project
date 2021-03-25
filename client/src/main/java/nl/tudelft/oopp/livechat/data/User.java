@@ -9,6 +9,8 @@ import nl.tudelft.oopp.livechat.controllers.AlertController;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;

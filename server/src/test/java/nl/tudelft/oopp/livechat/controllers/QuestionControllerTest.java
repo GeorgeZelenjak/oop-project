@@ -92,9 +92,11 @@ class QuestionControllerTest {
     public static void setup() {
         lectureEntity1 = new LectureEntity("How to get 10 in OOPP",
                 "Jegor", time);
+
+        lectureEntity1.setFrequency(0);
         lectureEntity2 = new LectureEntity("How to get 100 in OOPP",
                 "Jegorka", time);
-
+        lectureEntity2.setFrequency(0);
         user1 = new UserEntity(1268346912741204312L, "Ivo", new Timestamp(
                 System.currentTimeMillis()), true,
                 "192.168.1.1", lectureEntity1.getUuid());
