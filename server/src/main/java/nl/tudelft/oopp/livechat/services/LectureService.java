@@ -125,7 +125,8 @@ public class LectureService {
      * @throws LectureException when the lecture is not found
      * @throws InvalidModkeyException when the moderator key is incorrect
      */
-    public int validateModerator(UUID id, UUID modkey) throws LectureException, InvalidModkeyException {
+    public int validateModerator(UUID id, UUID modkey)
+            throws LectureException, InvalidModkeyException {
         LectureEntity l = getLectureById(id);
         if (l == null) {
             throw new LectureNotFoundException();
