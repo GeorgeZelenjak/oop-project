@@ -54,7 +54,8 @@ public class PollEntity {
      * @param votes the number of votes for the poll
      * @param isOpen is the poll open or not
      */
-    public PollEntity(UUID lectureId, String questionText, Timestamp time, long votes, boolean isOpen) {
+    public PollEntity(UUID lectureId, String questionText,
+                      Timestamp time, long votes, boolean isOpen) {
         this.lectureId = lectureId;
         this.questionText = questionText;
         this.time = time;
