@@ -9,7 +9,7 @@ import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
-
+import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.*;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -18,6 +18,8 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+
+import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponse;
 
 /**
  * Class for Lecture server communication.
@@ -291,37 +293,5 @@ public class LectureCommunication {
         registerUser(lectureId, uid, username);
     }
 
-    /**
-     * Handles the response for upvoteQuestion and markedAsAnswered methods.
-     * @param response response received from the server
-     * @return -3, -4, 0 according to the "status codes" for these methods
-     */
-    /*private static int handleResponse(HttpResponse<String> response) {
-        //Unexpected response
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return -3;
-        }
-        //Correct response, but not success
-        if (!response.body().equals("0")) {
-            return Integer.parseInt(response.body());
-        }
-        //Success
-        return 0;
-    }*/
 
-    private static int handleResponse(HttpResponse<String> response) {
-        if (response.statusCode() != 200) {
-            if (response.body().contains("{")) {
-                JsonObject res = JsonParser.parseString(response.body()).getAsJsonObject();
-                String reason = res.get("message").getAsString();
-                String error = res.get("error").getAsString();
-                AlertController.alertError(error, reason);
-            } else {
-                AlertController.alertError("Error", response.body());
-            }
-            return -1;
-        }
-        return 0;
-    }
 }
