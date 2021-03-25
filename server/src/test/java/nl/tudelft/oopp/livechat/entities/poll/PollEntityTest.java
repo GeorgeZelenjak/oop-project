@@ -112,30 +112,30 @@ class PollEntityTest {
     }
 
     @Test
-    void testEqualsNullTest() {
+    void equalsNullTest() {
         assertNotEquals(pollEntity, null);
     }
 
     @Test
-    void testEqualsSameTest() {
+    void equalsSameTest() {
         assertEquals(pollEntity, pollEntity);
     }
 
     @Test
-    void testEqualsDifferentTest() {
+    void equalsDifferentTest() {
         PollEntity p = new PollEntity(lid, "What would you do if a pelican entered in your house?",
                 time, 13, true);
         assertNotEquals(pollEntity, p);
     }
 
     @Test
-    void testHashCodeTest() {
+    void hashCodeTest() {
         int hash = Objects.hash(pollEntity.getId());
         assertEquals(hash, pollEntity.hashCode());
     }
 
     @Test
-    void testHashCodeDifferentTest() {
+    void hashCodeDifferentTest() {
         PollEntity p = new PollEntity(lid, "What would you do if a pelican entered in your house?",
                 time, 13, true);
         assertNotEquals(p.hashCode(), pollEntity.hashCode());
