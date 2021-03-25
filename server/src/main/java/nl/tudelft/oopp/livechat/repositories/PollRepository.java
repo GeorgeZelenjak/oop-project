@@ -11,6 +11,6 @@ import java.util.UUID;
 public interface PollRepository extends JpaRepository<PollEntity, Long> {
     PollEntity findById(long id);
 
-    List<PollEntity> findAllByUuidOrderByTimeDesc(UUID uuid);
+    List<PollEntity> findAllByLectureIdOrderByTimeDesc(UUID uuid);
 
 }

@@ -24,8 +24,8 @@ public class PollEntity {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "id")
     private final long id  = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
 
-    @Column(name = "uuid")
-    private UUID uuid;
+    @Column(name = "lectureId")
+    private UUID lectureId;
 
     @Column(name = "questionText")
     private String questionText;
@@ -41,22 +41,21 @@ public class PollEntity {
     private boolean isOpen;
 
     /**
-     * Instantiates a new Poll entity.
+     * Creates a new Poll entity.
      */
     public PollEntity() {
     }
 
     /**
-     * Instantiates a new Poll entity.
-     *
-     * @param uuid         the uuid
+     * Creates a new Poll entity with the specified parameters.
+     * @param lectureId the id of the lecture
      * @param questionText the question text
-     * @param time         the time
-     * @param votes        the votes
-     * @param isOpen       the is open
+     * @param time the time when the poll was created
+     * @param votes the number of votes for the poll
+     * @param isOpen is the poll open or not
      */
-    public PollEntity(UUID uuid, String questionText, Timestamp time, long votes, boolean isOpen) {
-        this.uuid = uuid;
+    public PollEntity(UUID lectureId, String questionText, Timestamp time, long votes, boolean isOpen) {
+        this.lectureId = lectureId;
         this.questionText = questionText;
         this.time = time;
         this.votes = votes;
@@ -64,13 +63,12 @@ public class PollEntity {
     }
 
     /**
-     * Instantiates a new Poll entity.
-     *
-     * @param uuid         the uuid
+     * Creates a new Poll entity with the specified parameters.
+     * @param lectureId the id of the lecture
      * @param questionText the question text
      */
-    public PollEntity(UUID uuid, String questionText) {
-        this.uuid = uuid;
+    public PollEntity(UUID lectureId, String questionText) {
+        this.lectureId = lectureId;
         this.questionText = questionText;
         this.time = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
         this.votes = 0;
@@ -78,44 +76,39 @@ public class PollEntity {
     }
 
     /**
-     * Gets id.
-     *
-     * @return the id
+     * Gets the id of the poll.
+     * @return the id of the poll
      */
     public long getId() {
-        return id;
+        return this.id;
     }
 
     /**
-     * Gets uuid.
-     *
-     * @return the uuid
+     * Gets the lecture id.
+     * @return the lecture id
      */
-    public UUID getUuid() {
-        return uuid;
+    public UUID getLectureId() {
+        return this.lectureId;
     }
 
     /**
-     * Sets uuid.
-     *
-     * @param uuid the uuid
+     * Sets the lecture id.
+     * @param lectureId the new lecture id
      */
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setLectureId(UUID lectureId) {
+        this.lectureId = lectureId;
     }
 
     /**
-     * Gets question text.
-     *
+     * Gets the question text.
      * @return the question text
      */
     public String getQuestionText() {
-        return questionText;
+        return this.questionText;
     }
 
     /**
      * Sets question text.
-     *
      * @param questionText the question text
      */
     public void setQuestionText(String questionText) {
@@ -123,69 +116,77 @@ public class PollEntity {
     }
 
     /**
-     * Gets time.
-     *
-     * @return the time
+     * Gets the time when the poll was created.
+     * @return the time when the poll was created
      */
     public Timestamp getTime() {
-        return time;
+        return this.time;
     }
 
     /**
-     * Sets time.
-     *
-     * @param time the time
+     * Sets the time when the poll was created.
+     * @param time the time when the poll was created.
      */
     public void setTime(Timestamp time) {
         this.time = time;
     }
 
     /**
-     * Gets votes.
-     *
-     * @return the votes
+     * Gets the number of votes for the poll.
+     * @return the number of votes for the poll
      */
     public long getVotes() {
-        return votes;
+        return this.votes;
     }
 
     /**
-     * Sets votes.
-     *
-     * @param votes the votes
+     * Sets the number of votes for the poll.
+     * @param votes the number of votes for the poll
      */
     public void setVotes(long votes) {
         this.votes = votes;
     }
 
     /**
-     * Is open boolean.
-     *
+     * Checks if the is poll open or not.
      * @return true if the poll is open, false otherwise
      */
     public boolean isOpen() {
-        return isOpen;
+        return this.isOpen;
     }
 
     /**
-     * Sets open.
-     *
-     * @param open true if poll is open, false if poll is closed
+     * Sets the poll to be open or closed.
+     * @param open true if the poll has to be open, false if the poll has to be closed
      */
     public void setOpen(boolean open) {
-        isOpen = open;
+        this.isOpen = open;
     }
 
+    /**
+     * Compares the PollEntity object to another object.
+     * @param o the other object to compare to
+     * @return true iff the other object is also a PollEntity
+     *         object and has the same id. False otherwise
+     */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PollEntity that = (PollEntity) o;
-        return id == that.id;
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof PollEntity) {
+            PollEntity that = (PollEntity) o;
+            return this.id == that.id;
+        }
+        return false;
     }
 
+    /**
+     * Generates the hash code for the PollEntity object.
+     * @return the generated hash code
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(id, uuid, questionText, time, votes, isOpen);
+        return Objects.hash(this.id);
     }
 }

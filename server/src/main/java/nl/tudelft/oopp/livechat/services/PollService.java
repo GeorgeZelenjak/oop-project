@@ -81,7 +81,7 @@ public class PollService {
             throws LectureException, InvalidModkeyException, PollException {
         PollEntity pollEntity = pollRepository.findById(pollId);
         if (pollEntity == null) throw new PollNotFoundException();
-        if (lectureService.validateModerator(pollEntity.getUuid(), modkey) != 0)
+        if (lectureService.validateModerator(pollEntity.getLectureId(), modkey) != 0)
             throw new InvalidModkeyException();
         pollEntity.setOpen(!pollEntity.isOpen());
         pollRepository.save(pollEntity);
@@ -106,7 +106,7 @@ public class PollService {
             throws LectureException, InvalidModkeyException, PollException {
         PollEntity pollEntity = pollRepository.findById(pollId);
         if (pollEntity == null) throw new PollNotFoundException();
-        lectureService.validateModerator(pollEntity.getUuid(), modkey);
+        lectureService.validateModerator(pollEntity.getLectureId(), modkey);
         PollOptionEntity pollOptionEntity = new PollOptionEntity(pollId, optionText, 0, isCorrect);
         pollOptionRepository.save(pollOptionEntity);
         return pollOptionEntity;
@@ -139,7 +139,7 @@ public class PollService {
 
         //Check if user is in the lecture
         if (!userRepository.getUserEntityByUid(userId).getLectureId().equals(
-                pollRepository.findById(pollOptionEntity.getPollId()).getUuid()))
+                pollRepository.findById(pollOptionEntity.getPollId()).getLectureId()))
             throw new UserNotRegisteredException();
 
         //Check if user already voted
@@ -170,7 +170,7 @@ public class PollService {
             throws LectureNotFoundException, PollNotFoundException {
         if (lectureRepository.findLectureEntityByUuid(uuid) == null)
             throw new LectureNotFoundException();
-        List<PollEntity> polls = pollRepository.findAllByUuidOrderByTimeDesc(uuid);
+        List<PollEntity> polls = pollRepository.findAllByLectureIdOrderByTimeDesc(uuid);
         if (polls.size() == 0) throw new PollNotFoundException();
         PollEntity pollEntity = polls.get(0);
         List<PollOptionEntity> pollOptions = pollOptionRepository
@@ -200,7 +200,7 @@ public class PollService {
         lectureService.validateModerator(uuid, modkey);
         if (lectureRepository.findLectureEntityByUuid(uuid) == null)
             throw new LectureNotFoundException();
-        List<PollEntity> polls = pollRepository.findAllByUuidOrderByTimeDesc(uuid);
+        List<PollEntity> polls = pollRepository.findAllByLectureIdOrderByTimeDesc(uuid);
         if (polls.size() == 0) throw new PollNotFoundException();
         PollEntity pollEntity = polls.get(0);
         List<PollOptionEntity> pollOptions = pollOptionRepository
@@ -225,7 +225,7 @@ public class PollService {
 
         if (pollEntity == null) throw new PollNotFoundException();
 
-        lectureService.validateModerator(pollEntity.getUuid(), modkey);
+        lectureService.validateModerator(pollEntity.getLectureId(), modkey);
 
         for (PollOptionEntity poe : pollOptionRepository.findAllByPollId(pollId)) {
             userPollVoteRepository.deleteAllByOptionId(poe.getId());
