@@ -115,7 +115,7 @@ public class LectureController {
     private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Don't do this");
+                .body("UUID is not in the correct format");
     }
 
     /**
@@ -142,5 +142,18 @@ public class LectureController {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Missing parameter");
+    }
+
+    /**
+     * Exception handler.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Not a number' message
+     */
+    @ExceptionHandler(NumberFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ResponseEntity<Object> badParameter(NumberFormatException exception) {
+        System.out.println(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Not a number");
     }
 }

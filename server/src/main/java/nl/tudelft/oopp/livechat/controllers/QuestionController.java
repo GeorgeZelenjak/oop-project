@@ -136,7 +136,7 @@ public class QuestionController {
     private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Don't do this");
+                .body("UUID is not in the correct format");
     }
 
     /**

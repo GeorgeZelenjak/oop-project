@@ -102,6 +102,19 @@ public class UserController {
     }
 
     /**
+     * Exception handler for requests containing invalid uuids.
+     * @param exception exception that has occurred
+     * @return response object with 400 Bad Request status code and 'Don't do this' message
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
+        System.out.println(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("UUID is not in the correct format");
+    }
+
+    /**
      * Exception handler for invalid JSONs.
      * @param exception exception that has occurred
      * @return response body with 400 and 'Don't do this' message
