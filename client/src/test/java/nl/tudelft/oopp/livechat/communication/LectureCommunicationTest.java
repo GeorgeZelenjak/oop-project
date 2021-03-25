@@ -27,9 +27,10 @@ import static org.mockserver.model.HttpRequest.request;
  */
 public class LectureCommunicationTest {
 
-    public static MockServerClient mockServer;
-    public static String jsonLecture;
-    public static String jsonUser;
+    private static MockServerClient mockServer;
+    private static String jsonLecture;
+    private static String jsonUser;
+    private static String jsonBanning;
     private static final String lid = "0ee81155-96fc-4045-bfe9-dd7ca714b5e8";
     private static final String modkey = "08843278-e8b8-4d51-992f-48c6aee44e27";
     private static final String incorrectModkey = UUID.randomUUID().toString();
@@ -47,7 +48,7 @@ public class LectureCommunicationTest {
     /**
      * A helper method to assign JSON string lecture.
      */
-    private static void assignJsonLecture() {
+    private static String createJsonLecture() {
         ObjectNode node = new ObjectMapper().createObjectNode();
         node.put("uuid",lid);
         node.put("modkey", modkey);
@@ -58,19 +59,24 @@ public class LectureCommunicationTest {
         node.put("startTime", simpleDateFormat.format(time));
         node.put("slowerCount","0");
         node.put("open","true");
-
-        jsonLecture = node.toString();
+        return node.toString();
     }
 
-    private static void assignJsonUser() {
-        User.setUid();
-        User.setUserName("name");
+    private static String createJsonUser(long uid, String name) {
         ObjectNode node = new ObjectMapper().createObjectNode();
-        node.put("userName", User.getUserName());
-        node.put("uid", User.getUid());
+        node.put("userName", name);
+        node.put("uid", uid);
         node.put("lectureId", lid);
-        jsonUser = node.toString();
+        return node.toString();
+    }
 
+    private static String createJsonForBanning(String modkey) {
+        ObjectNode node = new ObjectMapper().createObjectNode();
+        node.put("modid", User.getUid());
+        node.put("modkey", modkey);
+        node.put("qid", 42);
+        node.put("time", 7);
+        return node.toString();
     }
 
     /**
@@ -86,7 +92,7 @@ public class LectureCommunicationTest {
 
         //lecture name is too long
         mockServer.when(request().withMethod("POST").withPath("/api/newLecture")
-                .withQueryStringParameter("name",e))
+                .withQueryStringParameter("name", e))
                 .respond(HttpResponse.response().withStatusCode(400));
     }
 
@@ -110,12 +116,23 @@ public class LectureCommunicationTest {
         mockServer.when(request().withMethod("GET")
                 .withPath("/api/get/" + modkey))
                 .respond(HttpResponse.response().withStatusCode(400));
+    }
 
-        //registration
+    /**
+     * Create expectations for joining a lecture.
+     */
+    private static void createExpectationsForRegisterUser() {
+        //Success
         mockServer.when(request().withMethod("POST")
                 .withPath("/api/user/register")
                 .withBody(jsonUser))
                 .respond(HttpResponse.response().withStatusCode(200));
+
+        //Bad username
+        mockServer.when(request().withMethod("POST")
+                .withPath("/api/user/register")
+                .withBody(createJsonUser(User.getUid(), e)))
+                .respond(HttpResponse.response().withStatusCode(400));
     }
 
     /**
@@ -171,17 +188,54 @@ public class LectureCommunicationTest {
     }
 
     /**
+     * Create expectations for closing a lecture.
+     */
+    private static void createExpectationsForBanning() {
+        //Success by id
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/user/ban/id").withBody(jsonBanning))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0"));
+        //Success by ip
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/user/ban/ip").withBody(jsonBanning))
+                .respond(HttpResponse.response().withStatusCode(200)
+                        .withBody("0"));
+
+        //Incorrect modkey for id
+        String incorrectJsonBanning = createJsonForBanning(incorrectModkey);
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/user/ban/id").withBody(incorrectJsonBanning))
+                .respond(HttpResponse.response().withStatusCode(401));
+
+        //Invalid modkey for ip
+        String invalidJsonBanning = createJsonForBanning("ValidModkey");
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/user/ban/ip").withBody(invalidJsonBanning))
+                .respond(HttpResponse.response().withStatusCode(400));
+    }
+
+    /**
      * Starts the server and assigns expectations.
      */
     @BeforeAll
     public static void startServer() {
-        assignJsonLecture();
-        assignJsonUser();
+        User.setUid();
+        User.setUserName("name");
+
+        jsonLecture = createJsonLecture();
+        jsonUser = createJsonUser(User.getUid(), User.getUserName());
+        jsonBanning = createJsonForBanning(modkey);
+
         mockServer = ClientAndServer.startClientAndServer(8080);
+
         createExpectationsForCreateLecture();
         createExpectationsForJoinLectureById();
+        createExpectationsForRegisterUser();
         createExpectationsForValidateModerator();
         createExpectationsForCloseLecture();
+        createExpectationsForBanning();
+
         try {
             alertControllerMockedStatic = Mockito.mockStatic(AlertController.class);
             alertControllerMockedStatic.when(() -> AlertController.alertError(any(String.class),
@@ -200,6 +254,16 @@ public class LectureCommunicationTest {
                 "Jegor", time, 10);
         assertNotNull(res);
         assertEquals(res.getName(), "An awesome lecture");
+    }
+
+    @Test
+    public void createLectureUserNotRegisteredTest() {
+        User.setUserName(e);
+        Lecture res = LectureCommunication.createLecture("An awesome lecture",
+                "Jegor", time, 10);
+        assertNull(res);
+
+        User.setUserName("name");
     }
 
     @Test
@@ -235,6 +299,15 @@ public class LectureCommunicationTest {
     }
 
     @Test
+    public void joinLectureByIdUserNotRegisteredTest() {
+        User.setUserName(e);
+        Lecture res = LectureCommunication.joinLectureById(lid);
+        assertNull(res);
+
+        User.setUserName("name");
+    }
+
+    @Test
     public void joinLectureByIdLectureNotExistTest() {
         Lecture res = LectureCommunication.joinLectureById(modkey);
         assertNull(res);
@@ -251,6 +324,47 @@ public class LectureCommunicationTest {
         mockServer.stop();
         Lecture res = LectureCommunication.joinLectureById(lid);
         assertNull(res);
+        startServer();
+    }
+
+    @Test
+    public void registerUserUnsuccessfulTest() {
+        User.setUserName(e);
+        assertFalse(LectureCommunication.registerUser(lid));
+
+        User.setUserName("name");
+    }
+
+    @Test
+    public void registerUserSuccessfulTest() {
+        assertTrue(LectureCommunication.registerUser(lid));
+    }
+
+    @Test
+    public void registerUserServerRefusesTest() {
+        mockServer.stop();
+        assertFalse(LectureCommunication.registerUser(lid));
+
+        startServer();
+    }
+
+    //TODO REMOVE THE FOLLOWING 3 TESTS WHEN WE REMOVE THE DEBUG SCENE
+
+    @Test
+    public void registerUserDebugUnsuccessfulTest() {
+        assertFalse(LectureCommunication.registerUserdebug(lid, User.getUid(), e));
+    }
+
+    @Test
+    public void registerUserDebugSuccessfulTest() {
+        assertTrue(LectureCommunication.registerUserdebug(lid, User.getUid(), User.getUserName()));
+    }
+
+    @Test
+    public void registerUserDebugServerRefusesTest() {
+        mockServer.stop();
+        assertFalse(LectureCommunication.registerUserdebug(lid, User.getUid(), User.getUserName()));
+
         startServer();
     }
 
@@ -337,6 +451,49 @@ public class LectureCommunicationTest {
         Lecture.setCurrentLecture(new Lecture());
         mockServer.stop();
         assertFalse(LectureCommunication.closeLecture(lid, modkey));
+        startServer();
+    }
+
+    /**
+     * Tests for banning.
+     */
+
+    @Test
+    public void banByIpSuccessfulTest() {
+        Lecture.setCurrentLecture(new Lecture());
+        assertEquals(0, LectureCommunication.ban(modkey, 42,7, true));
+    }
+
+    @Test
+    public void banByIdSuccessfulTest() {
+        Lecture.setCurrentLecture(new Lecture());
+        assertEquals(0, LectureCommunication.ban(modkey, 42,7, false));
+    }
+
+    @Test
+    public void banByIdIncorrectModkeyTest() {
+        Lecture.setCurrentLecture(new Lecture());
+        assertEquals(-1, LectureCommunication.ban(incorrectModkey, 42,7, false));
+    }
+
+    @Test
+    public void banByIpInvalidModkeyTest() {
+        Lecture.setCurrentLecture(new Lecture());
+        assertEquals(-1, LectureCommunication.ban("ValidModkey", 42,7, true));
+    }
+
+    @Test
+    public void banNoLectureTest() {
+        Lecture.setCurrentLecture(null);
+        assertEquals(-1, LectureCommunication.ban(modkey, 42,7, true));
+    }
+
+    @Test
+    public void banServerRefusesTest() {
+        Lecture.setCurrentLecture(new Lecture());
+
+        mockServer.stop();
+        assertEquals(-2, LectureCommunication.ban(modkey, 42,7, true));
         startServer();
     }
 
