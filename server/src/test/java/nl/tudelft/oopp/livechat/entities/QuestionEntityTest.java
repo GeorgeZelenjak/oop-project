@@ -111,6 +111,17 @@ class QuestionEntityTest {
     }
 
     @Test
+    void getStatusTest() {
+        assertEquals("new", questionEntity.getStatus());
+    }
+
+    @Test
+    void setStatusTest() {
+        questionEntity.setStatus("editing");
+        assertEquals("editing", questionEntity.getStatus());
+    }
+
+    @Test
     void isAnsweredTest() {
         assertFalse(questionEntity.isAnswered());
     }
