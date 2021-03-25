@@ -317,7 +317,7 @@ public class QuestionEntity {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.lectureId, this.time);
+        return Objects.hash(this.id);
     }
 
     /**

@@ -218,7 +218,7 @@ class QuestionEntityTest {
 
     @Test
     void hashCodeTest() {
-        int hash = Objects.hash(questionEntity.getId(), lectureId, time);
+        int hash = Objects.hash(questionEntity.getId());
         assertEquals(hash, questionEntity.hashCode());
     }
 
@@ -226,8 +226,7 @@ class QuestionEntityTest {
     public void hashCodeEqualTest() {
         QuestionEntity q = questionEntity = new QuestionEntity(lectureId,
                 "What is the answer to the Ultimate "
-                        + "Question of Life, the Universe, and Everything?",
-                time, ownerId);
+                        + "Question of Life, the Universe, and Everything?", time, ownerId);
         q.setId(questionEntity.getId());
         assertEquals(q.hashCode(), questionEntity.hashCode());
     }
@@ -238,26 +237,6 @@ class QuestionEntityTest {
                 "What is the answer to the Ultimate "
                         + "Question of Life, the Universe, and Everything?",
                 time, ownerId);
-        assertNotEquals(questionEntity.hashCode(), q.hashCode());
-    }
-
-    @Test
-    public void hashCodeDifferentUuidTest() {
-        QuestionEntity q = new QuestionEntity(UUID.randomUUID(),
-                "What is the answer to the Ultimate "
-                        + "Question of Life, the Universe, and Everything?",
-                time, ownerId);
-        q.setId(questionEntity.getId());
-        assertNotEquals(questionEntity.hashCode(), q.hashCode());
-    }
-
-    @Test
-    public void hashCodeDifferentTimeTest() {
-        QuestionEntity q = new QuestionEntity(lectureId,
-                "What is the answer to the Ultimate "
-                        + "Question of Life, the Universe, and Everything?",
-                new Timestamp(System.currentTimeMillis()), ownerId);
-        q.setId(questionEntity.getId());
         assertNotEquals(questionEntity.hashCode(), q.hashCode());
     }
 

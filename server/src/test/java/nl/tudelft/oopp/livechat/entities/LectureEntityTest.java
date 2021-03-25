@@ -181,10 +181,7 @@ public class LectureEntityTest {
 
     @Test
     void hashCodeTest() {
-        int hash = Objects.hash(lectureEntity.getUuid(), lectureEntity.getModkey(),
-                lectureEntity.getName(),
-                lectureEntity.getCreatorName(),
-                lectureEntity.getStartTime());
+        int hash = Objects.hash(lectureEntity.getUuid());
         assertEquals(hash, lectureEntity.hashCode());
     }
 
