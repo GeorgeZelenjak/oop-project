@@ -261,7 +261,7 @@ public class LectureCommunication {
      * @param username the user name
      * @return true if registered successfully, false otherwise
      */
-    private static boolean registerUser(String lectureId, long uid, String username) {
+    public static boolean registerUser(String lectureId, long uid, String username) {
         //request to add user to user table
         //Parameter for request
         String address = ADDRESS + "/api/user/register";
@@ -292,7 +292,28 @@ public class LectureCommunication {
 
 
     public static void registerUserdebug(String lectureId, long uid, String username) {
-        registerUser(lectureId, uid, username);
+        String address = ADDRESS + "/api/user/register";
+
+        JsonObject user = new JsonObject();
+        user.addProperty("userName", username);
+        user.addProperty("uid", uid);
+        user.addProperty("lectureId", lectureId);
+
+        String json = gson.toJson(user);
+        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
+
+
+        //Creating request and defining response
+        HttpRequest request = HttpRequest.newBuilder().POST(req).uri(
+                URI.create(address)).setHeader("Content-Type", "application/json").build();
+        HttpResponse<String> response;
+
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.err.println("Error in registering in debug mode");
+        }
     }
 
 
