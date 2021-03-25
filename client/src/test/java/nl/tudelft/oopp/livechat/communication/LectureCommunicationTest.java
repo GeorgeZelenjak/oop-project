@@ -128,12 +128,6 @@ public class LectureCommunicationTest {
                 .withBody(jsonUser))
                 .respond(HttpResponse.response().withStatusCode(200));
 
-        //Invalid user id
-        mockServer.when(request().withMethod("POST")
-                .withPath("/api/user/register")
-                .withBody(createJsonUser(-1, "name")))
-                .respond(HttpResponse.response().withStatusCode(400));
-
         //Bad username
         mockServer.when(request().withMethod("POST")
                 .withPath("/api/user/register")
@@ -196,7 +190,7 @@ public class LectureCommunicationTest {
     /**
      * Create expectations for closing a lecture.
      */
-    private static void createExpectationsForBannning() {
+    private static void createExpectationsForBanning() {
         //Success by id
         mockServer.when(request().withMethod("PUT")
                 .withPath("/api/user/ban/id").withBody(jsonBanning))
@@ -240,7 +234,7 @@ public class LectureCommunicationTest {
         createExpectationsForRegisterUser();
         createExpectationsForValidateModerator();
         createExpectationsForCloseLecture();
-        createExpectationsForBannning();
+        createExpectationsForBanning();
 
         try {
             alertControllerMockedStatic = Mockito.mockStatic(AlertController.class);
@@ -334,10 +328,44 @@ public class LectureCommunicationTest {
     }
 
     @Test
-    public void joinLectureByIdInvalidUserIdTest() {
-        Lecture res = LectureCommunication.joinLectureById(lid);
-        assertNotNull(res);
-        assertEquals(lid, res.getUuid().toString());
+    public void registerUserUnsuccessfulTest() {
+        User.setUserName(e);
+        assertFalse(LectureCommunication.registerUser(lid));
+
+        User.setUserName("name");
+    }
+
+    @Test
+    public void registerUserSuccessfulTest() {
+        assertTrue(LectureCommunication.registerUser(lid));
+    }
+
+    @Test
+    public void registerUserServerRefusesTest() {
+        mockServer.stop();
+        assertFalse(LectureCommunication.registerUser(lid));
+
+        startServer();
+    }
+
+    //TODO REMOVE THE FOLLOWING 3 TESTS WHEN WE REMOVE THE DEBUG SCENE
+
+    @Test
+    public void registerUserDebugUnsuccessfulTest() {
+        assertFalse(LectureCommunication.registerUserdebug(lid, User.getUid(), e));
+    }
+
+    @Test
+    public void registerUserDebugSuccessfulTest() {
+        assertTrue(LectureCommunication.registerUserdebug(lid, User.getUid(), User.getUserName()));
+    }
+
+    @Test
+    public void registerUserDebugServerRefusesTest() {
+        mockServer.stop();
+        assertFalse(LectureCommunication.registerUserdebug(lid, User.getUid(), User.getUserName()));
+
+        startServer();
     }
 
     /**
