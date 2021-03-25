@@ -132,7 +132,6 @@ class LectureControllerTest {
         objectMapper.setDateFormat(simpleDateFormat);
     }
 
-    //TODO not to hardcode 'placeholder'
     @Test
     void createLectureTest() {
         assertDoesNotThrow(() -> createLecture("/api/newLecture?name=test1",
@@ -371,6 +370,19 @@ class LectureControllerTest {
                 .getContentAsString();
 
         assertEquals("Don't do this", result);
+    }
+
+    @Test
+    void nullPointerHandlerTest() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode node = mapper.createObjectNode();
+        node.put("creatorName", "root");
+
+        String result = this.mockMvc.perform(post("/api/newLecture?name=test1")
+                .content(node.toString()).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest()).andReturn().getResponse()
+                .getContentAsString();
+        assertEquals("Missing parameter", result);
     }
 }
 
