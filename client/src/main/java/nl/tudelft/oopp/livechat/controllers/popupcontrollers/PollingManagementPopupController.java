@@ -72,6 +72,7 @@ public class PollingManagementPopupController implements Initializable {
     public void addPollOptionCell() {
         pollOptionsListView.getItems().add(new PollOption());
         inEditingOptions = pollOptionsListView.getItems();
+        saveEdited();
     }
 
     /**
@@ -80,12 +81,14 @@ public class PollingManagementPopupController implements Initializable {
     public void openPolling() {
         if (!inEditingPoll.equals(fetchedPoll)) {
             publishPoll();
+            saveEdited();
             return;
         }
 
         if (!inEditingPoll.isOpen()) {
             PollCommunication.toggle(inEditingPoll.getId(), modkey);
             inEditingPoll.setOpen(true);
+            saveEdited();
         }
     }
 
@@ -96,6 +99,7 @@ public class PollingManagementPopupController implements Initializable {
         if (fetchedPoll != null && fetchedPoll.isOpen()) {
             PollCommunication.toggle(fetchedPoll.getId(), modkey);
             fetchedPoll.setOpen(false);
+            saveEdited();
         }
     }
 
@@ -105,6 +109,7 @@ public class PollingManagementPopupController implements Initializable {
     public void restartPoll() {
         PollAndOptions current = PollAndOptions.getCurrentPollAndOptions();
         PollCommunication.resetVotes(current.getPoll().getId(), modkey);
+        saveEdited();
     }
 
     /**
@@ -120,6 +125,7 @@ public class PollingManagementPopupController implements Initializable {
         inEditingPoll = new Poll();
         inEditingOptions = new ArrayList<PollOption>();
         setAsInEditing();
+        saveEdited();
     }
 
     /**
@@ -176,6 +182,12 @@ public class PollingManagementPopupController implements Initializable {
             inEditingOptions = sentPollOptions;
             inEditingPoll = sentPoll;
             forceUpdateFetch();
+            saveEdited();
         }
+    }
+
+    private void saveEdited() {
+        PollAndOptions.getInEditingPollAndOptions().setOptions(inEditingOptions);
+        PollAndOptions.getInEditingPollAndOptions().setPoll(inEditingPoll);
     }
 }
