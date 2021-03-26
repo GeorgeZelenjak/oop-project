@@ -10,6 +10,7 @@ import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.entities.UserQuestionTable;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
@@ -17,16 +18,14 @@ import nl.tudelft.oopp.livechat.repositories.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 
 /**
  * Class for Question service tests.
- * Warning: These tests depend on the order annotation because sometimes the outcome of one test
- *  is dependent on the outcome of the test before it (like for example, adding a user or a lecture
- *  to the repository, etc).
  */
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class QuestionServiceTest {
     private static LectureEntity l1;
     private static LectureEntity l2;
@@ -70,8 +69,13 @@ class QuestionServiceTest {
     @BeforeAll
     public static void setup() {
         l1 = new LectureEntity("Lecture 1", "Ivo van Kreveld", time);
+        l1.setFrequency(0);
+
         l2 = new LectureEntity("Lecture 2", "Stefan Hugtenburg", time);
+        l2.setFrequency(0);
+
         l3 = new LectureEntity("Lecture 3", "Joana Gonçalves", time);
+        l3.setFrequency(0);
 
         user1 = new UserEntity(uid1, "Koen", new Timestamp(
                 System.currentTimeMillis()), true,
@@ -89,15 +93,43 @@ class QuestionServiceTest {
 
         q1 = new QuestionEntity(l1.getUuid(), "name?",
                 new Timestamp(System.currentTimeMillis()), uid1);
-        q2 = new QuestionEntity(l2.getUuid(), longText,
+        q2 = new QuestionEntity(l2.getUuid(), "How to get 10 for testing?",
                 new Timestamp(System.currentTimeMillis()), uid2);
-        q3 = new QuestionEntity(l3.getUuid(), "how old?",
+        q3 = new QuestionEntity(l3.getUuid(), "1 OR 1=1; DROP DATABASE;",
                 new Timestamp(System.currentTimeMillis()), uid3);
+    }
 
+    @BeforeEach
+    public void setUp() {
+        lectureRepository.deleteAll();
+        userRepository.deleteAll();
+        questionRepository.deleteAll();
+        lectureRepository.save(l1);
+        userRepository.save(user1);
+        lectureRepository.save(l2);
+        userRepository.save(user2);
+
+        questionRepository.save(q1);
+        questionRepository.save(q2);
+    }
+
+    @AfterEach
+    public void clean() {
+        lectureRepository.deleteById(l1.getUuid());
+        lectureRepository.deleteById(l2.getUuid());
+
+        userRepository.deleteById(uid1);
+        userRepository.deleteById(uid2);
+
+        if (questionRepository.findById(q1.getId()).isPresent()) {
+            questionRepository.deleteById(q1.getId());
+        }
+        if (questionRepository.findById(q2.getId()).isPresent()) {
+            questionRepository.deleteById(q2.getId());
+        }
     }
 
     @Test
-    @Order(1)
     void constructorTest() {
         assertNotNull(questionService);
     }
@@ -106,10 +138,8 @@ class QuestionServiceTest {
      * Tests related to newQuestionEntity method.
      */
     @Test
-    @Order(2)
-    void newQuestionEntityTestAndNonStaticSetup() {
-        lectureRepository.save(l1);
-        userRepository.save(user1);
+    void newQuestionEntityTest() throws Exception {
+        questionRepository.deleteById(q1.getId());
 
         long result = questionService.newQuestionEntity(q1);
         assertTrue(result > 0);
@@ -117,116 +147,208 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(3)
     void newQuestionEntityQuestionIsAskedTest() {
-        long result = questionService.newQuestionEntity(q1);
-        assertEquals(-1, result);
+        assertThrows(QuestionAlreadyExistsException.class, () ->
+                questionService.newQuestionEntity(q1));
     }
 
     @Test
-    @Order(4)
     void newQuestionEntityLectureDoesNotExistTest() {
-        long result = questionService.newQuestionEntity(q2);
-        assertEquals(-1, result);
+        questionRepository.deleteById(q2.getId());
+
+        lectureRepository.deleteById(l2.getUuid());
+
+        assertThrows(LectureNotFoundException.class, () -> questionService.newQuestionEntity(q2));
+
+        lectureRepository.save(l2);
     }
 
     @Test
-    @Order(5)
     void newQuestionEntityLectureClosedTest() {
         l2.close();
         lectureRepository.save(l2);
-        long result = questionService.newQuestionEntity(q2);
-        assertEquals(-1, result);
+        questionRepository.deleteById(q2.getId());
+
+        assertThrows(LectureClosedException.class, () -> questionService.newQuestionEntity(q2));
 
         l2.reOpen();
         lectureRepository.save(l2);
     }
 
     @Test
-    @Order(6)
     void newQuestionEntityTooLongTextTest() {
-        userRepository.save(user2);
-        long result = questionService.newQuestionEntity(q2);
-        assertEquals(-1, result);
+        userRepository.save(user3);
+        lectureRepository.save(l3);
+        q3.setText(longText);
 
-        q2.setText("How to get 10 for testing?");
+        assertThrows(QuestionNotAskedException.class, () -> questionService.newQuestionEntity(q3));
+
+        q3.setText("1 OR 1=1; DROP DATABASE;");
+        userRepository.deleteById(uid3);
+        lectureRepository.deleteById(l3.getUuid());
     }
 
     @Test
-    @Order(7)
     void newQuestionEntityOwnerNotRegisteredTest() {
+        questionRepository.deleteById(q2.getId());
         userRepository.deleteById(uid2);
 
-        long result = questionService.newQuestionEntity(q2);
-        assertEquals(-1, result);
+        assertThrows(UserNotRegisteredException.class, () -> questionService.newQuestionEntity(q2));
 
         userRepository.save(user2);
+    }
+
+    @Test
+    void newQuestionEntityOwnerNotAllowedTest() {
+        lectureRepository.save(l3);
+        user3.setAllowed(false);
+        userRepository.save(user3);
+
+        assertThrows(UserBannedException.class, () -> questionService.newQuestionEntity(q3));
+
+        userRepository.deleteById(uid3);
+        user3.setAllowed(true);
+        lectureRepository.deleteById(l3.getUuid());
+    }
+
+    @Test
+    void newQuestionEntityTooFrequentlyTest() throws Exception {
+        userRepository.save(user3);
+        lectureRepository.save(l3);
+
+        QuestionEntity q = new QuestionEntity(l3.getUuid(), "name???",
+                new Timestamp(System.currentTimeMillis()), uid3);
+        questionService.newQuestionEntity(q);
+
+        l3.setFrequency(3);
+        lectureRepository.save(l3);
+        //test that one cannot fake the question time
+        QuestionEntity qq = new QuestionEntity(l3.getUuid(), "name???",
+                new Timestamp(0), uid3);
+
+        assertThrows(QuestionFrequencyTooFastException.class, () ->
+                questionService.newQuestionEntity(qq));
+
+        questionRepository.deleteById(q.getId());
+        l3.setFrequency(0);
+        lectureRepository.deleteById(l3.getUuid());
+        userRepository.deleteById(uid3);
+    }
+
+    @Test
+    void newQuestionEntityFrequencySuccessfulTest() throws Exception {
+        userRepository.save(user3);
+        lectureRepository.save(l3);
+
+        QuestionEntity q = new QuestionEntity(l3.getUuid(), "name???",
+                new Timestamp(System.currentTimeMillis()), uid3);
+        questionService.newQuestionEntity(q);
+        l3.setFrequency(3);
+        lectureRepository.save(l3);
+
+        Thread.sleep(3500);
+
+        QuestionEntity qq = new QuestionEntity(l3.getUuid(), "name???",
+                new Timestamp(System.currentTimeMillis()), uid3);
+
+        assertTrue(questionService.newQuestionEntity(qq) > 0);
+
+        questionRepository.deleteById(q.getId());
+        questionRepository.deleteById(qq.getId());
+        l3.setFrequency(0);
+        lectureRepository.deleteById(l3.getUuid());
+        userRepository.deleteById(uid3);
+    }
+
+    @Test
+    void newQuestionLectureNotStartedTest() {
+        l2.setStartTime(new Timestamp(System.currentTimeMillis() + 0xFFFFFFFFFL));
+        lectureRepository.save(l2);
+        q3.setLectureId(l2.getUuid());
+        q3.setOwnerId(uid2);
+
+        assertThrows(LectureNotStartedException.class, () -> questionService.newQuestionEntity(q3));
+
+        q3.setOwnerId(uid3);
+        q3.setLectureId(l3.getUuid());
+        l2.setStartTime(l1.getStartTime());
     }
 
     /**
      * Tests related to getQuestionsByLectureId method.
      */
     @Test
-    @Order(8)
     void getQuestionsByLectureIdSuccessfulTest() {
         List<QuestionEntity> qs = questionService
-                .getQuestionsByLectureId(UUID.fromString(l1.getUuid().toString()));
+                .getQuestionsByLectureId(l1.getUuid());
         assertEquals(1, qs.size());
         assertEquals(q1, qs.get(0));
     }
 
     @Test
-    @Order(9)
     void getQuestionsByLectureIdNoQuestionsTest() {
-        List<QuestionEntity> qs = questionService
-                .getQuestionsByLectureId(UUID.fromString(l2.getUuid().toString()));
+        questionRepository.deleteById(q2.getId());
+
+        List<QuestionEntity> qs = questionService.getQuestionsByLectureId(l2.getUuid());
         assertEquals(0, qs.size());
     }
 
     @Test
-    @Order(10)
     void getQuestionsByLectureIdNoLectureTest() {
+        userRepository.save(user3);
+        q3.setLectureId(UUID.randomUUID());
+        questionRepository.save(q3);
+
         List<QuestionEntity> qs = questionService
-                .getQuestionsByLectureId(UUID.fromString(l3.getUuid().toString()));
+                .getQuestionsByLectureId(l3.getUuid());
         assertEquals(0, qs.size());
+
+        userRepository.deleteById(uid3);
+        questionRepository.deleteById(q3.getId());
+        q3.setLectureId(l3.getUuid());
     }
 
     /**
      * Tests related to deleteQuestion method.
      */
     @Test
-    @Order(11)
     void deleteQuestionNoQuestionTest() {
-        assertEquals(-1, questionService.deleteQuestion(q3.getId(), uid3));
+        userRepository.save(user3);
+        lectureRepository.save(l3);
+
+        assertThrows(QuestionNotFoundException.class, () ->
+                questionService.deleteQuestion(q3.getId(), uid3));
+
+        userRepository.deleteById(uid3);
+        lectureRepository.deleteById(l3.getUuid());
     }
 
     @Test
-    @Order(12)
     void deleteQuestionWrongUidTest() {
-        assertEquals(-1, questionService.deleteQuestion(q1.getId(), uid3));
+        assertThrows(QuestionWrongOwnerIdException.class, () ->
+                questionService.deleteQuestion(q1.getId(), uid2));
         assertTrue(questionRepository.findById(q1.getId()).isPresent());
     }
 
     @Test
-    @Order(13)
     void deleteQuestionNoLectureTest() {
-        questionRepository.save(q3);
-        userRepository.save(user3);
-        assertEquals(-1, questionService.deleteQuestion(q3.getId(), uid3));
-        assertTrue(questionRepository.findById(q3.getId()).isPresent());
+        lectureRepository.deleteById(l2.getUuid());
 
-        questionRepository.deleteById(q3.getId());
-        userRepository.deleteById(uid3);
+        assertThrows(LectureNotFoundException.class, () ->
+                questionService.deleteQuestion(q2.getId(), uid2));
+        assertTrue(questionRepository.findById(q2.getId()).isPresent());
+
+        lectureRepository.save(l2);
     }
 
     @Test
-    @Order(14)
     void deleteQuestionLectureClosedTest() {
         l2.close();
         lectureRepository.save(l2);
         questionRepository.save(q2);
 
-        assertEquals(-1, questionService.deleteQuestion(q2.getId(), uid2));
+        assertThrows(LectureClosedException.class, () ->
+                questionService.deleteQuestion(q2.getId(), uid2));
         assertTrue(questionRepository.findById(q2.getId()).isPresent());
 
         l2.reOpen();
@@ -234,12 +356,12 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(15)
     void deleteQuestionUserNotRegisteredTest() {
         lectureRepository.save(l3);
         questionRepository.save(q3);
 
-        assertEquals(-1, questionService.deleteQuestion(q3.getId(), uid3));
+        assertThrows(UserNotRegisteredException.class, () ->
+                questionService.deleteQuestion(q3.getId(), uid3));
         assertTrue(questionRepository.findById(q3.getId()).isPresent());
 
         lectureRepository.deleteById(l3.getUuid());
@@ -247,8 +369,8 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(16)
-    void deleteQuestionSuccessfulTest() {
+    void deleteQuestionSuccessfulTest() throws Exception {
+        userQuestionRepository.save(new UserQuestionTable(uid2, q2.getId()));
         assertEquals(0, questionService.deleteQuestion(q2.getId(), uid2));
         assertTrue(questionRepository.findById(q2.getId()).isEmpty());
         assertTrue(userQuestionRepository.getAllByQuestionId(q2.getId()).isEmpty());
@@ -259,45 +381,33 @@ class QuestionServiceTest {
      */
 
     @Test
-    @Order(17)
     void deleteModeratorQuestionNoQuestionTest() {
-        assertEquals(-1, questionService.deleteModeratorQuestion(q3.getId(), l3.getModkey()));
+        assertThrows(QuestionNotFoundException.class, () ->
+                questionService.deleteModeratorQuestion(q3.getId(), l3.getModkey()));
     }
 
     @Test
-    @Order(18)
     void deleteModeratorQuestionNoLectureTest() {
         questionRepository.save(q3);
-        assertEquals(-1, questionService.deleteModeratorQuestion(q3.getId(), l3.getModkey()));
+
+        assertThrows(LectureNotFoundException.class, () ->
+                questionService.deleteModeratorQuestion(q3.getId(), l3.getModkey()));
         assertTrue(questionRepository.findById(q3.getId()).isPresent());
 
         questionRepository.deleteById(q3.getId());
     }
 
     @Test
-    @Order(19)
-    void deleteModeratorQuestionLectureClosedTest() {
-        l2.close();
-        lectureRepository.save(l2);
-        questionRepository.save(q2);
-
-        assertEquals(-1, questionService.deleteModeratorQuestion(q2.getId(), l2.getModkey()));
-        assertTrue(questionRepository.findById(q2.getId()).isPresent());
-
-        l2.reOpen();
-        lectureRepository.save(l2);
-    }
-
-    @Test
-    @Order(20)
     void deleteModeratorQuestionWrongModkeyTest() {
-        assertEquals(-1, questionService.deleteModeratorQuestion(q2.getId(), l1.getModkey()));
+        assertThrows(InvalidModkeyException.class, () ->
+                questionService.deleteModeratorQuestion(q2.getId(), l1.getModkey()));
         assertTrue(questionRepository.findById(q2.getId()).isPresent());
     }
 
     @Test
-    @Order(21)
-    void deleteModeratorQuestionSuccessfulTest() {
+    void deleteModeratorQuestionSuccessfulTest() throws Exception {
+        userQuestionRepository.save(new UserQuestionTable(uid2, q2.getId()));
+
         assertEquals(0, questionService.deleteModeratorQuestion(q2.getId(), l2.getModkey()));
         assertTrue(questionRepository.findById(q2.getId()).isEmpty());
         assertTrue(userQuestionRepository.getAllByQuestionId(q2.getId()).isEmpty());
@@ -307,30 +417,30 @@ class QuestionServiceTest {
      * Tests related to editQuestion method.
      */
     @Test
-    @Order(22)
     void editQuestionNoQuestionTest() {
-        assertEquals(-1, questionService.editQuestion(q3.getId(), l3.getModkey(), "bla bla", uid1));
+        assertThrows(QuestionNotFoundException.class, () ->
+                questionService.editQuestion(q3.getId(), l3.getModkey(), "bla bla", uid1));
     }
 
     @Test
-    @Order(23)
     void editQuestionNoLectureTest() {
         questionRepository.save(q3);
-        assertEquals(-1, questionService.editQuestion(q3.getId(), l3.getModkey(), "foo", uid1));
+
+        assertThrows(LectureNotFoundException.class, () ->
+                questionService.editQuestion(q3.getId(), l3.getModkey(), "foo", uid1));
 
         QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
         assertNotNull(q);
-        assertEquals("how old?", q.getText());
+        assertEquals("1 OR 1=1; DROP DATABASE;", q.getText());
         assertFalse(q.isEdited());
 
         questionRepository.deleteById(q3.getId());
     }
 
     @Test
-    @Order(24)
     void editQuestionWrongModkeyTest() {
-        questionRepository.save(q2);
-        assertEquals(-1, questionService.editQuestion(q2.getId(), l1.getModkey(), "foo", uid2));
+        assertThrows(InvalidModkeyException.class, () ->
+                questionService.editQuestion(q2.getId(), l1.getModkey(), "foo", uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -339,9 +449,9 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(25)
     void editQuestionTooLongTextTest() {
-        assertEquals(-1, questionService.editQuestion(q2.getId(), l2.getModkey(), longText, uid2));
+        assertThrows(QuestionNotModifiedException.class, () ->
+                questionService.editQuestion(q2.getId(), l2.getModkey(), longText, uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -350,10 +460,11 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(28)
     void editQuestionNewOwnerNotRegisteredTest() {
         userRepository.deleteById(uid2);
-        assertEquals(-1, questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid2));
+
+        assertThrows(UserNotRegisteredException.class, () ->
+                questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -364,35 +475,38 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(29)
-    void editQuestionSuccessfulTest() {
-        assertEquals(0, questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid2));
+    void editQuestionSuccessfulTest() throws Exception {
+        assertEquals(0, questionService.editQuestion(q2.getId(), l2.getModkey(), "bar", uid1));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
         assertEquals("bar", q.getText());
-        assertEquals(uid2, q2.getOwnerId());
+        assertEquals(uid1, q.getOwnerId());
         assertTrue(q.isEdited());
 
-        q2 = q;
+        q2.setOwnerId(uid2);
+        q2.setText("How to get 10 for testing?");
     }
 
     /**
      * Tests related to upvote method.
      */
     @Test
-    @Order(30)
     void upvoteNoQuestionTest() {
         userRepository.save(user3);
 
-        assertEquals(-1, questionService.upvote(q3.getId(), uid3));
+        assertThrows(QuestionNotFoundException.class, () ->
+                questionService.upvote(q3.getId(), uid3));
+
+        userRepository.deleteById(uid3);
     }
 
     @Test
-    @Order(31)
     void upvoteNoLectureTest() {
         questionRepository.save(q3);
-        assertEquals(-1, questionService.upvote(q3.getId(), uid3));
+
+        assertThrows(LectureNotFoundException.class, () ->
+                questionService.upvote(q3.getId(), uid3));
 
         QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
         assertNotNull(q);
@@ -402,13 +516,12 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(32)
     void upvoteLectureClosedTest() {
         l2.close();
         lectureRepository.save(l2);
         questionRepository.save(q2);
 
-        assertEquals(-1, questionService.upvote(q2.getId(), uid2));
+        assertThrows(LectureClosedException.class, () -> questionService.upvote(q2.getId(), uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -419,10 +532,10 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(33)
     void upvoteNotRegisteredTest() {
         userRepository.deleteById(uid2);
-        assertEquals(-1, questionService.upvote(q2.getId(), uid2));
+        assertThrows(UserNotRegisteredException.class, () ->
+                questionService.upvote(q2.getId(), uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -432,8 +545,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(34)
-    void upvoteTest() {
+    void upvoteTest() throws Exception {
         assertEquals(0, questionService.upvote(q2.getId(), uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
@@ -444,12 +556,13 @@ class QuestionServiceTest {
         UserQuestionTable match = new UserQuestionTable(uid2, q2.getId());
         assertTrue(table.contains(match));
 
-        q2 = q;
+        userQuestionRepository.deleteAllByQuestionId(q2.getId());
     }
 
     @Test
-    @Order(35)
-    void unvoteTest() {
+    void unvoteTest() throws Exception {
+        questionService.upvote(q2.getId(), uid2);
+
         assertEquals(0, questionService.upvote(q2.getId(), uid2));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
@@ -460,27 +573,28 @@ class QuestionServiceTest {
         UserQuestionTable match = new UserQuestionTable(uid2, q2.getId());
         assertFalse(table.contains(match));
 
-        q2 = q;
+        userQuestionRepository.deleteAllByQuestionId(q2.getId());
     }
 
     /**
      * Tests related to answer method.
      */
     @Test
-    @Order(36)
     void answerNoQuestionTest() {
         lectureRepository.save(l3);
 
-        assertEquals(-1, questionService.answer(q3.getId(), l3.getModkey(), "42"));
+        assertThrows(QuestionNotFoundException.class, () ->
+                questionService.answer(q3.getId(), l3.getModkey(), "42"));
 
         lectureRepository.deleteById(l3.getUuid());
     }
 
     @Test
-    @Order(37)
     void answerNoLectureTest() {
         questionRepository.save(q3);
-        assertEquals(-1, questionService.answer(q3.getId(), l3.getModkey(), "42"));
+
+        assertThrows(LectureNotFoundException.class, () ->
+                questionService.answer(q3.getId(), l3.getModkey(), "42"));
 
         QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
         assertNotNull(q);
@@ -492,9 +606,9 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(38)
     void answerTooLongTextTest() {
-        assertEquals(-1, questionService.answer(q2.getId(), l2.getModkey(), longText));
+        assertThrows(QuestionNotModifiedException.class, () ->
+                questionService.answer(q2.getId(), l2.getModkey(), longText));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -504,9 +618,9 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(39)
     void answerWrongModKeyTest() {
-        assertEquals(-1, questionService.answer(q2.getId(), l1.getModkey(), "42"));
+        assertThrows(InvalidModkeyException.class, () ->
+                questionService.answer(q2.getId(), l1.getModkey(), "42"));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
         assertNotNull(q);
@@ -516,8 +630,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @Order(40)
-    void answerSuccessfulTest() {
+    void answerSuccessfulTest() throws Exception {
         assertEquals(0, questionService.answer(q2.getId(), l2.getModkey(), "42"));
 
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
@@ -525,17 +638,16 @@ class QuestionServiceTest {
         assertEquals("42", q.getAnswerText());
         assertNotNull(q.getAnswerTime());
         assertTrue(q.isAnswered());
-        q2 = q;
     }
 
     @Test
-    @Order(41)
-    void newQuestionLectureNotStartedTest() {
-        l2.setStartTime(new Timestamp(System.currentTimeMillis() + 0xFFFFFFFFFL));
-        lectureRepository.save(l2);
-        QuestionEntity q3 = new QuestionEntity(l2.getUuid(), "i'm in the past",
-                new Timestamp(0), 42L);
-        long result = questionService.newQuestionEntity(q3);
-        assertEquals(-1, result);
+    void answerSuccessfulNoAnswerTextTest() throws Exception {
+        assertEquals(0, questionService.answer(q2.getId(), l2.getModkey(), ""));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals("", q.getAnswerText());
+        assertNotNull(q.getAnswerTime());
+        assertTrue(q.isAnswered());
     }
 }

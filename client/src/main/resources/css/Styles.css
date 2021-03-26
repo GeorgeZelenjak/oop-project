@@ -116,6 +116,11 @@
         -fx-background-color: Transparent;
     }
 
+    .banButton {
+        -fx-graphic: url(/images/ban.png);
+        -fx-background-color: Transparent;
+    }
+
     .editButton:hover {
         -fx-background-color: rgb(212,212,212);
     }
@@ -195,6 +200,13 @@
     .replyButton {
         -fx-graphic: url(/images/reply.png);
         -fx-background-color: Transparent;
+    }
+
+    .questionCell {
+        -fx-border-color: #00A6D6;
+        -fx-border-style: solid;
+        -fx-border-radius: 15px;
+        -fx-border-width: 2px;
     }
 
     .replyButton:hover {

@@ -1,17 +1,22 @@
 package nl.tudelft.oopp.livechat.uielements;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.Tooltip;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Font;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.control.Button;
+import javafx.stage.Stage;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
+import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.io.IOException;
 import java.net.URL;
@@ -62,6 +67,10 @@ public class CellDataLecturer implements Initializable {
 
     @FXML
     private Button editButton;
+
+    @FXML
+    private Button banButton;
+
 
     private Question question;
 
@@ -161,6 +170,30 @@ public class CellDataLecturer implements Initializable {
     }
 
     /**
+     * Sets ban button to ban a user.
+     */
+    public void setBanUser() {
+        banButton.setOnAction((ActionEvent event) -> {
+            if (question.getOwnerName().contains(" (banned)")) {
+                boolean ban = AlertController.alertConfirmation("It looks as if the user is"
+                                + "already banned",
+                        "However, he/she might have just played with their name"
+                                + "and are not banned in fact.\n"
+                        + "Would you still like to ban?");
+                if (!ban) return;
+            }
+            int[] result = showPopup();
+            if (result[2] != 1) {
+                return;
+            }
+            int time = result[0] * 60;
+            boolean byIp = result[1] != 0;
+            LectureCommunication.ban(Lecture.getCurrentLecture().getModkey().toString(),
+                    question.getId(), time, byIp);
+        });
+    }
+
+    /**
      * Sets edit button to edit the question content.
      */
     public void setEditButton() {
@@ -208,5 +241,44 @@ public class CellDataLecturer implements Initializable {
             isAnsweredButton.setDisable(true);
             isAnsweredButton.setVisible(false);
         }
+    }
+
+    //res[0] is time, res[1] is 0 if by id, 1 if by ip, res[2] if the button was submitted
+    private int[] showPopup() {
+        ToggleGroup toggleGroup = new ToggleGroup();
+        RadioButton byId = new RadioButton("Ban by user id");
+        RadioButton byIp = new RadioButton("Ban by user ip");
+        byId.setToggleGroup(toggleGroup);
+        byId.setSelected(true);
+        byIp.setToggleGroup(toggleGroup);
+
+        Spinner<Integer> time = new Spinner<>();
+        time.setEditable(true);
+        time.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 200));
+
+        int[] res = new int[3];
+
+        Stage window = new Stage();
+        Button submit = new Button("Submit");
+        submit.setOnAction(e -> {
+            res[2] = 1;
+            window.close();
+        });
+
+        Label labelHeader = new Label("Choose the way you would how you would like to ban");
+        Label labelTime = new Label("Choose the number of minutes to ban");
+
+        VBox box = new VBox();
+        box.setAlignment(Pos.CENTER);
+        box.getChildren().addAll(labelHeader, byId, byIp, labelTime, time, submit);
+
+        Scene scene = new Scene(box, 300, 200);
+
+        window.setScene(scene);
+        window.showAndWait();
+
+        res[0] = time.getValue() > 200 ? 200 : time.getValue();
+        res[1] = byIp.isSelected() ? 1 : 0;
+        return res;
     }
 }

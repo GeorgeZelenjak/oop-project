@@ -58,7 +58,7 @@ public class DebugSceneController {
         User.setUserName("Andy");
         Lecture lecture = LectureCommunication
                 .createLecture("A great history of zebras",
-                        "Andy", new Timestamp(System.currentTimeMillis()));
+                        "Andy", new Timestamp(System.currentTimeMillis()), 60);
         Lecture.setCurrentLecture(lecture);
     }
 
@@ -86,10 +86,11 @@ public class DebugSceneController {
 
         LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
                 59, "Oleg");
+
         QuestionCommunication.askQuestion(
                 67, Lecture.getCurrentLecture().getUuid(), "How do you do, fellow kids?");
         QuestionCommunication.askQuestion(
-                26, Lecture.getCurrentLecture().getUuid(),"How do you find the eigen values?");
+                59, Lecture.getCurrentLecture().getUuid(),"How do you find the eigen values?");
         QuestionCommunication.askQuestion(
                 26, Lecture.getCurrentLecture().getUuid(),"I am confused!!!!");
         QuestionCommunication.askQuestion(

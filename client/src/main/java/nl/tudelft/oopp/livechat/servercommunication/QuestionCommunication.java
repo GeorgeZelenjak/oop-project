@@ -19,6 +19,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
+import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponse;
+
 /**
  * Class for Question server communication.
  */
@@ -79,16 +81,10 @@ public class QuestionCommunication {
             return -2;
         }
 
-        //Unexpected response
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return -3;
+        int result = handleResponse(response);
+        if (result != 0) {
+            return -1;
         }
-
-        if (response.body().equals("-1")) {
-            return -4;
-        }
-
         //Question has been asked successfully
         System.out.println("The question was asked successfully! " + response.body());
         User.addQuestionId(Long.parseLong(response.body()));
@@ -125,8 +121,9 @@ public class QuestionCommunication {
             //e.printStackTrace();
             return null;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
+
+        int result = handleResponse(response);
+        if (result != 0) {
             return null;
         }
 
@@ -176,7 +173,7 @@ public class QuestionCommunication {
         int result = handleResponse(response);
         if (result == 0) {
             System.out.println("The question was upvoted/downvoted successfully! "
-                                    + response.body());
+                    + response.body());
         }
         return result;
     }
@@ -224,7 +221,7 @@ public class QuestionCommunication {
         int result = handleResponse(response);
         if (result == 0) {
             System.out.println("The question was marked as answered successfully!"
-                                    + response.body());
+                    + response.body());
         }
         return result;
     }
@@ -314,7 +311,6 @@ public class QuestionCommunication {
         }
 
         int result = handleResponse(response);
-        System.out.println("Deleted: " + result);
         if (result == 0) {
             System.out.println("The question with id " + qid + " was deleted successfully!");
             User.deleteQuestionId(qid);
@@ -361,27 +357,6 @@ public class QuestionCommunication {
             System.out.println("The question with id " + qid + " was deleted successfully!");
         }
         return result;
-    }
-
-    /**
-     * Handles the response for upvoteQuestion and markedAsAnswered methods.
-     * @param response response received from the server
-     * @return -3, -4, 0 according to the "status codes" for these methods
-     */
-    private static int handleResponse(HttpResponse<String> response) {
-        //Unexpected response
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return -3;
-        }
-
-        //Correct response, but not success
-        if (!response.body().equals("0")) {
-            return -4;
-        }
-
-        //Success
-        return 0;
     }
 
 }

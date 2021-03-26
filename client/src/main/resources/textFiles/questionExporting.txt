@@ -1,0 +1,11 @@
+Lecturers can export the questions and answers of a lecture to post FAQs on Brightspace or to share them with students.
+
+-> During / At the end of the lecture, any lecturer/moderator can export all the questions and answers of that lecture, sorted by relevance (number of upvotes, answered questions).
+
+-> Questions and answers will be exported to a file and it's name consists of the lecture name and the date and time it was exported.
+
+-> To export questions and answers, click on the blue "Export Questions and Answers" button in the bottom right corner.
+
+-> You can find all exported text files in a folder named "exportedQuestions".
+
+-> Note: it is possible to export multiple text files during a lecture.

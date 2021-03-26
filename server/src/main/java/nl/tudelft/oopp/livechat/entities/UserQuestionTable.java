@@ -1,5 +1,7 @@
 package nl.tudelft.oopp.livechat.entities;
 
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -9,6 +11,7 @@ import java.util.Objects;
 @Table(name = "userquestion")
 @Entity
 @IdClass(UserQuestionPairId.class)
+@EnableTransactionManagement
 public class UserQuestionTable {
 
     @Id

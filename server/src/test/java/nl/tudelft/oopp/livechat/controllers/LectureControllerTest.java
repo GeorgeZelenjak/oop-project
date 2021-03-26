@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.UUID;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -45,11 +44,12 @@ class LectureControllerTest {
      * @param startTime the start time
      * @return the JSON string representing the lecture
      */
-    private String createJson(String creatorName, Timestamp startTime) {
+    private String createJson(String creatorName, Timestamp startTime, int frequency) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode node = mapper.createObjectNode();
         node.put("creatorName", creatorName);
         node.put("startTime", simpleDateFormat.format(startTime));
+        node.put("frequency", frequency);
         return node.toString();
     }
 
@@ -137,13 +137,12 @@ class LectureControllerTest {
     @Test
     void createLectureTest() {
         assertDoesNotThrow(() -> createLecture("/api/newLecture?name=test1",
-                createJson("Papa", time)));
+                createJson("Papa", time, 70)));
     }
 
     @Test
     void createLectureModkeyTest() throws Exception {
-        objectMapper.registerModule(new JavaTimeModule());
-        String json = createLecture("/api/newLecture?name=test2", createJson("Mama", time));
+        String json = createLecture("/api/newLecture?name=test2", createJson("Mama", time, 60));
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         assertNotNull(lectureEntity);
         assertNotNull(lectureEntity.getModkey());
@@ -163,7 +162,7 @@ class LectureControllerTest {
 
     @Test
     void getLecturesByIDSuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test1", createJson("Mim", time));
+        String json = createLecture("/api/newLecture?name=test1", createJson("Mim", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
 
@@ -183,16 +182,21 @@ class LectureControllerTest {
 
     @Test
     void getLecturesByIDUnsuccessfulTest() throws Exception {
-        createLecture("/api/newLecture?name=test1", createJson("mops", time));
+        createLecture("/api/newLecture?name=test1", createJson("mops", time, 60));
 
         String uuid = UUID.randomUUID().toString();
-        String m = getLecture("/api/get/" + uuid);
-        assertEquals("", m);
+        String r = this.mockMvc.perform(get("/api/get/" + uuid))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+        assertEquals("Lecture not found", r);
     }
 
     @Test
     void whenPostingReturns200Test() throws Exception {
-        this.mockMvc.perform(post("/api/newLecture?name=test2").content(createJson("Papa", time)))
+        this.mockMvc.perform(post("/api/newLecture?name=test2")
+                .content(createJson("Papa", time, 60)))
                 .andExpect(status().isOk());
     }
 
@@ -210,7 +214,7 @@ class LectureControllerTest {
 
     @Test
     void deleteLectureSuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test3", createJson("Nina", time));
+        String json = createLecture("/api/newLecture?name=test3", createJson("Nina", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
@@ -219,22 +223,38 @@ class LectureControllerTest {
         int m = deleteLecture("/api/delete/" + uuid + "/" + modkey);
         assertEquals(0, m);
 
-        String lecture = getLecture("/api/get/" + uuid);
-        assertEquals("", lecture);
+        String r = this.mockMvc.perform(get("/api/get/" + uuid))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+        assertEquals("Lecture not found", r);
 
-        m = deleteLecture("/api/delete/" + uuid + "/" + modkey);
-        assertEquals(-1, m);
+        String result = this.mockMvc.perform(delete("/api/delete/" + uuid
+                + "/" + UUID.randomUUID().toString()))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+
+        assertEquals("Lecture not found", result);
     }
 
     @Test
     void deleteLectureUnsuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test3", createJson("Pavel", time));
+        String json = createLecture("/api/newLecture?name=test3", createJson("Pavel", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
 
-        int m = deleteLecture("/api/delete/" + uuid + "/" + UUID.randomUUID().toString());
-        assertEquals(-1, m);
+        String result = this.mockMvc.perform(delete("/api/delete/"
+                + uuid + "/" + UUID.randomUUID().toString()))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+
+        assertEquals("Wrong modkey, don't do this", result);
 
         String lecture = getLecture("/api/get/" + uuid);
         assertNotEquals("", lecture);
@@ -242,7 +262,7 @@ class LectureControllerTest {
 
     @Test
     void validateModkeySuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=ads", createJson("Sasha", time));
+        String json = createLecture("/api/newLecture?name=ads", createJson("Sasha", time, 60));
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
         String modkey = lectureEntity.getModkey().toString();
@@ -253,31 +273,39 @@ class LectureControllerTest {
 
     @Test
     void validateModkeyUnsuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=ads", createJson("Petja", time));
+        String json = createLecture("/api/newLecture?name=ads", createJson("Petja", time, 60));
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
         String modkey = UUID.randomUUID().toString();
 
-        int m = validateModkey("/api/validate/" + uuid + "/" + modkey);
-        assertEquals(-1, m);
+        String result = this.mockMvc.perform(get("/api/validate/" + uuid + "/" + modkey))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
     }
 
     @Test
     void validateModkeyNoLectureTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=ads", createJson("Masha", time));
+        String json = createLecture("/api/newLecture?name=ads", createJson("Masha", time, 60));
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
         String modkey = lectureEntity.getModkey().toString();
 
         deleteLecture("/api/delete/" + uuid + "/" + modkey);
 
-        int m = validateModkey("/api/validate/" + uuid + "/" + modkey);
-        assertEquals(-1, m);
+        String result = this.mockMvc.perform(get("/api/validate/" + uuid + "/" + modkey))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+        assertEquals("Lecture not found", result);
     }
 
     @Test
     void closeLectureSuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test4", createJson("Gosha", time));
+        String json = createLecture("/api/newLecture?name=test4", createJson("Gosha", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
@@ -293,13 +321,18 @@ class LectureControllerTest {
 
     @Test
     void closeLectureUnsuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test4", createJson("Katja", time));
+        String json = createLecture("/api/newLecture?name=test4", createJson("Katja", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
 
-        int m = closeLecture("/api/close/" + uuid + "/" + UUID.randomUUID().toString());
-        assertEquals(-1, m);
+        String result = this.mockMvc.perform(put("/api/close/"
+                + uuid + "/" + UUID.randomUUID().toString()))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
 
         String lecture = getLecture("/api/get/" + uuid);
         LectureEntity l = objectMapper.readValue(lecture, LectureEntity.class);
@@ -308,21 +341,24 @@ class LectureControllerTest {
 
     @Test
     void closeLectureNoLectureTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test4", createJson("Vova", time));
+        String json = createLecture("/api/newLecture?name=test4", createJson("Vova", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
 
         deleteLecture("/api/delete/" + uuid + "/" + lectureEntity.getModkey().toString());
 
-        int m = closeLecture("/api/close/" + uuid
-                + "/" + lectureEntity.getModkey().toString());
-        assertEquals(-1, m);
+        String result = this.mockMvc.perform(put("/api/close/" + uuid
+                + "/" + lectureEntity.getModkey().toString()))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse().getErrorMessage();
+        assertEquals("Lecture not found", result);
     }
 
     @Test
     void exceptionHandlerTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=ads", createJson("Bill", time));
+        String json = createLecture("/api/newLecture?name=ads", createJson("Bill", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String modkey = lectureEntity.getModkey().toString();
@@ -334,7 +370,35 @@ class LectureControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals("Don't do this", result);
+        assertEquals("UUID is not in the correct format", result);
+    }
+
+    @Test
+    void nullPointerHandlerTest() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode node = mapper.createObjectNode();
+        node.put("creatorName", "root");
+
+        String result = this.mockMvc.perform(post("/api/newLecture?name=test1")
+                .content(node.toString()).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest()).andReturn().getResponse()
+                .getContentAsString();
+        assertEquals("Missing parameter", result);
+    }
+
+    @Test
+    void numberFormatExceptionHandlerTest() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode node = mapper.createObjectNode();
+        node.put("creatorName", "sudo");
+        node.put("startTime", simpleDateFormat.format(time));
+        node.put("frequency", "five");
+
+        String result = this.mockMvc.perform(post("/api/newLecture?name=test1")
+                .content(node.toString()).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest()).andReturn().getResponse()
+                .getContentAsString();
+        assertEquals("Not a number", result);
     }
 }
 
