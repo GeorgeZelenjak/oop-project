@@ -13,7 +13,7 @@ public class Poll {
 
     private long id;
 
-    private UUID uuid;
+    private UUID lectureId;
 
     private String questionText = "";
 
@@ -34,14 +34,14 @@ public class Poll {
     /**
      * Instantiates a new Poll entity.
      *
-     * @param uuid         the uuid
+     * @param lectureId    the lecture id
      * @param questionText the question text
      * @param time         the time
      * @param votes        the votes
      * @param isOpen       the is open
      */
-    public Poll(UUID uuid, String questionText, Timestamp time, long votes, boolean isOpen) {
-        this.uuid = uuid;
+    public Poll(UUID lectureId, String questionText, Timestamp time, long votes, boolean isOpen) {
+        this.lectureId = lectureId;
         this.questionText = questionText;
         this.time = time;
         this.votes = votes;
@@ -51,11 +51,11 @@ public class Poll {
     /**
      * Instantiates a new Poll entity.
      *
-     * @param uuid         the uuid
+     * @param lectureId    the lecture id
      * @param questionText the question text
      */
-    public Poll(UUID uuid, String questionText) {
-        this.uuid = uuid;
+    public Poll(UUID lectureId, String questionText) {
+        this.lectureId = lectureId;
         this.questionText = questionText;
         this.time = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
         this.votes = 0;
@@ -72,21 +72,21 @@ public class Poll {
     }
 
     /**
-     * Gets uuid.
+     * Gets lecture id.
      *
-     * @return the uuid
+     * @return the lecture id
      */
-    public UUID getUuid() {
-        return uuid;
+    public UUID getLectureId() {
+        return this.lectureId;
     }
 
     /**
-     * Sets uuid.
+     * Sets lecture id.
      *
-     * @param uuid the uuid
+     * @param lectureId the lecture id
      */
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setLectureId(UUID lectureId) {
+        this.lectureId = lectureId;
     }
 
     /**
@@ -172,6 +172,6 @@ public class Poll {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, uuid, questionText, time, votes, open);
+        return Objects.hash(id, questionText);
     }
 }

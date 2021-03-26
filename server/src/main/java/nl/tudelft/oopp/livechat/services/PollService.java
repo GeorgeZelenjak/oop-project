@@ -52,17 +52,17 @@ public class PollService {
     /**
      * Create poll entity.
      *
-     * @param uuid         the lecture id
+     * @param lectureId         the lecture id
      * @param modkey       the modkey
      * @param questionText the question text
      * @return the poll entity
      * @throws LectureException       the lecture exception
      * @throws InvalidModkeyException the invalid modkey exception
      */
-    public PollEntity createPoll(UUID uuid, UUID modkey, String questionText)
+    public PollEntity createPoll(UUID lectureId, UUID modkey, String questionText)
             throws LectureException, InvalidModkeyException {
-        lectureService.validateModerator(uuid, modkey);
-        PollEntity pollEntity = new PollEntity(uuid, questionText);
+        lectureService.validateModerator(lectureId, modkey);
+        PollEntity pollEntity = new PollEntity(lectureId, questionText);
         pollRepository.save(pollEntity);
         return pollEntity;
     }
@@ -161,16 +161,16 @@ public class PollService {
     /**
      * Fetch poll and poll options without modkey.
      *
-     * @param uuid the uuid
+     * @param lectureId the lecture id
      * @return the poll and options
      * @throws LectureNotFoundException the lecture not found exception
      * @throws PollNotFoundException    the poll not found exception
      */
-    public PollAndOptions fetchPollAndOptionsStudent(UUID uuid)
+    public PollAndOptions fetchPollAndOptionsStudent(UUID lectureId)
             throws LectureNotFoundException, PollNotFoundException {
-        if (lectureRepository.findLectureEntityByUuid(uuid) == null)
+        if (lectureRepository.findLectureEntityByUuid(lectureId) == null)
             throw new LectureNotFoundException();
-        List<PollEntity> polls = pollRepository.findAllByLectureIdOrderByTimeDesc(uuid);
+        List<PollEntity> polls = pollRepository.findAllByLectureIdOrderByTimeDesc(lectureId);
         if (polls.size() == 0) throw new PollNotFoundException();
         PollEntity pollEntity = polls.get(0);
         List<PollOptionEntity> pollOptions = pollOptionRepository
@@ -188,19 +188,19 @@ public class PollService {
     /**
      * Fetch poll and poll options with modkey.
      *
-     * @param uuid   the uuid
+     * @param lectureId   the lecture id
      * @param modkey the modkey
      * @return the poll and options
      * @throws LectureException       the lecture exception
      * @throws PollNotFoundException  the poll not found exception
      * @throws InvalidModkeyException the invalid modkey exception
      */
-    public PollAndOptions fetchPollAndOptionsLecturer(UUID uuid, UUID modkey)
+    public PollAndOptions fetchPollAndOptionsLecturer(UUID lectureId, UUID modkey)
             throws LectureException, PollNotFoundException, InvalidModkeyException {
-        lectureService.validateModerator(uuid, modkey);
-        if (lectureRepository.findLectureEntityByUuid(uuid) == null)
+        lectureService.validateModerator(lectureId, modkey);
+        if (lectureRepository.findLectureEntityByUuid(lectureId) == null)
             throw new LectureNotFoundException();
-        List<PollEntity> polls = pollRepository.findAllByLectureIdOrderByTimeDesc(uuid);
+        List<PollEntity> polls = pollRepository.findAllByLectureIdOrderByTimeDesc(lectureId);
         if (polls.size() == 0) throw new PollNotFoundException();
         PollEntity pollEntity = polls.get(0);
         List<PollOptionEntity> pollOptions = pollOptionRepository

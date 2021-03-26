@@ -24,11 +24,11 @@ public class PollController {
         this.pollService = pollService;
     }
 
-    @PutMapping("/create/{uuid}/{modkey}")
-    public PollEntity createPoll(@PathVariable UUID uuid, @PathVariable UUID modkey,
+    @PutMapping("/create/{lectureId}/{modkey}")
+    public PollEntity createPoll(@PathVariable UUID lectureId, @PathVariable UUID modkey,
                                  @RequestBody String questionText)
             throws LectureException, InvalidModkeyException {
-        return pollService.createPoll(uuid, modkey, questionText);
+        return pollService.createPoll(lectureId, modkey, questionText);
     }
 
     @PutMapping("/addOption/{pollId}/{modkey}/{isCorrect}")
@@ -45,10 +45,10 @@ public class PollController {
         return pollService.togglePoll(pollId, modkey);
     }
 
-    @GetMapping("/fetchStudent/{uuid}")
-    public PollAndOptions fetchPollAndOptionsStudent(@PathVariable UUID uuid)
+    @GetMapping("/fetchStudent/{lectureId}")
+    public PollAndOptions fetchPollAndOptionsStudent(@PathVariable UUID lectureId)
             throws LectureNotFoundException, PollNotFoundException {
-        return pollService.fetchPollAndOptionsStudent(uuid);
+        return pollService.fetchPollAndOptionsStudent(lectureId);
     }
 
     @GetMapping("/fetchMod/{uuid}/{modkey}")

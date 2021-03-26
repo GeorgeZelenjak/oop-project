@@ -30,12 +30,12 @@ public class PollCommunication {
     /**
      * Creates a poll on the server.
      *
-     * @param uuid         the uuid
+     * @param lectureId         the lecture id
      * @param modkey       the modkey
      * @param questionText the question text
      * @return the votes on lecture speed
      */
-    public static Poll createPoll(UUID uuid, UUID modkey, String questionText) {
+    public static Poll createPoll(UUID lectureId, UUID modkey, String questionText) {
 
         //Parameters for request
         String address = ADDRESS + "/api/poll/create/";
@@ -45,7 +45,7 @@ public class PollCommunication {
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(questionText);
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
-                URI.create(address + uuid + "/" + modkey)).build();
+                URI.create(address + lectureId + "/" + modkey)).build();
 
         HttpResponse<String> response;
         //Catching error when communicating with server
@@ -133,10 +133,10 @@ public class PollCommunication {
     /**
      * Fetch poll and options poll and options.
      *
-     * @param uuid the uuid
+     * @param lectureId the lecture id
      * @return the poll and options
      */
-    public static PollAndOptions fetchPollAndOptionsStudent(UUID uuid) {
+    public static PollAndOptions fetchPollAndOptionsStudent(UUID lectureId) {
         //Check if current lecture has been set
 
         //Parameters for request
@@ -144,7 +144,7 @@ public class PollCommunication {
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create(address + uuid)).build();
+                URI.create(address + lectureId)).build();
 
         HttpResponse<String> response;
         //Catching error when communicating with server
@@ -165,11 +165,11 @@ public class PollCommunication {
     /**
      * Fetch poll and options poll and options.
      *
-     * @param uuid   the uuid
+     * @param lectureId   the lecture id
      * @param modkey the modkey
      * @return the poll and options
      */
-    public static PollAndOptions fetchPollAndOptionsModerator(UUID uuid, UUID modkey) {
+    public static PollAndOptions fetchPollAndOptionsModerator(UUID lectureId, UUID modkey) {
         //Check if current lecture has been set
 
         //Parameters for request
@@ -177,7 +177,7 @@ public class PollCommunication {
 
         //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create(address + uuid + "/" + modkey)).build();
+                URI.create(address + lectureId + "/" + modkey)).build();
 
         HttpResponse<String> response;
         //Catching error when communicating with server
