@@ -48,6 +48,9 @@ public class Question implements Comparable<Question> {
     @Expose(serialize = true, deserialize = true)
     private String ownerName;
 
+    @Expose(serialize = false, deserialize = true)
+    private String status = "new";
+
     /**
      * Empty constructor to create a question entity.
      */
@@ -224,6 +227,24 @@ public class Question implements Comparable<Question> {
      */
     public void setOwnerName(String newName) {
         this.ownerName = newName;
+    }
+
+    /**
+     * Gets status.
+     *
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets status.
+     *
+     * @param status the status
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     /**

@@ -222,6 +222,11 @@ public class CellLecturerController implements Initializable {
         answerText.setText("Answer: " + value);
     }
 
+    public void setStatusText(String value) {
+        answerText.setText(value);
+
+    }
+
     /**
      * Method that controls the reply Button functionality.
      * A popup will appear to enter the answer text.

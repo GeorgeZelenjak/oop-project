@@ -44,8 +44,6 @@ public class EditQuestionPopupController implements Initializable {
     public void submitEditedQuestion() {
         QuestionCommunication.edit(Question.getCurrentQuestion().getId(),
                 Lecture.getCurrentLecture().getModkey(), editQuestionTextArea.getText());
-        QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
-                Lecture.getCurrentLecture().getModkey(), "new", User.getUid());
         closeTheScene();
     }
 
@@ -53,6 +51,8 @@ public class EditQuestionPopupController implements Initializable {
      * Close the scene.
      */
     public void closeTheScene() {
+        QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
+                Lecture.getCurrentLecture().getModkey(), "new", User.getUid());
         Stage stage = (Stage) submitEditedQuestionButton.getScene().getWindow();
         stage.close();
     }

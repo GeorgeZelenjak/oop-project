@@ -45,8 +45,6 @@ public class AnswerQuestionPopupController implements Initializable {
     public void submitAnswer() {
         QuestionCommunication.markedAsAnswered(Question.getCurrentQuestion().getId(),
                 Lecture.getCurrentLecture().getModkey(), answerTextArea.getText());
-        QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
-                Lecture.getCurrentLecture().getModkey(), "new", User.getUid());
         closeTheScene();
     }
 
@@ -54,6 +52,8 @@ public class AnswerQuestionPopupController implements Initializable {
      * Close the scene.
      */
     public void closeTheScene() {
+        QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
+                Lecture.getCurrentLecture().getModkey(), "new", User.getUid());
         Stage stage = (Stage) answerTextArea.getScene().getWindow();
         stage.close();
     }
