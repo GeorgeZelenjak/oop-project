@@ -53,8 +53,6 @@ public class User {
             uidTemp += unsigned << (8 * i);
         }
         uid = uidTemp * 10 + getLuhnDigit(uidTemp);
-        long n = ThreadLocalRandom.current().nextLong(100000000L);
-        uid = n * 10 + getLuhnDigit(n);
     }
 
     /**
