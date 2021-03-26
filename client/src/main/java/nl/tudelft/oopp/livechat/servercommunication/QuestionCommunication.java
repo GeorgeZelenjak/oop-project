@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponse;
+import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponseNoAlerts;
 
 /**
  * Class for Question server communication.
@@ -355,6 +356,50 @@ public class QuestionCommunication {
         int result = handleResponse(response);
         if (result == 0) {
             System.out.println("The question with id " + qid + " was deleted successfully!");
+        }
+        return result;
+    }
+
+    /**
+     * Sets status.
+     *
+     * @param qid    the qid
+     * @param modkey the modkey
+     * @param status the status
+     * @param uid    the uid
+     * @return the status
+     */
+    public static int setStatus(long qid, UUID modkey, String status, long uid) {
+        //Check if current lecture has been set
+        if (Lecture.getCurrentLecture() == null) {
+            System.out.println("You are not connected to a lecture!!!");
+            return -1;
+        }
+
+        //Create a json object with the data to be sent
+
+        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(status);
+        String address = ADDRESS + "/api/question/status/" + qid + "/" + uid + "/"
+                + modkey.toString();
+
+        //Create request and defining response
+        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
+                URI.create(address)).setHeader("Content-Type", "application/json").build();
+        HttpResponse<String> response;
+        //Catching error when communicating with server
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            System.out.println("Exception when communicating with the server!");
+            //e.printStackTrace();
+            return -2;
+        }
+
+        int result = handleResponseNoAlerts(response);
+        System.out.println("Status: " + result);
+        if (result == 0) {
+            System.out.println("The question with id " + qid + " have changed status!");
+            System.out.println("New status: " + status);
         }
         return result;
     }

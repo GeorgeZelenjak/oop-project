@@ -8,6 +8,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import nl.tudelft.oopp.livechat.controllers.popupcontrollers.PollingManagementPopupController;
+import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.data.User;
+import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import javax.sql.PooledConnection;
 import java.io.IOException;
@@ -122,12 +126,12 @@ public class NavigationController {
         }
     }
 
-    private void popupHelper(String javaFxFile, int width, int height) {
+    private void popupHelper(String javaFxFile, int width, int height, String title) {
         Parent root;
         try {
             root = FXMLLoader.load(getClass().getResource(javaFxFile));
             Stage stage = new Stage();
-            stage.setTitle("My New Stage Title");
+            stage.setTitle(title);
             stage.setScene(new Scene(root, width, height));
             stage.show();
 
@@ -135,6 +139,35 @@ public class NavigationController {
             e.printStackTrace();
         }
     }
+
+    private void popupHelperSendRequests(String javaFxFile, int width, int height,
+                                         String req, String title) {
+        Parent root;
+        try {
+            root = FXMLLoader.load(getClass().getResource(javaFxFile));
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(new Scene(root, width, height));
+            if (QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
+                    Lecture.getCurrentLecture().getModkey(), "req", User.getUid()) != 0) {
+                AlertController.alertWarning("Question is already being handled",
+                        "This question is already being handled, if you want you can continue");
+            }
+            stage.show();
+            //Closes the entire program when the main scene is closed
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent e) {
+                    QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
+                            Lecture.getCurrentLecture().getModkey(), "new", User.getUid());
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     /**
      * Go to settings.
@@ -168,41 +201,47 @@ public class NavigationController {
      * Makes a popup to answer question.
      */
     public void popupAnswerQuestion() {
-        popupHelper("/fxml/popupscenes/answerQuestionPopup.fxml", 600,400);
+        popupHelperSendRequests("/fxml/popupscenes/answerQuestionPopup.fxml", 600,400,
+                "answering","Answer");
     }
 
     /**
      * Makes a popup to the lecturer scene.
      */
     public void popupLecturerScene() {
-        popupHelper("/fxml/scenes/lecturerChatScene.fxml",1080,768);
+        popupHelper("/fxml/scenes/lecturerChatScene.fxml",1080,768,
+                "debug");
     }
 
     /**
      * Makes a popup to edit question.
      */
     public void popupEditQuestion() {
-        popupHelper("/fxml/popupscenes/editQuestionPopup.fxml", 600,400);
+        popupHelperSendRequests("/fxml/popupscenes/editQuestionPopup.fxml", 600,400,
+                "editing", "Edit");
     }
 
     /**
      * Popup polling management.
      */
     public void popupPollingManagement() {
-        popupHelper("/fxml/popupscenes/pollingManagementPopup.fxml", 720, 512);
+        popupHelper("/fxml/popupscenes/pollingManagementPopup.fxml", 720, 512,
+                "Polls and Quizzes");
     }
 
     /**
      * Popup poll result.
      */
     public void popupPollResult() {
-        popupHelper("/fxml/popupscenes/pollResultsPopup.fxml", 720, 512);
+        popupHelper("/fxml/popupscenes/pollResultsPopup.fxml",
+                720, 512, "Results");
     }
 
     /**
      * Popup poll voting.
      */
     public void popupPollVoting() {
-        popupHelper("/fxml/popupscenes/pollVotingPopup.fxml", 720, 512);
+        popupHelper("/fxml/popupscenes/pollVotingPopup.fxml",
+                720, 512, "Vote");
     }
 }

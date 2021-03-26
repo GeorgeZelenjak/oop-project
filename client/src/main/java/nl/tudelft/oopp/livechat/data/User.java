@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * User class.
@@ -52,6 +53,8 @@ public class User {
             uidTemp += unsigned << (8 * i);
         }
         uid = uidTemp * 10 + getLuhnDigit(uidTemp);
+        long n = ThreadLocalRandom.current().nextLong(100000000L);
+        uid = n * 10 + getLuhnDigit(n);
     }
 
     /**

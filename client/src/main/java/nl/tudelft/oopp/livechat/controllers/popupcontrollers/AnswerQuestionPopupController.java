@@ -6,8 +6,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.net.URL;
@@ -43,6 +45,8 @@ public class AnswerQuestionPopupController implements Initializable {
     public void submitAnswer() {
         QuestionCommunication.markedAsAnswered(Question.getCurrentQuestion().getId(),
                 Lecture.getCurrentLecture().getModkey(), answerTextArea.getText());
+        QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
+                Lecture.getCurrentLecture().getModkey(), "new", User.getUid());
         closeTheScene();
     }
 
