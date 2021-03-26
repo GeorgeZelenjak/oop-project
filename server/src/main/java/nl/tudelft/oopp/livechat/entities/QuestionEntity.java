@@ -299,16 +299,16 @@ public class QuestionEntity {
 
 
     /**
-     * Gets editor id.
-     * @return the editor id
+     * Gets the id of the editor.
+     * @return the id of the editor if the question is being modified
      */
     public long getEditorId() {
         return editorId;
     }
 
     /**
-     * Sets editor id.
-     * @param editorId the editor id
+     * Sets the id of the editor if the question is being modified.
+     * @param editorId the id of the editor
      */
     public void setEditorId(long editorId) {
         this.editorId = editorId;

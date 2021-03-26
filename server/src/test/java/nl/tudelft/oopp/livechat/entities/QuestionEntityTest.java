@@ -33,6 +33,7 @@ class QuestionEntityTest {
         answerTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
         questionEntity.setAnswerTime(answerTime);
         questionEntity.setOwnerName("predator");
+        questionEntity.setEditorId(666);
     }
 
     @Test
@@ -189,6 +190,17 @@ class QuestionEntityTest {
         long newOwnerId = ThreadLocalRandom.current().nextLong(1000000000000L);
         questionEntity.setOwnerId(newOwnerId);
         assertEquals(newOwnerId, questionEntity.getOwnerId());
+    }
+
+    @Test
+    void getEditorIdTest() {
+        assertEquals(666, questionEntity.getEditorId());
+    }
+
+    @Test
+    void setEditorIdTest() {
+        questionEntity.setEditorId(404);
+        assertEquals(404, questionEntity.getEditorId());
     }
 
     @Test
