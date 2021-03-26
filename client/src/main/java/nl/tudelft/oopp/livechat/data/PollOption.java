@@ -27,13 +27,28 @@ public class PollOption implements Comparable<PollOption> {
     /**
      * Creates a new PollOptionEntity object with the specified parameters.
      * @param id         the id of the option
-     * @param pollId the id of the poll
+     * @param pollId    the id of the poll
      * @param optionText the text of the option
-     * @param votes the number of votes for the option
+     * @param votes     the number of votes for the option
      * @param isCorrect true if it is a correct option
      */
     public PollOption(long id, long pollId, String optionText, long votes, boolean isCorrect) {
         this.id = id;
+        this.pollId = pollId;
+        this.optionText = optionText;
+        this.votes = votes;
+        this.isCorrect = isCorrect;
+    }
+
+    /**
+     * Instantiates a new Poll option.
+     *
+     * @param pollId     the poll id
+     * @param optionText the option text
+     * @param votes      the votes
+     * @param isCorrect  the is correct
+     */
+    public PollOption(long pollId, String optionText, long votes, boolean isCorrect) {
         this.pollId = pollId;
         this.optionText = optionText;
         this.votes = votes;
