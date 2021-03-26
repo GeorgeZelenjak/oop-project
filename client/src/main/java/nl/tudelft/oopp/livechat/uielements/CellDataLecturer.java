@@ -71,7 +71,6 @@ public class CellDataLecturer implements Initializable {
     @FXML
     private Button banButton;
 
-
     private Question question;
 
 
