@@ -120,7 +120,7 @@ public class PollService {
      * @param userId the id of the user
      * @param pollOptionId the id of the poll answer option
      * @return 0 if successful
-     * @throws UserNotRegisteredException when the user is not registered
+     * @throws UserException when the user is not registered
      * @throws PollException when the poll is not found, is closed or is already voted
      */
     public int voteOnPoll(long userId, long pollOptionId)
@@ -208,7 +208,8 @@ public class PollService {
      * @throws LectureNotFoundException when the lecture is not found
      * @throws PollNotFoundException when the poll is not found
      */
-    private PollAndOptions fetchPollAndOptionsHelper(UUID lectureId) throws LectureNotFoundException, PollNotFoundException {
+    private PollAndOptions fetchPollAndOptionsHelper(UUID lectureId)
+            throws LectureNotFoundException, PollNotFoundException {
         //Check if the lecture exists
         if (lectureRepository.findLectureEntityByUuid(lectureId) == null) {
             throw new LectureNotFoundException();
