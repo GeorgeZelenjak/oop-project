@@ -44,7 +44,7 @@ public class PollCommunication {
         }
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(questionText);
         //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
+        HttpRequest request = HttpRequest.newBuilder().POST(req).uri(
                 URI.create(address + lectureId + "/" + modkey)).build();
 
         HttpResponse<String> response;
@@ -81,7 +81,7 @@ public class PollCommunication {
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(optionText);
 
         //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
+        HttpRequest request = HttpRequest.newBuilder().POST(req).uri(
                 URI.create(address + pollid + "/" + modkey + "/" + isCorrect)).build();
 
         HttpResponse<String> response;
@@ -240,7 +240,8 @@ public class PollCommunication {
         String address = ADDRESS + "/api/poll/reset/";
 
         //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().DELETE().uri(
+        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("");
+        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
                 URI.create(address + pollId + "/" + modkey)).build();
 
         HttpResponse<String> response;

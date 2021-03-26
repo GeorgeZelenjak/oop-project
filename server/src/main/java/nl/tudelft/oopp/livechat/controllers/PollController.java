@@ -1,7 +1,6 @@
 package nl.tudelft.oopp.livechat.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.tudelft.oopp.livechat.entities.poll.PollAndOptions;
 import nl.tudelft.oopp.livechat.entities.poll.PollEntity;
 import nl.tudelft.oopp.livechat.entities.poll.PollOptionEntity;
@@ -18,20 +17,18 @@ import java.util.UUID;
 public class PollController {
     private final PollService pollService;
 
-    ObjectMapper objectMapper = new ObjectMapper();
-
     public PollController(PollService pollService) {
         this.pollService = pollService;
     }
 
-    @PutMapping("/create/{lectureId}/{modkey}")
+    @PostMapping("/create/{lectureId}/{modkey}")
     public PollEntity createPoll(@PathVariable UUID lectureId, @PathVariable UUID modkey,
                                  @RequestBody String questionText)
             throws LectureException, InvalidModkeyException {
         return pollService.createPoll(lectureId, modkey, questionText);
     }
 
-    @PutMapping("/addOption/{pollId}/{modkey}/{isCorrect}")
+    @PostMapping("/addOption/{pollId}/{modkey}/{isCorrect}")
     public PollOptionEntity addOption(@PathVariable long pollId, @PathVariable UUID modkey,
                                       @PathVariable boolean isCorrect,
                                       @RequestBody String optionText)
@@ -52,7 +49,7 @@ public class PollController {
     }
 
     @GetMapping("/fetchMod/{uuid}/{modkey}")
-    public PollAndOptions fetchPollAndOptionsStudent(
+    public PollAndOptions fetchPollAndOptionsLecturer(
             @PathVariable UUID uuid, @PathVariable UUID modkey)
             throws LectureException, PollNotFoundException, InvalidModkeyException {
         return pollService.fetchPollAndOptionsLecturer(uuid, modkey);
@@ -64,7 +61,7 @@ public class PollController {
         return pollService.voteOnPoll(userId,pollOptionId);
     }
 
-    @DeleteMapping("/reset/{pollId}/{modkey}")
+    @PutMapping("/reset/{pollId}/{modkey}")
     public int resetVotes(@PathVariable long pollId, @PathVariable UUID modkey)
             throws LectureException, InvalidModkeyException, PollNotFoundException {
         return pollService.resetVotes(pollId,modkey);
