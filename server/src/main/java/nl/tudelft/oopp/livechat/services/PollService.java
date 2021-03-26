@@ -80,10 +80,8 @@ public class PollService {
         if (pollEntity == null) {
             throw new PollNotFoundException();
         }
+        lectureService.validateModerator(pollEntity.getLectureId(), modkey);
 
-        if (lectureService.validateModerator(pollEntity.getLectureId(), modkey) != 0) {
-            throw new InvalidModkeyException();
-        }
         pollEntity.setOpen(!pollEntity.isOpen());
         pollRepository.save(pollEntity);
         return 0;
@@ -101,9 +99,9 @@ public class PollService {
      * @throws InvalidModkeyException when the moderator key is incorrect
      * @throws PollException when the poll is not found
      */
-    public PollOptionEntity addOption(long pollId, UUID modkey, String optionText,
-            boolean isCorrect) throws LectureException,
-                InvalidModkeyException, PollException {
+    public PollOptionEntity addOption(long pollId, UUID modkey,
+                String optionText, boolean isCorrect) throws LectureException,
+                    InvalidModkeyException, PollException {
         PollEntity pollEntity = pollRepository.findById(pollId);
         if (pollEntity == null) {
             throw new PollNotFoundException();
@@ -244,7 +242,6 @@ public class PollService {
         if (pollEntity == null) {
             throw new PollNotFoundException();
         }
-
         lectureService.validateModerator(pollEntity.getLectureId(), modkey);
 
         for (PollOptionEntity option : pollOptionRepository.findAllByPollId(pollId)) {
