@@ -121,13 +121,16 @@
         -fx-background-color: Transparent;
     }
 
+    .banButton:hover {
+        -fx-background-color: rgb(212,212,212);
+    }
+
     .editButton:hover {
         -fx-background-color: rgb(212,212,212);
     }
 
     .settingsButton:hover{
-        -fx-background-image: url(../images/Gear_gray.png);
-        -fx-opacity: 0.5;
+        -fx-background-color: rgb(212,212,212);
     }
 
     .sidebarButton{
