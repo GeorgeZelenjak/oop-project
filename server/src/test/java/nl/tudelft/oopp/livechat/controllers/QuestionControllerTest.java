@@ -331,13 +331,10 @@ class QuestionControllerTest {
                                                 + "&uid=" + q1.getOwnerId());
         assertEquals(0, result);
 
-        List<QuestionEntity> listLecture1after =
+        List<QuestionEntity> listLecture =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        List<QuestionEntity> listLecture2after =
-                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        assertEquals(0, listLecture1after.size());
-        assertEquals(1, listLecture2after.size());
+        assertEquals(0, listLecture.size());
     }
 
     @Test
@@ -347,13 +344,10 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getErrorMessage();
         assertEquals("Not allowed to delete this question", result);
 
-        List<QuestionEntity> listLecture1after =
+        List<QuestionEntity> listLecture =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        List<QuestionEntity> listLecture2after =
-                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        assertEquals(1, listLecture1after.size());
-        assertEquals(1, listLecture2after.size());
+        assertEquals(1, listLecture.size());
     }
 
     @Test
@@ -362,13 +356,10 @@ class QuestionControllerTest {
                 + q1.getId() + "&modkey=" + lectureEntity1.getModkey().toString());
         assertEquals(0, result);
 
-        List<QuestionEntity> listLecture1after =
+        List<QuestionEntity> listLecture =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        List<QuestionEntity> listLecture2after =
-                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        assertEquals(0, listLecture1after.size());
-        assertEquals(1, listLecture2after.size());
+        assertEquals(0, listLecture.size());
     }
 
     @Test
@@ -379,84 +370,62 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getErrorMessage();
         assertEquals("Wrong modkey, don't do this", result);
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture = getQuestions(lectureEntity1.getUuid().toString());
 
-        assertEquals(1, listLecture1after.size());
-        assertEquals(1, listLecture2after.size());
+        assertEquals(1, listLecture.size());
     }
 
     @Test
     void upvoteSuccessfulTest() throws Exception {
-        List<QuestionEntity> listLecture1 =
+        List<QuestionEntity> listLecture =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        List<QuestionEntity> listLecture2 =
-                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        final int oldVotes1 = listLecture1.get(0).getVotes();
-        final int oldVotes2 = listLecture2.get(0).getVotes();
+        final int oldVotes = listLecture.get(0).getVotes();
 
-        final int result = upvote(q1.getId(), q1.getOwnerId());
+        int result = upvote(q1.getId(), q1.getOwnerId());
         assertEquals(0, result);
 
-        listLecture1 = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        listLecture2 = questionRepository.findAllByLectureId(lectureEntity2.getUuid());
+        listLecture = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        int newVotes1 = listLecture1.get(0).getVotes();
-        int newVotes2 = listLecture2.get(0).getVotes();
+        int newVotes = listLecture.get(0).getVotes();
 
-        assertEquals(oldVotes1 + 1, newVotes1);
-        assertEquals(oldVotes2, newVotes2);
+        assertEquals(oldVotes + 1, newVotes);
     }
 
     @Test
     void unvoteSuccessfulTest() throws Exception {
-        List<QuestionEntity> listLecture1 =
+        List<QuestionEntity> listLecture =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        List<QuestionEntity> listLecture2 =
-                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        final int oldVotes1 = listLecture1.get(0).getVotes();
-        final int oldVotes2 = listLecture2.get(0).getVotes();
+        final int oldVotes = listLecture.get(0).getVotes();
 
         upvote(q1.getId(), q1.getOwnerId());
-        final int result = upvote(q1.getId(), q1.getOwnerId());
+        int result = upvote(q1.getId(), q1.getOwnerId());
         assertEquals(0, result);
 
-        listLecture1 = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        listLecture2 = questionRepository.findAllByLectureId(lectureEntity2.getUuid());
+        listLecture = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        int newVotes1 = listLecture1.get(0).getVotes();
-        int newVotes2 = listLecture2.get(0).getVotes();
-
-        assertEquals(oldVotes1, newVotes1);
-        assertEquals(oldVotes2, newVotes2);
+        int newVotes = listLecture.get(0).getVotes();
+        assertEquals(oldVotes, newVotes);
     }
 
     @Test
     void upvoteUnsuccessfulTest() throws Exception {
         userRepository.deleteById(uid1);
-        List<QuestionEntity> listLecture1 =
+        List<QuestionEntity> listLecture =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        List<QuestionEntity> listLecture2 =
-                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        final int oldVotes1 = listLecture1.get(0).getVotes();
-        final int oldVotes2 = listLecture2.get(0).getVotes();
+        final int oldVotes = listLecture.get(0).getVotes();
 
         String result = this.mockMvc.perform(put("/api/question/upvote?qid=" + q1.getId()
                 + "&uid=" + q1.getOwnerId())).andExpect(status().isConflict())
                 .andReturn().getResponse().getErrorMessage();
         assertEquals("This user is not registered", result);
 
-        listLecture1 = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        listLecture2 = questionRepository.findAllByLectureId(lectureEntity2.getUuid());
+        listLecture = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        int newVotes1 = listLecture1.get(0).getVotes();
-        int newVotes2 = listLecture2.get(0).getVotes();
-
-        assertEquals(oldVotes1, newVotes1);
-        assertEquals(oldVotes2, newVotes2);
+        int newVotes = listLecture.get(0).getVotes();
+        assertEquals(oldVotes, newVotes);
 
         userRepository.save(user1);
     }
@@ -566,11 +535,8 @@ class QuestionControllerTest {
 
         List<QuestionEntity> listLecture1 =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        List<QuestionEntity> listLecture2 =
-                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
         assertTrue(listLecture1.get(0).isAnswered());
-        assertFalse(listLecture2.get(0).isAnswered());
     }
 
     @Test
@@ -584,13 +550,10 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getErrorMessage();
         assertEquals("Wrong modkey, don't do this", result);
 
-        List<QuestionEntity> listLecture1 =
+        List<QuestionEntity> listLecture =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        List<QuestionEntity> listLecture2 =
-                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        assertFalse(listLecture1.get(0).isAnswered());
-        assertFalse(listLecture2.get(0).isAnswered());
+        assertFalse(listLecture.get(0).isAnswered());
     }
 
     @Test
@@ -601,13 +564,10 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getContentAsString();
         assertEquals("UUID is not in the correct format", resultString);
 
-        List<QuestionEntity> listLecture1 =
+        List<QuestionEntity> listLecture =
                 questionRepository.findAllByLectureId(lectureEntity1.getUuid());
-        List<QuestionEntity> listLecture2 =
-                questionRepository.findAllByLectureId(lectureEntity2.getUuid());
 
-        assertFalse(listLecture1.get(0).isAnswered());
-        assertFalse(listLecture2.get(0).isAnswered());
+        assertFalse(listLecture.get(0).isAnswered());
     }
 
     @Test
