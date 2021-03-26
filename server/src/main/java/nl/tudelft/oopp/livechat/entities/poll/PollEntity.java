@@ -22,7 +22,7 @@ public class PollEntity {
     @Id
     @Column(name = "id")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "id")
-    private final long id  = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
+    private long id  = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
 
     @Column(name = "lectureId")
     private UUID lectureId;

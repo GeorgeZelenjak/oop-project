@@ -1,6 +1,5 @@
 package nl.tudelft.oopp.livechat.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.tudelft.oopp.livechat.entities.poll.PollAndOptions;
 import nl.tudelft.oopp.livechat.entities.poll.PollEntity;
 import nl.tudelft.oopp.livechat.entities.poll.PollOptionEntity;
@@ -80,31 +79,4 @@ public class PollController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("UUID is not in the correct format");
     }
-
-    /**
-     * Exception handler for invalid JSONs.
-     * @param exception exception that has occurred
-     * @return response body with 400 and 'Don't do this' message
-     */
-    @ExceptionHandler(JsonProcessingException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private ResponseEntity<Object> invalidJSON(JsonProcessingException exception) {
-        System.out.println(exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Don't do this");
-    }
-
-    /**
-     * Exception handler.
-     * @param exception exception that has occurred
-     * @return response body with 400 and 'Missing parameter' message
-     */
-    @ExceptionHandler(NullPointerException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private ResponseEntity<Object> badParameter(NullPointerException exception) {
-        System.out.println(exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Missing parameter");
-    }
-
 }
