@@ -30,6 +30,7 @@ public class QuestionCellLecturer extends ListCell<Question> {
                 data.setOwnerName(question.getOwnerName());
             }
             data.setContent(question.getText());
+
             data.markAnswered();
             data.setNumberOfUpvotes(question.getVotes());
 
@@ -41,6 +42,10 @@ public class QuestionCellLecturer extends ListCell<Question> {
             data.replyAnswer();
             data.setBanUser();
             data.disableMarkedAsAnswered();
+
+            if (!question.getStatus().equals("new")) {
+                data.setStatusText(question.getStatus() + "...");
+            }
 
             //set answered text if the question has been answered
             if (question.getAnswerText() != null && !question.getAnswerText().equals(" ")) {
