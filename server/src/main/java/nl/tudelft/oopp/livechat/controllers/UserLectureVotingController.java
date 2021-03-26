@@ -18,20 +18,24 @@ public class UserLectureVotingController {
     private final LectureSpeedService speedService;
 
     /**
-     * Constructor for lecture voting controller.
-     * @param speedService lecture speed service
+     * Creates new LectureVotingController.
+     * @param speedService the LectureSpeedService
      */
     public UserLectureVotingController(LectureSpeedService speedService) {
         this.speedService = speedService;
     }
 
     // TODO reconsider user authentication
+
     /**
-     * PUT Endpoint to vote on lecture speed.
+     * PUT Endpoint to vote on the lecture speed.
      * @param uuid the id of the lecture
      * @param uid the id of the user
-     * @param speed the type of the vote
-     * @return 0 if successful, -1 otherwise
+     * @param speed the indication of the speed
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found, is closed or the vote
+     *           is incorrect (not "faster" or "slower")
+     * @throws UserException when the user is not in the lecture
      */
     @PutMapping("/lectureSpeed")
     public int voteOnLectureSpeed(@RequestParam long uid,
@@ -40,16 +44,25 @@ public class UserLectureVotingController {
         return speedService.setUserLectureSpeedVote(uid, uuid, speed);
     }
 
+    /**
+     * GET Endpoint to get the number of votes for the lecture speed.
+     * @param uuid the id of the lecture
+     * @return the list of votes for the lecture speed
+     *          (first number is for faster, second for slower)
+     * @throws LectureException when the lecture is not found
+     */
     @GetMapping("/getLectureSpeed/{UUID}")
     public List<Integer> getVotes(@PathVariable("UUID") UUID uuid) throws LectureException {
         return speedService.getVotes(uuid);
     }
 
     /**
-     * DELETE Endpoint to delete any question from the database (done by a moderator).
+     * DELETE Endpoint to reset the voting for the lecture speed (done by a moderator).
      * @param uuid the id of the lecture
      * @param modkey the moderator key
-     * @return 0 if successful, -1 otherwise
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     @DeleteMapping("/resetLectureSpeedVote/{UUID}/{modkey}")
     public int delete(@PathVariable("modkey") UUID modkey,
