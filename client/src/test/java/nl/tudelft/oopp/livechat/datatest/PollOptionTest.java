@@ -14,7 +14,7 @@ public class PollOptionTest {
 
     @BeforeAll
     static void setUp() {
-        pollOption = new PollOption(1024, "Seagull", 17, false);
+        pollOption = new PollOption(22,1024, "Seagull", 17, false);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class PollOptionTest {
 
     @Test
     void testEqualsDifferentTest() {
-        PollOption p = new PollOption(1024, "Seagull", 17, false);
+        PollOption p = new PollOption(123,1024, "Seagull", 17, false);
         assertNotEquals(pollOption, p);
     }
 
