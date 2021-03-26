@@ -26,19 +26,18 @@ public class Poll {
 
 
     /**
-     * Instantiates a new Poll entity.
+     * Creates a new Poll object.
      */
     public Poll() {
     }
 
     /**
-     * Instantiates a new Poll entity.
-     *
-     * @param lectureId    the lecture id
+     * Creates a new Poll object with the specified parameters.
+     * @param lectureId the id of the lecture
      * @param questionText the question text
-     * @param time         the time
-     * @param votes        the votes
-     * @param isOpen       the is open
+     * @param time the time when the poll was created
+     * @param votes the number of votes for the poll
+     * @param isOpen is the poll open or not
      */
     public Poll(UUID lectureId, String questionText, Timestamp time, long votes, boolean isOpen) {
         this.lectureId = lectureId;
@@ -49,9 +48,8 @@ public class Poll {
     }
 
     /**
-     * Instantiates a new Poll entity.
-     *
-     * @param lectureId    the lecture id
+     * Creates a new Poll object with the specified parameters.
+     * @param lectureId the id of the lecture
      * @param questionText the question text
      */
     public Poll(UUID lectureId, String questionText) {
@@ -63,17 +61,15 @@ public class Poll {
     }
 
     /**
-     * Gets id.
-     *
-     * @return the id
+     * Gets the id of the poll.
+     * @return the id of the poll
      */
     public long getId() {
         return id;
     }
 
     /**
-     * Gets lecture id.
-     *
+     * Gets the lecture id.
      * @return the lecture id
      */
     public UUID getLectureId() {
@@ -81,17 +77,15 @@ public class Poll {
     }
 
     /**
-     * Sets lecture id.
-     *
-     * @param lectureId the lecture id
+     * Sets the lecture id.
+     * @param lectureId the new lecture id
      */
     public void setLectureId(UUID lectureId) {
         this.lectureId = lectureId;
     }
 
     /**
-     * Gets question text.
-     *
+     * Gets the question text.
      * @return the question text
      */
     public String getQuestionText() {
@@ -100,7 +94,6 @@ public class Poll {
 
     /**
      * Sets question text.
-     *
      * @param questionText the question text
      */
     public void setQuestionText(String questionText) {
@@ -108,44 +101,39 @@ public class Poll {
     }
 
     /**
-     * Gets time.
-     *
-     * @return the time
+     * Gets the time when the poll was created.
+     * @return the time when the poll was created
      */
     public Timestamp getTime() {
         return time;
     }
 
     /**
-     * Sets time.
-     *
-     * @param time the time
+     * Sets the time when the poll was created.
+     * @param time the time when the poll was created.
      */
     public void setTime(Timestamp time) {
         this.time = time;
     }
 
     /**
-     * Gets votes.
-     *
-     * @return the votes
+     * Gets the number of votes for the poll.
+     * @return the number of votes for the poll
      */
     public long getVotes() {
         return votes;
     }
 
     /**
-     * Sets votes.
-     *
-     * @param votes the votes
+     * Sets the number of votes for the poll.
+     * @param votes the number of votes for the poll
      */
     public void setVotes(long votes) {
         this.votes = votes;
     }
 
     /**
-     * Is open boolean.
-     *
+     * Checks if the is poll open or not.
      * @return true if the poll is open, false otherwise
      */
     public boolean isOpen() {
@@ -153,23 +141,37 @@ public class Poll {
     }
 
     /**
-     * Sets open.
-     *
-     * @param open true if poll is open, false if poll is closed
+     * Sets the poll to be open or closed.
+     * @param open true if the poll has to be open, false if the poll has to be closed
      */
     public void setOpen(boolean open) {
         this.open = open;
     }
 
+    /**
+     * Compares the Poll object to another object.
+     * @param o the other object to compare to
+     * @return true iff the other object is also a Poll
+     *         object and has the same id and the same text. False otherwise
+     */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Poll that = (Poll) o;
-        //IT IS VERY IMPORTANT TO CHECK THE TEXT ON CLIENT
-        return (id == that.id && questionText.equals(that.questionText));
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof Poll) {
+            Poll that = (Poll) o;
+            //IT IS VERY IMPORTANT TO CHECK THE TEXT ON CLIENT
+            //TODO why is that?
+            return this.id == that.id && this.questionText.equals(that.questionText);
+        }
+        return false;
     }
 
+    /**
+     * Generates the hash code for the Poll object.
+     * @return the generated hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hash(id, questionText);

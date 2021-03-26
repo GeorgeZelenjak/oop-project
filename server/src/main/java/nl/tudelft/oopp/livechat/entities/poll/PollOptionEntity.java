@@ -135,7 +135,7 @@ public class PollOptionEntity {
         }
         if (o instanceof PollOptionEntity) {
             PollOptionEntity that = (PollOptionEntity) o;
-            return id == that.id;
+            return this.id == that.id;
         }
         return false;
     }

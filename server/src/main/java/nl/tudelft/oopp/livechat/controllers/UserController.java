@@ -9,7 +9,6 @@ import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -62,7 +61,7 @@ public class UserController {
         long qid = Long.parseLong(jsonNode.get("qid").asText());
         UUID modkey = UUID.fromString(jsonNode.get("modkey").asText());
         int time = Integer.parseInt(jsonNode.get("time").asText());
-        if (time <= 0) {
+        if (time < 0) {
             throw new NumberFormatException();
         }
         return userService.banById(modid, qid, modkey, time);
@@ -83,7 +82,7 @@ public class UserController {
         UUID modkey = UUID.fromString(jsonNode.get("modkey").asText());
         long qid = Long.parseLong(jsonNode.get("qid").asText());
         int time = Integer.parseInt(jsonNode.get("time").asText());
-        if (time <= 0) {
+        if (time < 0) {
             throw new NumberFormatException();
         }
         return userService.banByIp(modid, qid, modkey, time);
