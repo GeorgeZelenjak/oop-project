@@ -132,11 +132,14 @@ public class PollService {
         //Check if poll option exists
         PollOptionEntity pollOptionEntity = pollOptionRepository.findById(pollOptionId);
         if (pollOptionEntity == null) {
-            throw new PollNotFoundException();
+            throw new PollOptionNotFoundException();
         }
 
-        //Check if poll is open
+        //Check if the poll exists and is open
         PollEntity poll = pollRepository.findById(pollOptionEntity.getPollId());
+        if (poll == null) {
+            throw new PollNotFoundException();
+        }
         if (!poll.isOpen()) {
             throw new PollNotOpenException();
         }
@@ -173,11 +176,15 @@ public class PollService {
      */
     public PollAndOptions fetchPollAndOptionsStudent(UUID lectureId)
             throws LectureNotFoundException, PollNotFoundException {
+        //Check if the lecture exists
+        if (lectureRepository.findLectureEntityByUuid(lectureId) == null) {
+            throw new LectureNotFoundException();
+        }
         PollAndOptions pollAndOptions = fetchPollAndOptionsHelper(lectureId);
         if (pollAndOptions.getPoll().isOpen()) {
             for (PollOptionEntity option : pollAndOptions.getOptions()) {
                 option.setCorrect(false);
-                option.setVotes(-2); //-2 is just for fun
+                option.setVotes(0);
             }
         }
         return pollAndOptions;
@@ -203,15 +210,10 @@ public class PollService {
      * A helper method for fetching the latest poll and its options.
      * @param lectureId the id of the lecture
      * @return the poll and all its options if successful
-     * @throws LectureNotFoundException when the lecture is not found
      * @throws PollNotFoundException when the poll is not found
      */
     private PollAndOptions fetchPollAndOptionsHelper(UUID lectureId)
-            throws LectureNotFoundException, PollNotFoundException {
-        //Check if the lecture exists
-        if (lectureRepository.findLectureEntityByUuid(lectureId) == null) {
-            throw new LectureNotFoundException();
-        }
+            throws PollNotFoundException {
         //Find the latest poll in the lecture and check if it exists
         List<PollEntity> polls = pollRepository.findAllByLectureIdOrderByTimeDesc(lectureId);
         if (polls == null || polls.size() == 0) {
@@ -222,7 +224,6 @@ public class PollService {
         PollEntity pollEntity = polls.get(0);
         List<PollOptionEntity> pollOptions = pollOptionRepository
                 .findAllByPollId(pollEntity.getId());
-
         return new PollAndOptions(pollEntity, pollOptions);
     }
 

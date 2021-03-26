@@ -2,11 +2,10 @@ package nl.tudelft.oopp.livechat.services;
 
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
+import nl.tudelft.oopp.livechat.entities.poll.PollAndOptions;
 import nl.tudelft.oopp.livechat.entities.poll.PollEntity;
 import nl.tudelft.oopp.livechat.entities.poll.PollOptionEntity;
-import nl.tudelft.oopp.livechat.exceptions.InvalidModkeyException;
-import nl.tudelft.oopp.livechat.exceptions.LectureNotFoundException;
-import nl.tudelft.oopp.livechat.exceptions.PollNotFoundException;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.repositories.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PollServiceTest {
     private static LectureEntity l1;
     private static LectureEntity l2;
-    private static UUID modkey;
 
     private static UserEntity user1;
     private static final long uid1 = 235435452541204312L;
@@ -39,8 +36,6 @@ public class PollServiceTest {
     private static PollEntity poll2;
     private static PollOptionEntity option1;
     private static PollOptionEntity option2;
-    private static PollOptionEntity option3;
-    private static PollOptionEntity option4;
 
     @Autowired
     private PollService pollService;
@@ -70,7 +65,6 @@ public class PollServiceTest {
     @BeforeAll
     public static void setUp() {
         l1 = new LectureEntity("Aliens", "Alien", time);
-        modkey = l1.getModkey();
         l2 = new LectureEntity("Predators", "Predator", time);
 
         user1 = new UserEntity(uid1, "Alien1", new Timestamp(
@@ -88,8 +82,6 @@ public class PollServiceTest {
 
         option1 = new PollOptionEntity(poll1.getId(), "Seagull", 2, false);
         option2 = new PollOptionEntity(poll1.getId(), "Pelican", 1, true);
-        option3 = new PollOptionEntity(poll2.getId(), "Platypus", 4, true);
-        option4 = new PollOptionEntity(poll2.getId(), "Beaver", 7, false);
     }
 
     /**
@@ -103,7 +95,6 @@ public class PollServiceTest {
         pollRepository.save(poll1);
         pollOptionRepository.save(option1);
         pollOptionRepository.save(option2);
-
     }
 
     /**
@@ -251,8 +242,165 @@ public class PollServiceTest {
     }
 
     /**
+     * Tests for vote on poll.
+     */
+
+    @Test
+    public void voteOnPollUserNotRegisteredTest() {
+        userRepository.deleteById(user1.getUid());
+        long oldVotes = pollOptionRepository.findById(option1.getId()).getVotes();
+
+        assertThrows(UserNotRegisteredException.class, () ->
+                pollService.voteOnPoll(user1.getUid(), option1.getId()));
+        assertEquals(oldVotes, pollOptionRepository.findById(option1.getId()).getVotes());
+
+        userRepository.save(user1);
+    }
+
+    @Test
+    public void voteOnPollPollOptionNotFoundTest() {
+        pollOptionRepository.deleteById(option1.getId());
+
+        assertThrows(PollOptionNotFoundException.class, () ->
+                pollService.voteOnPoll(user1.getUid(), option1.getId()));
+
+        pollOptionRepository.save(option1);
+    }
+
+    @Test
+    public void voteOnPollPollNotFoundTest() {
+        pollRepository.deleteById(poll1.getId());
+
+        assertThrows(PollNotFoundException.class, () ->
+                pollService.voteOnPoll(user1.getUid(), option1.getId()));
+
+        pollRepository.save(poll1);
+    }
+
+    @Test
+    public void voteOnPollPollNotOpenTest() {
+        poll1.setOpen(false);
+        pollRepository.save(poll1);
+        long oldVotes = pollOptionRepository.findById(option1.getId()).getVotes();
+
+        assertThrows(PollNotOpenException.class, () ->
+                pollService.voteOnPoll(user1.getUid(), option1.getId()));
+        assertEquals(oldVotes, pollOptionRepository.findById(option1.getId()).getVotes());
+
+        poll1.setOpen(true);
+    }
+
+    @Test
+    public void voteOnPollUserNotInLectureTest() {
+        userRepository.save(user2);
+        long oldVotes = pollOptionRepository.findById(option1.getId()).getVotes();
+
+        assertThrows(UserNotInLectureException.class, () ->
+                pollService.voteOnPoll(user2.getUid(), option1.getId()));
+        assertEquals(oldVotes, pollOptionRepository.findById(option1.getId()).getVotes());
+
+        userRepository.deleteById(user2.getUid());
+    }
+
+    @Test
+    public void voteOnPollPollAlreadyVotedTest() throws Exception {
+        pollService.voteOnPoll(user1.getUid(), option1.getId());
+        long oldVotes = pollOptionRepository.findById(option1.getId()).getVotes();
+        int size = userPollVoteRepository.findAllByUserId(user1.getUid()).size();
+
+        assertThrows(PollAlreadyVotedException.class, () ->
+                pollService.voteOnPoll(user1.getUid(), option1.getId()));
+        assertEquals(oldVotes, pollOptionRepository.findById(option1.getId()).getVotes());
+        assertEquals(size, userPollVoteRepository.findAllByUserId(user1.getUid()).size());
+
+        userPollVoteRepository.deleteAllByOptionId(option1.getId());
+    }
+
+    @Test
+    public void voteOnPollSuccessfulTest() throws Exception {
+        long oldVotes = pollOptionRepository.findById(option1.getId()).getVotes();
+        int size = userPollVoteRepository.findAllByUserId(user1.getUid()).size();
+
+        assertEquals(0, pollService.voteOnPoll(user1.getUid(), option1.getId()));
+        assertEquals(oldVotes + 1, pollOptionRepository.findById(option1.getId()).getVotes());
+        assertEquals(size + 1, userPollVoteRepository.findAllByUserId(user1.getUid()).size());
+
+        userPollVoteRepository.deleteAllByOptionId(option1.getId());
+    }
+
+    /**
+     * Tests for fetchPollAndOptions for student.
+     */
+
+    @Test
+    public void fetchPollAndOptionsStudentNoLectureTest() {
+        assertThrows(LectureNotFoundException.class, () ->
+                pollService.fetchPollAndOptionsStudent(l2.getUuid()));
+    }
+
+    @Test
+    public void fetchPollAndOptionsStudentPollNotFoundTest() {
+        pollRepository.deleteById(poll1.getId());
+
+        assertThrows(PollNotFoundException.class, () ->
+                pollService.fetchPollAndOptionsStudent(l1.getUuid()));
+
+        pollRepository.save(poll1);
+    }
+
+    @Test
+    public void fetchPollAndOptionsStudentSuccessfulTest() throws Exception {
+        PollAndOptions pollAndOptions = pollService.fetchPollAndOptionsStudent(l1.getUuid());
+        assertNotNull(pollAndOptions);
+        assertTrue(pollAndOptions.getOptions().size() > 0);
+
+        pollAndOptions.getOptions().forEach(o -> {
+            assertEquals(0, o.getVotes());
+            assertFalse(o.isCorrect());
+        });
+    }
+
+    /**
+     * Tests for fetchPollAndOptions for lecturer.
+     */
+
+    @Test
+    public void fetchPollAndOptionsLecturerNoLectureTest() {
+        assertThrows(LectureNotFoundException.class, () ->
+                pollService.fetchPollAndOptionsLecturer(l2.getUuid(), l1.getModkey()));
+    }
+
+    @Test
+    public void fetchPollAndOptionsLecturerIncorrectModkeyTest() {
+        assertThrows(InvalidModkeyException.class, () ->
+                pollService.fetchPollAndOptionsLecturer(l1.getUuid(), l2.getModkey()));
+    }
+
+    @Test
+    public void fetchPollAndOptionsLecturerPollNotFoundTest() {
+        pollRepository.deleteById(poll1.getId());
+
+        assertThrows(PollNotFoundException.class, () ->
+                pollService.fetchPollAndOptionsLecturer(l1.getUuid(), l1.getModkey()));
+
+        pollRepository.save(poll1);
+    }
+
+    @Test
+    public void fetchPollAndOptionsLecturerSuccessfulTest() throws Exception {
+        PollAndOptions pollAndOptions =
+                pollService.fetchPollAndOptionsLecturer(l1.getUuid(), l1.getModkey());
+
+        assertNotNull(pollAndOptions);
+        assertTrue(pollAndOptions.getOptions().size() > 0);
+
+        pollAndOptions.getOptions().forEach(o -> assertNotEquals(0, o.getVotes()));
+    }
+
+    /**
      * Tests for reset votes.
      */
+
     @Test
     public void resetVotesNoLectureTest() {
         userRepository.save(user2);
