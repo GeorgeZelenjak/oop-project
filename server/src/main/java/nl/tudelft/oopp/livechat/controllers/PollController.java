@@ -60,7 +60,7 @@ public class PollController {
 
     @PutMapping("/vote/{userId}/{pollOptionId}")
     public int voteOnPoll(@PathVariable long userId, @PathVariable long pollOptionId)
-            throws PollException, UserNotRegisteredException {
+            throws PollException, UserException {
         return pollService.voteOnPoll(userId,pollOptionId);
     }
 

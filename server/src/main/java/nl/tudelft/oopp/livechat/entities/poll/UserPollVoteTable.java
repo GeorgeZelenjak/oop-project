@@ -11,6 +11,9 @@ public class UserPollVoteTable {
     @Column(name = "userId")
     private long userId;
 
+    @Column(name = "pollId")
+    private long pollId;
+
     @Id
     @Column(name = "optionId")
     private long optionId;
@@ -26,9 +29,10 @@ public class UserPollVoteTable {
      * @param userId the id of the user
      * @param optionId the id of the option
      */
-    public UserPollVoteTable(long userId, long optionId) {
+    public UserPollVoteTable(long userId, long optionId, long pollId) {
         this.userId = userId;
         this.optionId = optionId;
+        this.pollId = pollId;
     }
 
     /**
@@ -61,6 +65,22 @@ public class UserPollVoteTable {
      */
     public void setOptionId(long optionId) {
         this.optionId = optionId;
+    }
+
+    /**
+     * Gets the id of the poll of the option.
+     * @return the id of the poll of the option
+     */
+    public long getPollId() {
+        return this.pollId;
+    }
+
+    /**
+     * Sets id of the poll of the option.
+     * @param pollId id of the poll of the option
+     */
+    public void setPollId(long pollId) {
+        this.pollId = pollId;
     }
 
     /**

@@ -12,7 +12,7 @@ class UserPollVoteTableTest {
 
     @BeforeAll
     static void setUp() {
-        userPollVoteTable = new UserPollVoteTable(5432, 8080);
+        userPollVoteTable = new UserPollVoteTable(5432, 8080, 3333);
     }
 
     @Test
@@ -53,6 +53,19 @@ class UserPollVoteTableTest {
     }
 
     @Test
+    void getPollIdTest() {
+        assertEquals(3333, userPollVoteTable.getPollId());
+    }
+
+    @Test
+    void setPollIdTest() {
+        userPollVoteTable.setPollId(33);
+        assertEquals(33, userPollVoteTable.getPollId());
+
+        userPollVoteTable.setPollId(3333);
+    }
+
+    @Test
     void equalsNullTest() {
         assertNotEquals(userPollVoteTable, null);
     }
@@ -64,19 +77,19 @@ class UserPollVoteTableTest {
 
     @Test
     void equalsEqualTest() {
-        UserPollVoteTable up = new UserPollVoteTable(5432, 8080);
+        UserPollVoteTable up = new UserPollVoteTable(5432, 8080, 3333);
         assertEquals(userPollVoteTable, up);
     }
 
     @Test
     void equalsDifferentUserIdTest() {
-        UserPollVoteTable up = new UserPollVoteTable(5431, 8080);
+        UserPollVoteTable up = new UserPollVoteTable(5431, 8080, 3333);
         assertNotEquals(userPollVoteTable, up);
     }
 
     @Test
     void equalsDifferentOptionIdTest() {
-        UserPollVoteTable up = new UserPollVoteTable(5432, 8081);
+        UserPollVoteTable up = new UserPollVoteTable(5432, 8081, 3333);
         assertNotEquals(userPollVoteTable, up);
     }
 
@@ -88,19 +101,19 @@ class UserPollVoteTableTest {
 
     @Test
     void hashCodeEqualTest() {
-        UserPollVoteTable up = new UserPollVoteTable(5432, 8080);
+        UserPollVoteTable up = new UserPollVoteTable(5432, 8080, 3333);
         assertEquals(up.hashCode(), userPollVoteTable.hashCode());
     }
 
     @Test
     void hashCodeDifferentUserIdTest() {
-        UserPollVoteTable up = new UserPollVoteTable(5430, 8080);
+        UserPollVoteTable up = new UserPollVoteTable(5430, 8080, 3333);
         assertNotEquals(up.hashCode(), userPollVoteTable.hashCode());
     }
 
     @Test
     void hashCodeDifferentOptionIdTest() {
-        UserPollVoteTable up = new UserPollVoteTable(5432, 8082);
+        UserPollVoteTable up = new UserPollVoteTable(5432, 8082, 3333);
         assertNotEquals(up.hashCode(), userPollVoteTable.hashCode());
     }
 }
