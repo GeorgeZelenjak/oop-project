@@ -2,7 +2,6 @@ package nl.tudelft.oopp.livechat.data;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class PollOption implements Comparable<PollOption> {
 
@@ -28,12 +27,14 @@ public class PollOption implements Comparable<PollOption> {
     /**
      * Instantiates a new Poll option entity.
      *
+     * @param id         the id of the option
      * @param pollId     the poll id
      * @param optionText the option text
      * @param votes      the votes
      * @param isCorrect  true if it's a correct option, false if not quiz or not the answer
      */
-    public PollOption(long pollId, String optionText, long votes, boolean isCorrect) {
+    public PollOption(long id, long pollId, String optionText, long votes, boolean isCorrect) {
+        this.id = id;
         this.pollId = pollId;
         this.optionText = optionText;
         this.votes = votes;

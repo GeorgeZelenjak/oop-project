@@ -6,6 +6,7 @@ public class PollOptionResult extends PollOption {
     }
 
     public PollOptionResult(PollOption option) {
-        super(option.getPollId(), option.getOptionText(), option.getVotes(), option.isCorrect());
+        super(option.getId(), option.getPollId(), option.getOptionText(),
+                option.getVotes(), option.isCorrect());
     }
 }

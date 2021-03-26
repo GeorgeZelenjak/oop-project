@@ -15,6 +15,7 @@ public class PollVoteCell extends ListCell<PollOptionVote> {
             PollVoteCellController data = new PollVoteCellController();
             data.setOption(pollOptionVote);
             data.setText();
+            data.setVoteButton();
             setGraphic(data.getBox());
 
         } else setGraphic(null);
