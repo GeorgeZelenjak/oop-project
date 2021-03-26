@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
@@ -180,7 +181,7 @@ class QuestionControllerTest {
     /**
      * A method to delete a question.
      * @param url url with question id and owner id/moderator id values
-     * @return 0 if successful, otherwise -1
+     * @return 0 if successful
      * @throws Exception if something goes wrong
      */
     int deleteQuestion(String url) throws Exception {
@@ -193,7 +194,7 @@ class QuestionControllerTest {
     /**
      * A method to edit questions.
      * @param bodyJson JSON representation of parameters used to edit
-     * @return 0 if successful, -1 otherwise
+     * @return 0 if successful
      * @throws Exception if something goes wrong
      */
     int editQuestion(String bodyJson) throws Exception {
@@ -211,7 +212,7 @@ class QuestionControllerTest {
      * A method to upvote a question.
      * @param qid id of the question
      * @param uid id of the user
-     * @return 0 if successful, otherwise -1
+     * @return 0 if successful
      * @throws Exception if something goes wrong
      */
     int upvote(long qid, long uid) throws Exception {
@@ -223,15 +224,34 @@ class QuestionControllerTest {
 
     /**
      * A method to answer a question.
-     * @param qid id of the question
-     * @param modkey the modkey
-     * @return 0 if successful, otherwise -1
+     * @param qid the id of the question
+     * @param modkey the moderator key
+     * @return 0 if successful
      * @throws Exception if something goes wrong
      */
     int answer(long qid, String modkey) throws Exception {
         String result = this.mockMvc.perform(put("/api/question/answer/" + qid + "/" + modkey)
                 .contentType(APPLICATION_JSON)
                 .content("This is definitely a question answer dude")
+                .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        return Integer.parseInt(result);
+    }
+
+    /**
+     * A method to set the status of a question.
+     * @param qid the id of the question
+     * @param modkey the moderator key
+     * @param uid the id of the user
+     * @return 0 if successful
+     * @throws Exception if something goes wrong
+     */
+    int setStatus(long qid, UUID modkey, long uid) throws Exception {
+        String result = this.mockMvc.perform(put("/api/question/status/"
+                    + qid + "/" + uid + "/" + modkey)
+                .contentType(APPLICATION_JSON)
+                .content("editing")
                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
@@ -588,5 +608,62 @@ class QuestionControllerTest {
 
         assertFalse(listLecture1.get(0).isAnswered());
         assertFalse(listLecture2.get(0).isAnswered());
+    }
+
+    @Test
+    void setStatusSuccessfulTest() throws Exception {
+        int result = setStatus(q1.getId(), lectureEntity1.getModkey(),
+                user1.getUid());
+        assertEquals(0, result);
+
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+
+        assertEquals("editing", listLecture.get(0).getStatus());
+        assertEquals(user1.getUid(), listLecture.get(0).getEditorId());
+    }
+
+    @Test
+    void setStatusWrongModKeyTest() throws Exception {
+        String result = this.mockMvc.perform(put("/api/question/status/"
+                + q1.getId() + "/" + user1.getUid() + "/" + UUID.randomUUID())
+                .contentType(APPLICATION_JSON)
+                .content("answering")
+                .characterEncoding("utf-8"))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
+
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+
+        assertEquals("new", listLecture.get(0).getStatus());
+        assertEquals(0, listLecture.get(0).getEditorId());
+    }
+
+    @Test
+    void setStatusQuestionAlreadyModifiedTest() throws Exception {
+        q1.setEditorId(42);
+        q1.setStatus("editing");
+        questionRepository.save(q1);
+
+        String result = this.mockMvc.perform(put("/api/question/status/"
+                + q1.getId() + "/" + user1.getUid() + "/" + lectureEntity1.getUuid())
+                .contentType(APPLICATION_JSON)
+                .content("answering")
+                .characterEncoding("utf-8"))
+                .andExpect(status().isConflict())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Another moderator is already handling this question,"
+                + " if you are sure of what you are doing you can continue", result);
+
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+
+        assertEquals("editing", listLecture.get(0).getStatus());
+        assertEquals(42, listLecture.get(0).getEditorId());
+
+        q1.setEditorId(0);
+        q1.setStatus("new");
     }
 }
