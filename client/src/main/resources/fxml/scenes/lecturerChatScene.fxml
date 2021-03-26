@@ -61,7 +61,7 @@
          </children>
       </Pane>
       <Button fx:id="lectureLog" layoutX="824.0" layoutY="474.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="234.0" styleClass="mainSceneButton" text="View Lecture Log" />
-      <Button fx:id="createQuiz" layoutX="506.0" layoutY="701.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Create Quiz" />
+      <Button fx:id="popupVoteResults" layoutX="506.0" layoutY="701.0" mnemonicParsing="false" onAction="#popupVoteResults" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Show poll results" />
       <Button id="leaveLecture" fx:id="closeLectureButton" layoutX="822.0" layoutY="701.0" mnemonicParsing="false" onAction="#closeLecture" prefHeight="34.0" prefWidth="234.0" styleClass="leaveLecture" stylesheets="@../../css/Styles.css" text="End Lecture" />
       <ListView fx:id="questionPaneListView" layoutX="209.0" layoutY="48.0" prefHeight="642.0" prefWidth="602.0" />
       <Label fx:id="sortByText" layoutX="209.0" layoutY="14.0" prefHeight="18.0" prefWidth="47.0" text="Sort by:">

@@ -108,7 +108,7 @@ public class LecturerChatSceneController implements Initializable {
     private Button createPolling;
 
     @FXML
-    private Button createQuiz;
+    private Button popupVoteResults;
 
     @FXML
     private Label sortByText;
@@ -164,6 +164,7 @@ public class LecturerChatSceneController implements Initializable {
                 fetchQuestions();
                 getVotesOnLectureSpeed();
                 adjustLectureSpeedLines();
+                fetchPoll();
             }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
@@ -333,11 +334,11 @@ public class LecturerChatSceneController implements Initializable {
         this.viewAnswered.setVisible(!this.viewAnswered.isVisible());
         this.pollingText.setDisable(!this.pollingText.isDisabled());
         this.pollingText.setVisible(!this.pollingText.isVisible());
-        this.createQuiz.setDisable(!this.createQuiz.isDisabled());
+        this.popupVoteResults.setDisable(!this.popupVoteResults.isDisabled());
         this.sortByText.setDisable(!this.sortByText.isDisabled());
         this.lectureLog.setDisable(!this.lectureLog.isDisabled());
         this.lectureLog.setVisible(!this.lectureLog.isVisible());
-        this.createQuiz.setVisible(!this.createQuiz.isVisible());
+        this.popupVoteResults.setVisible(!this.popupVoteResults.isVisible());
         this.sortByText.setVisible(!this.sortByText.isVisible());
         this.speedText.setDisable(!this.speedText.isDisabled());
         this.speedText.setVisible(!this.speedText.isVisible());
@@ -422,9 +423,24 @@ public class LecturerChatSceneController implements Initializable {
         leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
         createPolling.setTooltip(new Tooltip("Create a polling question"));
 
-        createQuiz.setTooltip(new Tooltip("Create a quiz"));
+        popupVoteResults.setTooltip(new Tooltip("Create a quiz"));
     }
 
+    private void fetchPoll() {
+
+        PollAndOptions fetched = (
+                PollCommunication.fetchPollAndOptionsModerator(
+                        Lecture.getCurrentLecture().getUuid(),
+                        Lecture.getCurrentLecture().getModkey()));
+        if (fetched == null) {
+            return;
+        }
+        PollAndOptions.setCurrentPollAndOptions(fetched);
+    }
+
+    public void popupVoteResults() {
+        NavigationController.getCurrentController().popupPollResult();
+    }
 
 
 }
