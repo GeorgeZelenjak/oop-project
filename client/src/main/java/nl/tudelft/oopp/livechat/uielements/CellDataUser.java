@@ -135,8 +135,22 @@ public class CellDataUser implements Initializable {
     public void setUpvoteButton() {
         upvoteButton.setOnAction((ActionEvent event) -> {
             QuestionCommunication.upvoteQuestion(question.getId(), User.getUid());
+            if (User.getUpvotedQuestionIds().contains(question.getId())) {
+                User.getUpvotedQuestionIds().remove(question.getId());
+            } else {
+                User.getUpvotedQuestionIds().add(question.getId());
+            }
             System.out.println(question.getVotes());
         });
+    }
+
+    /**
+     * Color upvote button.
+     */
+    public void colorUpvoteButton() {
+        if (User.getUpvotedQuestionIds().contains(question.getId())) {
+            upvoteButton.setStyle("-fx-text-fill: #00a6d6");
+        }
     }
 
     /**

@@ -22,7 +22,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.ResourceBundle;
+
+import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 /**
  * Class for Cell data for the lecturer.
@@ -64,7 +70,6 @@ public class CellDataLecturer implements Initializable {
 
     @FXML
     private Button banButton;
-
 
     private Question question;
 
