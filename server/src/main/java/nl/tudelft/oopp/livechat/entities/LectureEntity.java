@@ -14,8 +14,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "lectures")
 public class LectureEntity {
-
-
     @Id
     @Column(name = "uuid")
     private final UUID uuid;
@@ -55,10 +53,9 @@ public class LectureEntity {
 
     /**
      * Constructor to create a lecture entity.
-     *
-     * @param name        the name of the lecture
+     * @param name the name of the lecture
      * @param creatorName the name of the creator of the lecture
-     * @param startTime   the start time
+     * @param startTime the start time
      */
     public LectureEntity(String name, String creatorName, Timestamp startTime) {
         this.uuid = UUID.randomUUID();
@@ -73,9 +70,9 @@ public class LectureEntity {
 
     /**
      * Static constructor to create a lecture entity.
-     * @param name        the name of the lecture
+     * @param name the name of the lecture
      * @param creatorName the name of the creator of the lecture
-     * @param startTime   the start time
+     * @param startTime the start time
      * @return a new lecture entity
      */
     public static LectureEntity create(String name, String creatorName, Timestamp startTime) {
@@ -271,6 +268,6 @@ public class LectureEntity {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, modkey, name, creatorName, startTime);
+        return Objects.hash(uuid);
     }
 }

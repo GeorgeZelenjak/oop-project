@@ -35,7 +35,7 @@ public class LectureService {
      * @throws LectureException when the lecture is not found or is not started yet
      */
     public LectureEntity getLectureByIdNoModkey(UUID id) throws LectureException {
-        LectureEntity toSend =  lectureRepository.findLectureEntityByUuid(id);
+        LectureEntity toSend = lectureRepository.findLectureEntityByUuid(id);
         if (toSend == null) {
             throw new LectureNotFoundException();
         }

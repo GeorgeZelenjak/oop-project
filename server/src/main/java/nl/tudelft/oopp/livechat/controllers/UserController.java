@@ -9,7 +9,6 @@ import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -25,8 +24,7 @@ public class UserController {
     ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-     * Creates a new user controller.
-     *
+     * Creates a new UserController.
      * @param userService user service object
      */
     public UserController(UserService userService) {
@@ -34,10 +32,12 @@ public class UserController {
     }
 
     /**
-     * POST endpoint to create a new user in the database.
-     *
+     * POST Endpoint to create a new user in the database.
      * @param user the new user
-     * @return 0 if successful, -1 if not
+     * @return 0 if successful
+     * @throws UserException when the user id is not a valid mac address
+     *               or there are more that 5 users with the same IP-address
+     * @throws NoDataReceivedException when the user object is null
      */
     @PostMapping("/register")
     public int newUser(@RequestBody UserEntity user) throws UserException, NoDataReceivedException {
@@ -48,11 +48,15 @@ public class UserController {
     }
 
     /**
-     * PUT mapping to ban by id.
-     *
-     * @param info the information needed to ban
-     * @return the result from service
-     * @throws JsonProcessingException the json processing exception
+     * PUT Endpoint to ban by id.
+     * @param info the information needed to ban (moderator id, question is,
+     *             moderator key, time of the ban)
+     * @return 0 if successful
+     * @throws JsonProcessingException when an invalid json is sent
+     * @throws UserException when the user is not registered or already banned
+     * @throws LectureException when the lecture is not found or is closed
+     * @throws QuestionException when the question is not found
+     * @throws InvalidModkeyException when the modkey is incorrect
      */
     @PutMapping("/ban/id")
     public int banById(@RequestBody String info) throws JsonProcessingException,
@@ -62,18 +66,21 @@ public class UserController {
         long qid = Long.parseLong(jsonNode.get("qid").asText());
         UUID modkey = UUID.fromString(jsonNode.get("modkey").asText());
         int time = Integer.parseInt(jsonNode.get("time").asText());
-        if (time <= 0) {
+        if (time < 0) {
             throw new NumberFormatException();
         }
         return userService.banById(modid, qid, modkey, time);
     }
 
     /**
-     * PUT mapping to ban by id.
-     *
-     * @param info the information needed to ban
-     * @return the result from service
-     * @throws JsonProcessingException the json processing exception
+     * PUT Endpoint to ban by ip.
+     * @param info the information needed to ban (moderator id, question is,
+     *             moderator key, time of the ban)
+     * @return 0 if successful
+     * @throws JsonProcessingException when an invalid json is sent
+     * @throws UserException when the user(s) is not registered or already banned
+     * @throws LectureException when the lecture is not found
+     * @throws QuestionException when the question is not found
      */
     @PutMapping("/ban/ip")
     public int banByIp(@RequestBody String info) throws JsonProcessingException,
@@ -83,7 +90,7 @@ public class UserController {
         UUID modkey = UUID.fromString(jsonNode.get("modkey").asText());
         long qid = Long.parseLong(jsonNode.get("qid").asText());
         int time = Integer.parseInt(jsonNode.get("time").asText());
-        if (time <= 0) {
+        if (time < 0) {
             throw new NumberFormatException();
         }
         return userService.banByIp(modid, qid, modkey, time);

@@ -65,12 +65,12 @@ public class UserEntity {
 
     /**
      * Instantiates a new User entity.
-     * @param uid          the user id
-     * @param username     the username
+     * @param uid the user id
+     * @param username the username
      * @param lastQuestion the last question the user asked
-     * @param allowed      if the user is banned
-     * @param ip           the ip address of the user
-     * @param lectureId    the lecture id the user is in
+     * @param allowed if the user is banned
+     * @param ip the ip address of the user
+     * @param lectureId the lecture id the user is in
      */
     public UserEntity(long uid, String username, Timestamp lastQuestion,
                       boolean allowed, String ip, UUID lectureId) {
@@ -84,43 +84,38 @@ public class UserEntity {
 
     /**
      * Gets uid.
-     *
      * @return the uid
      */
     public long getUid() {
-        return uid;
+        return this.uid;
     }
 
     /**
      * Gets username.
-     *
      * @return the username
      */
     public String getUserName() {
-        return userName;
+        return this.userName;
     }
 
     /**
      * Gets last question the user asked.
-     *
      * @return the last question the user asked
      */
     public Timestamp getLastQuestion() {
-        return lastQuestion;
+        return this.lastQuestion;
     }
 
     /**
      * Returns if the user is banned or not.
-     *
      * @return true if the user is not banned, false if is
      */
     public boolean isAllowed() {
-        return allowed;
+        return this.allowed;
     }
 
     /**
      * Sets the user id.
-     *
      * @param uid the user id
      */
     public void setUid(long uid) {
@@ -129,7 +124,6 @@ public class UserEntity {
 
     /**
      * Sets the username.
-     *
      * @param username the username to be set
      */
     public void setUserName(String username) {
@@ -138,7 +132,6 @@ public class UserEntity {
 
     /**
      * Sets last question the user asked.
-     *
      * @param lastQuestion the last question the user asked
      */
     public void setLastQuestion(Timestamp lastQuestion) {
@@ -147,7 +140,6 @@ public class UserEntity {
 
     /**
      * Sets if the user is banned or not.
-     *
      * @param allowed true if the user is not banned, false if is
      */
     public void setAllowed(boolean allowed) {
@@ -156,16 +148,14 @@ public class UserEntity {
 
     /**
      * Gets the ip of the user.
-     *
      * @return the ip of the user
      */
     public String getIp() {
-        return ip;
+        return this.ip;
     }
 
     /**
      * Sets the ip of the user.
-     *
      * @param ip the ip of the user
      */
     public void setIp(String ip) {
@@ -174,16 +164,14 @@ public class UserEntity {
 
     /**
      * Gets the lecture id the user is in.
-     *
      * @return the lecture id the user is in
      */
     public UUID getLectureId() {
-        return lectureId;
+        return this.lectureId;
     }
 
     /**
      * Sets lecture id the user is in.
-     *
      * @param lectureId the lecture id the user is in
      */
     public void setLectureId(UUID lectureId) {
@@ -196,12 +184,11 @@ public class UserEntity {
      * @return the id of the moderator that has banned th user, or 0 if the user is not banned
      */
     public long getBannerId() {
-        return bannerId;
+        return this.bannerId;
     }
 
     /**
      * Sets the banner the id of the moderator that has banned th user.
-     *
      * @param bannerId the id of the moderator that has banned th user,
      *                 or 0 if the user is to be unbanned
      */
@@ -215,7 +202,7 @@ public class UserEntity {
      */
     @Override
     public int hashCode() {
-        return (int) (uid >> 32) + (int) uid;
+        return (int) (this.uid >> 32) + (int) this.uid;
     }
 
     /**

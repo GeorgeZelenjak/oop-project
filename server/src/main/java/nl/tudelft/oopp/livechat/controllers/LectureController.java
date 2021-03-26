@@ -31,8 +31,8 @@ public class LectureController {
     ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-     * Constructor for the lecture controller.
-     * @param service lecture service
+     * Creates new LectureController.
+     * @param service the LectureService
      */
     public LectureController(LectureService service) {
         this.service = service;
@@ -41,8 +41,9 @@ public class LectureController {
 
     /**
      * GET Endpoint to retrieve a lecture.
-     * @param id the id
-     * @return selected lecture
+     * @param id the id of the lecture
+     * @return the lecture object if successful
+     * @throws LectureException when the lecture is not found or is not started yet
      */
     @GetMapping("/get/{id}")
     public LectureEntity getLecturesByID(@PathVariable("id") UUID id) throws LectureException {
@@ -53,9 +54,11 @@ public class LectureController {
     /**
      * POST Endpoint to create a new lecture.
      * @param name the name of the lecture
-     * @param info the info
-     * @return a new lecture entity
-     * @throws JsonProcessingException the json processing exception
+     * @param info the object containing the creator name,
+     *             the start time and the frequency of asking questions
+     * @return a new lecture object if successful
+     * @throws JsonProcessingException when invalid json is sent
+     * @throws LectureException when the name is too long
      */
     @PostMapping("/newLecture")
     public LectureEntity newLecture(@RequestParam String name, @RequestBody String info)
@@ -72,8 +75,10 @@ public class LectureController {
     /**
      * DELETE Endpoint to delete a lecture with the specified id iff the moderator key is correct.
      * @param modkey the moderator key to authenticate
-     * @param id     UUID of lecture
-     * @return 0 if the lecture has been deleted successfully, -1 if not
+     * @param id the id of the lecture
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     @DeleteMapping("/delete/{id}/{modkey}")
     public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id)
@@ -83,9 +88,11 @@ public class LectureController {
 
     /**
      * PUT Endpoint to close a lecture with the specified id iff the moderator key is correct.
-     * @param lectureId UUID of lecture
-     * @param modkey    the moderator key to authenticate
-     * @return 0 if the lecture has been closed successfully, -1 if not
+     * @param lectureId the id of the lecture
+     * @param modkey the moderator key to authenticate
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     @PutMapping("/close/{lid}/{modkey}")
     public int close(@PathVariable("lid") UUID lectureId, @PathVariable("modkey") UUID modkey)
@@ -96,8 +103,10 @@ public class LectureController {
     /**
      * GET Endpoint to validate moderator key for the lecture.
      * @param modkey the moderator key to authenticate
-     * @param id     UUID of lecture
-     * @return 0 if moderator was validated successfully, -1 if not
+     * @param id the id of the lecture
+     * @return 0 if moderator was validated successfully
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     @GetMapping("/validate/{id}/{modkey}")
     public int validate(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id)

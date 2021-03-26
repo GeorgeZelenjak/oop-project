@@ -9,8 +9,8 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-public interface UserPollVoteRepository extends JpaRepository<UserPollVoteTable,
-        UserPollVotePairId> {
+public interface UserPollVoteRepository
+        extends JpaRepository<UserPollVoteTable, UserPollVotePairId> {
     List<UserPollVoteTable> findAllByUserId(long uid);
 
     @Transactional

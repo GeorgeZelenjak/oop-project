@@ -39,7 +39,7 @@ public class QuestionController {
 
     /**
      * GET Endpoint to retrieve all the questions for the particular lecture.
-     * @param lid id of the lecture
+     * @param lid the id of the lecture
      * @return the list of questions associated with a particular lecture, or empty list
      */
     @GetMapping("/fetch")
@@ -51,6 +51,10 @@ public class QuestionController {
      * POST Endpoint to ask a question and store it in the database.
      * @param question question to be added to the database
      * @return the id assigned by the server for that question
+     * @throws UserException when the user is not registered or banned
+     * @throws LectureException when the lecture is not found, is closed or is not started
+     * @throws QuestionException when the question with the same id already exists, the question
+     *           text is too long, or the user asks questions too frequently
      */
     @PostMapping("/ask")
     public long askQuestion(@RequestBody QuestionEntity question)
@@ -62,7 +66,11 @@ public class QuestionController {
      * DELETE Endpoint to delete a question from the database (done by the author of the question).
      * @param qid the id of the question
      * @param uid the id of the user
-     * @return 0 if successful, -1 otherwise
+     * @return 0 if successful
+     * @throws UserException when the user is not registered
+     * @throws LectureException when the lecture is not found or is closed
+     * @throws QuestionException when the question is not found
+     *          or the owner id doesn't match the provided id
      */
     @DeleteMapping("/delete")
     public int deleteQuestion(@RequestParam long qid, @RequestParam long uid)
@@ -72,9 +80,12 @@ public class QuestionController {
 
     /**
      * DELETE Endpoint to delete any question from the database (done by a moderator).
-     * @param qid    the id of the question
+     * @param qid the id of the question
      * @param modkey the moderator key
-     * @return 0 if successful, -1 otherwise
+     * @return 0 if successful
+     * @throws InvalidModkeyException when the moderator key is incorrect
+     * @throws LectureException when the lecture is not found
+     * @throws QuestionException when the question is not found
      */
     @DeleteMapping("/moderator/delete")
     public int modDelete(@RequestParam long qid, @RequestParam UUID modkey)
@@ -86,7 +97,10 @@ public class QuestionController {
      * PUT Endpoint to upvote a specific question.
      * @param qid the id of the question
      * @param uid the id of the user
-     * @return 0 if successful, -1 otherwise
+     * @return 0 if successful
+     * @throws UserException when the user is not registered
+     * @throws LectureException when the lecture is not found or is closed
+     * @throws QuestionException when the question is not found
      */
     @PutMapping("/upvote")
     public int vote(@RequestParam long qid, @RequestParam long uid)
@@ -98,7 +112,11 @@ public class QuestionController {
      * PUT Endpoint to edit a specific question if you are a moderator.
      * @param newQuestion JSON with the id, text of the question and the moderator key
      * @return 0 if done, 400 if bad request, -1 otherwise (e.g unauthorized)
-     * @throws JsonProcessingException the json processing exception
+     * @throws JsonProcessingException when an invalid json is sent
+     * @throws InvalidModkeyException when the moderator key is incorrect
+     * @throws QuestionException when the question is not found or the new question text is too long
+     * @throws LectureException when the lecture is not found
+     * @throws UserException when the new owner is not registered
      */
     @PutMapping("/edit")
     public int edit(@RequestBody String newQuestion)
@@ -117,7 +135,10 @@ public class QuestionController {
      * @param qid the id of the question
      * @param modkey the moderator key
      * @param answerText the answer text
-     * @return 0 if successful, -1 otherwise
+     * @return 0 if successful
+     * @throws InvalidModkeyException when the moderator key is incorrect
+     * @throws LectureException when the lecture is not found
+     * @throws QuestionException when the question is not found or the answer text is too long
      */
     @PutMapping("/answer/{qid}/{modkey}")
     public int markAsAnswered(@PathVariable long qid, @PathVariable UUID modkey,
