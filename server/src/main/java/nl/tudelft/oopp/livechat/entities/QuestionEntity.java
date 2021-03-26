@@ -57,6 +57,10 @@ public class QuestionEntity {
     @Column(name = "ownerId")
     private long ownerId;
 
+    @JsonIgnore
+    @Column(name = "editorId")
+    private long editorId;
+
     @Column(name = "ownername")
     String ownerName;
 
@@ -291,6 +295,23 @@ public class QuestionEntity {
     @JsonProperty
     public void setOwnerId(long ownerId) {
         this.ownerId = ownerId;
+    }
+
+
+    /**
+     * Gets editor id.
+     * @return the editor id
+     */
+    public long getEditorId() {
+        return editorId;
+    }
+
+    /**
+     * Sets editor id.
+     * @param editorId the editor id
+     */
+    public void setEditorId(long editorId) {
+        this.editorId = editorId;
     }
 
     /**

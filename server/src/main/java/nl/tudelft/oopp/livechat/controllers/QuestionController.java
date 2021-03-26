@@ -147,6 +147,13 @@ public class QuestionController {
         return questionService.answer(qid, modkey, answerText);
     }
 
+    @PutMapping("/status/{qid}/{uid}/{modkey}")
+    public int setStatus(@PathVariable long qid, @PathVariable UUID modkey,
+                              @PathVariable long uid, @RequestBody String status)
+            throws InvalidModkeyException, LectureException, QuestionException {
+        return questionService.setStatus(status, qid, uid, modkey);
+    }
+
     /**
      * Exception handler for invalid uuids.
      * @param exception exception that has occurred

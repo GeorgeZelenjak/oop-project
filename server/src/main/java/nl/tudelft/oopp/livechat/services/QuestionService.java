@@ -293,4 +293,37 @@ public class QuestionService {
         }
         return lecture;
     }
+
+    /**
+     * Sets status.
+     *
+     * @param status the status
+     * @param qid    the qid
+     * @param uid    the uid
+     * @param modkey the modkey
+     * @return the status
+     * @throws LectureNotFoundException the lecture not found exception
+     * @throws QuestionException        the question exception
+     * @throws InvalidModkeyException   the invalid modkey exception
+     */
+    public int setStatus(String status, long qid, long uid, UUID modkey)
+            throws LectureNotFoundException, QuestionException, InvalidModkeyException {
+        QuestionEntity q = questionRepository.findById(qid).orElse(null);
+
+        LectureEntity lecture = validateQuestionAndFindLecture(q);
+        if (q.getEditorId() != 0 && q.getEditorId() != uid) {
+            throw new QuestionAlreadyBeingModifiedException();
+        }
+        if (lecture.getModkey().equals(modkey)) {
+            q.setStatus(status);
+            if (status.equals("new")) {
+                q.setEditorId(0);
+            } else {
+                q.setEditorId(uid);
+            }
+            questionRepository.save(q);
+            return 0;
+        }
+        throw new InvalidModkeyException();
+    }
 }
