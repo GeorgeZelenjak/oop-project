@@ -16,26 +16,25 @@ import java.util.UUID;
 @Service
 public class PollService {
 
-    final PollOptionRepository pollOptionRepository;
+    private final PollOptionRepository pollOptionRepository;
 
-    final PollRepository pollRepository;
+    private final PollRepository pollRepository;
 
-    final UserPollVoteRepository userPollVoteRepository;
+    private final UserPollVoteRepository userPollVoteRepository;
 
-    final LectureRepository lectureRepository;
+    private final LectureRepository lectureRepository;
 
-    final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    final LectureService lectureService;
+    private final LectureService lectureService;
 
     /**
-     * Instantiates a new Poll service.
-     *
-     * @param pollOptionRepository   the poll option repository
-     * @param pollRepository         the poll repository
-     * @param userPollVoteRepository the user poll vote repository
-     * @param lectureRepository      the lecture repository
-     * @param userRepository         the user repository
+     * Creates a new PollService object.
+     * @param pollOptionRepository the pollOptionRepository
+     * @param pollRepository the pollRepository
+     * @param userPollVoteRepository the userPollVoteRepository
+     * @param lectureRepository the lectureRepository
+     * @param userRepository the userRepository
      */
     public PollService(PollOptionRepository pollOptionRepository, PollRepository pollRepository,
                        UserPollVoteRepository userPollVoteRepository,
@@ -50,14 +49,13 @@ public class PollService {
     }
 
     /**
-     * Create poll entity.
-     *
-     * @param lectureId         the lecture id
-     * @param modkey       the modkey
-     * @param questionText the question text
-     * @return the poll entity
-     * @throws LectureException       the lecture exception
-     * @throws InvalidModkeyException the invalid modkey exception
+     * Creates a new poll.
+     * @param lectureId the id of the lecture
+     * @param modkey the moderator key
+     * @param questionText the text of the question
+     * @return the created poll entity if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     public PollEntity createPoll(UUID lectureId, UUID modkey, String questionText)
             throws LectureException, InvalidModkeyException {
@@ -68,14 +66,13 @@ public class PollService {
     }
 
     /**
-     * Toggle poll.
-     *
-     * @param pollId the poll id
-     * @param modkey the modkey
-     * @return 0 if the poll was toggled successfully
-     * @throws LectureException       the lecture exception
-     * @throws InvalidModkeyException the invalid modkey exception
-     * @throws PollException          the poll exception
+     * Toggles a poll.
+     * @param pollId the id of the poll
+     * @param modkey the moderator key
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
+     * @throws PollException when the poll is not found
      */
     public int togglePoll(long pollId, UUID modkey)
             throws LectureException, InvalidModkeyException, PollException {
@@ -90,20 +87,19 @@ public class PollService {
 
 
     /**
-     * Add option poll entity.
-     *
-     * @param pollId     the poll id
-     * @param modkey     the modkey
-     * @param optionText the option text
-     * @param isCorrect  boolean indicating if the option is correct
-     * @return the poll option entity
-     * @throws LectureException       the lecture exception
-     * @throws InvalidModkeyException the invalid modkey exception
-     * @throws PollException          the poll exception
+     * Adds an answer option to the poll.
+     * @param pollId the id of the poll
+     * @param modkey the moderator key
+     * @param optionText the text of the option
+     * @param isCorrect boolean indicating if the option is correct
+     * @return the new poll answer option entity if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
+     * @throws PollException when the poll is not found
      */
     public PollOptionEntity addOption(long pollId, UUID modkey, String optionText,
-                                      boolean isCorrect)
-            throws LectureException, InvalidModkeyException, PollException {
+            boolean isCorrect) throws LectureException,
+                InvalidModkeyException, PollException {
         PollEntity pollEntity = pollRepository.findById(pollId);
         if (pollEntity == null) throw new PollNotFoundException();
         lectureService.validateModerator(pollEntity.getLectureId(), modkey);
@@ -113,18 +109,15 @@ public class PollService {
     }
 
     /**
-     * Vote on poll.
-     *
-     * @param userId       the user id
-     * @param pollOptionId the poll option id
-     * @return 0 if the poll was toggled successfully
-     * @throws UserNotRegisteredException the user not registered exception
-     * @throws PollNotFoundException      the poll not found exception
-     * @throws PollNotOpenException       the poll not open exception
-     * @throws PollAlreadyVotedException  the poll already voted exception
+     * Votes on a poll.
+     * @param userId the id of the user
+     * @param pollOptionId the id of the poll answer option
+     * @return 0 if successful
+     * @throws UserNotRegisteredException when the user is not registered
+     * @throws PollException when the poll is not found, is closed or is already voted
      */
-    public int voteOnPoll(long userId, long pollOptionId) throws UserNotRegisteredException,
-            PollNotFoundException, PollNotOpenException, PollAlreadyVotedException {
+    public int voteOnPoll(long userId, long pollOptionId)
+            throws UserNotRegisteredException, PollException {
         //Check if user exists
         if (userRepository.getUserEntityByUid(userId) == null)
             throw new UserNotRegisteredException();
@@ -159,12 +152,11 @@ public class PollService {
     }
 
     /**
-     * Fetch poll and poll options without modkey.
-     *
-     * @param lectureId the lecture id
-     * @return the poll and options
-     * @throws LectureNotFoundException the lecture not found exception
-     * @throws PollNotFoundException    the poll not found exception
+     * Fetch the poll and all its options (without moderator key).
+     * @param lectureId the id of the lecture
+     * @return the poll and all its options if successful
+     * @throws LectureNotFoundException when the lecture is not found
+     * @throws PollNotFoundException when the poll is not found
      */
     public PollAndOptions fetchPollAndOptionsStudent(UUID lectureId)
             throws LectureNotFoundException, PollNotFoundException {
@@ -186,14 +178,13 @@ public class PollService {
     }
 
     /**
-     * Fetch poll and poll options with modkey.
-     *
-     * @param lectureId   the lecture id
-     * @param modkey the modkey
-     * @return the poll and options
-     * @throws LectureException       the lecture exception
-     * @throws PollNotFoundException  the poll not found exception
-     * @throws InvalidModkeyException the invalid modkey exception
+     * Fetch the poll and all its options (without moderator key).
+     * @param lectureId the id of the lecture
+     * @param modkey the moderator key
+     * @return the poll and all its options if successful
+     * @throws LectureException when the lecture is not found
+     * @throws PollNotFoundException when the poll is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     public PollAndOptions fetchPollAndOptionsLecturer(UUID lectureId, UUID modkey)
             throws LectureException, PollNotFoundException, InvalidModkeyException {
@@ -210,14 +201,13 @@ public class PollService {
 
 
     /**
-     * Reset votes.
-     *
-     * @param pollId the poll id
-     * @param modkey the modkey
-     * @return 0 if the poll votes were resest successfully
-     * @throws LectureException       the lecture exception
-     * @throws InvalidModkeyException the invalid modkey exception
-     * @throws PollNotFoundException  the poll not found exception
+     * Reset votes for a poll.
+     * @param pollId the id of the poll
+     * @param modkey the moderator key
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
+     * @throws PollNotFoundException when the poll is not found
      */
     public int resetVotes(long pollId, UUID modkey)
             throws LectureException, InvalidModkeyException, PollNotFoundException {
