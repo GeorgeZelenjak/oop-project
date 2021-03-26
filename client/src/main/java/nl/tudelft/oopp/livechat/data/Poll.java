@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Poll {
 
-    private long id;
+    private long id = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
 
     private UUID lectureId;
 

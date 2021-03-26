@@ -9,7 +9,7 @@ public class PollOption implements Comparable<PollOption> {
     private static List<PollOption> currentPollOptions;
     private static PollOption currentPollOption;
 
-    private long id;
+    private long id = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
 
     private long pollId;
 
@@ -126,7 +126,8 @@ public class PollOption implements Comparable<PollOption> {
             PollOption that = (PollOption) o;
             //IT IS VERY IMPORTANT TO CHECK THE TEXT ON CLIENT
             //TODO why is that?
-            return (this.id == that.id && this.optionText.equals(that.optionText));
+            return (this.id == that.id && this.pollId == that.pollId
+                    && this.optionText.equals(that.optionText));
         }
         return false;
     }
@@ -137,7 +138,7 @@ public class PollOption implements Comparable<PollOption> {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, pollId, optionText, votes, isCorrect);
+        return Objects.hash(id, pollId, optionText);
     }
 
     /**
