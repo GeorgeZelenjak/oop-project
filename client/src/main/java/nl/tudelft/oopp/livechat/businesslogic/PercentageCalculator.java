@@ -26,4 +26,18 @@ public abstract class PercentageCalculator {
         //Calculate the final coordinate
         return minX + (maxX - minX) * fraction;
     }
+
+    /**
+     * Calculate percentage double.
+     *
+     * @param whole    the whole
+     * @param fraction the fraction
+     * @return the double
+     */
+    public static double calculatePercentage(int whole, int fraction) {
+        if (whole == 0) {
+            return 0;
+        }
+        return  (double) fraction / whole;
+    }
 }

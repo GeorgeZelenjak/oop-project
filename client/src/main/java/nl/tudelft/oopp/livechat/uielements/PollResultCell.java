@@ -16,6 +16,7 @@ public class PollResultCell extends ListCell<PollOptionResult> {
             PollResultCellController data = new PollResultCellController();
             data.setOption(pollOptionResult);
             data.setText();
+            data.setRectangle();
             setGraphic(data.getBox());
 
         } else setGraphic(null);

@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import nl.tudelft.oopp.livechat.businesslogic.PercentageCalculator;
+import nl.tudelft.oopp.livechat.data.PollAndOptions;
 import nl.tudelft.oopp.livechat.data.PollOption;
 
 import java.io.IOException;
@@ -51,5 +53,15 @@ public class PollResultCellController {
     public void setText() {
         numberOfVotes.setText(option.getVotes() + "");
         resultOptionText.setText(option.getOptionText());
+    }
+
+    /**
+     * Sets rectangle.
+     */
+    public void setRectangle() {
+        double frac = PercentageCalculator.calculatePercentage(
+                (int) PollAndOptions.getCurrentPollAndOptions().getPoll().getVotes(),
+                (int) option.getVotes());
+        resultBarRectangle.setWidth(resultBarRectangle.getWidth() * frac);
     }
 }
