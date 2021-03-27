@@ -8,251 +8,153 @@ import nl.tudelft.oopp.livechat.data.PollAndOptions;
 import nl.tudelft.oopp.livechat.data.PollOption;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.UUID;
 
-import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponse;
+import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.*;
 
 /**
- * The type Poll communication.
+ * Class for server communication related to polls.
  */
 public class PollCommunication {
-    private static final HttpClient client = HttpClient.newBuilder().build();
-
+    /**
+     * Gson object for parsing Json set to parse fields according to annotations
+     *     and with specified date format.
+     */
     private static final Gson gson = new GsonBuilder()
             .setDateFormat("yyyy-MM-dd HH:mm:ss Z").create();
 
+    /**
+     * The address of the server.
+     */
     private static final String ADDRESS = CommonCommunication.ADDRESS;
 
 
     /**
-     * Creates a poll on the server.
-     *
-     * @param lectureId         the lecture id
-     * @param modkey       the modkey
-     * @param questionText the question text
-     * @return the votes on lecture speed
+     * Sends a request to create a new poll on the server.
+     * @param lectureId the id of the lecture
+     * @param modkey the moderator key
+     * @param questionText the text of the question
+     * @return the created Poll object if successful, null if not
      */
     public static Poll createPoll(UUID lectureId, UUID modkey, String questionText) {
-
-        //Parameters for request
-        String address = ADDRESS + "/api/poll/create/";
         if (questionText == null || questionText.equals("")) {
-            return  null;
-        }
-        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(questionText);
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().POST(req).uri(
-                URI.create(address + lectureId + "/" + modkey)).build();
-
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
-            //e.printStackTrace();
             return null;
         }
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(questionText);
+        HttpRequest request = HttpRequest.newBuilder().POST(body).uri(
+                URI.create(ADDRESS + "/api/poll/create/" + lectureId + "/" + modkey)).build();
+
+        HttpResponse<String> response = sendAndReceive(request);
         if (handleResponse(response) != 0) {
             return null;
         }
-        return gson.fromJson(response.body(), Poll.class);
+        return response == null ? null : gson.fromJson(response.body(), Poll.class);
     }
 
 
     /**
-     * Add option poll option.
-     *
-     * @param pollid     the pollid
-     * @param modkey     the modkey
-     * @param isCorrect  the is correct
-     * @param optionText the option text
-     * @return the poll option
+     * Sends a request to add an option for a poll.
+     * @param pollId the id of the poll
+     * @param modkey the moderator key
+     * @param isCorrect true if the option is correct, false if not
+     * @param optionText the text of the option
+     * @return the created poll option if successful, null if not
      */
     public static PollOption addOption(
-            long pollid, UUID modkey, boolean isCorrect, String optionText) {
-        //Check if current lecture has been set
+            long pollId, UUID modkey, boolean isCorrect, String optionText) {
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(optionText);
+        HttpRequest request = HttpRequest.newBuilder().POST(body).uri(
+                URI.create(ADDRESS + "/api/poll/addOption/" + pollId
+                        + "/" + modkey + "/" + isCorrect)).build();
 
-        //Parameters for request
-        String address = ADDRESS + "/api/poll/addOption/";
-        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(optionText);
-
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().POST(req).uri(
-                URI.create(address + pollid + "/" + modkey + "/" + isCorrect)).build();
-
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
-            //e.printStackTrace();
-            return null;
-        }
+        HttpResponse<String> response = sendAndReceive(request);
         if (handleResponse(response) != 0) {
             return null;
         }
-        return gson.fromJson(response.body(), PollOption.class);
+        return response == null ? null : gson.fromJson(response.body(), PollOption.class);
     }
 
 
     /**
-     * Toggle int.
-     *
-     * @param pollId the poll id
-     * @param modkey the modkey
-     * @return the int
+     * Sends a request to toggle the state of the poll.
+     * @param pollId the id of the poll
+     * @param modkey the moderator key
+     * @return true if successful, false if not
      */
-    public static int toggle(long pollId, UUID modkey) {
-        //Check if current lecture has been set
+    public static boolean toggle(long pollId, UUID modkey) {
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString("");
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(
+                URI.create(ADDRESS + "/api/poll/toggle/" + pollId + "/" + modkey)).build();
 
-        //Parameters for request
-        String address = ADDRESS + "/api/poll/toggle/";
-        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("");
-
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
-                URI.create(address + pollId + "/" + modkey)).build();
-
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
-            //e.printStackTrace();
-            return -1;
-        }
-        return handleResponse(response);
+        HttpResponse<String> response = sendAndReceive(request);
+        return handleResponse(response) == 0;
     }
 
     /**
-     * Fetch poll and options poll and options.
-     *
-     * @param lectureId the lecture id
-     * @return the poll and options
+     * Sends a request to fetch the latest poll and its options for a student
+     *    (with hidden votes and correct answers).
+     * @param lectureId the id of the lecture
+     * @return the latest poll and its options if successful, null if not
      */
     public static PollAndOptions fetchPollAndOptionsStudent(UUID lectureId) {
-        //Check if current lecture has been set
-
-        //Parameters for request
-        String address = ADDRESS + "/api/poll/fetchStudent/";
-
-        //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create(address + lectureId)).build();
+                URI.create(ADDRESS + "/api/poll/fetchStudent/" + lectureId)).build();
 
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
-            //e.printStackTrace();
+        HttpResponse<String> response = sendAndReceive(request);
+
+        if (handleResponseNoAlerts(response) != 0) {
             return null;
         }
-
-        if (CommonCommunication.handleResponseNoAlerts(response) != 0) {
-            return null;
-        }
-        return gson.fromJson(response.body(), PollAndOptions.class);
+        return response == null ? null : gson.fromJson(response.body(), PollAndOptions.class);
     }
 
     /**
-     * Fetch poll and options poll and options.
-     *
-     * @param lectureId   the lecture id
-     * @param modkey the modkey
-     * @return the poll and options
+     * Sends a request to fetch the latest poll and its options for a lecturer.
+     * @param lectureId the id of the lecture
+     * @param modkey the moderator key
+     * @return the latest poll and its options if successful, null if not
      */
     public static PollAndOptions fetchPollAndOptionsModerator(UUID lectureId, UUID modkey) {
-        //Check if current lecture has been set
-
-        //Parameters for request
-        String address = ADDRESS + "/api/poll/fetchMod/";
-
-        //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create(address + lectureId + "/" + modkey)).build();
+                URI.create(ADDRESS + "/api/poll/fetchMod/" + lectureId + "/" + modkey)).build();
 
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
-            //e.printStackTrace();
+        HttpResponse<String> response = sendAndReceive(request);
+
+        if (handleResponseNoAlerts(response) != 0) {
             return null;
         }
-
-        if (CommonCommunication.handleResponseNoAlerts(response) != 0) {
-            return null;
-        }
-        return gson.fromJson(response.body(), PollAndOptions.class);
+        return response == null ? null : gson.fromJson(response.body(), PollAndOptions.class);
     }
 
     /**
-     * Vote int.
-     *
-     * @param userid       the userid
-     * @param pollOptionId the poll option id
-     * @return the int
+     * Sends a request to vote for a poll option.
+     * @param userId the id of the user
+     * @param pollOptionId the id of the poll option
+     * @return true if successful, false if not
      */
-    public static int vote(long userid, long pollOptionId) {
-        //Check if current lecture has been set
+    public static boolean vote(long userId, long pollOptionId) {
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString("");
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(
+                URI.create(ADDRESS + "/api/poll/vote/" + userId + "/" + pollOptionId)).build();
 
-        //Parameters for request
-        String address = ADDRESS + "/api/poll/vote/";
-        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("");
-
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
-                URI.create(address + userid + "/" + pollOptionId)).build();
-
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
-            //e.printStackTrace();
-            return -1;
-        }
-
-        return handleResponse(response);
+        HttpResponse<String> response = sendAndReceive(request);
+        return handleResponse(response) == 0;
     }
 
     /**
-     * Reset votes int.
-     *
-     * @param pollId the poll id
-     * @param modkey the modkey
-     * @return the int
+     * Sends a request to reset votes for a poll.
+     * @param pollId the id of the poll
+     * @param modkey the moderator key
+     * @return true if successful, false if not
      */
-    public static int resetVotes(long pollId, UUID modkey) {
-        //Check if current lecture has been set
+    public static boolean resetVotes(long pollId, UUID modkey) {
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString("");
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(
+                URI.create(ADDRESS + "/api/poll/reset/" + pollId + "/" + modkey)).build();
 
-        //Parameters for request
-        String address = ADDRESS + "/api/poll/reset/";
-
-        //Creating request and defining response
-        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("");
-        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
-                URI.create(address + pollId + "/" + modkey)).build();
-
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
-            //e.printStackTrace();
-            return -1;
-        }
-        return handleResponse(response);
+        HttpResponse<String> response = sendAndReceive(request);
+        return handleResponse(response) == 0;
     }
 }

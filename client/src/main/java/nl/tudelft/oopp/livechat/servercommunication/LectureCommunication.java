@@ -284,6 +284,4 @@ public class LectureCommunication {
         }
         return handleResponse(response) == 0;
     }
-
-
 }
