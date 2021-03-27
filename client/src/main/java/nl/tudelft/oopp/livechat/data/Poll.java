@@ -132,7 +132,7 @@ public class Poll {
      * @return true if the poll is open, false otherwise
      */
     public boolean isOpen() {
-        return open;
+        return this.open;
     }
 
     /**

@@ -30,14 +30,14 @@ public class PollOption {
      * @param pollId the id of the poll
      * @param optionText the text of the option
      * @param votes the number of votes for the option
-     * @param isCorrect true if it is a correct option
+     * @param correct true if it is a correct option
      */
-    public PollOption(long id, long pollId, String optionText, long votes, boolean isCorrect) {
+    public PollOption(long id, long pollId, String optionText, long votes, boolean correct) {
         this.id = id;
         this.pollId = pollId;
         this.optionText = optionText;
         this.votes = votes;
-        this.correct = isCorrect;
+        this.correct = correct;
     }
 
     /**
@@ -115,7 +115,7 @@ public class PollOption {
      * @return true if it is a correct option
      */
     public boolean isCorrect() {
-        return correct;
+        return this.correct;
     }
 
     /**

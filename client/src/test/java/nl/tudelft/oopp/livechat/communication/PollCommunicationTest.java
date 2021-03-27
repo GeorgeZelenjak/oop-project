@@ -3,10 +3,7 @@ package nl.tudelft.oopp.livechat.communication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
-import nl.tudelft.oopp.livechat.data.Lecture;
-import nl.tudelft.oopp.livechat.data.Poll;
-import nl.tudelft.oopp.livechat.data.PollOption;
-import nl.tudelft.oopp.livechat.data.User;
+import nl.tudelft.oopp.livechat.data.*;
 import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,64 +39,30 @@ public class PollCommunicationTest {
 
     private static final long pollId = 54256564521534536L;
     private static final long pollOptionId = 1534452344521534536L;
+    private static final long pollOptionId2 = 634526464521534536L;
+    private static final long userId = 4634637365634536L;
 
     private static MockedStatic<AlertController> mockedAlertController;
 
-    /*
-{
-    "poll": {
-        "lectureId": "50325adb-25a1-486e-b2a9-2cfaa784ac49",
-        "questionText": "example poll",
-        "time": "2021-03-27 17:30:10 +0000",
-        "votes": 0,
-        "open": false,
-        "id": 3046852391217721900
-    },
-    "options": [
-        {
-            "pollId": 3046852391217721900,
-            "optionText": "asdasdasd",
-            "votes": 0,
-            "correct": false,
-            "id": 3276632663248712053
-        },
-        {
-            "pollId": 3046852391217721900,
-            "optionText": "dsdaadadsasdasd",
-            "votes": 0,
-            "correct": false,
-            "id": 5294426058538471320
-        },
-        {
-            "pollId": 3046852391217721900,
-            "optionText": "asdfasd",
-            "votes": 0,
-            "correct": false,
-            "id": 5581020775107377740
-        }
-    ]
-}
-    * */
     /**
      * A helper method to create JSON string representing a poll.
      */
 
-    private static String createJsonPoll(long id,
-            UUID lectureId, String questionText, Timestamp time, long votes, boolean isOpen) {
+    private static String createJsonPoll(String questionText, long votes, boolean isOpen) {
         ObjectNode node = new ObjectMapper().createObjectNode();
-        node.put("id", id);
+        node.put("id", pollId);
         node.put("lectureId", lectureId.toString());
         node.put("questionText", questionText);
         node.put("time", simpleDateFormat.format(time));
         node.put("votes", votes);
-        node.put("isOpen", isOpen);
+        node.put("open", isOpen);
         return node.toString();
     }
 
-    private static String createJsonPollOption(long id, long pollId,
-            String optionText, long votes, boolean isCorrect) {
+    private static String createJsonPollOption(long oid, String optionText,
+            long votes, boolean isCorrect) {
         ObjectNode node = new ObjectMapper().createObjectNode();
-        node.put("id", id);
+        node.put("id", oid);
         node.put("pollId", pollId);
         node.put("optionText", optionText);
         node.put("votes", votes);
@@ -107,12 +70,23 @@ public class PollCommunicationTest {
         return node.toString();
     }
 
+    private static String createJSONPollAndOptions(String pollString, String... options) {
+        StringBuilder sb = new StringBuilder("{\"poll\": " + pollString + ", \"options\": [");
+        for (int i = 0; i < options.length; i++) {
+            sb.append(options[i]);
+            if (i < options.length - 1) {
+                sb.append(",");
+            }
+        }
+        sb.append("]}");
+        return sb.toString();
+    }
+
     /**
      * Create expectations for creating a poll.
      */
     private static void createExpectationsForCreatePoll() {
-        String jsonPoll = createJsonPoll(pollId, lectureId, "Guess who's back?",
-                time, 401, true);
+        String jsonPoll = createJsonPoll("Guess who's back?",401, true);
 
         //success
         mockServer.when(request().withMethod("POST").withPath("/api/poll/create/"
@@ -135,8 +109,7 @@ public class PollCommunicationTest {
      * Create expectations for creating a new poll option.
      */
     private static void createExpectationsForAddOption() {
-        String jsonPollOption = createJsonPollOption(pollOptionId, pollId, "Slim Shady",
-                431, true);
+        String jsonPollOption = createJsonPollOption(pollOptionId,"Slim Shady", 431, true);
 
         //success
         mockServer.when(request().withMethod("POST").withPath("/api/poll/addOption/"
@@ -145,8 +118,8 @@ public class PollCommunicationTest {
                         .withBody(jsonPollOption).withHeader("Content-Type","application/json"));
 
         //incorrect poll id
-        mockServer.when(request().withMethod("POST").withPath("/api/poll/addOption/404"
-                + "/" + lectureId + "/" + true).withBody("Slim Shady"))
+        mockServer.when(request().withMethod("POST").withPath("/api/poll/addOption/404/"
+                + lectureId + "/" + true).withBody("Slim Shady"))
                 .respond(HttpResponse.response().withStatusCode(404));
 
         //invalid uuid
@@ -169,8 +142,8 @@ public class PollCommunicationTest {
                 + pollId + "/" + modkey)).respond(HttpResponse.response().withStatusCode(200));
 
         //incorrect poll id
-        mockServer.when(request().withMethod("PUT").withPath("/api/poll/toggle/404"
-                + "/" + modkey)).respond(HttpResponse.response().withStatusCode(404));
+        mockServer.when(request().withMethod("PUT").withPath("/api/poll/toggle/404/"
+                + modkey)).respond(HttpResponse.response().withStatusCode(404));
 
         //invalid uuid
         mockServer.when(request().withMethod("PUT").withPath("/api/poll/toggle/"
@@ -180,6 +153,94 @@ public class PollCommunicationTest {
         mockServer.when(request().withMethod("PUT").withPath("/api/poll/toggle/"
                 + pollId + "/" + incorrectModkey))
                 .respond(HttpResponse.response().withStatusCode(401));
+    }
+
+    /**
+     * Create expectations for voting for a poll option.
+     */
+    private static void createExpectationsForVote() {
+        //success
+        mockServer.when(request().withMethod("PUT").withPath("/api/poll/vote/" + userId
+                + "/" + pollOptionId)).respond(HttpResponse.response().withStatusCode(200));
+
+        //incorrect poll option id
+        mockServer.when(request().withMethod("PUT").withPath("/api/poll/vote/" + userId
+                + "/404")).respond(HttpResponse.response().withStatusCode(404));
+
+        //incorrect user id
+        mockServer.when(request().withMethod("PUT").withPath("/api/poll/vote/404/"
+                + pollOptionId)).respond(HttpResponse.response().withStatusCode(404));
+    }
+
+    /**
+     * Create expectations for fetch (for students).
+     */
+    private static void createExpectationsForFetchStudent() {
+        //success
+        String pollAndOptions =
+                createJSONPollAndOptions(
+                        createJsonPoll("What movie has Eminem starred in?", 42, false),
+                        createJsonPollOption(pollOptionId,"8 Mile", 32, true),
+                        createJsonPollOption(pollOptionId2,"42 Mile", 10, false));
+        mockServer.when(request().withMethod("GET").withPath("/api/poll/fetchStudent/" + lectureId))
+                .respond(HttpResponse.response().withStatusCode(200).withBody(pollAndOptions)
+                        .withHeader("Content-Type","application/json"));
+
+        //lecture not found
+        mockServer.when(request().withMethod("GET").withPath("/api/poll/fetchStudent/" + modkey))
+                .respond(HttpResponse.response().withStatusCode(404));
+
+        //invalid uuid
+        mockServer.when(request().withMethod("GET").withPath("/api/poll/fetchStudent/"
+                + invalidUUID)).respond(HttpResponse.response().withStatusCode(400));
+    }
+
+    /**
+     * Create expectations for fetch (for lecturers).
+     */
+    private static void createExpectationsForFetchModerator() {
+        //success
+        String pollAndOptions =
+                createJSONPollAndOptions(
+                        createJsonPoll("Who is the real Slim Shady?", 69, true),
+                        createJsonPollOption(pollOptionId,"Eminem", 66, true),
+                        createJsonPollOption(pollOptionId2,"Dr Dre", 3, false));
+        mockServer.when(request().withMethod("GET").withPath("/api/poll/fetchMod/" + lectureId
+                + "/" + modkey)).respond(HttpResponse.response().withStatusCode(200)
+                .withBody(pollAndOptions).withHeader("Content-Type","application/json"));
+
+        //lecture not found
+        mockServer.when(request().withMethod("GET").withPath("/api/poll/fetchMod/" + modkey
+                + "/" + modkey)).respond(HttpResponse.response().withStatusCode(404));
+
+        //invalid uuid
+        mockServer.when(request().withMethod("GET").withPath("/api/poll/fetchMod/" + invalidUUID
+                + "/" + modkey)).respond(HttpResponse.response().withStatusCode(400));
+
+        //incorrect modkey
+        mockServer.when(request().withMethod("GET").withPath("/api/poll/fetchMod/" + lectureId
+                + "/" + incorrectModkey)).respond(HttpResponse.response().withStatusCode(401));
+    }
+
+    /**
+     * Create expectations for voting for a poll option.
+     */
+    private static void createExpectationsForReset() {
+        //success
+        mockServer.when(request().withMethod("PUT").withPath("/api/poll/reset/" + pollId + "/"
+               + modkey)).respond(HttpResponse.response().withStatusCode(200));
+
+        //incorrect poll option id
+        mockServer.when(request().withMethod("PUT").withPath("/api/poll/reset/404/" + modkey))
+                .respond(HttpResponse.response().withStatusCode(404));
+
+        //incorrect modkey
+        mockServer.when(request().withMethod("PUT").withPath("/api/poll/reset/" + pollId + "/"
+                + incorrectModkey)).respond(HttpResponse.response().withStatusCode(401));
+
+        //invalid uuid
+        mockServer.when(request().withMethod("PUT").withPath("/api/poll/reset/" + pollId + "/"
+                + invalidUUID)).respond(HttpResponse.response().withStatusCode(400));
     }
 
     /**
@@ -202,6 +263,10 @@ public class PollCommunicationTest {
         createExpectationsForCreatePoll();
         createExpectationsForAddOption();
         createExpectationsForToggle();
+        createExpectationsForVote();
+        createExpectationsForFetchStudent();
+        createExpectationsForFetchModerator();
+        createExpectationsForReset();
     }
 
     /**
@@ -325,6 +390,160 @@ public class PollCommunicationTest {
     public void toggleWrongModkeyTest() {
         assertFalse(PollCommunication.toggle(pollId, incorrectModkey));
     }
+
+    /**
+     * Tests for vote.
+     */
+    @Test
+    public void voteSuccessfulTest() {
+        assertTrue(PollCommunication.vote(userId, pollOptionId));
+    }
+
+    @Test
+    public void voteServerRefusesTest() {
+        mockServer.stop();
+        assertFalse(PollCommunication.vote(userId, pollOptionId));
+
+        setUp();
+    }
+
+    @Test
+    public void voteWrongPollOptionIdTest() {
+        assertFalse(PollCommunication.vote(userId, 404));
+    }
+
+    @Test
+    public void voteWrongUserIdTest() {
+        assertFalse(PollCommunication.vote(404, pollOptionId));
+    }
+
+    /**
+     * Tests for fetch as student.
+     */
+    @Test
+    public void fetchPollAndOptionsStudentSuccessfulTest() {
+        PollAndOptions pollAndOptions = PollCommunication.fetchPollAndOptionsStudent(lectureId);
+        assertNotNull(pollAndOptions);
+        assertEquals("What movie has Eminem starred in?",
+                pollAndOptions.getPoll().getQuestionText());
+        assertEquals(pollId, pollAndOptions.getPoll().getId());
+        assertEquals(lectureId, pollAndOptions.getPoll().getLectureId());
+        assertEquals(42, pollAndOptions.getPoll().getVotes());
+        assertFalse(pollAndOptions.getPoll().isOpen());
+
+        assertEquals(2, pollAndOptions.getOptions().size());
+
+        assertEquals("8 Mile", pollAndOptions.getOptions().get(0).getOptionText());
+        assertEquals(pollOptionId, pollAndOptions.getOptions().get(0).getId());
+        assertEquals(32, pollAndOptions.getOptions().get(0).getVotes());
+        assertTrue(pollAndOptions.getOptions().get(0).isCorrect());
+
+        assertEquals("42 Mile", pollAndOptions.getOptions().get(1).getOptionText());
+        assertEquals(pollOptionId2, pollAndOptions.getOptions().get(1).getId());
+        assertEquals(10, pollAndOptions.getOptions().get(1).getVotes());
+        assertFalse(pollAndOptions.getOptions().get(1).isCorrect());
+    }
+
+    @Test
+    public void fetchPollAndOptionsStudentInvalidLectureIdTest() {
+        assertNull(PollCommunication.fetchPollAndOptionsStudent(invalidUUID));
+    }
+
+    @Test
+    public void fetchPollAndOptionsStudentLectureNotFoundTest() {
+        assertNull(PollCommunication.fetchPollAndOptionsStudent(modkey));
+    }
+
+    @Test
+    public void fetchPollAndOptionsStudentServerRefusesTest() {
+        mockServer.stop();
+        assertNull(PollCommunication.fetchPollAndOptionsStudent(lectureId));
+
+        setUp();
+    }
+
+    /**
+     * Tests for fetch as student.
+     */
+    @Test
+    public void fetchPollAndOptionsModeratorSuccessfulTest() {
+        PollAndOptions pollAndOptions =
+                PollCommunication.fetchPollAndOptionsModerator(lectureId, modkey);
+        assertNotNull(pollAndOptions);
+        assertEquals("Who is the real Slim Shady?",
+                pollAndOptions.getPoll().getQuestionText());
+        assertEquals(pollId, pollAndOptions.getPoll().getId());
+        assertEquals(lectureId, pollAndOptions.getPoll().getLectureId());
+        assertEquals(69, pollAndOptions.getPoll().getVotes());
+        assertTrue(pollAndOptions.getPoll().isOpen());
+
+        assertEquals(2, pollAndOptions.getOptions().size());
+
+        assertEquals("Eminem", pollAndOptions.getOptions().get(0).getOptionText());
+        assertEquals(pollOptionId, pollAndOptions.getOptions().get(0).getId());
+        assertEquals(66, pollAndOptions.getOptions().get(0).getVotes());
+        assertTrue(pollAndOptions.getOptions().get(0).isCorrect());
+
+        assertEquals("Dr Dre", pollAndOptions.getOptions().get(1).getOptionText());
+        assertEquals(pollOptionId2, pollAndOptions.getOptions().get(1).getId());
+        assertEquals(3, pollAndOptions.getOptions().get(1).getVotes());
+        assertFalse(pollAndOptions.getOptions().get(1).isCorrect());
+    }
+
+    @Test
+    public void fetchPollAndOptionsModeratorInvalidLectureIdTest() {
+        assertNull(PollCommunication.fetchPollAndOptionsModerator(invalidUUID, modkey));
+    }
+
+    @Test
+    public void fetchPollAndOptionsModeratorLectureNotFoundTest() {
+        assertNull(PollCommunication.fetchPollAndOptionsModerator(modkey, modkey));
+    }
+
+    @Test
+    public void fetchPollAndOptionsModeratorIncorrectModkeyTest() {
+        assertNull(PollCommunication.fetchPollAndOptionsModerator(lectureId, incorrectModkey));
+    }
+
+    @Test
+    public void fetchPollAndOptionsModeratorServerRefusesTest() {
+        mockServer.stop();
+        assertNull(PollCommunication.fetchPollAndOptionsModerator(lectureId, modkey));
+
+        setUp();
+    }
+
+    /**
+     * Tests for toggle the poll.
+     */
+    @Test
+    public void resetVotesSuccessfulTest() {
+        assertTrue(PollCommunication.resetVotes(pollId, modkey));
+    }
+
+    @Test
+    public void resetVotesServerRefusesTest() {
+        mockServer.stop();
+        assertFalse(PollCommunication.resetVotes(pollId, modkey));
+
+        setUp();
+    }
+
+    @Test
+    public void resetVotesInvalidModkeyTest() {
+        assertFalse(PollCommunication.resetVotes(pollId, invalidUUID));
+    }
+
+    @Test
+    public void resetVotesWrongPollIdTest() {
+        assertFalse(PollCommunication.resetVotes(404, modkey));
+    }
+
+    @Test
+    public void resetVotesWrongModkeyTest() {
+        assertFalse(PollCommunication.resetVotes(pollId, incorrectModkey));
+    }
+
 
     @AfterAll
     public static void close() {

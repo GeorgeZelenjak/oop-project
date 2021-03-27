@@ -169,7 +169,7 @@ public abstract class PollCommunication {
      * @return true if successful, false if not
      */
     public static boolean resetVotes(long pollId, UUID modkey) {
-        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString("");
+        HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString("");
         HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
                 + "/api/poll/reset/" + pollId + "/" + URLEncoder.encode(modkey.toString(),
                 StandardCharsets.UTF_8))).build();
