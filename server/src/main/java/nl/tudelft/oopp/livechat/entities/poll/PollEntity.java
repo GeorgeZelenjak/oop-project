@@ -172,9 +172,6 @@ public class PollEntity {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
         if (o instanceof PollEntity) {
             PollEntity that = (PollEntity) o;
             return this.id == that.id;

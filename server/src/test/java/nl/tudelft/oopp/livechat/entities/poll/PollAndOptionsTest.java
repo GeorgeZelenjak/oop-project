@@ -86,12 +86,18 @@ class PollAndOptionsTest {
     }
 
     @Test
-    void equalsDifferentTest() {
+    void equalsDifferentPollTest() {
         PollEntity p = new PollEntity(lid, "What would you do if a pelican entered in your house?",
                 time, 13, true);
-        PollOptionEntity o1 = new PollOptionEntity(p.getId(), "Kill it", 3, false);
-        PollOptionEntity o2 = new PollOptionEntity(p.getId(), "Eat it", 7, true);
-        PollAndOptions po = new PollAndOptions(p, List.of(o1, o2));
+        PollAndOptions po = new PollAndOptions(p, List.of(option1, option2));
+        assertNotEquals(pollAndOptions, po);
+    }
+
+    @Test
+    void equalsDifferentOptionsTest() {
+        PollOptionEntity o1 = new PollOptionEntity(poll.getId(), "Kill it", 3, false);
+        PollOptionEntity o2 = new PollOptionEntity(poll.getId(), "Eat it", 7, true);
+        PollAndOptions po = new PollAndOptions(poll, List.of(o1, o2));
         assertNotEquals(pollAndOptions, po);
     }
 
