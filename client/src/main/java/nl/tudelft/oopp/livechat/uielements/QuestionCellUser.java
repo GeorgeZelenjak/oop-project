@@ -38,6 +38,7 @@ public class QuestionCellUser extends ListCell<Question> {
             data.setUpvoteButton();
             data.setDeleteButton();
             data.setAnswerText();
+            data.colorUpvoteButton();
         } else {
             setGraphic(null);
         }

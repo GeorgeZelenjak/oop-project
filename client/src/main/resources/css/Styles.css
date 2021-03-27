@@ -59,6 +59,21 @@
         -fx-padding: 0px 0px 0px 0px;
     }
 
+    .mainSceneButtonCopy {
+        -fx-background-color: #46a20b;
+    }
+
+    .mainSceneButtonCopy:hover {
+        -fx-background-color: #388108;
+    }
+
+    .lectureModeButton {
+        -fx-background-color: rgb(241,190,62);
+    }
+
+    .lectureModeButton:hover {
+        -fx-background-color: #C19832;
+    }
 
     .headerText{
         -fx-font-size: 36px;
@@ -74,7 +89,7 @@
     }
 
     .leaveLecture:hover{
-        -fx-background-color:  #fa6866;
+        -fx-background-color: #af2c2a;
     }
 
     .settingsButton{
@@ -87,9 +102,17 @@
         -fx-background-color: Transparent;
     }
 
+    .deleteButton:hover {
+        -fx-background-color: rgb(212,212,212);
+    }
+
     .markAsAnsweredButton {
         -fx-graphic: url(/images/markAsAnswered.png);
         -fx-background-color: Transparent;
+    }
+
+    .markAsAnsweredButton:hover {
+        -fx-background-color: rgb(212,212,212);
     }
 
     .editButton {
@@ -102,9 +125,16 @@
         -fx-background-color: Transparent;
     }
 
+    .banButton:hover {
+        -fx-background-color: rgb(212,212,212);
+    }
+
+    .editButton:hover {
+        -fx-background-color: rgb(212,212,212);
+    }
+
     .settingsButton:hover{
-        -fx-background-image: url(../images/Gear_gray.png);
-        -fx-opacity: 0.5;
+        -fx-background-color: rgb(212,212,212);
     }
 
     .sidebarButton{
@@ -145,10 +175,14 @@
     }
 
     .upvoteButton {
-        -fx-background-color: lightgreen;
+        -fx-background-color: rgb(212,212,212);
         -fx-background-radius: 10px;
-        -fx-font: 10px Arial;
-        -fx-text-fill: black;
+        -fx-font: 18px Arial;
+        -fx-text-fill: #464646;
+    }
+
+    .upvoteButton:hover {
+        -fx-background-color: #aaaaaa;
     }
 
     .answeredTick {
@@ -180,6 +214,18 @@
         -fx-border-style: solid;
         -fx-border-radius: 15px;
         -fx-border-width: 2px;
+    }
+
+    .replyButton:hover {
+        -fx-background-color: rgb(212,212,212);
+    }
+
+    .participantsButton {
+        -fx-background-color: rgb(212,212,212);
+    }
+
+    .participantsButton:hover {
+        -fx-background-color: #aaaaaa;
     }
 
 

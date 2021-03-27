@@ -100,7 +100,6 @@ public class UserChatSceneController implements Initializable {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
         fetchVotes();
-        fetchVotes();
 
         timelineFetch = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
             fetchQuestions();

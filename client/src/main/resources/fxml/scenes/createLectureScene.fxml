@@ -7,13 +7,12 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.CreateLectureController">
     <children>
-        <TextField fx:id="enterLectureNameTextField" alignment="CENTER" layoutX="336.0" layoutY="318.0" onAction="#createLectureEnter" prefHeight="47.0" prefWidth="422.0" promptText="Enter the lecture name" styleClass="mainSceneEnterRoomCode" />
         <Button fx:id="createLectureButton" layoutX="425.0" layoutY="650.0" mnemonicParsing="false" onAction="#createLectureButton" prefHeight="48.0" prefWidth="239.0" styleClass="mainSceneButton" text="Create Lecture">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
-        <Button fx:id="goToSettingsButton" layoutX="948.0" layoutY="698.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
-        <Button fx:id="goToHelpButton" layoutX="1001.0" layoutY="698.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="34.0" prefWidth="34.0" styleClass="mainSceneButton" text="?" />
+        <Button fx:id="goToSettingsButton" layoutX="1032.0" layoutY="720.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
+        <Button fx:id="goToHelpButton" layoutX="973.0" layoutY="719.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="34.0" prefWidth="34.0" styleClass="mainSceneButton" text="?" />
       <Text layoutX="394.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="Create Lecture" textAlignment="CENTER" wrappingWidth="306.0" AnchorPane.leftAnchor="394.0" AnchorPane.topAnchor="69.0">
          <font>
             <Font size="27.0" />
@@ -24,6 +23,9 @@
          </font>
       </Button>
       <TextField fx:id="enterYourNameTextField" alignment="CENTER" layoutX="336.0" layoutY="263.0" prefHeight="47.0" prefWidth="422.0" promptText="Enter your name" styleClass="mainSceneEnterRoomCode" />
+        <TextField fx:id="enterLectureNameTextField" alignment="CENTER" layoutX="336.0" layoutY="318.0" onAction="#createLectureEnter" prefHeight="47.0" prefWidth="422.0" promptText="Enter the lecture name" styleClass="mainSceneEnterRoomCode" />
+      <DatePicker fx:id="lectureSchedulingDateDatePicker" disable="true" layoutX="458.0" layoutY="513.0" prefHeight="34.0" prefWidth="204.0" styleClass="lectureScheduling" visible="false" />
+      <TextField fx:id="lectureScheduleHourTextField" alignment="CENTER" disable="true" layoutX="500.0" layoutY="556.0" prefHeight="34.0" prefWidth="34.0" promptText="hh" visible="false" />
       <CheckBox fx:id="lectureSchedulingCheckBox" layoutX="447.0" layoutY="393.0" mnemonicParsing="false" onAction="#hideLectureScheduling" text="Do you want to schedule your lecture?" />
       <TextField fx:id="questionDelay" alignment="CENTER" layoutX="334.0" layoutY="551.0" prefHeight="47.0" prefWidth="422.0" promptText="Enter Question Delay" styleClass="mainSceneEnterRoomCode" />
       <DatePicker fx:id="lectureSchedulingDateDatePicker" disable="true" layoutX="440.0" layoutY="429.0" prefHeight="18.0" prefWidth="204.0" visible="false" />
