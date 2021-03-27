@@ -261,6 +261,27 @@ class QuestionServiceTest {
     }
 
     @Test
+    void newQuestionEntityFrequencyLastQuestionNullSuccessfulTest() throws Exception {
+        UserEntity u = new UserEntity(444, "444", null, true,
+                "192.168.1.1", l3.getUuid());
+        userRepository.save(u);
+        lectureRepository.save(l3);
+
+        l3.setFrequency(10);
+        lectureRepository.save(l3);
+
+        QuestionEntity q = new QuestionEntity(l3.getUuid(), "name???",
+                new Timestamp(System.currentTimeMillis()), 444);
+
+        assertTrue(questionService.newQuestionEntity(q) > 0);
+
+        questionRepository.deleteById(q.getId());
+        l3.setFrequency(0);
+        lectureRepository.deleteById(l3.getUuid());
+        userRepository.deleteById(444L);
+    }
+
+    @Test
     void newQuestionLectureNotStartedTest() {
         l2.setStartTime(new Timestamp(System.currentTimeMillis() + 0xFFFFFFFFFL));
         lectureRepository.save(l2);
