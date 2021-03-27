@@ -3,12 +3,12 @@ package nl.tudelft.oopp.livechat.data;
 import java.util.List;
 import java.util.Objects;
 
-public class PollOption implements Comparable<PollOption> {
+public class PollOption {
 
     private static List<PollOption> currentPollOptions;
     private static PollOption currentPollOption;
 
-    private  long id;
+    private long id;
 
     private long pollId;
 
@@ -26,10 +26,10 @@ public class PollOption implements Comparable<PollOption> {
 
     /**
      * Creates a new PollOptionEntity object with the specified parameters.
-     * @param id         the id of the option
-     * @param pollId    the id of the poll
+     * @param id the id of the option
+     * @param pollId the id of the poll
      * @param optionText the text of the option
-     * @param votes     the number of votes for the option
+     * @param votes the number of votes for the option
      * @param isCorrect true if it is a correct option
      */
     public PollOption(long id, long pollId, String optionText, long votes, boolean isCorrect) {
@@ -41,12 +41,11 @@ public class PollOption implements Comparable<PollOption> {
     }
 
     /**
-     * Instantiates a new Poll option.
-     *
-     * @param pollId     the poll id
-     * @param optionText the option text
-     * @param votes      the votes
-     * @param isCorrect  the is correct
+     * Creates a new PollOptionEntity object with the specified parameters.
+     * @param pollId the id of the poll
+     * @param optionText the text of the option
+     * @param votes the number of votes for the option
+     * @param isCorrect true if it is a correct option
      */
     public PollOption(long pollId, String optionText, long votes, boolean isCorrect) {
         this.pollId = pollId;
@@ -142,8 +141,7 @@ public class PollOption implements Comparable<PollOption> {
             PollOption that = (PollOption) o;
             //IT IS VERY IMPORTANT TO CHECK THE TEXT ON CLIENT
             //TODO why is that?
-            return (this.id == that.id && this.pollId == that.pollId
-                    && this.optionText.equals(that.optionText));
+            return (this.id == that.id && this.pollId == that.pollId);
         }
         return false;
     }
@@ -157,30 +155,35 @@ public class PollOption implements Comparable<PollOption> {
         return Objects.hash(id, pollId, optionText);
     }
 
-    /**
-     * Compares the current poll option to another poll option.
-     * @param other the poll option to compare to
-     * @return -1 if current poll option was asked later
-     *          0 if both poll option were asked at the same time
-     *          1 if current poll option was asked earlier
-     */
-    @Override
-    public int compareTo(PollOption other) {
-        return Long.compare(this.getId(), other.getId());
-    }
 
+    /**
+     * Gets the list of current poll options for the current poll.
+     * @return the list of current poll options for the current poll
+     */
     public static List<PollOption> getCurrentPollOptions() {
         return currentPollOptions;
     }
 
+    /**
+     * Sets the list of current poll options for the current poll.
+     * @param currentPollOptions the list of current poll options for the current poll
+     */
     public static void setCurrentPollOptions(List<PollOption> currentPollOptions) {
         PollOption.currentPollOptions = currentPollOptions;
     }
 
+    /**
+     * Gets the current poll option.
+     * @return the current poll option
+     */
     public static PollOption getCurrentPollOption() {
         return currentPollOption;
     }
 
+    /**
+     * Sets the current poll option.
+     * @param currentPollOption the current poll option
+     */
     public static void setCurrentPollOption(PollOption currentPollOption) {
         PollOption.currentPollOption = currentPollOption;
     }

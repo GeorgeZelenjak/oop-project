@@ -1,17 +1,14 @@
 package nl.tudelft.oopp.livechat.data;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.sql.Timestamp;
-import java.util.Comparator;
-import java.util.List;
+
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Poll {
 
-    private long id = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
+    private final long id = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
 
     private UUID lectureId;
 
@@ -163,7 +160,7 @@ public class Poll {
             Poll that = (Poll) o;
             //IT IS VERY IMPORTANT TO CHECK THE TEXT ON CLIENT
             //TODO why is that?
-            return this.id == that.id && this.questionText.equals(that.questionText);
+            return this.id == that.id;
         }
         return false;
     }
