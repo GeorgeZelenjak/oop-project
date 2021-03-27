@@ -1,7 +1,5 @@
 package nl.tudelft.oopp.livechat.data;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -13,21 +11,33 @@ public class PollAndOptions {
      * The poll entity.
      */
     private Poll poll;
+
     /**
      * The list of poll options.
      */
     private List<PollOption> options;
 
+    /**
+     * Current poll and its options.
+     */
+    private static PollAndOptions currentPollAndOptions;
 
+
+    /**
+     * Gets current poll and its options.
+     * @return current poll and its options
+     */
     public static PollAndOptions getCurrentPollAndOptions() {
         return currentPollAndOptions;
     }
 
+    /**
+     * Sets current poll and its options.
+     * @param currentPollAndOptions  current poll and its options
+     */
     public static void setCurrentPollAndOptions(PollAndOptions currentPollAndOptions) {
         PollAndOptions.currentPollAndOptions = currentPollAndOptions;
     }
-
-    private static PollAndOptions currentPollAndOptions;
 
     /**
      * Creates a PollAndQuestion object.

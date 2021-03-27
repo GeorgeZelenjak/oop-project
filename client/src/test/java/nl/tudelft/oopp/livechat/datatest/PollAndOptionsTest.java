@@ -28,6 +28,7 @@ public class PollAndOptionsTest {
         option1 = new PollOption(poll.getId(), "Kill it", 11, true);
         option2 = new PollOption(poll.getId(), "Eat it", 27, false);
         pollAndOptions = new PollAndOptions(poll, List.of(option1, option2));
+        PollAndOptions.setCurrentPollAndOptions(pollAndOptions);
     }
 
     @Test
@@ -105,6 +106,13 @@ public class PollAndOptionsTest {
     }
 
     @Test
+    void hashCodeEqualsTest() {
+        PollAndOptions po = new PollAndOptions(pollAndOptions.getPoll(),
+                pollAndOptions.getOptions());
+        assertEquals(po.hashCode(), pollAndOptions.hashCode());
+    }
+
+    @Test
     void hashCodeDifferentTest() {
         Poll p = new Poll(lid, "What would you do if a pelican entered in your house?",
                 time, 33, false);
@@ -112,5 +120,23 @@ public class PollAndOptionsTest {
         PollOption o2 = new PollOption(p.getId(), "Eat it", 27, false);
         PollAndOptions po = new PollAndOptions(p, List.of(o1, o2));
         assertNotEquals(po.hashCode(), pollAndOptions.hashCode());
+    }
+
+    @Test
+    void getCurrentPollAndOptionsTest() {
+        assertEquals(pollAndOptions, PollAndOptions.getCurrentPollAndOptions());
+    }
+
+    @Test
+    void setCurrentPollAndOptionsTest() {
+        Poll p = new Poll(lid, "What would you do if a seagull entered in your house?",
+                time, 33, false);
+        PollOption o1 = new PollOption(p.getId(), "Kill it", 11, true);
+        PollOption o2 = new PollOption(p.getId(), "Eat it", 27, false);
+        PollAndOptions po = new PollAndOptions(p, List.of(o1, o2));
+        PollAndOptions.setCurrentPollAndOptions(po);
+        assertEquals(po, PollAndOptions.getCurrentPollAndOptions());
+
+        PollAndOptions.setCurrentPollAndOptions(pollAndOptions);
     }
 }
