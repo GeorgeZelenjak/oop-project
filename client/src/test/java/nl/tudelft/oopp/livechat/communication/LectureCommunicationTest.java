@@ -31,8 +31,8 @@ public class LectureCommunicationTest {
     private static String jsonLecture;
     private static String jsonUser;
     private static String jsonBanning;
-    private static final String lid = "0ee81155-96fc-4045-bfe9-dd7ca714b5e8";
-    private static final String modkey = "08843278-e8b8-4d51-992f-48c6aee44e27";
+    private static final String lid = UUID.randomUUID().toString();
+    private static final String modkey = UUID.randomUUID().toString();
     private static final String incorrectModkey = UUID.randomUUID().toString();
     private static final String e = "2.718281828459045235360287471352662497757247093699959574966\n"
             + "967627724076630353547594571382178525166427427466391932003059\n"
@@ -50,7 +50,7 @@ public class LectureCommunicationTest {
      */
     private static String createJsonLecture() {
         ObjectNode node = new ObjectMapper().createObjectNode();
-        node.put("uuid",lid);
+        node.put("uuid", lid);
         node.put("modkey", modkey);
         node.put("name","An awesome lecture");
         node.put("creatorName","placeholder");
