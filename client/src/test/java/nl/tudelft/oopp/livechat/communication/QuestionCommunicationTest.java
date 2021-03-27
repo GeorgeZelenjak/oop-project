@@ -1,5 +1,7 @@
 package nl.tudelft.oopp.livechat.communication;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -21,6 +23,8 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.Parameter;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,13 +45,14 @@ public class QuestionCommunicationTest {
             .excludeFieldsWithoutExposeAnnotation().create();
     private static MockedStatic<AlertController> mockedAlertController;
 
-    private static final UUID lid = UUID.fromString("dfabcfdf-271b-48d2-841e-4874ff28b4a6");
+    private static final UUID lid = UUID.randomUUID();
     private static final UUID modkey = UUID.randomUUID();
     private static final UUID incorrectModkey = UUID.randomUUID();
     private static final String qid1 = "5397545054934456486";
     private static final String qid2 = "8077505054105457480";
     private static final String qid3 = "6840541099020457076";
     private static long userId;
+    private static final Timestamp time = new Timestamp(System.currentTimeMillis());
 
     private static String goodQuestion;
     private static String normalQuestion;
@@ -57,29 +62,6 @@ public class QuestionCommunicationTest {
     private static String json2;
     private static String json3;
     private static String json4;
-
-    private static final String response =  "[\n"
-            + "    {\n"
-            + "        \"id\": " + qid1 + ",\n"
-            + "        \"lectureId\": \"" + lid + "\",\n"
-            + "        \"time\": \"2021-03-11T12:37:37.403+0000\",\n"
-            + "        \"votes\": 0,\n"
-            + "        \"text\": \"HHH\",\n"
-            + "        \"answered\": false,\n"
-            + "        \"answerText\": null,\n"
-            + "        \"answerTime\": null\n"
-            + "    },\n"
-            + "    {\n"
-            + "        \"id\": " + qid2 + ",\n"
-            + "        \"lectureId\": \"" + lid + "\",\n"
-            + "        \"time\": \"2021-03-11T12:37:41.344+0000\",\n"
-            + "        \"votes\": 0,\n"
-            + "        \"text\": \"koiko\",\n"
-            + "        \"answered\": false,\n"
-            + "        \"answerText\": null,\n"
-            + "        \"answerTime\": null\n"
-            + "    }\n"
-            + "]";
 
     /**
      * Create expectations for asking question.
@@ -110,10 +92,13 @@ public class QuestionCommunicationTest {
      */
     private static void createExpectationsForFetching() {
         //Success
+        String question1 = createJsonQuestion(qid1, "HHH");
+        String question2 = createJsonQuestion(qid2, "koiko");
+        String questions = createQuestionsList(question1, question2);
         mockServer.when(request().withMethod("GET").withPath("/api/question/fetch")
                 .withQueryStringParameter("lid", lid.toString()))
                 .respond(HttpResponse.response().withStatusCode(200)
-                        .withBody(response)
+                        .withBody(questions)
                         .withHeader("Content-Type","application/json"));
 
         //No questions found
@@ -321,6 +306,30 @@ public class QuestionCommunicationTest {
         jsonObject.addProperty("text", text);
         jsonObject.addProperty("uid", uid);
         return gson.toJson(jsonObject);
+    }
+
+    private static String createJsonQuestion(String qid, String text) {
+        SimpleDateFormat simpleDateFormat =
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+        ObjectNode node = new ObjectMapper().createObjectNode();
+        node.put("id", qid);
+        node.put("lectureId", lid.toString());
+        node.put("time", simpleDateFormat.format(time));
+        node.put("votes", 0);
+        node.put("text", text);
+        return node.toString();
+    }
+
+    private static String createQuestionsList(String... questions) {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < questions.length; i++) {
+            sb.append(questions[i]);
+            if (i < questions.length - 1) {
+                sb.append(",");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
 
