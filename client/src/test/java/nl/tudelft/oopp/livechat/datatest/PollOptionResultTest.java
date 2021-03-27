@@ -55,6 +55,13 @@ class PollOptionResultTest {
     }
 
     @Test
+    void equalsDifferentPollIdTest() {
+        PollOption p = new PollOption(9764734565634L,454363225653L, "Seagull", 88, true);
+        PollOptionResult res = new PollOptionResult(p);
+        assertNotEquals(result, res);
+    }
+
+    @Test
     void hashCodeTest() {
         int hash = Objects.hash(pollOption.getId(), pollOption.getPollId());
         assertEquals(hash, result.hashCode());

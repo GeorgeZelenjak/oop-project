@@ -10,7 +10,7 @@ public class PollOptionResult extends PollOption {
     }
 
     /**
-     * Creates a new poll option result.
+     * Creates a new poll option result for the the specified poll option.
      * @param option the corresponding poll option
      */
     public PollOptionResult(PollOption option) {
