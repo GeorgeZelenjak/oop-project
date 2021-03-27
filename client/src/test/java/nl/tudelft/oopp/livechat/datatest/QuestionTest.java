@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
-import java.util.Queue;
 import java.util.UUID;
 
 /**
@@ -178,6 +177,20 @@ public class QuestionTest {
 
         //set it back for other tests
         question.setOwnerId(69);
+    }
+
+    @Test
+    public void getStatusTest() {
+        assertEquals("new", question.getStatus());
+    }
+
+    @Test
+    public void setStatusTest() {
+        question.setStatus("answering");
+        assertEquals("answering", question.getStatus());
+
+        //set it back for other tests
+        question.setStatus("new");
     }
 
     @Test

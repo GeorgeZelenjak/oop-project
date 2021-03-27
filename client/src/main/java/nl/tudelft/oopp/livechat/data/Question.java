@@ -230,18 +230,16 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Gets status.
-     *
-     * @return the status
+     * Gets the status of the question.
+     * @return the status of the question
      */
     public String getStatus() {
         return status;
     }
 
     /**
-     * Sets status.
-     *
-     * @param status the status
+     * Sets status of the question.
+     * @param status the status of the question
      */
     public void setStatus(String status) {
         this.status = status;
