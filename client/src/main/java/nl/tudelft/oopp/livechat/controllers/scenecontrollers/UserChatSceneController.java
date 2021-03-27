@@ -231,7 +231,7 @@ public class UserChatSceneController implements Initializable {
      *
      * @return 0 if everthing is fine -1 if not
      */
-    public int voteOnLectureSpeedFast() {
+    public boolean voteOnLectureSpeedFast() {
         voteOnLectureSpeedSlow.setSelected(false);
 
         return LectureSpeedCommunication.voteOnLectureSpeed(
@@ -245,7 +245,7 @@ public class UserChatSceneController implements Initializable {
      *
      * @return 0 if everthing is fine -1 if not
      */
-    public int voteOnLectureSpeedSlow() {
+    public boolean voteOnLectureSpeedSlow() {
         voteOnLectureSpeedFast.setSelected(false);
 
         return LectureSpeedCommunication.voteOnLectureSpeed(
