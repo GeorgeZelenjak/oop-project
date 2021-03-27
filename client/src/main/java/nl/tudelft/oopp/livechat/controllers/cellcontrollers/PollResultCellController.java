@@ -2,6 +2,7 @@ package nl.tudelft.oopp.livechat.controllers.cellcontrollers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -24,6 +25,9 @@ public class PollResultCellController {
 
     @FXML
     Rectangle resultBarRectangle;
+
+    @FXML
+    Label answeredTick;
 
 
     private PollOption option;
@@ -63,5 +67,14 @@ public class PollResultCellController {
                 (int) PollAndOptions.getCurrentPollAndOptions().getPoll().getVotes(),
                 (int) option.getVotes());
         resultBarRectangle.setWidth(resultBarRectangle.getWidth() * frac);
+    }
+
+    /**
+     * Sets the tick if option is correct.
+     */
+    public void setCorrect() {
+        if (option.isCorrect()) {
+            answeredTick.setVisible(true);
+        }
     }
 }

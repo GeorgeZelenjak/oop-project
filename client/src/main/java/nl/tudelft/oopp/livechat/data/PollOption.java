@@ -16,7 +16,7 @@ public class PollOption {
 
     private long votes;
 
-    private boolean isCorrect;
+    private boolean correct;
 
     /**
      * Creates a new PollOption object.
@@ -37,7 +37,7 @@ public class PollOption {
         this.pollId = pollId;
         this.optionText = optionText;
         this.votes = votes;
-        this.isCorrect = isCorrect;
+        this.correct = isCorrect;
     }
 
     /**
@@ -51,7 +51,7 @@ public class PollOption {
         this.pollId = pollId;
         this.optionText = optionText;
         this.votes = votes;
-        this.isCorrect = isCorrect;
+        this.correct = isCorrect;
     }
 
     /**
@@ -115,7 +115,7 @@ public class PollOption {
      * @return true if it is a correct option
      */
     public boolean isCorrect() {
-        return isCorrect;
+        return correct;
     }
 
     /**
@@ -123,7 +123,7 @@ public class PollOption {
      * @param correct true if correct, false if not
      */
     public void setCorrect(boolean correct) {
-        isCorrect = correct;
+        this.correct = correct;
     }
 
     /**
