@@ -5,6 +5,7 @@ import nl.tudelft.oopp.livechat.entities.UserEntity;
 import nl.tudelft.oopp.livechat.entities.poll.PollAndOptions;
 import nl.tudelft.oopp.livechat.entities.poll.PollEntity;
 import nl.tudelft.oopp.livechat.entities.poll.PollOptionEntity;
+import nl.tudelft.oopp.livechat.entities.poll.UserPollVoteTable;
 import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.repositories.*;
 import org.junit.jupiter.api.AfterEach;
@@ -328,6 +329,21 @@ public class PollServiceTest {
         userPollVoteRepository.deleteAllByOptionId(option1.getId());
     }
 
+    @Test
+    public void voteOnPollSuccessfulAnotherPollTest() throws Exception {
+        long oldVotes = pollOptionRepository.findById(option1.getId()).getVotes();
+        userPollVoteRepository.save(new UserPollVoteTable(user1.getUid(),
+                option2.getId(), poll2.getId()));
+        int size = userPollVoteRepository.findAllByUserId(user1.getUid()).size();
+
+        assertEquals(0, pollService.voteOnPoll(user1.getUid(), option1.getId()));
+        assertEquals(oldVotes + 1, pollOptionRepository.findById(option1.getId()).getVotes());
+        assertEquals(size + 1, userPollVoteRepository.findAllByUserId(user1.getUid()).size());
+
+        userPollVoteRepository.deleteAllByOptionId(option1.getId());
+        userPollVoteRepository.deleteAllByOptionId(option2.getId());
+    }
+
     /**
      * Tests for fetchPollAndOptions for student.
      */
@@ -346,6 +362,23 @@ public class PollServiceTest {
                 pollService.fetchPollAndOptionsStudent(l1.getUuid()));
 
         pollRepository.save(poll1);
+    }
+
+    @Test
+    public void fetchPollAndOptionsStudentPollClosedTest()
+            throws LectureNotFoundException, PollNotFoundException {
+        poll1.setOpen(false);
+        pollRepository.save(poll1);
+
+        PollAndOptions pollAndOptions = pollService.fetchPollAndOptionsStudent(l1.getUuid());
+        assertNotNull(pollAndOptions);
+        assertTrue(pollAndOptions.getOptions().size() > 0);
+
+        pollAndOptions.getOptions().forEach(o -> {
+            assertNotEquals(0, o.getVotes());
+        });
+
+        poll1.setOpen(true);
     }
 
     @Test

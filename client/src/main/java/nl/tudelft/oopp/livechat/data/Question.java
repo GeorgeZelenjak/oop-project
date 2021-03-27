@@ -70,11 +70,19 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Gets id of the question.
+     * Gets the id of the question.
      * @return the id of the question
      */
     public long getId() {
         return this.id;
+    }
+
+    /**
+     * Sets the id of the question.
+     * @param id the id of the question
+     */
+    public void setId(long id) {
+        this.id = id;
     }
 
     /**
@@ -252,9 +260,6 @@ public class Question implements Comparable<Question> {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
         if (o instanceof Question) {
             Question q = (Question) o;
             return this.id == q.id;
@@ -268,7 +273,7 @@ public class Question implements Comparable<Question> {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.lectureId, this.time);
+        return Objects.hash(this.id);
     }
 
     /**

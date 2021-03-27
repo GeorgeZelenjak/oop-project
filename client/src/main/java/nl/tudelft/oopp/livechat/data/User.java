@@ -33,7 +33,6 @@ public class User {
             NetworkInterface ni = NetworkInterface.getByInetAddress(localHost);
             hardwareAddress = ni.getHardwareAddress();
         } catch (Exception e) {
-            e.printStackTrace();
             AlertController.alertError("Error in creating User ID",
                     "Couldn't create a valid user-id");
             return;

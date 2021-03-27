@@ -216,7 +216,7 @@ public class PollService {
             throws PollNotFoundException {
         //Find the latest poll in the lecture and check if it exists
         List<PollEntity> polls = pollRepository.findAllByLectureIdOrderByTimeDesc(lectureId);
-        if (polls == null || polls.size() == 0) {
+        if (polls.size() == 0) {
             throw new PollNotFoundException();
         }
 

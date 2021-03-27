@@ -37,6 +37,7 @@ public class QuestionTest {
         Thread.sleep(1000);
         answerTime = new Timestamp((System.currentTimeMillis()) / 1000 * 1000);
 
+        question.setId(42);
         question.setTime(time);
         question.setVotes(42);
         question.setAnswerText("42");
@@ -59,7 +60,15 @@ public class QuestionTest {
 
     @Test
     public void getIdTest() {
-        assertEquals(0, question.getId());
+        assertEquals(42, question.getId());
+    }
+
+    @Test
+    public void setIdTest() {
+        question.setId(69);
+        assertEquals(69, question.getId());
+
+        question.setId(42);
     }
 
     @Test
@@ -220,13 +229,33 @@ public class QuestionTest {
     @Test
     public void equalsEqualTest() {
         Question q1 = new Question(lectureId, "How do you do, fellow kids?", 69);
-        assertEquals(question, q1);     //equal, since both ids are 0 now
+        q1.setId(42);
+        assertEquals(question, q1);
+    }
+
+    @Test
+    public void equalsDifferentTest() {
+        Question q1 = new Question(lectureId, "How do you do, fellow kids?", 69);
+        assertNotEquals(question, q1);
     }
 
     @Test
     public void hashCodeTest() {
-        int hashCode = Objects.hash(0, lectureId, time);
+        int hashCode = Objects.hash(42);
         assertEquals(hashCode, question.hashCode());
+    }
+
+    @Test
+    public void hashCodeEqualTest() {
+        Question q1 = new Question(lectureId, "How do you do, fellow kids?", 69);
+        q1.setId(42);
+        assertEquals(q1.hashCode(), question.hashCode());
+    }
+
+    @Test
+    public void hashCodeDifferentTest() {
+        Question q1 = new Question(lectureId, "How do you do, fellow kids?", 69);
+        assertNotEquals(q1.hashCode(), question.hashCode());
     }
 
     @Test

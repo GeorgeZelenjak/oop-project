@@ -148,8 +148,8 @@ public class NavigationController {
             Stage stage = new Stage();
             stage.setTitle(title);
             stage.setScene(new Scene(root, width, height));
-            if (QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
-                    Lecture.getCurrentLecture().getModkey(), req, User.getUid()) != 0) {
+            if (!QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
+                    Lecture.getCurrentLecture().getModkey(), req, User.getUid())) {
                 AlertController.alertWarning("Question is already being handled",
                         "This question is already being handled, if you want you can continue");
             }

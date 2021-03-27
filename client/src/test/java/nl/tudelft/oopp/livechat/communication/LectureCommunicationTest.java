@@ -31,8 +31,8 @@ public class LectureCommunicationTest {
     private static String jsonLecture;
     private static String jsonUser;
     private static String jsonBanning;
-    private static final String lid = "0ee81155-96fc-4045-bfe9-dd7ca714b5e8";
-    private static final String modkey = "08843278-e8b8-4d51-992f-48c6aee44e27";
+    private static final String lid = UUID.randomUUID().toString();
+    private static final String modkey = UUID.randomUUID().toString();
     private static final String incorrectModkey = UUID.randomUUID().toString();
     private static final String e = "2.718281828459045235360287471352662497757247093699959574966\n"
             + "967627724076630353547594571382178525166427427466391932003059\n"
@@ -43,14 +43,14 @@ public class LectureCommunicationTest {
     private static final SimpleDateFormat simpleDateFormat =
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
-    private static MockedStatic<AlertController> alertControllerMockedStatic;
+    private static MockedStatic<AlertController> mockedAlertController;
 
     /**
      * A helper method to assign JSON string lecture.
      */
     private static String createJsonLecture() {
         ObjectNode node = new ObjectMapper().createObjectNode();
-        node.put("uuid",lid);
+        node.put("uuid", lid);
         node.put("modkey", modkey);
         node.put("name","An awesome lecture");
         node.put("creatorName","placeholder");
@@ -237,11 +237,11 @@ public class LectureCommunicationTest {
         createExpectationsForBanning();
 
         try {
-            alertControllerMockedStatic = Mockito.mockStatic(AlertController.class);
-            alertControllerMockedStatic.when(() -> AlertController.alertError(any(String.class),
+            mockedAlertController = Mockito.mockStatic(AlertController.class);
+            mockedAlertController.when(() -> AlertController.alertError(any(String.class),
                     any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
         } catch (Exception e) {
-            System.out.println("Exception caught");
+            System.out.println("Caught exception!");
         }
     }
 
@@ -324,6 +324,7 @@ public class LectureCommunicationTest {
         mockServer.stop();
         Lecture res = LectureCommunication.joinLectureById(lid);
         assertNull(res);
+
         startServer();
     }
 
@@ -402,6 +403,7 @@ public class LectureCommunicationTest {
         Lecture.setCurrentLecture(new Lecture());
         mockServer.stop();
         assertFalse(LectureCommunication.validateModerator(lid, modkey));
+
         startServer();
     }
 
@@ -451,6 +453,7 @@ public class LectureCommunicationTest {
         Lecture.setCurrentLecture(new Lecture());
         mockServer.stop();
         assertFalse(LectureCommunication.closeLecture(lid, modkey));
+
         startServer();
     }
 
@@ -461,39 +464,39 @@ public class LectureCommunicationTest {
     @Test
     public void banByIpSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture());
-        assertEquals(0, LectureCommunication.ban(modkey, 42,7, true));
+        assertTrue(LectureCommunication.ban(modkey, 42,7, true));
     }
 
     @Test
     public void banByIdSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture());
-        assertEquals(0, LectureCommunication.ban(modkey, 42,7, false));
+        assertTrue(LectureCommunication.ban(modkey, 42,7, false));
     }
 
     @Test
     public void banByIdIncorrectModkeyTest() {
         Lecture.setCurrentLecture(new Lecture());
-        assertEquals(-1, LectureCommunication.ban(incorrectModkey, 42,7, false));
+        assertFalse(LectureCommunication.ban(incorrectModkey, 42,7, false));
     }
 
     @Test
     public void banByIpInvalidModkeyTest() {
         Lecture.setCurrentLecture(new Lecture());
-        assertEquals(-1, LectureCommunication.ban("ValidModkey", 42,7, true));
+        assertFalse(LectureCommunication.ban("ValidModkey", 42,7, true));
     }
 
     @Test
     public void banNoLectureTest() {
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, LectureCommunication.ban(modkey, 42,7, true));
+        assertFalse(LectureCommunication.ban(modkey, 42,7, true));
     }
 
     @Test
     public void banServerRefusesTest() {
         Lecture.setCurrentLecture(new Lecture());
-
         mockServer.stop();
-        assertEquals(-2, LectureCommunication.ban(modkey, 42,7, true));
+        assertFalse(LectureCommunication.ban(modkey, 42,7, true));
+
         startServer();
     }
 
@@ -503,6 +506,6 @@ public class LectureCommunicationTest {
     @AfterAll
     public static void stopServer() {
         mockServer.stop();
-        alertControllerMockedStatic.close();
+        mockedAlertController.close();
     }
 }

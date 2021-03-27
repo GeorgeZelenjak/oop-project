@@ -18,6 +18,7 @@ public class PollResultCell extends ListCell<PollOptionResult> {
             data.setText();
             data.setRectangle();
             setGraphic(data.getBox());
+            data.setCorrect();
 
         } else setGraphic(null);
     }

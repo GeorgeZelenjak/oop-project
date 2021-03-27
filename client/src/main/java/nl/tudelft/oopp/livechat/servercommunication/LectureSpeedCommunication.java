@@ -8,153 +8,118 @@ import nl.tudelft.oopp.livechat.data.Lecture;
 
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponse;
+import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.sendAndReceive;
 
 /**
  * Class to send requests regarding lecture speed.
  */
-public class LectureSpeedCommunication {
-
-    private static final HttpClient client = HttpClient.newBuilder().build();
-
+public abstract class LectureSpeedCommunication {
+    /**
+     * Gson object for parsing Json set to parse fields according to annotations
+     *     and with specified date format.
+     */
     private static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
             .setDateFormat("yyyy-MM-dd HH:mm:ss Z").create();
 
+    /**
+     * The address of the server.
+     */
     private static final String ADDRESS = CommonCommunication.ADDRESS;
 
+    private LectureSpeedCommunication() {
+
+    }
+
     /**
-     * Gets votes on lecture speed.
-     * @param uuid the id of the lecture
-     * @return List of votes on lecture speed: [0] is the faster count, [1] slower count
-     *         null if there was an error while trying to communicate with the server
+     * Sends a request to get votes on the lecture speed.
+     * @param lectureId the id of the lecture
+     * @return list of votes on the lecture speed (first entry is the faster count,
+     *          second is the slower count) if successful, null if not
+     *
      */
-    public static List<Integer> getVotesOnLectureSpeed(UUID uuid) {
-        //Check if current lecture has been set
+    public static List<Integer> getVotesOnLectureSpeed(UUID lectureId) {
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
             return null;
         }
 
-        //Parameters for request
-        String address = ADDRESS + "/api/vote/getLectureSpeed/";
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(ADDRESS
+                + "/api/vote/getLectureSpeed/" + URLEncoder.encode(lectureId.toString(),
+                StandardCharsets.UTF_8))).build();
 
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create(address + uuid)).build();
-
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
-            //e.printStackTrace();
-            return null;
-        }
+        HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
         if (result != 0) {
             return null;
         }
-        System.out.println("Lecture speed votes were retrieved successfully! " + response.body());
+        System.out.println("Lecture speed votes were retrieved successfully! "
+                + Objects.requireNonNull(response).body());
 
-        Type listType = new TypeToken<List<Integer>>(){}.getType();
-        return gson.fromJson(response.body(), listType);
+        return gson.fromJson(response.body(), new TypeToken<List<Integer>>(){}.getType());
     }
 
     /**
-     * Resets lecture speed.
-     * @param uuid the id of the lecture
+     * Sends a request to reset the votes for the lecture speed.
+     * @param lectureId the id of the lecture
      * @param modkey the moderator key
-     * @return 0 if the lecture speed votes were reset successfully
-     *        -1 if current lecture does not exist
-     *        -2 if an exception occurred when communicating with the server
-     *        -3 if unexpected response was received
-     *        -4 if the lecture speed votes were not reset (e.g wrong qid, wrong modkey etc.)
+     * @return true if the lecture speed votes have been reset successfully, false if not
      */
-    public static int resetLectureSpeed(UUID uuid, UUID modkey) {
-        //Check if current lecture has been set
+    public static boolean resetLectureSpeed(UUID lectureId, UUID modkey) {
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
-            return -1;
+            return false;
         }
 
-        //Parameters for request
-        String address = ADDRESS + "/api/vote/resetLectureSpeedVote/";
+        HttpRequest request = HttpRequest.newBuilder().DELETE().uri(URI.create(ADDRESS
+                + "/api/vote/resetLectureSpeedVote/" + URLEncoder.encode(lectureId.toString(),
+                StandardCharsets.UTF_8) + "/" + URLEncoder.encode(modkey.toString(),
+                StandardCharsets.UTF_8))).build();
 
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().DELETE().uri(
-                URI.create(address + uuid + "/" + modkey)).build();
-
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("Exception when communicating with the server!!!");
-            //e.printStackTrace();
-            return -2;
-        }
+        HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
         if (result == 0) {
             System.out.println("Lecture speed was reset! "
-                    + response.body());
+                    + Objects.requireNonNull(response).body());
         }
-        System.out.println("Result is " + result);
-        return result;
+        return result == 0;
     }
 
 
     /**
-     * Votes on lecture speed.
+     * Sends a request to vote on the lecture speed.
      * @param uid the id of the user
-     * @param uuid the id of the lecture
+     * @param lectureId the id of the lecture
      * @param speed the speed preference
-     * @return 0 if voted successfully
-     *        -1 if current lecture does not exist
-     *        -2 if an exception occurred when communicating with the server
-     *        -3 if unexpected response was received
-     *        -4 if not voted (e.g wrong qid, wrong speed string etc.)
+     * @return true if the vote has been recorded successfully, false if not
      */
-    public static int voteOnLectureSpeed(long uid, UUID uuid, String speed) {
-        //Check if current lecture has been set
+    public static boolean voteOnLectureSpeed(long uid, UUID lectureId, String speed) {
         if (Lecture.getCurrentLecture() == null) {
             System.out.println("You are not connected to a lecture!");
-            return -1;
+            return false;
         }
 
-        //Parameters for request
-        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(speed);
-        String address = ADDRESS +  "/api/vote/lectureSpeed";
-
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
-                URI.create(address + "?uid=" + uid + "&uuid=" + uuid))
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(speed);
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
+                + "/api/vote/lectureSpeed" + "?uid=" + uid + "&uuid="
+                + URLEncoder.encode(lectureId.toString(), StandardCharsets.UTF_8)))
                 .setHeader("Content-Type", "application/json").build();
 
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
-            //e.printStackTrace();
-            return -2;
-        }
+        HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
         if (result == 0) {
             System.out.println("Lecture speed was voted on successfully! "
-                    + response.body());
+                    + Objects.requireNonNull(response).body());
         }
-        System.out.println("Result is " + result);
-        return result;
+        return result == 0;
     }
-
-
-
 }
