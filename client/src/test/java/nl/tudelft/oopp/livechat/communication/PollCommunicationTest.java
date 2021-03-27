@@ -103,7 +103,7 @@ public class PollCommunicationTest {
         node.put("pollId", pollId);
         node.put("optionText", optionText);
         node.put("votes", votes);
-        node.put("isCorrect", isCorrect);
+        node.put("correct", isCorrect);
         return node.toString();
     }
 
