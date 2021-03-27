@@ -186,6 +186,33 @@ public class PollControllerTest {
     }
 
     @Test
+    public void addOptionWrongModKeyTest() throws Exception {
+        String result = this.mockMvc
+                .perform(post("/api/poll/addOption/" + poll1.getId()
+                        + "/" + lecture2.getModkey() + "/" + true)
+                        .contentType(APPLICATION_JSON).content("Monsters")
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
+    }
+
+    @Test
+    public void addOptionLectureNotFoundTest() throws Exception {
+        lectureRepository.deleteById(lecture1.getUuid());
+        String result = this.mockMvc
+                .perform(post("/api/poll/addOption/" + poll1.getId()
+                        + "/" + lecture1.getModkey() + "/" + true)
+                        .contentType(APPLICATION_JSON).content("Monsters")
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Lecture not found", result);
+
+        lectureRepository.save(lecture1);
+    }
+
+    @Test
     public void toggleSuccessfulTest() throws Exception {
         String result = this.mockMvc
                 .perform(put("/api/poll/toggle/" + poll1.getId()
@@ -196,6 +223,28 @@ public class PollControllerTest {
         PollEntity p = pollRepository.findById(poll1.getId());
         assertNotNull(p);
         assertFalse(p.isOpen());
+    }
+
+    @Test
+    public void toggleLectureNotFoundTest() throws Exception {
+        lectureRepository.deleteById(lecture1.getUuid());
+        String result = this.mockMvc
+                .perform(put("/api/poll/toggle/" + poll1.getId()
+                        + "/" + lecture1.getModkey()))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Lecture not found", result);
+        lectureRepository.save(lecture1);
+    }
+
+    @Test
+    public void toggleWrongModKeyTest() throws Exception {
+        String result = this.mockMvc
+                .perform(put("/api/poll/toggle/" + poll1.getId()
+                        + "/" + lecture2.getModkey()))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
     }
 
     @Test
@@ -236,6 +285,18 @@ public class PollControllerTest {
     }
 
     @Test
+    public void fetchPollAndOptionsStudentNoPollTest() throws Exception {
+        pollRepository.deleteById(poll1.getId());
+        String result = this.mockMvc
+                .perform(get("/api/poll/fetchStudent/" + lecture1.getUuid()))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("This poll does not exist", result);
+
+        pollRepository.save(poll1);
+    }
+
+    @Test
     public void fetchPollAndOptionsLecturerSuccessfulTest() throws Exception {
         String result = this.mockMvc
                 .perform(get("/api/poll/fetchMod/" + lecture1.getUuid()
@@ -251,6 +312,29 @@ public class PollControllerTest {
             assertTrue(option1.getOptionText().equals(o.getOptionText())
                     || option2.getOptionText().equals(o.getOptionText()));
         });
+    }
+
+    @Test
+    public void fetchPollAndOptionsLecturerNoPollTest() throws Exception {
+        pollRepository.deleteById(poll1.getId());
+        String result = this.mockMvc
+                .perform(get("/api/poll/fetchMod/" + lecture1.getUuid()
+                        + "/" + lecture1.getModkey()))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("This poll does not exist", result);
+
+        pollRepository.save(poll1);
+    }
+
+    @Test
+    public void fetchPollAndOptionsLecturerNoLectureTest() throws Exception {
+        String result = this.mockMvc
+                .perform(get("/api/poll/fetchMod/" + lecture2.getUuid()
+                        + "/" + lecture1.getModkey()))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Lecture not found", result);
     }
 
     @Test
@@ -290,6 +374,45 @@ public class PollControllerTest {
     }
 
     @Test
+    public void voteOnPollNoPollOptionTest() throws Exception {
+        pollOptionRepository.deleteById(option1.getId());
+
+        String result = this.mockMvc
+                .perform(put("/api/poll/vote/" + user1.getUid()
+                        + "/" + option1.getId()))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("This poll option does not exist", result);
+    }
+
+    @Test
+    public void voteOnPollNoPollTest() throws Exception {
+        pollRepository.deleteById(poll1.getId());
+
+        String result = this.mockMvc
+                .perform(put("/api/poll/vote/" + user1.getUid()
+                        + "/" + option1.getId()))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("This poll does not exist", result);
+    }
+
+    @Test
+    public void voteOnPollNotInTheLectureTest() throws Exception {
+        user1.setLectureId(lecture2.getUuid());
+        userRepository.save(user1);
+
+        String result = this.mockMvc
+                .perform(put("/api/poll/vote/" + user1.getUid()
+                        + "/" + option1.getId()))
+                .andExpect(status().isForbidden())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("This user is not in the specified lecture", result);
+
+        user1.setLectureId(lecture1.getUuid());
+    }
+
+    @Test
     public void voteOnPollAlreadyVotedTest() throws Exception {
         userPollVoteRepository.save(new UserPollVoteTable(user1.getUid(),
                 option1.getId(), poll1.getId()));
@@ -307,7 +430,7 @@ public class PollControllerTest {
     }
 
     @Test
-    public void voteOnPollNotInTheLectureTest() throws Exception {
+    public void voteOnPollNotOpenTest() throws Exception {
         poll1.setOpen(false);
         pollRepository.save(poll1);
 
@@ -343,9 +466,30 @@ public class PollControllerTest {
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse().getErrorMessage();
         assertEquals("This poll does not exist", result);
+    }
+
+    @Test
+    public void resetVotesLectureNotFoundTest() throws Exception {
+        lectureRepository.deleteById(lecture1.getUuid());
+        String result = this.mockMvc
+                .perform(put("/api/poll/reset/" + poll1.getId() + "/" + lecture1.getModkey()))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Lecture not found", result);
         PollEntity p = pollRepository.findById(poll1.getId());
         assertNotNull(p);
         assertNotEquals(0, p.getVotes());
+
+        lectureRepository.save(lecture1);
+    }
+
+    @Test
+    public void resetVotesWrongModKeyTest() throws Exception {
+        String result = this.mockMvc
+                .perform(put("/api/poll/reset/" + poll1.getId() + "/" + lecture2.getModkey()))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
     }
 
     @Test
