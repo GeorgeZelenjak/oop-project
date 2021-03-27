@@ -131,9 +131,6 @@ public abstract class QuestionCommunication {
         }
         answer = answer == null ? " " : answer;
         HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(answer);
-        String address = ADDRESS + "/api/question/answer/" + qid + "/" + URLEncoder.encode(modkey.toString(), StandardCharsets.UTF_8);
-
-        //Creating request and defining response
         HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
                 + "/api/question/answer/" + qid + "/" + URLEncoder.encode(modkey.toString(),
                 StandardCharsets.UTF_8))).setHeader("Content-Type",
@@ -246,8 +243,9 @@ public abstract class QuestionCommunication {
         }
         HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(status);
         HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
-                + "/api/question/status/" + qid + "/" + uid + "/" + URLEncoder.encode(modkey.toString(),
-                StandardCharsets.UTF_8))).setHeader("Content-Type", "application/json").build();
+                + "/api/question/status/" + qid + "/" + uid + "/"
+                + URLEncoder.encode(modkey.toString(), StandardCharsets.UTF_8)))
+                .setHeader("Content-Type", "application/json").build();
 
         HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponseNoAlerts(response);
