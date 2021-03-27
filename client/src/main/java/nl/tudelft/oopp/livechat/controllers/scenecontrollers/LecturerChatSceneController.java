@@ -107,8 +107,6 @@ public class LecturerChatSceneController implements Initializable {
     @FXML
     private Button createPolling;
 
-    @FXML
-    private Button createQuiz;
 
     @FXML
     private Button popupVoteResults;
@@ -164,6 +162,7 @@ public class LecturerChatSceneController implements Initializable {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
         slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
+
         timelineFetch = new Timeline(new KeyFrame(
                 Duration.millis(1500),
             ae -> {
@@ -363,7 +362,7 @@ public class LecturerChatSceneController implements Initializable {
         this.pollingText.setVisible(!this.pollingText.isVisible());
 
         this.popupVoteResults.setDisable(!this.popupVoteResults.isDisabled());
-        this.createQuiz.setVisible(!this.createQuiz.isVisible());
+
         this.lectureLog.setDisable(!this.lectureLog.isDisabled());
         this.lectureLog.setVisible(!this.lectureLog.isVisible());
         this.popupVoteResults.setVisible(!this.popupVoteResults.isVisible());
