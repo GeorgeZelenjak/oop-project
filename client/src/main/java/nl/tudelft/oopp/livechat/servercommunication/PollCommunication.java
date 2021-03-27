@@ -3,13 +3,17 @@ package nl.tudelft.oopp.livechat.servercommunication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication;
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.data.Poll;
 import nl.tudelft.oopp.livechat.data.PollAndOptions;
 import nl.tudelft.oopp.livechat.data.PollOption;
 
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.UUID;
 
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.*;
@@ -45,17 +49,20 @@ public abstract class PollCommunication {
      */
     public static Poll createPoll(UUID lectureId, UUID modkey, String questionText) {
         if (questionText == null || questionText.equals("")) {
+            AlertController.alertError("Empty text", "Please enter the question text!");
             return null;
         }
         HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(questionText);
-        HttpRequest request = HttpRequest.newBuilder().POST(body).uri(
-                URI.create(ADDRESS + "/api/poll/create/" + lectureId + "/" + modkey)).build();
+        HttpRequest request = HttpRequest.newBuilder().POST(body).uri(URI.create(ADDRESS
+                + "/api/poll/create/" + URLEncoder.encode(lectureId.toString(),
+                StandardCharsets.UTF_8) + "/" + URLEncoder.encode(modkey.toString(),
+                StandardCharsets.UTF_8))).build();
 
         HttpResponse<String> response = sendAndReceive(request);
         if (handleResponse(response) != 0) {
             return null;
         }
-        return response == null ? null : gson.fromJson(response.body(), Poll.class);
+        return gson.fromJson(Objects.requireNonNull(response).body(), Poll.class);
     }
 
 
@@ -69,16 +76,20 @@ public abstract class PollCommunication {
      */
     public static PollOption addOption(
             long pollId, UUID modkey, boolean isCorrect, String optionText) {
+        if (optionText == null || optionText.equals("")) {
+            AlertController.alertError("Empty text", "Please enter the option text!");
+            return null;
+        }
         HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(optionText);
-        HttpRequest request = HttpRequest.newBuilder().POST(body).uri(
-                URI.create(ADDRESS + "/api/poll/addOption/" + pollId
-                        + "/" + modkey + "/" + isCorrect)).build();
+        HttpRequest request = HttpRequest.newBuilder().POST(body).uri(URI.create(ADDRESS
+                + "/api/poll/addOption/" + pollId + "/" + URLEncoder.encode(modkey.toString(),
+                StandardCharsets.UTF_8) + "/" + isCorrect)).build();
 
         HttpResponse<String> response = sendAndReceive(request);
         if (handleResponse(response) != 0) {
             return null;
         }
-        return response == null ? null : gson.fromJson(response.body(), PollOption.class);
+        return gson.fromJson(Objects.requireNonNull(response).body(), PollOption.class);
     }
 
 
@@ -90,8 +101,9 @@ public abstract class PollCommunication {
      */
     public static boolean toggle(long pollId, UUID modkey) {
         HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString("");
-        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(
-                URI.create(ADDRESS + "/api/poll/toggle/" + pollId + "/" + modkey)).build();
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
+                + "/api/poll/toggle/" + pollId + "/" + URLEncoder.encode(modkey.toString(),
+                StandardCharsets.UTF_8))).build();
 
         HttpResponse<String> response = sendAndReceive(request);
         return handleResponse(response) == 0;
@@ -104,14 +116,15 @@ public abstract class PollCommunication {
      * @return the latest poll and its options if successful, null if not
      */
     public static PollAndOptions fetchPollAndOptionsStudent(UUID lectureId) {
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create(ADDRESS + "/api/poll/fetchStudent/" + lectureId)).build();
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(ADDRESS
+                + "/api/poll/fetchStudent/" + URLEncoder.encode(lectureId.toString(),
+                StandardCharsets.UTF_8))).build();
 
         HttpResponse<String> response = sendAndReceive(request);
         if (handleResponseNoAlerts(response) != 0) {
             return null;
         }
-        return response == null ? null : gson.fromJson(response.body(), PollAndOptions.class);
+        return gson.fromJson(Objects.requireNonNull(response).body(), PollAndOptions.class);
     }
 
     /**
@@ -121,15 +134,17 @@ public abstract class PollCommunication {
      * @return the latest poll and its options if successful, null if not
      */
     public static PollAndOptions fetchPollAndOptionsModerator(UUID lectureId, UUID modkey) {
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create(ADDRESS + "/api/poll/fetchMod/" + lectureId + "/" + modkey)).build();
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(ADDRESS
+                + "/api/poll/fetchMod/" + URLEncoder.encode(lectureId.toString(),
+                StandardCharsets.UTF_8) + "/" + URLEncoder.encode(modkey.toString(),
+                StandardCharsets.UTF_8))).build();
 
         HttpResponse<String> response = sendAndReceive(request);
 
         if (handleResponseNoAlerts(response) != 0) {
             return null;
         }
-        return response == null ? null : gson.fromJson(response.body(), PollAndOptions.class);
+        return gson.fromJson(Objects.requireNonNull(response).body(), PollAndOptions.class);
     }
 
     /**
@@ -140,8 +155,8 @@ public abstract class PollCommunication {
      */
     public static boolean vote(long userId, long pollOptionId) {
         HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString("");
-        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(
-                URI.create(ADDRESS + "/api/poll/vote/" + userId + "/" + pollOptionId)).build();
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
+                + "/api/poll/vote/" + userId + "/" + pollOptionId)).build();
 
         HttpResponse<String> response = sendAndReceive(request);
         return handleResponse(response) == 0;
@@ -155,8 +170,9 @@ public abstract class PollCommunication {
      */
     public static boolean resetVotes(long pollId, UUID modkey) {
         HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString("");
-        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(
-                URI.create(ADDRESS + "/api/poll/reset/" + pollId + "/" + modkey)).build();
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
+                + "/api/poll/reset/" + pollId + "/" + URLEncoder.encode(modkey.toString(),
+                StandardCharsets.UTF_8))).build();
 
         HttpResponse<String> response = sendAndReceive(request);
         return handleResponse(response) == 0;

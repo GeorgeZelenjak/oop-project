@@ -43,7 +43,7 @@ public class LectureCommunicationTest {
     private static final SimpleDateFormat simpleDateFormat =
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
-    private static MockedStatic<AlertController> alertControllerMockedStatic;
+    private static MockedStatic<AlertController> mockedAlertController;
 
     /**
      * A helper method to assign JSON string lecture.
@@ -237,11 +237,11 @@ public class LectureCommunicationTest {
         createExpectationsForBanning();
 
         try {
-            alertControllerMockedStatic = Mockito.mockStatic(AlertController.class);
-            alertControllerMockedStatic.when(() -> AlertController.alertError(any(String.class),
+            mockedAlertController = Mockito.mockStatic(AlertController.class);
+            mockedAlertController.when(() -> AlertController.alertError(any(String.class),
                     any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
         } catch (Exception e) {
-            System.out.println("Exception caught");
+            System.out.println("Caught exception!");
         }
     }
 
@@ -506,6 +506,6 @@ public class LectureCommunicationTest {
     @AfterAll
     public static void stopServer() {
         mockServer.stop();
-        alertControllerMockedStatic.close();
+        mockedAlertController.close();
     }
 }
