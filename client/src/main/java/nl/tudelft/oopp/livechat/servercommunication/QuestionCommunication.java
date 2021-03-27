@@ -389,11 +389,4 @@ public class QuestionCommunication {
         }
         return result;
     }
-
 }
-
-
-
-
-
-
