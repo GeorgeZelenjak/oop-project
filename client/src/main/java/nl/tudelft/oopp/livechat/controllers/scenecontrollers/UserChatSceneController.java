@@ -274,16 +274,26 @@ public class UserChatSceneController implements Initializable {
         if (fetched == null) {
             return;
         }
+
+        //If new poll
         if (!fetched.equals(PollAndOptions.getCurrentPollAndOptions())) {
             PollAndOptions.setCurrentPollAndOptions(fetched);
             NavigationController.getCurrentController().popupPollVoting();
             return;
         }
-        System.out.println(fetched.getPoll().isOpen());
+
+        //If poll is closed
         if (!fetched.getPoll().isOpen()
                 && PollAndOptions.getCurrentPollAndOptions().getPoll().isOpen()) {
             PollAndOptions.setCurrentPollAndOptions(fetched);
             NavigationController.getCurrentController().popupPollResult();
+        }
+
+        //If poll is reopened
+        if (!PollAndOptions.getCurrentPollAndOptions().getPoll().isOpen()
+                && fetched.getPoll().isOpen()) {
+            PollAndOptions.setCurrentPollAndOptions(fetched);
+            NavigationController.getCurrentController().popupPollVoting();
         }
 
     }
