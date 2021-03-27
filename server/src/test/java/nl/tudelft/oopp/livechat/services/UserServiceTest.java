@@ -210,6 +210,20 @@ class UserServiceTest {
     }
 
     @Test
+    public void newUserSameIdNameChangesTest() throws NoDataReceivedException, UserException {
+        userRepository.save(new UserEntity(34573446357654418L, "root1",
+                time, true, "192.168.1.2", lecture.getUuid()));
+
+        UserEntity u = new UserEntity(34573446357654418L, "root2",
+                time, true, "192.168.1.2", lecture.getUuid());
+        assertEquals(0, userService.newUser(u, "192.168.1.2"));
+        assertTrue(userRepository.findById(34573446357654418L).isPresent());
+        assertEquals("root2", userRepository.findById(34573446357654418L).get().getUserName());
+
+        userRepository.deleteById(34573446357654418L);
+    }
+
+    @Test
     public void banByIdNoQuestionTest() {
         assertThrows(QuestionNotFoundException.class, () ->
                 userService.banById(444, 42, lecture1.getModkey(), 2));

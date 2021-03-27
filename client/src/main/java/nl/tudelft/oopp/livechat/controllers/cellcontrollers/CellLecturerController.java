@@ -1,17 +1,25 @@
-package nl.tudelft.oopp.livechat.uielements;
+package nl.tudelft.oopp.livechat.controllers.cellcontrollers;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
+import javafx.scene.control.Button;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
+
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
@@ -33,7 +41,7 @@ import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 /**
  * Class for Cell data for the lecturer.
  */
-public class CellDataLecturer implements Initializable {
+public class CellLecturerController implements Initializable {
 
     @FXML
     private Text questionText;
@@ -86,9 +94,9 @@ public class CellDataLecturer implements Initializable {
     /**
      * Creates a new Cell data object.
      */
-    public CellDataLecturer() {
+    public CellLecturerController() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                "/fxml/questionCellLecturer.fxml"));
+                "/fxml/cell/questionCellLecturer.fxml"));
         fxmlLoader.setController(this);
         try {
             fxmlLoader.load();
@@ -217,6 +225,11 @@ public class CellDataLecturer implements Initializable {
      */
     public void setAnswerText(String value) {
         answerText.setText("Answer: " + value);
+    }
+
+    public void setStatusText(String value) {
+        answerText.setText(value);
+
     }
 
     /**

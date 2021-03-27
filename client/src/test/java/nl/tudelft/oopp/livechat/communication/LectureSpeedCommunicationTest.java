@@ -167,8 +167,9 @@ public class LectureSpeedCommunicationTest {
 
     @Test
     public void getVotesServerRefusesTest() {
-        stop();
+        mockServer.stop();
         assertNull(LectureSpeedCommunication.getVotesOnLectureSpeed(lid));
+
         setUp();
     }
 
@@ -187,49 +188,49 @@ public class LectureSpeedCommunicationTest {
      */
     @Test
     public void voteSuccessfulFasterTest() {
-        assertEquals(0, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
+        assertTrue(LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
     }
 
     @Test
     public void voteSuccessfulSlowerTest() {
-        assertEquals(0, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "slower"));
+        assertTrue(LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "slower"));
     }
 
     @Test
     public void voteSuccessfulBothTest() {
-        assertEquals(0, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "slower"));
-        assertEquals(0, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
+        assertTrue(LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "slower"));
+        assertTrue(LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
     }
 
     @Test
     public void voteNoLectureTest() {
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
+        assertFalse(LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
 
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
     }
 
     @Test
     public void voteServerRefusesTest() {
-        stop();
-        assertEquals(-2, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
+        mockServer.stop();
+        assertFalse(LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
+
         setUp();
     }
 
     @Test
     public void voteWrongSpeedTest() {
-        assertEquals(-1, LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "a lot faster"));
+        assertFalse(LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "a lot faster"));
     }
 
     @Test
     public void voteInvalidIdTest() {
-        assertEquals(-1,
-                LectureSpeedCommunication.voteOnLectureSpeed(userId, invalidUUID, "faster"));
+        assertFalse(LectureSpeedCommunication.voteOnLectureSpeed(userId, invalidUUID, "faster"));
     }
 
     @Test
     public void voteIncorrectIdTest() {
-        assertEquals(-1, LectureSpeedCommunication.voteOnLectureSpeed(userId, wrongLid, "slower"));
+        assertFalse(LectureSpeedCommunication.voteOnLectureSpeed(userId, wrongLid, "slower"));
     }
 
     /**
@@ -237,37 +238,38 @@ public class LectureSpeedCommunicationTest {
      */
     @Test
     public void resetSuccessfulTest() {
-        assertEquals(0, LectureSpeedCommunication.resetLectureSpeed(lid, modkey));
+        assertTrue(LectureSpeedCommunication.resetLectureSpeed(lid, modkey));
     }
 
     @Test
     public void resetNoLectureTest() {
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, LectureSpeedCommunication.resetLectureSpeed(lid, modkey));
+        assertFalse(LectureSpeedCommunication.resetLectureSpeed(lid, modkey));
 
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
     }
 
     @Test
     public void resetServerRefusesTest() {
-        stop();
-        assertEquals(-2, LectureSpeedCommunication.resetLectureSpeed(lid, modkey));
+        mockServer.stop();
+        assertFalse(LectureSpeedCommunication.resetLectureSpeed(lid, modkey));
+
         setUp();
     }
 
     @Test
     public void resetInvalidIdTest() {
-        assertEquals(-1, LectureSpeedCommunication.resetLectureSpeed(invalidUUID, modkey));
+        assertFalse(LectureSpeedCommunication.resetLectureSpeed(invalidUUID, modkey));
     }
 
     @Test
     public void resetIncorrectIdTest() {
-        assertEquals(-1, LectureSpeedCommunication.resetLectureSpeed(wrongLid, modkey));
+        assertFalse(LectureSpeedCommunication.resetLectureSpeed(wrongLid, modkey));
     }
 
     @Test
     public void resetIncorrectModkeyTest() {
-        assertEquals(-1, LectureSpeedCommunication.resetLectureSpeed(lid, incorrectModkey));
+        assertFalse(LectureSpeedCommunication.resetLectureSpeed(lid, incorrectModkey));
     }
 
     @AfterAll

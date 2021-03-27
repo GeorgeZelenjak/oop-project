@@ -5,7 +5,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="768.0" prefWidth="1080.0" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.UserManualSceneController">
+<AnchorPane prefHeight="768.0" prefWidth="1080.0" stylesheets="@../../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.UserManualSceneController">
    <children>
       <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" prefHeight="34.0" prefWidth="86.0" styleClass="mainSceneButton" text="Back" />
       <Text layoutX="357.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Help &amp; Documentation Page" textAlignment="CENTER" wrappingWidth="578.0">

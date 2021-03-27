@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="questionBoxAnchorPane" prefWidth="578.0" styleClass="questionCell" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="questionBoxAnchorPane" prefWidth="578.0" styleClass="questionCell" stylesheets="@../../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Button fx:id="upvoteButton" layoutX="6.0" layoutY="10.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="upvoteButton" stylesheets="@../css/Styles.css" text="⬆">
+        <Button fx:id="upvoteButton" layoutX="6.0" layoutY="10.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="upvoteButton" stylesheets="@../../css/Styles.css" text="⬆">
          <font>
             <Font size="9.0" />
          </font>
@@ -33,7 +33,7 @@
             <Font name="Arial Italic" size="10.0" />
          </font>
       </Text>
-      <Button fx:id="deleteButton" disable="true" layoutX="550.0" layoutY="15.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8" visible="false">
+      <Button fx:id="deleteButton" disable="true" layoutX="550.0" layoutY="15.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteButton" stylesheets="@../../css/Styles.css" textFill="#f8f8f8" visible="false">
          <font>
             <Font size="9.0" />
          </font>

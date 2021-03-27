@@ -11,14 +11,14 @@
         <Button fx:id="goToSettingsButton" layoutX="977.0" layoutY="686.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
         <Button layoutX="14.0" layoutY="516.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="287.0" styleClass="tudLogo" visible="false" />
         <Pane layoutX="45" layoutY="630" prefHeight="90" prefWidth="228" styleClass="tudLogo" />
-      <Button fx:id="populateButton" layoutX="312.0" layoutY="375.0" mnemonicParsing="false" onAction="#populate" prefHeight="54.0" prefWidth="456.0" styleClass="populateButton" stylesheets="@../css/debugScene.css" text="Populate with questions" />
+      <Button fx:id="populateButton" layoutX="312.0" layoutY="375.0" mnemonicParsing="false" onAction="#populate" prefHeight="54.0" prefWidth="456.0" styleClass="populateButton" stylesheets="@../../css/debugScene.css" text="Populate with questions" />
       <Button fx:id="backButton" layoutX="45.0" layoutY="33.0" mnemonicParsing="false" onAction="#goBack" prefHeight="45.0" prefWidth="128.0" text="Back" />
-      <Button fx:id="setANewLectureButton" layoutX="312.0" layoutY="443.0" mnemonicParsing="false" onAction="#setNewLecture" prefHeight="53.0" prefWidth="456.0" styleClass="populateButton" stylesheets="@../css/debugScene.css" text="Set a new lecture" />
+      <Button fx:id="setANewLectureButton" layoutX="312.0" layoutY="443.0" mnemonicParsing="false" onAction="#setNewLecture" prefHeight="53.0" prefWidth="456.0" styleClass="populateButton" stylesheets="@../../css/debugScene.css" text="Set a new lecture" />
       <Button fx:id="goToLecturerChatButton1" layoutX="312.0" layoutY="275.0" mnemonicParsing="false" onAction="#joinAsBoth" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Open both windows" />
 
     </children>
     <stylesheets>
-        <URL value="@../css/Styles.css" />
-        <URL value="@../css/mainScene.css" />
+        <URL value="@../../css/Styles.css" />
+        <URL value="@../../css/mainScene.css" />
     </stylesheets>
 </AnchorPane>

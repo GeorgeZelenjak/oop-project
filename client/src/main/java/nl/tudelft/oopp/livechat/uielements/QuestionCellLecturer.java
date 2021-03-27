@@ -1,6 +1,7 @@
 package nl.tudelft.oopp.livechat.uielements;
 
 import javafx.scene.control.ListCell;
+import nl.tudelft.oopp.livechat.controllers.cellcontrollers.CellLecturerController;
 import nl.tudelft.oopp.livechat.data.Question;
 
 /**
@@ -18,7 +19,7 @@ public class QuestionCellLecturer extends ListCell<Question> {
         super.updateItem(question, empty);
 
         if (question != null && !empty) {
-            CellDataLecturer data = new CellDataLecturer();
+            CellLecturerController data = new CellLecturerController();
             data.setQuestion(question);
 
             //set information
@@ -29,6 +30,7 @@ public class QuestionCellLecturer extends ListCell<Question> {
                 data.setOwnerName(question.getOwnerName());
             }
             data.setContent(question.getText());
+
             data.markAnswered();
             data.setNumberOfUpvotes(question.getVotes());
 
@@ -40,6 +42,10 @@ public class QuestionCellLecturer extends ListCell<Question> {
             data.replyAnswer();
             data.setBanUser();
             data.disableMarkedAsAnswered();
+
+            if (!question.getStatus().equals("new")) {
+                data.setStatusText(question.getStatus() + "...");
+            }
 
             //set answered text if the question has been answered
             if (question.getAnswerText() != null && !question.getAnswerText().equals(" ")) {

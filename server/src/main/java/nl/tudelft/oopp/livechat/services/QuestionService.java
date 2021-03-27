@@ -274,6 +274,38 @@ public class QuestionService {
     }
 
     /**
+     * Changes the status of the question when a moderator is editing or answering it.
+     * @param status the status of the question
+     * @param qid the id of the question
+     * @param uid the id of the user
+     * @param modkey the moderator key
+     * @return 0 if successful
+     * @throws LectureNotFoundException when the lecture is not found
+     * @throws QuestionException when the question is not found or is already modified
+     * @throws InvalidModkeyException when the moderator key is incorrect
+     */
+    public int setStatus(String status, long qid, long uid, UUID modkey)
+            throws LectureNotFoundException, QuestionException, InvalidModkeyException {
+        QuestionEntity q = questionRepository.findById(qid).orElse(null);
+        LectureEntity lecture = validateQuestionAndFindLecture(q);
+
+        if (q.getEditorId() != 0 && q.getEditorId() != uid) {
+            throw new QuestionAlreadyBeingModifiedException();
+        }
+        if (lecture.getModkey().equals(modkey)) {
+            q.setStatus(status);
+            if (status.equals("new")) {
+                q.setEditorId(0);
+            } else {
+                q.setEditorId(uid);
+            }
+            questionRepository.save(q);
+            return 0;
+        }
+        throw new InvalidModkeyException();
+    }
+
+    /**
      * A helper method to check if the question and the lecture exist in the database.
      * @param q the question to check
      * @return the lecture in which the question was asked if it exists

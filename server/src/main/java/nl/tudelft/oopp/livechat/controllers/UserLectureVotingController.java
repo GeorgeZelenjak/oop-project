@@ -4,6 +4,7 @@ import nl.tudelft.oopp.livechat.exceptions.InvalidModkeyException;
 import nl.tudelft.oopp.livechat.exceptions.LectureException;
 import nl.tudelft.oopp.livechat.exceptions.UserException;
 import nl.tudelft.oopp.livechat.services.LectureSpeedService;
+import nl.tudelft.oopp.livechat.services.PollService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,47 +15,60 @@ import java.util.UUID;
 @RequestMapping("/api/vote")
 public class UserLectureVotingController {
 
-    private final LectureSpeedService service;
+    private final LectureSpeedService speedService;
 
     /**
-     * Constructor for lecture voting controller.
-     * @param service lecture speed service
+     * Creates new LectureVotingController.
+     * @param speedService the LectureSpeedService
      */
-    public UserLectureVotingController(LectureSpeedService service) {
-        this.service = service;
+    public UserLectureVotingController(LectureSpeedService speedService) {
+        this.speedService = speedService;
     }
 
     // TODO reconsider user authentication
+
     /**
-     * PUT Endpoint to vote on lecture speed.
+     * PUT Endpoint to vote on the lecture speed.
      * @param uuid the id of the lecture
      * @param uid the id of the user
-     * @param speed the type of the vote
-     * @return 0 if successful, -1 otherwise
+     * @param speed the indication of the speed
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found, is closed or the vote
+     *           is incorrect (not "faster" or "slower")
+     * @throws UserException when the user is not in the lecture
      */
     @PutMapping("/lectureSpeed")
     public int voteOnLectureSpeed(@RequestParam long uid,
                                   @RequestParam UUID uuid, @RequestBody String speed)
             throws LectureException, UserException {
-        return service.setUserLectureSpeedVote(uid, uuid, speed);
-    }
-
-    @GetMapping("/getLectureSpeed/{UUID}")
-    public List<Integer> getVotes(@PathVariable("UUID") UUID uuid) throws LectureException {
-        return service.getVotes(uuid);
+        return speedService.setUserLectureSpeedVote(uid, uuid, speed);
     }
 
     /**
-     * DELETE Endpoint to delete any question from the database (done by a moderator).
+     * GET Endpoint to get the number of votes for the lecture speed.
+     * @param uuid the id of the lecture
+     * @return the list of votes for the lecture speed
+     *          (first number is for faster, second for slower)
+     * @throws LectureException when the lecture is not found
+     */
+    @GetMapping("/getLectureSpeed/{UUID}")
+    public List<Integer> getVotes(@PathVariable("UUID") UUID uuid) throws LectureException {
+        return speedService.getVotes(uuid);
+    }
+
+    /**
+     * DELETE Endpoint to reset the voting for the lecture speed (done by a moderator).
      * @param uuid the id of the lecture
      * @param modkey the moderator key
-     * @return 0 if successful, -1 otherwise
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     @DeleteMapping("/resetLectureSpeedVote/{UUID}/{modkey}")
     public int delete(@PathVariable("modkey") UUID modkey,
                       @PathVariable("UUID") UUID uuid)
             throws LectureException, InvalidModkeyException {
-        return service.resetLectureSpeed(uuid, modkey);
+        return speedService.resetLectureSpeed(uuid, modkey);
     }
 
     /**

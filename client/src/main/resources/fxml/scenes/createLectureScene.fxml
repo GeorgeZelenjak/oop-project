@@ -34,7 +34,7 @@
       <Text layoutX="338.0" layoutY="618.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter here the desired cooldown time between questions for students (in seconds). If you leave this empty, the default setting is 60 seconds delay." textAlignment="CENTER" wrappingWidth="422.4" />
     </children>
    <stylesheets>
-      <URL value="@../css/Styles.css" />
-      <URL value="@../css/createLectureScene.css" />
+      <URL value="@../../css/Styles.css" />
+      <URL value="@../../css/createLectureScene.css" />
    </stylesheets>
 </AnchorPane>

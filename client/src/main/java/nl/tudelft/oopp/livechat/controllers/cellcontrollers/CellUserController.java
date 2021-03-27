@@ -1,4 +1,4 @@
-package nl.tudelft.oopp.livechat.uielements;
+package nl.tudelft.oopp.livechat.controllers.cellcontrollers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-public class CellDataUser implements Initializable {
+public class CellUserController implements Initializable {
 
     @FXML
     private Text questionText;
@@ -54,9 +54,9 @@ public class CellDataUser implements Initializable {
     /**
      * Creates a new Cell data object.
      */
-    public CellDataUser() {
+    public CellUserController() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                "/fxml/questionCellUser.fxml"));
+                "/fxml/cell/questionCellUser.fxml"));
         fxmlLoader.setController(this);
         try {
             fxmlLoader.load();

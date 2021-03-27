@@ -29,7 +29,7 @@ public class MainSceneDisplay extends Application {
 
         User.setUid();
         FXMLLoader loader = new FXMLLoader();
-        URL xmlUrl = getClass().getResource("/fxml/mainScene.fxml");
+        URL xmlUrl = getClass().getResource("/fxml/scenes/mainScene.fxml");
         loader.setLocation(xmlUrl);
         Parent root = loader.load();
 

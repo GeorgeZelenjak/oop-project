@@ -18,7 +18,6 @@ import nl.tudelft.oopp.livechat.repositories.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 
 /**
@@ -104,6 +103,7 @@ class QuestionServiceTest {
         lectureRepository.deleteAll();
         userRepository.deleteAll();
         questionRepository.deleteAll();
+
         lectureRepository.save(l1);
         userRepository.save(user1);
         lectureRepository.save(l2);
@@ -258,6 +258,27 @@ class QuestionServiceTest {
         l3.setFrequency(0);
         lectureRepository.deleteById(l3.getUuid());
         userRepository.deleteById(uid3);
+    }
+
+    @Test
+    void newQuestionEntityFrequencyLastQuestionNullSuccessfulTest() throws Exception {
+        UserEntity u = new UserEntity(444, "444", null, true,
+                "192.168.1.1", l3.getUuid());
+        userRepository.save(u);
+        lectureRepository.save(l3);
+
+        l3.setFrequency(10);
+        lectureRepository.save(l3);
+
+        QuestionEntity q = new QuestionEntity(l3.getUuid(), "name???",
+                new Timestamp(System.currentTimeMillis()), 444);
+
+        assertTrue(questionService.newQuestionEntity(q) > 0);
+
+        questionRepository.deleteById(q.getId());
+        l3.setFrequency(0);
+        lectureRepository.deleteById(l3.getUuid());
+        userRepository.deleteById(444L);
     }
 
     @Test
@@ -649,5 +670,91 @@ class QuestionServiceTest {
         assertEquals("", q.getAnswerText());
         assertNotNull(q.getAnswerTime());
         assertTrue(q.isAnswered());
+    }
+
+    /**
+     * Tests related to set status method.
+     */
+
+    @Test
+    void setStatusQuestionNotFoundTest() {
+        lectureRepository.save(l3);
+        userRepository.save(user3);
+
+        assertThrows(QuestionNotFoundException.class, () ->
+                questionService.setStatus("editing", q3.getId(), user3.getUid(), l3.getModkey()));
+
+        lectureRepository.deleteById(l3.getUuid());
+        userRepository.deleteById(uid3);
+    }
+
+    @Test
+    void setStatusNoLectureTest() {
+        questionRepository.save(q3);
+
+        assertThrows(LectureNotFoundException.class, () ->
+                questionService.setStatus("editing", q3.getId(), user3.getUid(), l3.getModkey()));
+
+        QuestionEntity q = questionRepository.findById(q3.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals(q3.getStatus(), q.getStatus());
+        assertEquals(q3.getEditorId(), q.getEditorId());
+
+        questionRepository.deleteById(q3.getId());
+    }
+
+    @Test
+    void setStatusWrongModkeyTest() {
+        assertThrows(InvalidModkeyException.class, () ->
+                questionService.setStatus("editing", q2.getId(), user2.getUid(), l1.getModkey()));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals(q2.getStatus(), q.getStatus());
+        assertEquals(q2.getEditorId(), q.getEditorId());
+    }
+
+    @Test
+    void setStatusAlreadyBeingModifiedTest() {
+        q2.setEditorId(uid1);
+        q2.setStatus("answering");
+        questionRepository.save(q2);
+
+        assertThrows(QuestionAlreadyBeingModifiedException.class, () ->
+                questionService.setStatus("editing", q2.getId(), user2.getUid(), l2.getModkey()));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals(q2.getStatus(), q.getStatus());
+        assertEquals(q2.getEditorId(), q.getEditorId());
+
+        q2.setEditorId(0);
+        q2.setStatus("new");
+    }
+
+    @Test
+    void setStatusStartModifyingTest() throws Exception {
+        assertEquals(0, questionService.setStatus("editing",
+                q2.getId(), user2.getUid(), l2.getModkey()));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals("editing", q.getStatus());
+        assertEquals(user2.getUid(), q.getEditorId());
+    }
+
+    @Test
+    void setStatusStopModifyingTest() throws Exception {
+        q2.setEditorId(uid2);
+        q2.setStatus("answering");
+        questionRepository.save(q2);
+
+        assertEquals(0, questionService.setStatus("new",
+                q2.getId(), user2.getUid(), l2.getModkey()));
+
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNotNull(q);
+        assertEquals("new", q.getStatus());
+        assertEquals(0, q.getEditorId());
     }
 }

@@ -57,6 +57,10 @@ public class QuestionEntity {
     @Column(name = "ownerId")
     private long ownerId;
 
+    @JsonIgnore
+    @Column(name = "editorId")
+    private long editorId;
+
     @Column(name = "ownername")
     String ownerName;
 
@@ -293,6 +297,23 @@ public class QuestionEntity {
         this.ownerId = ownerId;
     }
 
+
+    /**
+     * Gets the id of the editor.
+     * @return the id of the editor if the question is being modified
+     */
+    public long getEditorId() {
+        return editorId;
+    }
+
+    /**
+     * Sets the id of the editor if the question is being modified.
+     * @param editorId the id of the editor
+     */
+    public void setEditorId(long editorId) {
+        this.editorId = editorId;
+    }
+
     /**
      * Compares the question to another object.
      * @param o object to compare to
@@ -317,7 +338,7 @@ public class QuestionEntity {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.lectureId, this.time);
+        return Objects.hash(this.id);
     }
 
     /**

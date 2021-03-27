@@ -6,11 +6,11 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1080.0" styleClass="mainScenePane" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.LecturerChatSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1080.0" styleClass="mainScenePane" stylesheets="@../../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.LecturerChatSceneController">
    <children>
       <Pane prefHeight="768.0" prefWidth="200.0" style="-fx-background-color: rgba(14, 114, 237, 0.45);" styleClass="sidebar">         <children>
             <Button fx:id="participants" layoutX="16.0" layoutY="149.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="168.0" styleClass="participantsButton" text="Show Participants" />
-            <Button id="leaveLecture" fx:id="leaveLecture" layoutX="14.0" layoutY="679.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="34.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="Leave Lecture" />
+            <Button id="leaveLecture" fx:id="leaveLecture" layoutX="14.0" layoutY="679.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="34.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../../css/Styles.css" text="Leave Lecture" />
             <Line endX="100.0" layoutX="100.0" layoutY="72.0" opacity="0.5" startX="-100.0" stroke="#1a75ff" />
             <Text fx:id="lectureNameText" layoutX="16.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Name" textAlignment="CENTER" wrappingWidth="168.0703125">
                <font>
@@ -26,9 +26,9 @@
             <Button fx:id="goToLectureModeButton" layoutX="14.0" layoutY="293.0" mnemonicParsing="false" onAction="#lecturerMode" prefHeight="33.0" prefWidth="168.0" style="-fx-text-fill: #ffffff;" styleClass="lectureModeButton" text="Lecturer Mode" textFill="WHITE" />
             <Button fx:id="copyId" layoutX="14.0" layoutY="402.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy lecture id" />
             <Button fx:id="copyKey" layoutX="14.0" layoutY="363.0" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy modkey" />
-            <Button id="leaveLecture" fx:id="closeLectureButton" layoutX="14.0" layoutY="720.0" mnemonicParsing="false" onAction="#closeLecture" prefHeight="34.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../css/Styles.css" text="End Lecture" />
+            <Button id="leaveLecture" fx:id="closeLectureButton" layoutX="14.0" layoutY="720.0" mnemonicParsing="false" onAction="#closeLecture" prefHeight="34.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../../css/Styles.css" text="End Lecture" />
          </children></Pane>
-      <Pane fx:id="pollingBackground" layoutX="819.0" layoutY="48.0" prefHeight="216.0" prefWidth="247.0" styleClass="sidebar">
+      <Pane fx:id="pollingBackground" layoutX="819.0" layoutY="23.0" prefHeight="216.0" prefWidth="247.0" styleClass="sidebar">
          <children>
             <Text fx:id="pollingText" layoutX="7.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Polling Question Results" textAlignment="CENTER" wrappingWidth="232.20000000000005">
                <font>
@@ -38,9 +38,9 @@
             <Button fx:id="pollingButton" layoutX="52.0" layoutY="173.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="144.0" styleClass="mainSceneButton" text="Release Results" />
          </children>
       </Pane>
-      <Button fx:id="createPolling" layoutX="226.0" layoutY="718.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Manage Polling" />
-      <Button fx:id="reopenPolling" layoutX="827.0" layoutY="609.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="232.0" styleClass="mainSceneButton" text="Reopen a Polling Question" />
-      <Pane fx:id="speedBackground" layoutX="819.0" layoutY="279.0" prefHeight="131.0" prefWidth="247.0" styleClass="sidebar">
+      <Button fx:id="createPolling" layoutX="226.0" layoutY="701.0" mnemonicParsing="false" onAction="#popupPollingManagement" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Manage polling" />
+      <Button fx:id="reopenPolling" layoutX="826.0" layoutY="523.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="232.0" styleClass="mainSceneButton" text="Reopen a Polling Question" />
+      <Pane fx:id="speedBackground" layoutX="818.0" layoutY="247.0" prefHeight="216.0" prefWidth="247.0" styleClass="sidebar">
          <children>
             <Text fx:id="speedText" layoutX="7.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture speed Results" textAlignment="CENTER" wrappingWidth="232.20000000000005">
                <font>
@@ -61,8 +61,8 @@
             </Text>
          </children>
       </Pane>
+      <Button fx:id="popupVoteResults" layoutX="506.0" layoutY="701.0" mnemonicParsing="false" onAction="#popupVoteResults" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Show poll results" />
       <Button fx:id="lectureLog" layoutX="825.0" layoutY="560.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="234.0" styleClass="mainSceneButton" text="View Lecture Log" />
-      <Button fx:id="createQuiz" layoutX="611.0" layoutY="718.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Create Quiz" />
       <ListView fx:id="questionPaneListView" layoutX="209.0" layoutY="48.0" prefHeight="642.0" prefWidth="602.0" />
       <Label fx:id="sortByLabel" layoutX="209.0" layoutY="14.0" prefHeight="18.0" prefWidth="47.0" text="Sort by:">
          <font>

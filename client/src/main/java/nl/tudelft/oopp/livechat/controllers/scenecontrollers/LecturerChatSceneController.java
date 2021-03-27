@@ -12,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -21,15 +20,14 @@ import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
 import nl.tudelft.oopp.livechat.businesslogic.CreateFile;
-import nl.tudelft.oopp.livechat.data.Lecture;
-import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.controllers.popupcontrollers.PollingManagementPopupController;
+import nl.tudelft.oopp.livechat.data.*;
 import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
+import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
 import nl.tudelft.oopp.livechat.uielements.QuestionCellLecturer;
-import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
-import javax.tools.Tool;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -109,8 +107,9 @@ public class LecturerChatSceneController implements Initializable {
     @FXML
     private Button createPolling;
 
+
     @FXML
-    private Button createQuiz;
+    private Button popupVoteResults;
 
     @FXML
     private Label sortByText;
@@ -163,41 +162,20 @@ public class LecturerChatSceneController implements Initializable {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
         slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
+
         timelineFetch = new Timeline(new KeyFrame(
                 Duration.millis(1500),
             ae -> {
                 fetchQuestions();
                 getVotesOnLectureSpeed();
                 adjustLectureSpeedLines();
+                fetchPoll();
             }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
-
-        //Tooltips
-        copyId.setTooltip(new Tooltip("Copy the lecture's ID to clipboard"));
-        copyKey.setTooltip(new Tooltip("Copy the moderator key to clipboard"));
-
-        participants.setTooltip(new Tooltip("See the lecture participants"));
-        goToLectureModeButton.setTooltip(new Tooltip("Enable/Disable lecturer mode"));
-
-        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
-        goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
-
-        pollingButton.setTooltip(new Tooltip("Show poll's results to lecture participants"));
-        speedButton.setTooltip(new Tooltip("Open/Reopen voting on lecture speed"));
-
-        lectureLog.setTooltip(new Tooltip("See an overview of the lecture's activity"));
-        reopenPolling.setTooltip(new Tooltip("Reopen a previous polling question"));
-
-        exportQA.setTooltip(new Tooltip("Export this lecture's content"));
-        closeLectureButton.setTooltip(new Tooltip("Close this lecture"));
-
-        leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
-        createPolling.setTooltip(new Tooltip("Create a polling question"));
-
-        createQuiz.setTooltip(new Tooltip("Create a quiz"));
-
+        setTooltips();
     }
+
 
     /**
      * Gets votes on lecture speed.
@@ -383,11 +361,11 @@ public class LecturerChatSceneController implements Initializable {
         this.pollingText.setDisable(!this.pollingText.isDisabled());
         this.pollingText.setVisible(!this.pollingText.isVisible());
 
-        this.createQuiz.setDisable(!this.createQuiz.isDisabled());
-        this.createQuiz.setVisible(!this.createQuiz.isVisible());
+        this.popupVoteResults.setDisable(!this.popupVoteResults.isDisabled());
 
         this.lectureLog.setDisable(!this.lectureLog.isDisabled());
         this.lectureLog.setVisible(!this.lectureLog.isVisible());
+        this.popupVoteResults.setVisible(!this.popupVoteResults.isVisible());
 
         this.sortByText.setDisable(!this.sortByText.isDisabled());
         this.sortByText.setVisible(!this.sortByText.isVisible());
@@ -441,6 +419,60 @@ public class LecturerChatSceneController implements Initializable {
         //Makes it so that if the blue line is just a dot, users do not see it
         slowerVotesPercentLine.setVisible(slowerVotesPercentLine.getEndX()
                 != slowerVotesPercentLine.getStartX());
+    }
+
+
+    /**
+     * Popup polling management.
+     */
+    public void popupPollingManagement() {
+        if (PollingManagementPopupController.getInEditingPoll() == null) {
+            PollingManagementPopupController.setInEditingPoll(new Poll());
+            PollingManagementPopupController.setInEditingOptions(new ArrayList<PollOption>());
+        }
+        NavigationController.getCurrentController().popupPollingManagement();
+    }
+
+    private void setTooltips() {
+        //Tooltips
+        copyId.setTooltip(new Tooltip("Copy the lecture's ID to clipboard"));
+        copyKey.setTooltip(new Tooltip("Copy the moderator key to clipboard"));
+
+        participants.setTooltip(new Tooltip("See the lecture participants"));
+        goToLectureModeButton.setTooltip(new Tooltip("Enable/Disable lecturer mode"));
+
+        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+        goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
+
+        pollingButton.setTooltip(new Tooltip("Show poll's results to lecture participants"));
+        speedButton.setTooltip(new Tooltip("Open/Reopen voting on lecture speed"));
+
+        lectureLog.setTooltip(new Tooltip("See an overview of the lecture's activity"));
+        reopenPolling.setTooltip(new Tooltip("Reopen a previous polling question"));
+
+        exportQA.setTooltip(new Tooltip("Export this lecture's content"));
+        closeLectureButton.setTooltip(new Tooltip("Close this lecture"));
+
+        leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
+        createPolling.setTooltip(new Tooltip("Create a polling question"));
+
+        popupVoteResults.setTooltip(new Tooltip("Create a quiz"));
+    }
+
+    private void fetchPoll() {
+
+        PollAndOptions fetched = (
+                PollCommunication.fetchPollAndOptionsModerator(
+                        Lecture.getCurrentLecture().getUuid(),
+                        Lecture.getCurrentLecture().getModkey()));
+        if (fetched == null) {
+            return;
+        }
+        PollAndOptions.setCurrentPollAndOptions(fetched);
+    }
+
+    public void popupVoteResults() {
+        NavigationController.getCurrentController().popupPollResult();
     }
 
 

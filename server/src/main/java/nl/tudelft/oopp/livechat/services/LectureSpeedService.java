@@ -93,7 +93,7 @@ public class LectureSpeedService {
     }
 
     /**
-     * Reset the vote for the lecture speed.
+     * Reset the voting for the lecture speed.
      * @param uuid the id of the lecture
      * @param modKey the moderator key
      * @return 0 if successful

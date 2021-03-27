@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="ap" prefHeight="512.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.popupcontrollers.PollingManagementPopupController">
+   <children>
+      <Button layoutX="587.0" layoutY="459.0" mnemonicParsing="false" onAction="#openPolling" text="Open" />
+      <Button layoutX="653.0" layoutY="459.0" mnemonicParsing="false" onAction="#closePoll" text="Close" />
+      <Button layoutX="578.0" layoutY="415.0" mnemonicParsing="false" onAction="#newPoll" text="New Poll" />
+      <Button layoutX="662.0" layoutY="415.0" mnemonicParsing="false" onAction="#restartPoll" text="Reset" />
+      <ListView fx:id="pollOptionsListView" layoutX="47.0" layoutY="124.0" prefHeight="355.0" prefWidth="521.0" />
+      <TextArea fx:id="questionTextTextArea" layoutX="47.0" layoutY="15.0" prefHeight="73.0" prefWidth="521.0" promptText="Imput your question text here" />
+      <Button layoutX="50.0" layoutY="482.0" mnemonicParsing="false" onAction="#addPollOptionCell" prefHeight="16.0" prefWidth="21.0" text="+">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Button>
+      <Text fx:id="isOptionCorrectText" layoutX="47.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Is this option correct" />
+      <CheckBox layoutX="179.0" layoutY="107.0" mnemonicParsing="false" onAction="#togglePoll" text="Is this a poll" />
+   </children>
+</AnchorPane>

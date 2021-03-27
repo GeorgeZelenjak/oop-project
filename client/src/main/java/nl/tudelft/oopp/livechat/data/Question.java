@@ -48,6 +48,9 @@ public class Question implements Comparable<Question> {
     @Expose(serialize = true, deserialize = true)
     private String ownerName;
 
+    @Expose(serialize = false, deserialize = true)
+    private String status = "new";
+
     /**
      * Empty constructor to create a question entity.
      */
@@ -67,11 +70,19 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Gets id of the question.
+     * Gets the id of the question.
      * @return the id of the question
      */
     public long getId() {
         return this.id;
+    }
+
+    /**
+     * Sets the id of the question.
+     * @param id the id of the question
+     */
+    public void setId(long id) {
+        this.id = id;
     }
 
     /**
@@ -227,15 +238,28 @@ public class Question implements Comparable<Question> {
     }
 
     /**
+     * Gets the status of the question.
+     * @return the status of the question
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets status of the question.
+     * @param status the status of the question
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
      * Compares the question to another object.
      * @param o object to compare to
      * @return true iff the other object is also a Question and has the same id. False otherwise
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
         if (o instanceof Question) {
             Question q = (Question) o;
             return this.id == q.id;
@@ -249,7 +273,7 @@ public class Question implements Comparable<Question> {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.lectureId, this.time);
+        return Objects.hash(this.id);
     }
 
     /**

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="questionBoxAnchorPane" prefWidth="590.0" styleClass="questionCell" stylesheets="@../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="questionBoxAnchorPane" prefWidth="590.0" styleClass="questionCell" stylesheets="@../../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
       <Text layoutX="60.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asked By: ">
          <font>
@@ -22,7 +22,7 @@
             <Font name="Arial Italic" size="10.0" />
          </font>
       </Text>
-      <Button fx:id="deleteButton" layoutX="480.0" layoutY="5.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
+      <Button fx:id="deleteButton" layoutX="480.0" layoutY="5.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteButton" stylesheets="@../../css/Styles.css" textFill="#f8f8f8">
          <font>
             <Font size="9.0" />
          </font>
@@ -30,7 +30,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button fx:id="isAnsweredButton" layoutX="450.0" layoutY="6.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="27.0" styleClass="markAsAnsweredButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
+      <Button fx:id="isAnsweredButton" layoutX="450.0" layoutY="6.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="27.0" styleClass="markAsAnsweredButton" stylesheets="@../../css/Styles.css" textFill="#f8f8f8">
          <font>
             <Font name="System Bold" size="9.0" />
          </font>
@@ -48,7 +48,7 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Text>
-      <Button fx:id="replyButton" layoutX="509.0" layoutY="5.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="replyButton" stylesheets="@../css/Styles.css" textFill="#f8f8f8">
+      <Button fx:id="replyButton" layoutX="509.0" layoutY="5.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="replyButton" stylesheets="@../../css/Styles.css" textFill="#f8f8f8">
          <font>
             <Font size="9.0" />
          </font>

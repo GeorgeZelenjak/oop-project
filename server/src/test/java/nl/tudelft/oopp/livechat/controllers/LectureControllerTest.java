@@ -130,10 +130,10 @@ class LectureControllerTest {
     @BeforeAll
     static void setUp() {
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         objectMapper.setDateFormat(simpleDateFormat);
     }
 
-    //TODO not to hardcode 'placeholder'
     @Test
     void createLectureTest() {
         assertDoesNotThrow(() -> createLecture("/api/newLecture?name=test1",

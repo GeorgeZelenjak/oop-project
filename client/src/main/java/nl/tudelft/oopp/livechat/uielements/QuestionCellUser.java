@@ -1,6 +1,7 @@
 package nl.tudelft.oopp.livechat.uielements;
 
 import javafx.scene.control.ListCell;
+import nl.tudelft.oopp.livechat.controllers.cellcontrollers.CellUserController;
 import nl.tudelft.oopp.livechat.data.Question;
 
 /**
@@ -18,7 +19,7 @@ public class QuestionCellUser extends ListCell<Question> {
         super.updateItem(question,empty);
 
         if (question != null && !empty) {
-            CellDataUser data = new CellDataUser();
+            CellUserController data = new CellUserController();
             data.setQuestion(question);
 
             //set information

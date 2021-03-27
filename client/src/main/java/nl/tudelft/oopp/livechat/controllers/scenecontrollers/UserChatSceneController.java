@@ -16,9 +16,11 @@ import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 
+import nl.tudelft.oopp.livechat.data.PollAndOptions;
 import nl.tudelft.oopp.livechat.data.Question;
 
 import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
+import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
 import nl.tudelft.oopp.livechat.uielements.QuestionCellUser;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
@@ -97,10 +99,12 @@ public class UserChatSceneController implements Initializable {
     public void initialize(URL location, ResourceBundle resourceBundle) {
         lectureNameText.setText(Lecture.getCurrentLecture().getName());
         userNameText.setText(User.getUserName());
+        fetchVotes();
 
         timelineFetch = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
             fetchQuestions();
             getVotesOnLectureSpeed();
+            fetchVotes();
         }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
@@ -191,23 +195,22 @@ public class UserChatSceneController implements Initializable {
      *      -4 - too long question
      *      -5 empty field
      */
-    public int askQuestion() {
+    public boolean askQuestion() {
         String text = questionInputTextArea.getText();
         if (text.length() == 0) {
-            return -5;
+            return false;
         }
         if (text.length() > 2000) {
             AlertController.alertWarning("Long question",
                     "Your question is too long! (max 2000 characters)");
-            return -4;
+            return false;
         }
-        int ret = QuestionCommunication.askQuestion(
+        boolean res = QuestionCommunication.askQuestion(
                 User.getUid(), Lecture.getCurrentLecture().getUuid(), text);
         //inputQuestion.setText("");
 
-        System.out.println(ret);
-        if (ret < 0) {
-            System.out.println("not asked " + ret);
+        if (!res) {
+            System.out.println("not asked");
         }
 
         Question question = new Question(
@@ -219,7 +222,7 @@ public class UserChatSceneController implements Initializable {
 
         //TODO this will be removed when we implement a more efficient polling
         fetchQuestions();
-        return (ret);
+        return (false);
     }
 
     /**
@@ -227,7 +230,7 @@ public class UserChatSceneController implements Initializable {
      *
      * @return 0 if everthing is fine -1 if not
      */
-    public int voteOnLectureSpeedFast() {
+    public boolean voteOnLectureSpeedFast() {
         voteOnLectureSpeedSlow.setSelected(false);
 
         return LectureSpeedCommunication.voteOnLectureSpeed(
@@ -241,7 +244,7 @@ public class UserChatSceneController implements Initializable {
      *
      * @return 0 if everthing is fine -1 if not
      */
-    public int voteOnLectureSpeedSlow() {
+    public boolean voteOnLectureSpeedSlow() {
         voteOnLectureSpeedFast.setSelected(false);
 
         return LectureSpeedCommunication.voteOnLectureSpeed(
@@ -261,4 +264,37 @@ public class UserChatSceneController implements Initializable {
             voteOnLectureSpeedSlow.setSelected(false);
         }
     }
+
+    private void fetchVotes() {
+
+        PollAndOptions fetched = (
+                PollCommunication.fetchPollAndOptionsStudent(
+                        Lecture.getCurrentLecture().getUuid()));
+        if (fetched == null) {
+            return;
+        }
+
+        //If new poll
+        if (!fetched.equals(PollAndOptions.getCurrentPollAndOptions())) {
+            PollAndOptions.setCurrentPollAndOptions(fetched);
+            NavigationController.getCurrentController().popupPollVoting();
+            return;
+        }
+
+        //If poll is closed
+        if (!fetched.getPoll().isOpen()
+                && PollAndOptions.getCurrentPollAndOptions().getPoll().isOpen()) {
+            PollAndOptions.setCurrentPollAndOptions(fetched);
+            NavigationController.getCurrentController().popupPollResult();
+        }
+
+        //If poll is reopened
+        if (!PollAndOptions.getCurrentPollAndOptions().getPoll().isOpen()
+                && fetched.getPoll().isOpen()) {
+            PollAndOptions.setCurrentPollAndOptions(fetched);
+            NavigationController.getCurrentController().popupPollVoting();
+        }
+
+    }
+
 }
