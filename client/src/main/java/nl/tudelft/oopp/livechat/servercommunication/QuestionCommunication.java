@@ -323,11 +323,7 @@ public class QuestionCommunication {
      * Method that sends a request to delete a question (done by the moderator).
      * @param qid the id of the question
      * @param modkey the moderator key
-     * @return  0 if the question was deleted successfully
-     *         -1 if current lecture does not exist
-     *         -2 if an exception occurred when communicating with the server
-     *         -3 if unexpected response was received
-     *         -4 if the question wasn't deleted (e.g wrong qid, wrong modkey etc.)
+     * @return  0 if the question was deleted successfully, -1 if not, -2 if a server error occurred
      */
     //TODO remove qid from user's set of questions after deletion
     public static int modDelete(long qid, UUID modkey) {
@@ -372,33 +368,29 @@ public class QuestionCommunication {
     public static int setStatus(long qid, UUID modkey, String status, long uid) {
         //Check if current lecture has been set
         if (Lecture.getCurrentLecture() == null) {
-            System.out.println("You are not connected to a lecture!!!");
+            System.out.println("You are not connected to a lecture!");
             return -1;
         }
 
         //Create a json object with the data to be sent
-
         HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(status);
-        String address = ADDRESS + "/api/question/status/" + qid + "/" + uid + "/"
-                + modkey.toString();
 
-        //Create request and defining response
+        //Create request
         HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
-                URI.create(address)).setHeader("Content-Type", "application/json").build();
+                URI.create(ADDRESS + "/api/question/status/" + qid + "/" + uid + "/"
+                        + modkey.toString())).setHeader("Content-Type", "application/json").build();
         HttpResponse<String> response;
         //Catching error when communicating with server
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
             System.out.println("Exception when communicating with the server!");
-            //e.printStackTrace();
             return -2;
         }
 
         int result = handleResponseNoAlerts(response);
-        System.out.println("Status: " + result);
         if (result == 0) {
-            System.out.println("The question with id " + qid + " have changed status!");
+            System.out.println("The question with id " + qid + " has changed status!");
             System.out.println("New status: " + status);
         }
         return result;

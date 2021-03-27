@@ -280,6 +280,32 @@ public class QuestionCommunicationTest {
     }
 
     /**
+     * Create expectations for editing questions (done by moderator).
+     */
+    private static void createExpectationsForSetStatus() {
+        //Success
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/status/"
+                + qid1 + "/" + userId + "/" + modkey.toString()).withBody("editing"))
+                .respond(HttpResponse.response().withStatusCode(200)
+                .withBody("0").withHeader("Content-Type","application/json"));
+
+        //invalid parameter - send 400
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/status/"
+                + qid1 + "/" + userId + "/" + modkey.toString()).withBody("invalid"))
+                .respond(HttpResponse.response().withStatusCode(400));
+
+        //modkey does not match
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/status/"
+                + qid1 + "/" + userId + "/" + incorrectModkey.toString()).withBody("answering"))
+                .respond(HttpResponse.response().withStatusCode(401));
+
+        //qid not found
+        mockServer.when(request().withMethod("PUT").withPath("/api/question/status/404/"
+                 + userId + "/" + modkey.toString()).withBody("answering"))
+                .respond(HttpResponse.response().withStatusCode(404));
+    }
+
+    /**
      * A helper method to create JSON object for edit request.
      * @param qid the id of the question
      * @param modkey the moderator key
@@ -325,6 +351,7 @@ public class QuestionCommunicationTest {
         createExpectationsForDeleteQuestion();
         createExpectationsForModDelete();
         createExpectationsForEdit();
+        createExpectationsForSetStatus();
 
         try {
             mockedAlertController = Mockito.mockStatic(AlertController.class);
@@ -725,6 +752,62 @@ public class QuestionCommunicationTest {
         assertEquals(-1,
                 QuestionCommunication.edit(Long.parseLong(qid3),
                         incorrectModkey, "Edited by ..."));
+    }
+
+    /**
+     * Tests for set status.
+     */
+
+    @Test
+    public void setStatusSuccessfulTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "placeholder", "placeholder"));
+        assertEquals(0, QuestionCommunication.setStatus(Long.parseLong(qid1),
+                modkey, "editing", userId));
+
+    }
+
+    @Test
+    public void setStatusNoLectureExistsTest() {
+        Lecture.setCurrentLecture(null);
+        assertEquals(-1, QuestionCommunication.setStatus(
+                Long.parseLong(qid1), modkey, "editing", userId));
+    }
+
+    @Test
+    public void setStatusServerRefusesTest() {
+        mockServer.stop();
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "placeholder", "placeholder"));
+        assertEquals(-2, QuestionCommunication.setStatus(Long.parseLong(qid1),
+                modkey,"editing", userId));
+
+        startServer();
+    }
+
+    @Test
+    public void setStatusInvalidTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "placeholder", "placeholder"));
+        assertEquals(-1, QuestionCommunication.setStatus(Long.parseLong(qid1),
+                lid, "invalid", userId));
+    }
+
+    @Test
+    public void setStatusIncorrectQidTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "placeholder", "placeholder"));
+        assertEquals(-1, QuestionCommunication.setStatus(404,
+                modkey, "answering", userId));
+    }
+
+    @Test
+    public void setStatusIncorrectModkeyTest() {
+        Lecture.setCurrentLecture(new Lecture(lid,
+                modkey, "placeholder", "placeholder"));
+        assertEquals(-1,
+                QuestionCommunication.setStatus(Long.parseLong(qid1),
+                        incorrectModkey, "answering", userId));
     }
 
     /**
