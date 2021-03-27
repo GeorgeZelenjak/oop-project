@@ -332,7 +332,8 @@ public class PollServiceTest {
     @Test
     public void voteOnPollSuccessfulAnotherPollTest() throws Exception {
         long oldVotes = pollOptionRepository.findById(option1.getId()).getVotes();
-        userPollVoteRepository.save(new UserPollVoteTable(user1.getUid(), option2.getId(), poll2.getId()));
+        userPollVoteRepository.save(new UserPollVoteTable(user1.getUid(),
+                option2.getId(), poll2.getId()));
         int size = userPollVoteRepository.findAllByUserId(user1.getUid()).size();
 
         assertEquals(0, pollService.voteOnPoll(user1.getUid(), option1.getId()));
@@ -364,7 +365,8 @@ public class PollServiceTest {
     }
 
     @Test
-    public void fetchPollAndOptionsStudentPollClosedTest() throws LectureNotFoundException, PollNotFoundException {
+    public void fetchPollAndOptionsStudentPollClosedTest()
+            throws LectureNotFoundException, PollNotFoundException {
         poll1.setOpen(false);
         pollRepository.save(poll1);
 
