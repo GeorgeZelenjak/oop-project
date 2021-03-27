@@ -90,12 +90,18 @@ public class PollAndOptionsTest {
     }
 
     @Test
-    void equalsDifferentTest() {
+    void equalsDifferentOptionsTest() {
+        PollOption o1 = new PollOption(90, poll.getId(), "Kill it", 11, true);
+        PollOption o2 = new PollOption(99, poll.getId(), "Eat it", 27, false);
+        PollAndOptions po = new PollAndOptions(poll, List.of(o1, o2));
+        assertNotEquals(pollAndOptions, po);
+    }
+
+    @Test
+    void equalsDifferentPollTest() {
         Poll p = new Poll(lid, "What would you do if a pelican entered in your house?",
                 time, 33, false);
-        PollOption o1 = new PollOption(p.getId(), "Kill it", 11, true);
-        PollOption o2 = new PollOption(p.getId(), "Eat it", 27, false);
-        PollAndOptions po = new PollAndOptions(p, List.of(o1, o2));
+        PollAndOptions po = new PollAndOptions(p, List.of(option1, option2));
         assertNotEquals(pollAndOptions, po);
     }
 

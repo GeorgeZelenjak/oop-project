@@ -1,11 +1,18 @@
 package nl.tudelft.oopp.livechat.datatest;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
+import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.data.User;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,8 +20,9 @@ import java.util.Set;
 public class UserTest {
 
     /**
-     * Initialization.
+     * Setup for the tests.
      */
+
     @BeforeAll
     public static void setUp() {
         User.setUid();
@@ -23,7 +31,6 @@ public class UserTest {
         Set<Long> questionIds = new HashSet<>();
         questionIds.add(123456789L);
         questionIds.add(987654321L);
-
         User.setAskedQuestionsIds(questionIds);
     }
 
@@ -37,6 +44,24 @@ public class UserTest {
         long oldUid = User.getUid();
         User.setUid();
         assertEquals(oldUid, User.getUid());
+    }
+
+    @Test
+    public void setUidUnsuccessfulTest() {
+        MockedStatic<AlertController> mockedAlertController =
+                Mockito.mockStatic(AlertController.class);
+        mockedAlertController.when(() -> AlertController.alertError(any(String.class),
+                    any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
+
+        MockedStatic<InetAddress> mockedInetAddress = Mockito.mockStatic(InetAddress.class);
+        mockedInetAddress.when(InetAddress::getLocalHost).thenThrow(UnknownHostException.class);
+
+        long oldUid = User.getUid();
+        User.setUid();
+        assertEquals(oldUid, User.getUid());
+
+        mockedAlertController.close();
+        mockedInetAddress.close();
     }
 
     @Test

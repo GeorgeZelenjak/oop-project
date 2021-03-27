@@ -17,7 +17,7 @@ import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.*;
 /**
  * Class for server communication related to polls.
  */
-public class PollCommunication {
+public abstract class PollCommunication {
     /**
      * Gson object for parsing Json set to parse fields according to annotations
      *     and with specified date format.
@@ -29,6 +29,11 @@ public class PollCommunication {
      * The address of the server.
      */
     private static final String ADDRESS = CommonCommunication.ADDRESS;
+
+
+    private PollCommunication() {
+
+    }
 
 
     /**
@@ -103,7 +108,6 @@ public class PollCommunication {
                 URI.create(ADDRESS + "/api/poll/fetchStudent/" + lectureId)).build();
 
         HttpResponse<String> response = sendAndReceive(request);
-
         if (handleResponseNoAlerts(response) != 0) {
             return null;
         }

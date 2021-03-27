@@ -19,7 +19,7 @@ import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleR
 /**
  * Class to send requests regarding lecture speed.
  */
-public class LectureSpeedCommunication {
+public abstract class LectureSpeedCommunication {
 
     private static final HttpClient client = HttpClient.newBuilder().build();
 
@@ -27,6 +27,10 @@ public class LectureSpeedCommunication {
             .setDateFormat("yyyy-MM-dd HH:mm:ss Z").create();
 
     private static final String ADDRESS = CommonCommunication.ADDRESS;
+
+    private LectureSpeedCommunication() {
+
+    }
 
     /**
      * Gets votes on lecture speed.

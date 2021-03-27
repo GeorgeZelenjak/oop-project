@@ -20,7 +20,7 @@ import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleR
 /**
  * Class for Lecture server communication.
  */
-public class LectureCommunication {
+public abstract class LectureCommunication {
 
     private LectureCommunication() {
 

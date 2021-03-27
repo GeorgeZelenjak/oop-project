@@ -25,11 +25,8 @@ import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleR
 /**
  * Class for server communication related to questions.
  */
-public class QuestionCommunication {
+public abstract class QuestionCommunication {
 
-    /**
-     * Creates a new QuestionCommunication object.
-     */
     private QuestionCommunication() {
 
     }

@@ -20,8 +20,6 @@ public class Poll {
 
     private boolean open;
 
-
-
     /**
      * Creates a new Poll object.
      */
@@ -153,9 +151,6 @@ public class Poll {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
         if (o instanceof Poll) {
             Poll that = (Poll) o;
             //IT IS VERY IMPORTANT TO CHECK THE TEXT ON CLIENT
