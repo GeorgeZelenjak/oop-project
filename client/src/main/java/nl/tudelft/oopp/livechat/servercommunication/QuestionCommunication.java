@@ -23,35 +23,41 @@ import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleR
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponseNoAlerts;
 
 /**
- * Class for Question server communication.
+ * Class for server communication related to questions.
  */
 public class QuestionCommunication {
 
+    /**
+     * Creates a new QuestionCommunication object.
+     */
     private QuestionCommunication() {
 
     }
 
-    //Client object for sending requests
+    /**
+     * Client object for sending requests.
+     */
     private static final HttpClient client = HttpClient.newBuilder().build();
-    /* Gson object for parsing Json
-    set to parse fields according to annotations
-    and with specified date format
+
+    /**
+     * Gson object for parsing Json set to parse fields according to annotations
+     *     and with specified date format.
      */
     private static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
             .setDateFormat("yyyy-MM-dd HH:mm:ss Z").create();
 
+    /**
+     * The address of the server.
+     */
     private static final String ADDRESS = CommonCommunication.ADDRESS;
 
     /**
-     * Sends an HTTP request to ask a question with the current Lecture id.
-     * @param   uid the id of the user
-     * @param   lectureId the id of the lecture
-     * @param   questionText the text of the question
-     * @return  0 if the question was asked successfully
-     *         -1 if current lecture does not exist
-     *         -2 if an exception occurred when communicating with the server
-     *         -3 if unexpected response was received
-     *         -4 if server rejects the question
+     * Sends a request to ask a question.
+     * @param  uid the id of the user
+     * @param  lectureId the id of the lecture
+     * @param  questionText the text of the question
+     * @return  0 if the question has been asked successfully, -1 if not,
+     *          -2 if there was a connection error
      */
     public static int askQuestion(long uid, UUID lectureId, String questionText) {
         //Check if current lecture has been set
@@ -93,7 +99,7 @@ public class QuestionCommunication {
     }
 
     /**
-     * Fetch questions list.
+     * Fetch question that have been asked in current lecture.
      * @return the list of questions related to current lecture,
      *       null if error occurs or no current lecture is set
      */
@@ -136,15 +142,11 @@ public class QuestionCommunication {
         return gson.fromJson(response.body(), listType);
     }
 
-    /** Method that sends a request to upvote a question to the server.
-     * @param qid - the question id
-     * @param uid - the user id
-     * @return - the "status code"
-     *           0 if the question was upvoted/downvoted successfully
-     *          -1 if current lecture does not exist
-     *          -2 if an exception occurred when communicating with the server
-     *          -3 if unexpected response was received
-     *          -4 if the question wasn't upvoted/downvoted (e.g wrong uid, wrong qid etc.)
+    /** Method that sends a request to upvote a question.
+     * @param qid the id of the question
+     * @param uid the id of the user
+     * @return  0 if the question has been upvoted successfully, -1 if not,
+     *          -2 if there was a connection error
      */
     public static int upvoteQuestion(long qid, long uid) {
         //Check if current lecture has been set
@@ -180,14 +182,11 @@ public class QuestionCommunication {
     }
 
     /**
-     * Method that sends a request to mark as answered a question to the server.
+     * Method that sends a request to mark a question as answered, possibly with the answer text.
      * @param qid the id of the question
      * @param modkey the moderator key
-     * @return  0 if the question was marked as answered successfully
-     *         -1 if current lecture does not exist
-     *         -2 if an exception occurred when communicating with the server
-     *         -3 if unexpected response was received
-     *         -4 if the question wasn't marked as answered (e.g wrong qid, wrong modkey etc.)
+     * @return  0 if the question has been marked as answered successfully -1 if not,
+     *          -2 if there was a connection error
      */
     public static int markedAsAnswered(long qid, UUID modkey, String answer) {
         //Check if current lecture has been set
@@ -228,15 +227,12 @@ public class QuestionCommunication {
     }
 
     /**
-     * Method that sends a request to edit a question to the server.
+     * Method that sends a request to edit a question.
      * @param qid the id of the question
      * @param modKey the moderator key
      * @param newText the edited text of the question
-     * @return 0 if the question was edited successfully
-     *        -1 if current lecture does not exist
-     *        -2 if an exception occurred when communicating with the server
-     *        -3 if unexpected response was received
-     *        -4 if the question wasn't edited (e.g wrong qid, wrong modkey etc.)
+     * @return  0 if the question has been edited successfully, -1 if not,
+     *          -2 if there was a connection error
      */
     public static int edit(long qid, UUID modKey, String newText) {
         //Check if current lecture has been set
@@ -282,11 +278,8 @@ public class QuestionCommunication {
      * Method that sends a request to delete a question (done by the user who asked the question).
      * @param qid the id of the question
      * @param uid the id of the user
-     * @return  0 if the question was deleted successfully
-     *         -1 if current lecture does not exist
-     *         -2 if an exception occurred when communicating with the server
-     *         -3 if unexpected response was received
-     *         -4 if the question wasn't deleted (e.g wrong uid, wrong qid etc.)
+     * @return  0 if the question has been deleted successfully, -1 if not,
+     *          -2 if there was a connection error
      */
     public static int deleteQuestion(long qid, long uid) {
         //Check if current lecture has been set
@@ -323,7 +316,8 @@ public class QuestionCommunication {
      * Method that sends a request to delete a question (done by the moderator).
      * @param qid the id of the question
      * @param modkey the moderator key
-     * @return  0 if the question was deleted successfully, -1 if not, -2 if a server error occurred
+     * @return  0 if the question has been deleted successfully, -1 if not,
+     *          -2 if there was a connection error
      */
     //TODO remove qid from user's set of questions after deletion
     public static int modDelete(long qid, UUID modkey) {
@@ -357,13 +351,13 @@ public class QuestionCommunication {
     }
 
     /**
-     * Sets status.
-     *
-     * @param qid    the qid
-     * @param modkey the modkey
-     * @param status the status
-     * @param uid    the uid
-     * @return the status
+     * Method that sends a request to set the status of a question.
+     * @param qid the id of the question
+     * @param modkey the moderator key
+     * @param status the status of the question
+     * @param uid the id of he user
+     * @return  0 if the status of the question has been set successfully, -1 if not,
+     *          -2 if there was a connection error
      */
     public static int setStatus(long qid, UUID modkey, String status, long uid) {
         //Check if current lecture has been set
