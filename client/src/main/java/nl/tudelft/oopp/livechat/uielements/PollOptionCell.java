@@ -23,6 +23,7 @@ public class PollOptionCell extends ListCell<PollOption> {
             data.setOptionText(option.getOptionText());
             data.setPollOption(option);
             data.setPollOptionCellIsCorrectCheckBox();
+            data.setPollType();
             setGraphic(data.getBox());
             data.setListener();
             data.setDeleteButton();

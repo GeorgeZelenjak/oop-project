@@ -12,6 +12,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -38,6 +39,9 @@ public class PollingManagementPopupController implements Initializable {
     @FXML
     private TextArea questionTextTextArea;
 
+    @FXML
+    private Text isOptionCorrectText;
+
     public static List<PollOption> getInEditingOptions() {
         return inEditingOptions;
     }
@@ -58,6 +62,19 @@ public class PollingManagementPopupController implements Initializable {
     private static List<PollOption> inEditingOptions;
     private static Poll inEditingPoll;
 
+    public static boolean isAllCorrect() {
+        return allCorrect;
+    }
+
+    public static void setAllCorrect(boolean allCorrect) {
+        PollingManagementPopupController.allCorrect = allCorrect;
+    }
+
+    public static boolean getAllCorrect() {
+        return allCorrect;
+    }
+
+    private static boolean allCorrect;
 
     private List<PollOption> fetchedOptions;
     private Poll fetchedPoll;
@@ -224,6 +241,20 @@ public class PollingManagementPopupController implements Initializable {
             }
         }
         return true;
+    }
+
+    /**
+     * Toggle poll.
+     */
+    public void togglePoll() {
+        isOptionCorrectText.setVisible(allCorrect);
+        allCorrect = !allCorrect;
+        if (allCorrect) {
+            for (PollOption pollOption: inEditingOptions) {
+                pollOption.setCorrect(true);
+            }
+        }
+
     }
 
 }

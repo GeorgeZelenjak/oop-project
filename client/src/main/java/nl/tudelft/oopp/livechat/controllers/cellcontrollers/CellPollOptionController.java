@@ -107,6 +107,16 @@ public class CellPollOptionController {
     }
 
     /**
+     * Sets poll type.
+     */
+    public void setPollType() {
+        if (PollingManagementPopupController.getAllCorrect()) {
+            pollOptionCellIsCorrectCheckBox.setDisable(true);
+            pollOptionCellIsCorrectCheckBox.setVisible(false);
+        }
+    }
+
+    /**
      * Gets box.
      * @return the box
      */
