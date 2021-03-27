@@ -118,8 +118,7 @@ public class PollOptionTest {
 
     @Test
     void hashCodeTest() {
-        int hash = Objects.hash(pollOption.getId(), pollOption.getPollId(),
-                pollOption.getOptionText());
+        int hash = Objects.hash(pollOption.getId(), pollOption.getPollId());
         assertEquals(hash, pollOption.hashCode());
     }
 

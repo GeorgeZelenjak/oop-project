@@ -130,7 +130,7 @@ public class PollOption {
      * Compares the PollOption object to another object.
      * @param o the other object to compare to
      * @return true iff the other object is also a PollOption
-     *         object and has the same id and text. False otherwise
+     *         object and has the same id and pollId. False otherwise
      */
     @Override
     public boolean equals(Object o) {
@@ -152,7 +152,7 @@ public class PollOption {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, pollId, optionText);
+        return Objects.hash(id, pollId);
     }
 
 
