@@ -324,6 +324,7 @@ public class LectureCommunicationTest {
         mockServer.stop();
         Lecture res = LectureCommunication.joinLectureById(lid);
         assertNull(res);
+
         startServer();
     }
 
@@ -402,6 +403,7 @@ public class LectureCommunicationTest {
         Lecture.setCurrentLecture(new Lecture());
         mockServer.stop();
         assertFalse(LectureCommunication.validateModerator(lid, modkey));
+
         startServer();
     }
 
@@ -451,6 +453,7 @@ public class LectureCommunicationTest {
         Lecture.setCurrentLecture(new Lecture());
         mockServer.stop();
         assertFalse(LectureCommunication.closeLecture(lid, modkey));
+
         startServer();
     }
 
@@ -461,39 +464,39 @@ public class LectureCommunicationTest {
     @Test
     public void banByIpSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture());
-        assertEquals(0, LectureCommunication.ban(modkey, 42,7, true));
+        assertTrue(LectureCommunication.ban(modkey, 42,7, true));
     }
 
     @Test
     public void banByIdSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture());
-        assertEquals(0, LectureCommunication.ban(modkey, 42,7, false));
+        assertTrue(LectureCommunication.ban(modkey, 42,7, false));
     }
 
     @Test
     public void banByIdIncorrectModkeyTest() {
         Lecture.setCurrentLecture(new Lecture());
-        assertEquals(-1, LectureCommunication.ban(incorrectModkey, 42,7, false));
+        assertFalse(LectureCommunication.ban(incorrectModkey, 42,7, false));
     }
 
     @Test
     public void banByIpInvalidModkeyTest() {
         Lecture.setCurrentLecture(new Lecture());
-        assertEquals(-1, LectureCommunication.ban("ValidModkey", 42,7, true));
+        assertFalse(LectureCommunication.ban("ValidModkey", 42,7, true));
     }
 
     @Test
     public void banNoLectureTest() {
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, LectureCommunication.ban(modkey, 42,7, true));
+        assertFalse(LectureCommunication.ban(modkey, 42,7, true));
     }
 
     @Test
     public void banServerRefusesTest() {
         Lecture.setCurrentLecture(new Lecture());
-
         mockServer.stop();
-        assertEquals(-2, LectureCommunication.ban(modkey, 42,7, true));
+        assertFalse(LectureCommunication.ban(modkey, 42,7, true));
+
         startServer();
     }
 
