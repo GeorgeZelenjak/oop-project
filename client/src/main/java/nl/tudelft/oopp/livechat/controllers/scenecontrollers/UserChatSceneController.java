@@ -196,23 +196,22 @@ public class UserChatSceneController implements Initializable {
      *      -4 - too long question
      *      -5 empty field
      */
-    public int askQuestion() {
+    public boolean askQuestion() {
         String text = questionInputTextArea.getText();
         if (text.length() == 0) {
-            return -5;
+            return false;
         }
         if (text.length() > 2000) {
             AlertController.alertWarning("Long question",
                     "Your question is too long! (max 2000 characters)");
-            return -4;
+            return false;
         }
-        int ret = QuestionCommunication.askQuestion(
+        boolean res = QuestionCommunication.askQuestion(
                 User.getUid(), Lecture.getCurrentLecture().getUuid(), text);
         //inputQuestion.setText("");
 
-        System.out.println(ret);
-        if (ret < 0) {
-            System.out.println("not asked " + ret);
+        if (!res) {
+            System.out.println("not asked");
         }
 
         Question question = new Question(
@@ -224,7 +223,7 @@ public class UserChatSceneController implements Initializable {
 
         //TODO this will be removed when we implement a more efficient polling
         fetchQuestions();
-        return (ret);
+        return (false);
     }
 
     /**

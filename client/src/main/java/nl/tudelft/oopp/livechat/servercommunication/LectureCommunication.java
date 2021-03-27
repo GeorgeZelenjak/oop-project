@@ -133,7 +133,7 @@ public abstract class LectureCommunication {
      * @param questionToBanId the id of the question whose user is to be banned
      * @param time the time of the ban
      * @param byIp true if the user needs to be banned by ip, false if by id
-     * @return  0 if the user was banned successfully, false otherwise
+     * @return true if the user was banned successfully, false otherwise
      */
     public static boolean ban(String modKey, long questionToBanId, int time, boolean byIp) {
         if (Lecture.getCurrentLecture() == null) {

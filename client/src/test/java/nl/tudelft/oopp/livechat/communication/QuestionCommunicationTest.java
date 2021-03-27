@@ -376,7 +376,7 @@ public class QuestionCommunicationTest {
     public void askQuestionSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Testing", "Andy"));
         int oldSize = User.getAskedQuestionIds().size();
-        assertEquals(0, QuestionCommunication.askQuestion(
+        assertTrue(QuestionCommunication.askQuestion(
                 User.getUid(),Lecture.getCurrentLecture().getUuid(), "Is there anybody?"));
         assertTrue(User.getAskedQuestionIds().contains(Long.parseLong(qid1)));
         assertEquals(oldSize + 1, User.getAskedQuestionIds().size());
@@ -386,7 +386,7 @@ public class QuestionCommunicationTest {
     public void askQuestionLectureNotExistsTest() {
         int oldSize = User.getAskedQuestionIds().size();
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, QuestionCommunication.askQuestion(
+        assertFalse(QuestionCommunication.askQuestion(
                 User.getUid(),null,"Is there anybody?"));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
@@ -397,7 +397,7 @@ public class QuestionCommunicationTest {
 
         int oldSize = User.getAskedQuestionIds().size();
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "?", "???"));
-        assertEquals(-2, QuestionCommunication.askQuestion(
+        assertFalse(QuestionCommunication.askQuestion(
                 User.getUid(),Lecture.getCurrentLecture().getUuid(),"Will we get 10 for OOPP?"));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
 
@@ -408,13 +408,13 @@ public class QuestionCommunicationTest {
     public void askQuestionUnsuccessfulTest() {
         int oldSize = User.getAskedQuestionIds().size();
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "#", "$"));
-        assertEquals(-1, QuestionCommunication.askQuestion(
+        assertFalse(QuestionCommunication.askQuestion(
                 User.getUid(),Lecture.getCurrentLecture().getUuid(),"F*ck"));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
     /**
-     * Tests for fetching.
+     * Tests for fetching questions.
      */
 
     @Test
@@ -463,6 +463,7 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "empty", "placeholder"));
         assertNull(QuestionCommunication.fetchQuestions());
+
         startServer();
     }
 
@@ -474,20 +475,20 @@ public class QuestionCommunicationTest {
     }
 
     /**
-     * Tests for upvoteQuestion.
+     * Tests for upvoting a question.
      */
 
     @Test
     public void upvoteQuestionSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Spring Boot", "Sebastian"));
-        assertEquals(0, QuestionCommunication.upvoteQuestion(Long.parseLong(qid1), 443));
+        assertTrue(QuestionCommunication.upvoteQuestion(Long.parseLong(qid1), 443));
     }
 
     @Test
     public void upvoteQuestionNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, QuestionCommunication.upvoteQuestion(Long.parseLong(qid1), 443));
+        assertFalse(QuestionCommunication.upvoteQuestion(Long.parseLong(qid1), 443));
     }
 
     @Test
@@ -495,7 +496,8 @@ public class QuestionCommunicationTest {
         mockServer.stop();
         Lecture.setCurrentLecture(new Lecture(lid, modkey,
                 "Requirements engineering", "Sander"));
-        assertEquals(-2, QuestionCommunication.upvoteQuestion(666, 666));
+        assertFalse(QuestionCommunication.upvoteQuestion(666, 666));
+
         startServer();
     }
 
@@ -503,46 +505,45 @@ public class QuestionCommunicationTest {
     public void upvoteQuestionInvalidUidTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey,
                 "Testing", "Sebastian"));
-        assertEquals(-1,
-                QuestionCommunication.upvoteQuestion(Long.parseLong(qid1), Long.MAX_VALUE));
+        assertFalse(QuestionCommunication.upvoteQuestion(Long.parseLong(qid1), Long.MAX_VALUE));
     }
 
     @Test
     public void upvoteQuestionIncorrectQidTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Testing", "Sebastian"));
-        assertEquals(-1, QuestionCommunication.upvoteQuestion(666, 443));
+        assertFalse(QuestionCommunication.upvoteQuestion(666, 443));
     }
 
     @Test
     public void upvoteQuestionIncorrectUidTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Gitlab", "Sander"));
-        assertEquals(-1, QuestionCommunication.upvoteQuestion(Long.parseLong(qid1), 442));
+        assertFalse(QuestionCommunication.upvoteQuestion(Long.parseLong(qid1), 442));
     }
 
     /**
-     * Tests for markAsAnswered.
+     * Tests for marking a question as answered.
      */
 
     @Test
     public void markAsAnsweredSuccessfulTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Git", "Sebastian"));
-        assertEquals(0, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey, null));
+        assertTrue(QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey, null));
     }
 
     @Test
     public void markAsAnsweredSuccessfulWithAnswerTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Git", "Sebastian"));
-        assertEquals(0, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey, "42"));
+        assertTrue(QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey, "42"));
     }
 
     @Test
     public void markAsAnsweredNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, QuestionCommunication.markedAsAnswered(
+        assertFalse(QuestionCommunication.markedAsAnswered(
                 Long.parseLong(qid1), modkey, "answer"));
     }
 
@@ -551,7 +552,7 @@ public class QuestionCommunicationTest {
         mockServer.stop();
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Teamwork", "Not Sander"));
-        assertEquals(-2, QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey," "));
+        assertFalse(QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), modkey," "));
         startServer();
     }
 
@@ -559,24 +560,22 @@ public class QuestionCommunicationTest {
     public void markAsAnsweredInvalidUUIDTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Testing", "Andy"));
-        assertEquals(-1,
-                QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), lid, "answer"));
+        assertFalse(QuestionCommunication.markedAsAnswered(Long.parseLong(qid1), lid, "answer"));
     }
 
     @Test
     public void markAsAnsweredIncorrectQidTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "RCS", "Not Sebastian"));
-        assertEquals(-1, QuestionCommunication.markedAsAnswered(666, modkey, "answer"));
+        assertFalse(QuestionCommunication.markedAsAnswered(666, modkey, "answer"));
     }
 
     @Test
     public void markAsAnsweredIncorrectModkeyTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Lambda expressions", "Thomas"));
-        assertEquals(-1,
-                QuestionCommunication.markedAsAnswered(
-                        Long.parseLong(qid1), incorrectModkey, "the answer"));
+        assertFalse(QuestionCommunication.markedAsAnswered(Long.parseLong(qid1),
+                incorrectModkey, "the answer"));
     }
 
     /**
@@ -591,7 +590,7 @@ public class QuestionCommunicationTest {
                 User.getUid(),Lecture.getCurrentLecture().getUuid(),"Will we get 10?");
         int oldSize = User.getAskedQuestionIds().size();
 
-        assertEquals(0, QuestionCommunication.deleteQuestion(Long.parseLong(qid3), userId));
+        assertTrue(QuestionCommunication.deleteQuestion(Long.parseLong(qid3), userId));
         assertEquals(oldSize - 1, User.getAskedQuestionIds().size());
         assertFalse(User.getAskedQuestionIds().contains(Long.parseLong(qid3)));
     }
@@ -602,7 +601,7 @@ public class QuestionCommunicationTest {
         User.getAskedQuestionIds().add(777L);
         int oldSize = User.getAskedQuestionIds().size();
 
-        assertEquals(-1, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 443));
+        assertFalse(QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 443));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
@@ -614,8 +613,9 @@ public class QuestionCommunicationTest {
                 "Linked lists", "Ivo"));
         int oldSize = User.getAskedQuestionIds().size();
 
-        assertEquals(-2, QuestionCommunication.deleteQuestion(42, 42));
+        assertFalse(QuestionCommunication.deleteQuestion(42, 42));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
+
         startServer();
     }
 
@@ -626,8 +626,7 @@ public class QuestionCommunicationTest {
                 "Red-black trees", "Ivo"));
         int oldSize = User.getAskedQuestionIds().size();
 
-        assertEquals(-1,
-                QuestionCommunication.deleteQuestion(Long.parseLong(qid1), Long.MAX_VALUE));
+        assertFalse(QuestionCommunication.deleteQuestion(Long.parseLong(qid1), Long.MAX_VALUE));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
 
     }
@@ -638,7 +637,7 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "AVL trees", "Ivo"));
         int oldSize = User.getAskedQuestionIds().size();
-        assertEquals(-1, QuestionCommunication.deleteQuestion(666, 443));
+        assertFalse(QuestionCommunication.deleteQuestion(666, 443));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
@@ -648,7 +647,7 @@ public class QuestionCommunicationTest {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Multiway search trees", "Ivo"));
         int oldSize = User.getAskedQuestionIds().size();
-        assertEquals(-1, QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 442));
+        assertFalse(QuestionCommunication.deleteQuestion(Long.parseLong(qid1), 442));
         assertEquals(oldSize, User.getAskedQuestionIds().size());
     }
 
@@ -662,14 +661,13 @@ public class QuestionCommunicationTest {
         QuestionCommunication.askQuestion(
                 User.getUid(),Lecture.getCurrentLecture().getUuid(),"Will we get 10?");
 
-        assertEquals(0, QuestionCommunication.modDelete(Long.parseLong(qid2), modkey));
+        assertTrue(QuestionCommunication.modDelete(Long.parseLong(qid2), modkey));
     }
 
     @Test
     public void modDeleteNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
-
-        assertEquals(-1, QuestionCommunication.modDelete(Long.parseLong(qid1), modkey));
+        assertFalse(QuestionCommunication.modDelete(Long.parseLong(qid1), modkey));
     }
 
     @Test
@@ -677,27 +675,27 @@ public class QuestionCommunicationTest {
         mockServer.stop();
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "CPU", "Koen"));
 
-        assertEquals(-2, QuestionCommunication.modDelete(42, modkey));
+        assertFalse(QuestionCommunication.modDelete(42, modkey));
+
         startServer();
     }
 
     @Test
     public void modDeleteInvalidUUIDTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Virtual memory", "Koen"));
-
-        assertEquals(-1, QuestionCommunication.modDelete(Long.parseLong(qid1), lid));
+        assertFalse(QuestionCommunication.modDelete(Long.parseLong(qid1), lid));
     }
 
     @Test
     public void modDeleteIncorrectQidTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Memory", "Koen"));
-        assertEquals(-1, QuestionCommunication.modDelete(666, modkey));
+        assertFalse(QuestionCommunication.modDelete(666, modkey));
     }
 
     @Test
     public void modDeleteIncorrectModkeyTest() {
         Lecture.setCurrentLecture(new Lecture(lid, modkey, "Caching", "Koen"));
-        assertEquals(-1, QuestionCommunication.modDelete(Long.parseLong(qid1), incorrectModkey));
+        assertFalse(QuestionCommunication.modDelete(Long.parseLong(qid1), incorrectModkey));
     }
 
     /**
@@ -706,19 +704,17 @@ public class QuestionCommunicationTest {
 
     @Test
     public void editSuccessfulTest() {
-        Lecture.setCurrentLecture(new Lecture(lid,
-                modkey, "Indexes", "Asterios"));
-        QuestionCommunication.askQuestion(
-                User.getUid(),Lecture.getCurrentLecture().getUuid(),"Is there anybody?");
-        assertEquals(0, QuestionCommunication.edit(Long.parseLong(qid1), modkey, "Edited"));
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Indexes", "Asterios"));
+        QuestionCommunication.askQuestion(User.getUid(),
+                Lecture.getCurrentLecture().getUuid(),"Is there anybody?");
+        assertTrue(QuestionCommunication.edit(Long.parseLong(qid1), modkey, "Edited"));
 
     }
 
     @Test
     public void editNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, QuestionCommunication.edit(
-                Long.parseLong(qid1), modkey, "Edited question"));
+        assertFalse(QuestionCommunication.edit(Long.parseLong(qid1), modkey, "Edited question"));
     }
 
     @Test
@@ -726,7 +722,8 @@ public class QuestionCommunicationTest {
         mockServer.stop();
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Transactions", "Asterios"));
-        assertEquals(-2, QuestionCommunication.edit(Long.parseLong(qid1), modkey,"Not edited"));
+        assertFalse(QuestionCommunication.edit(Long.parseLong(qid1), modkey,"Not edited"));
+
         startServer();
     }
 
@@ -734,35 +731,32 @@ public class QuestionCommunicationTest {
     public void editInvalidUUIDTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Query processing", "Christoph"));
-        assertEquals(-1, QuestionCommunication.edit(Long.parseLong(qid2),
-                lid, "Edited question"));
+        assertFalse(QuestionCommunication.edit(Long.parseLong(qid2), lid, "Edited question"));
     }
 
     @Test
     public void editIncorrectQidTest() {
-        Lecture.setCurrentLecture(new Lecture(lid,
-                modkey, "SQL", "Christoph"));
-        assertEquals(-1, QuestionCommunication.edit(666, modkey, "Edited or not"));
+        Lecture.setCurrentLecture(new Lecture(lid, modkey, "SQL", "Christoph"));
+        assertFalse(QuestionCommunication.edit(666, modkey, "Edited or not"));
     }
 
     @Test
     public void editIncorrectModkeyTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "Relational algebra", "Christoph"));
-        assertEquals(-1,
-                QuestionCommunication.edit(Long.parseLong(qid3),
+        assertFalse(QuestionCommunication.edit(Long.parseLong(qid3),
                         incorrectModkey, "Edited by ..."));
     }
 
     /**
-     * Tests for set status.
+     * Tests for setting status of the question.
      */
 
     @Test
     public void setStatusSuccessfulTest() {
-        Lecture.setCurrentLecture(new Lecture(lid,
-                modkey, "placeholder", "placeholder"));
-        assertEquals(0, QuestionCommunication.setStatus(Long.parseLong(qid1),
+        Lecture.setCurrentLecture(new Lecture(lid, modkey,
+                "placeholder", "placeholder"));
+        assertTrue(QuestionCommunication.setStatus(Long.parseLong(qid1),
                 modkey, "editing", userId));
 
     }
@@ -770,8 +764,8 @@ public class QuestionCommunicationTest {
     @Test
     public void setStatusNoLectureExistsTest() {
         Lecture.setCurrentLecture(null);
-        assertEquals(-1, QuestionCommunication.setStatus(
-                Long.parseLong(qid1), modkey, "editing", userId));
+        assertFalse(QuestionCommunication.setStatus(Long.parseLong(qid1),
+                modkey, "editing", userId));
     }
 
     @Test
@@ -779,7 +773,7 @@ public class QuestionCommunicationTest {
         mockServer.stop();
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "placeholder", "placeholder"));
-        assertEquals(-2, QuestionCommunication.setStatus(Long.parseLong(qid1),
+        assertFalse(QuestionCommunication.setStatus(Long.parseLong(qid1),
                 modkey,"editing", userId));
 
         startServer();
@@ -789,24 +783,21 @@ public class QuestionCommunicationTest {
     public void setStatusInvalidTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "placeholder", "placeholder"));
-        assertEquals(-1, QuestionCommunication.setStatus(Long.parseLong(qid1),
-                lid, "invalid", userId));
+        assertFalse(QuestionCommunication.setStatus(Long.parseLong(qid1), lid, "invalid", userId));
     }
 
     @Test
     public void setStatusIncorrectQidTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "placeholder", "placeholder"));
-        assertEquals(-1, QuestionCommunication.setStatus(404,
-                modkey, "answering", userId));
+        assertFalse(QuestionCommunication.setStatus(404, modkey, "answering", userId));
     }
 
     @Test
     public void setStatusIncorrectModkeyTest() {
         Lecture.setCurrentLecture(new Lecture(lid,
                 modkey, "placeholder", "placeholder"));
-        assertEquals(-1,
-                QuestionCommunication.setStatus(Long.parseLong(qid1),
+        assertFalse(QuestionCommunication.setStatus(Long.parseLong(qid1),
                         incorrectModkey, "answering", userId));
     }
 
