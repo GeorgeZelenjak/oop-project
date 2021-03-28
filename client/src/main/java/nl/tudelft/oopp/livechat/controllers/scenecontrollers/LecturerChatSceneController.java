@@ -9,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
@@ -72,21 +71,6 @@ public class LecturerChatSceneController implements Initializable {
     private Button goToUserManualButton;
 
     @FXML
-    private Label showLabel;
-
-    @FXML
-    private Pane pollingBackground;
-
-    @FXML
-    private Pane speedBackground;
-
-    @FXML
-    private Text pollingText;
-
-    @FXML
-    private Text speedText;
-
-    @FXML
     private Button pollingButton;
 
     @FXML
@@ -94,9 +78,6 @@ public class LecturerChatSceneController implements Initializable {
 
     @FXML
     private Button lectureLog;
-
-    @FXML
-    private Button viewAnswered;
 
     @FXML
     private Button reopenPolling;
@@ -110,9 +91,6 @@ public class LecturerChatSceneController implements Initializable {
 
     @FXML
     private Button popupVoteResults;
-
-    @FXML
-    private Label sortByText;
 
     @FXML
     private CheckBox sortByTimeCheckBox;
@@ -142,16 +120,28 @@ public class LecturerChatSceneController implements Initializable {
     private Button leaveLecture;
 
     @FXML
-    private Label sortByLabel;
+    ObservableList<Question> observableList = FXCollections.observableArrayList();
 
     @FXML
-    ObservableList<Question> observableList = FXCollections.observableArrayList();
+    private Pane sortShowPane;
+
+    @FXML
+    private Pane rightSidePane;
+
+    @FXML
+    private Pane bottomPane;
+
+    @FXML
+    private Pane leftPane;
 
     private static List<Integer> lectureSpeeds;
 
     private List<Question> questions;
 
     private Timeline timelineFetch;
+
+    public LecturerChatSceneController() {
+    }
 
     /**
      * Method that runs at scene initalization.
@@ -313,74 +303,18 @@ public class LecturerChatSceneController implements Initializable {
      * Lecturer mode.
      */
     public void lecturerMode() {
-        this.lectureLog.setDisable(!this.lectureLog.isDisabled());
-        this.lectureLog.setVisible(!this.lectureLog.isVisible());
 
-        this.exportQA.setDisable(!this.exportQA.isDisabled());
-        this.exportQA.setVisible(!this.exportQA.isVisible());
+        this.sortShowPane.setDisable(!this.sortShowPane.isDisabled());
+        this.sortShowPane.setVisible(!this.sortShowPane.isVisible());
 
-        this.sortByLabel.setDisable(!this.sortByLabel.isDisabled());
-        this.sortByLabel.setVisible(!this.sortByLabel.isVisible());
+        this.rightSidePane.setDisable(!this.rightSidePane.isDisabled());
+        this.rightSidePane.setVisible(!this.rightSidePane.isVisible());
 
-        this.goToUserManualButton.setDisable(!this.goToUserManualButton.isDisabled());
-        this.goToUserManualButton.setVisible(!this.goToUserManualButton.isVisible());
+        this.bottomPane.setDisable(!this.bottomPane.isDisabled());
+        this.bottomPane.setVisible(!this.bottomPane.isVisible());
 
-        this.sortByVotesCheckBox.setDisable(!this.sortByVotesCheckBox.isDisabled());
-        this.sortByVotesCheckBox.setVisible(!this.sortByVotesCheckBox.isVisible());
-
-        this.sortByTimeCheckBox.setDisable(!this.sortByTimeCheckBox.isDisabled());
-        this.sortByTimeCheckBox.setVisible(!this.sortByTimeCheckBox.isVisible());
-
-        this.unansweredCheckBox.setDisable((!this.unansweredCheckBox.isDisabled()));
-        this.unansweredCheckBox.setVisible(!this.unansweredCheckBox.isVisible());
-
-        this.goToSettingsButton.setDisable(!this.goToSettingsButton.isDisabled());
-        this.goToSettingsButton.setVisible(!this.goToSettingsButton.isVisible());
-
-        this.pollingBackground.setDisable(!this.pollingBackground.isDisabled());
-        this.pollingBackground.setVisible(!this.pollingBackground.isVisible());
-
-        this.answeredCheckBox.setDisable(!this.answeredCheckBox.isDisabled());
-        this.answeredCheckBox.setVisible(!this.answeredCheckBox.isVisible());
-
-        this.speedBackground.setDisable(!this.speedBackground.isDisabled());
-        this.speedBackground.setVisible(!this.speedBackground.isVisible());
-
-        this.reopenPolling.setDisable(!this.reopenPolling.isDisabled());
-        this.reopenPolling.setVisible(!this.reopenPolling.isVisible());
-
-        this.createPolling.setDisable(!this.createPolling.isDisabled());
-        this.createPolling.setVisible(!this.createPolling.isVisible());
-
-        this.participants.setDisable(!this.participants.isDisabled());
-        this.participants.setVisible(!this.participants.isVisible());
-
-        this.viewAnswered.setDisable(!this.viewAnswered.isDisabled());
-        this.viewAnswered.setVisible(!this.viewAnswered.isVisible());
-
-        this.pollingText.setDisable(!this.pollingText.isDisabled());
-        this.pollingText.setVisible(!this.pollingText.isVisible());
-
-        this.popupVoteResults.setDisable(!this.popupVoteResults.isDisabled());
-
-        this.lectureLog.setDisable(!this.lectureLog.isDisabled());
-        this.lectureLog.setVisible(!this.lectureLog.isVisible());
-        this.popupVoteResults.setVisible(!this.popupVoteResults.isVisible());
-
-        this.sortByText.setDisable(!this.sortByText.isDisabled());
-        this.sortByText.setVisible(!this.sortByText.isVisible());
-
-        this.speedText.setDisable(!this.speedText.isDisabled());
-        this.speedText.setVisible(!this.speedText.isVisible());
-
-        this.showLabel.setDisable(!this.showLabel.isDisabled());
-        this.showLabel.setVisible(!this.showLabel.isVisible());
-
-        this.copyKey.setDisable(!this.copyKey.isDisabled());
-        this.copyKey.setVisible(!this.copyKey.isVisible());
-
-        this.copyId.setDisable(!this.copyId.isDisabled());
-        this.copyId.setVisible(!this.copyId.isVisible());
+        this.leftPane.setDisable(!this.leftPane.isDisabled());
+        this.leftPane.setVisible(!this.leftPane.isVisible());
     }
 
     /**
