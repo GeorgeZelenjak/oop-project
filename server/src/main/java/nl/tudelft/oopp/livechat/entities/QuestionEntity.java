@@ -9,6 +9,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
 /**
@@ -17,11 +18,13 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity(name = "question")
 @Table(name = "questions")
 @DynamicUpdate
+@EnableTransactionManagement
 public class QuestionEntity {
 
     @Id
     @Column(name = "id")
-    private long id = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "id")
+    private long id  = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
 
     @Column(name = "lectureId")
     private UUID lectureId;
@@ -35,11 +38,17 @@ public class QuestionEntity {
     @Column(name = "text", length = 2000)
     private String text;
 
+    @Column(name = "status")
+    private String status = "new";
+
     @Column(name = "answered")
     private boolean answered;
 
     @Column(name = "answerText", length = 2000)
     private String answerText;
+
+    @Column(name = "edited")
+    private boolean edited;
 
     @Column(name = "answerTime")
     private Timestamp answerTime;
@@ -47,6 +56,13 @@ public class QuestionEntity {
     @JsonIgnore
     @Column(name = "ownerId")
     private long ownerId;
+
+    @JsonIgnore
+    @Column(name = "editorId")
+    private long editorId;
+
+    @Column(name = "ownername")
+    String ownerName;
 
     /**
      * Empty constructor to create a question entity.
@@ -76,6 +92,7 @@ public class QuestionEntity {
      * @param text the text of the question
      * @param time the time the question was asked
      * @param ownerId the owner id
+     * @return the question entity
      */
     public static QuestionEntity create(UUID lectureId, String text, Timestamp time, long ownerId) {
         QuestionEntity q = new QuestionEntity();
@@ -90,7 +107,6 @@ public class QuestionEntity {
      * Sets id of the question.
      * @param id the new id of the question
      */
-    @SuppressWarnings("unused")
     public void setId(long id) {
         this.id = id;
     }
@@ -115,7 +131,6 @@ public class QuestionEntity {
      * Sets the id of the lecture.
      * @param lectureId the new id of the lecture
      */
-    @SuppressWarnings("unused")
     public void setLectureId(UUID lectureId) {
         this.lectureId = lectureId;
     }
@@ -130,6 +145,7 @@ public class QuestionEntity {
 
     /**
      * Gets the number of votes.
+     *
      * @return the number of votes
      */
     public int getVotes() {
@@ -145,7 +161,7 @@ public class QuestionEntity {
 
 
     /**
-     * Decrement question votes by 1.
+     * Decrements the vote count of the question by 1.
      */
     public void unvote() {
         this.votes--;
@@ -168,6 +184,22 @@ public class QuestionEntity {
     }
 
     /**
+     * Gets the status of the question.
+     * @return the status of the question (e.g new, editing etc.)
+     */
+    public String getStatus() {
+        return this.status;
+    }
+
+    /**
+     * Sets the status of the question.
+     * @param status the new status of the question (e.g new, editing etc.)
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
      * Checks whether the question is (un)answered.
      * @return true if the question is answered, false otherwise
      */
@@ -176,11 +208,27 @@ public class QuestionEntity {
     }
 
     /**
-     * Sets the question an (un)answered.
+     * Sets the question as (un)answered.
      * @param answered true or false to indicate if the question is (un)answered
      */
     public void setAnswered(boolean answered) {
         this.answered = answered;
+    }
+
+    /**
+     * Checks whether the question has been edited.
+     * @return true if the question has been edited, false otherwise
+     */
+    public boolean isEdited() {
+        return this.edited;
+    }
+
+    /**
+     * Sets the question as (un)edited.
+     * @param edited true or false to indicate if the question has been edited or not
+     */
+    public void setEdited(boolean edited) {
+        this.edited = edited;
     }
 
     /**
@@ -216,6 +264,22 @@ public class QuestionEntity {
     }
 
     /**
+     * Gets the owner name.
+     * @return the owner name
+     */
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    /**
+     * Sets owner name.
+     * @param ownerName the owner name
+     */
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    /**
      * Gets the id of the owner of the question.
      * @return the id of the owner of the question.
      */
@@ -233,10 +297,28 @@ public class QuestionEntity {
         this.ownerId = ownerId;
     }
 
+
+    /**
+     * Gets the id of the editor.
+     * @return the id of the editor if the question is being modified
+     */
+    public long getEditorId() {
+        return editorId;
+    }
+
+    /**
+     * Sets the id of the editor if the question is being modified.
+     * @param editorId the id of the editor
+     */
+    public void setEditorId(long editorId) {
+        this.editorId = editorId;
+    }
+
     /**
      * Compares the question to another object.
      * @param o object to compare to
-     * @return true iff the other object is also a Question and has the same id. False otherwise
+     * @return true iff the other object is also a QuestionEntity and has the same id.
+     *          False otherwise
      */
     @Override
     public boolean equals(Object o) {
@@ -256,7 +338,7 @@ public class QuestionEntity {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.lectureId, this.time);
+        return Objects.hash(this.id);
     }
 
     /**

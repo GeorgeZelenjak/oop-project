@@ -1,9 +1,16 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import nl.tudelft.oopp.livechat.data.Lecture;
+import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.data.User;
+import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.io.IOException;
 import java.util.Stack;
@@ -37,7 +44,7 @@ public class NavigationController {
      *
      * @param currentController the current controller
      */
-    public static void setCurrentController(NavigationController currentController) {
+    public static void setCurrent(NavigationController currentController) {
         NavigationController.currentController = currentController;
     }
 
@@ -46,99 +53,137 @@ public class NavigationController {
      *
      * @return the current controller
      */
-    public static NavigationController getCurrentController() {
+    public static NavigationController getCurrent() {
         return currentController;
     }
 
     /**
      * Navigation to the main page.
-     *
-     * @throws IOException the io exception
      */
-    public void goToUserManual() throws IOException {
-        goToSceneHelper("/fxml/userManualScene.fxml");
+    public void goToUserManual()  {
+        goToSceneHelper("/fxml/scenes/userManualScene.fxml");
     }
 
     /**
      * Navigation to the main scene.
-     *
-     * @throws IOException the io exception
      */
-    public void goToMainScene() throws IOException {
-        goToSceneHelper("/fxml/mainScene.fxml");
+    public void goToMainScene()  {
+        goToSceneHelper("/fxml/scenes/mainScene.fxml");
     }
 
     /**
      * Navigation to the create room scene.
-     *
-     * @throws IOException the io exception
      */
-    public void goToCreateRoomScene() throws IOException {
-        goToSceneHelper("/fxml/createLectureScene.fxml");
+    public void goToCreateRoomScene()  {
+        goToSceneHelper("/fxml/scenes/createLectureScene.fxml");
     }
 
     /**
      * Navigation to the create room scene.
-     *
-     * @throws IOException the io exception
      */
-    public void goToJoinLecturePage() throws IOException {
-        goToSceneHelper("/fxml/joinLectureScene.fxml");
+    public void goToJoinLecturePage()  {
+        goToSceneHelper("/fxml/scenes/joinLectureScene.fxml");
     }
 
     /**
      * Navigation to the lecturer chat room scene.
-     *
-     * @throws IOException the io exception
      */
-    public void goToLecturerChatPage() throws IOException {
-        goToSceneHelper("/fxml/lecturerChatScene.fxml");
+    public void goToLecturerChatPage() {
+        goToSceneHelper("/fxml/scenes/lecturerChatScene.fxml");
     }
 
     /**
      * Navigation to the user chat page.
-     *
-     * @throws IOException the io exception
      */
-    public void goToUserChatPage() throws IOException {
-        goToSceneHelper("/fxml/userChatScene.fxml");
+    public void goToUserChatPage() {
+        goToSceneHelper("/fxml/scenes/userChatScene.fxml");
     }
 
     /**
      * Go to scene helper.
-     *
-     * @throws IOException the io exception
      */
-    private void goToSceneHelper(String javaFxFile) throws IOException {
-        backStack.push(this.main);
-        Parent root = FXMLLoader.load(getClass().getResource(javaFxFile));
-        Stage window = (Stage) main.getWindow();
-        Scene main = new Scene(root, 1080,768);
-        this.main = main;
-        window.setScene(main);
+    private void goToSceneHelper(String javaFxFile) {
+        try {
+            backStack.push(this.main);
+            Parent root = FXMLLoader.load(getClass().getResource(javaFxFile));
+            Stage window = (Stage) main.getWindow();
+            Scene main = new Scene(root, 1080, 768);
+            this.main = main;
+            window.setScene(main);
+
+            //Closes the entire program when the main scene is closed
+            window.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent e) {
+                    Platform.exit();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    private void popupHelper(String javaFxFile, int width, int height, String title) {
+        Parent root;
+        try {
+            root = FXMLLoader.load(getClass().getResource(javaFxFile));
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(new Scene(root, width, height));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void popupHelperSendRequests(String javaFxFile, int width, int height,
+                                         String req, String title) {
+        Parent root;
+        try {
+            root = FXMLLoader.load(getClass().getResource(javaFxFile));
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(new Scene(root, width, height));
+            if (!QuestionCommunication.setStatus(Question.getCurrent().getId(),
+                    Lecture.getCurrent().getModkey(), req, User.getUid())) {
+                AlertController.alertWarning("Question is already being handled",
+                        "This question is already being handled, if you want you can continue");
+            }
+            stage.show();
+            //Closes the entire program when the main scene is closed
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent e) {
+                    QuestionCommunication.setStatus(Question.getCurrent().getId(),
+                            Lecture.getCurrent().getModkey(), "new", User.getUid());
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     /**
      * Go to settings.
-     *
-     * @throws IOException the io exception
      */
-    public void goToSettings() throws IOException {
-        goToSceneHelper("/fxml/settingsScene.fxml");
+    public void goToSettings() {
+        goToSceneHelper("/fxml/scenes/settingsScene.fxml");
     }
 
     /**
      * Go to test scene.
-     *
-     * @throws IOException the io exception
      */
     @SuppressWarnings("unused")
-    public void goToTestScene() throws IOException {
-        goToSceneHelper("/fxml/newUserChatScene.fxml");
+    public void goToTestScene() {
+        goToSceneHelper("/fxml/scenes/newUserChatScene.fxml");
     }
 
-    public void goToDebugScene() throws IOException {
-        goToSceneHelper("/fxml/debugScene.fxml");
+    public void goToDebugScene() {
+        goToSceneHelper("/fxml/scenes/debugScene.fxml");
     }
 
     /**
@@ -148,5 +193,53 @@ public class NavigationController {
         Stage window = (Stage) main.getWindow();
         this.main = backStack.pop();
         window.setScene(main);
+    }
+
+    /**
+     * Makes a popup to answer question.
+     */
+    public void popupAnswerQuestion() {
+        popupHelperSendRequests("/fxml/popupscenes/answerQuestionPopup.fxml", 600,400,
+                "answering","Answer");
+    }
+
+    /**
+     * Makes a popup to the lecturer scene.
+     */
+    public void popupLecturerScene() {
+        popupHelper("/fxml/scenes/lecturerChatScene.fxml",1080,768,
+                "debug");
+    }
+
+    /**
+     * Makes a popup to edit question.
+     */
+    public void popupEditQuestion() {
+        popupHelperSendRequests("/fxml/popupscenes/editQuestionPopup.fxml", 600,400,
+                "editing", "Edit");
+    }
+
+    /**
+     * Popup polling management.
+     */
+    public void popupPollingManagement() {
+        popupHelper("/fxml/popupscenes/pollingManagementPopup.fxml", 720, 512,
+                "Polls and Quizzes");
+    }
+
+    /**
+     * Popup poll result.
+     */
+    public void popupPollResult() {
+        popupHelper("/fxml/popupscenes/pollResultsPopup.fxml",
+                720, 512, "Results");
+    }
+
+    /**
+     * Popup poll voting.
+     */
+    public void popupPollVoting() {
+        popupHelper("/fxml/popupscenes/pollVotingPopup.fxml",
+                720, 512, "Vote");
     }
 }

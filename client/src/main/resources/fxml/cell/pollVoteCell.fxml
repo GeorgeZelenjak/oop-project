@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="cellAnchorPane" maxHeight="33.0" minHeight="33.0" prefHeight="33.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+      <Text fx:id="optionText" layoutX="10.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Default option text which you will hopefully not see if our programm works" wrappingWidth="463.13671875" />
+      <ToggleButton fx:id="answerButton" layoutX="610.0" layoutY="8.0" maxHeight="16.0" minHeight="6.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="16.0" />
+    </children>
+</AnchorPane>

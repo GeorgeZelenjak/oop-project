@@ -5,15 +5,24 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
+
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
+import nl.tudelft.oopp.livechat.entities.UserEntity;
+import nl.tudelft.oopp.livechat.repositories.LectureRepository;
+import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
+import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
+import nl.tudelft.oopp.livechat.repositories.UserRepository;
+import nl.tudelft.oopp.livechat.services.LectureService;
+import nl.tudelft.oopp.livechat.services.QuestionService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,43 +41,98 @@ class QuestionControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
+    private LectureService lectureService;
+
+    @Autowired
+    private QuestionService questionService;
+
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
+    private LectureRepository lectureRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserQuestionRepository userQuestionRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
-    QuestionEntity q1;
-    QuestionEntity q2;
-    LectureEntity lectureEntity1;
-    LectureEntity lectureEntity2;
-    String q1Json;
-    String q2Json;
+    private static final Timestamp time = new Timestamp(System.currentTimeMillis());
+    private static final long uid1 = 1268346912741204312L;
+    private static final long uid2 = 8976889685345625524L;
 
-    @BeforeEach
-    void setup() throws Exception {
-        objectMapper.registerModule(new JavaTimeModule());
-        String lecture1 = this.mockMvc.perform(post("/api/newLecture?name=test1"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-        lectureEntity1 = objectMapper.readValue(lecture1, LectureEntity.class);
-        String lecture2 = this.mockMvc.perform(post("/api/newLecture?name=test2"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-        lectureEntity2 = objectMapper.readValue(lecture2, LectureEntity.class);
+    private static LectureEntity lectureEntity1;
+    private static LectureEntity lectureEntity2;
+
+    private static QuestionEntity q1;
+    private static QuestionEntity q2;
+
+    private static UserEntity user1;
+    private static UserEntity user2;
+
+    /**
+     * A helper method to convert question to json.
+     * @param q question object
+     * @return the json representing the object
+     * @throws JsonProcessingException if something goes wrong
+     */
+    private String createQuestionJson(QuestionEntity q) throws JsonProcessingException {
+        String json = objectMapper.writeValueAsString(q);
+        JsonNode node = objectMapper.readTree(json);
+        node = ((ObjectNode) node).put("ownerId", q.getOwnerId());
+        json = node.toString();
+        return json;
+    }
+
+
+    @BeforeAll
+    public static void setup() {
+        lectureEntity1 = new LectureEntity("How to get 10 in OOPP",
+                "Jegor", time);
+
+        lectureEntity1.setFrequency(0);
+        lectureEntity2 = new LectureEntity("How to get 100 in OOPP",
+                "Jegorka", time);
+        lectureEntity2.setFrequency(0);
+        user1 = new UserEntity(1268346912741204312L, "Ivo", new Timestamp(
+                System.currentTimeMillis()), true,
+                "192.168.1.1", lectureEntity1.getUuid());
+        user2 = new UserEntity(8976889685345625524L, "Stefan", new Timestamp(
+                System.currentTimeMillis()), false,
+                "192.185.7.3", lectureEntity2.getUuid());
+
         q1 = new QuestionEntity(lectureEntity1.getUuid(),
                 "What would you do if a seagull entered in your house?",
-                        new Timestamp(System.currentTimeMillis()), 42);
+                new Timestamp(System.currentTimeMillis()), uid1);
         q2 = new QuestionEntity(lectureEntity2.getUuid(),
                 "What would you do if a pelican entered in your house?",
-                        new Timestamp(System.currentTimeMillis()), 69);
-        q1Json = objectMapper.writeValueAsString(q1);
-        JsonNode node1 = objectMapper.readTree(q1Json);
-        node1 = ((ObjectNode) node1).put("ownerId", q1.getOwnerId());
-        q1Json = node1.toString();
+                new Timestamp(System.currentTimeMillis()), uid2);
+    }
 
-        q2Json = objectMapper.writeValueAsString(q2);
-        JsonNode node2 = objectMapper.readTree(q2Json);
-        node2 = ((ObjectNode) node2).put("ownerId", q2.getOwnerId());
-        q2Json = node2.toString();
+    @BeforeEach
+    void setUp() {
+        lectureRepository.save(lectureEntity1);
+        lectureRepository.save(lectureEntity2);
+
+        q1 = questionRepository.save(q1);
+        q2 = questionRepository.save(q2);
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+    }
+
+    @AfterEach
+    void cleanUp() {
+        if (questionRepository.findById(q1.getId()).isPresent()) {
+            questionRepository.deleteById(q1.getId());
+        }
+        if (questionRepository.findById(q2.getId()).isPresent()) {
+            questionRepository.deleteById(q2.getId());
+        }
     }
 
 
@@ -78,7 +142,7 @@ class QuestionControllerTest {
      * @return id of the new question
      * @throws Exception if something goes wrong
      */
-    String postQuestions(String question) throws Exception {
+    String postQuestion(String question) throws Exception {
         return this.mockMvc
                 .perform(post("/api/question/ask")
                         .contentType(APPLICATION_JSON)
@@ -99,14 +163,25 @@ class QuestionControllerTest {
                 .perform(get("/api/question/fetch?lid=" + lectureId))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        return objectMapper.readValue(listLectureString,
+        List<QuestionEntity> list = objectMapper.readValue(listLectureString,
                 new TypeReference<>(){});
+        int pos = 0;
+        for (String q : listLectureString.split("(},\\{)|(}])")) {
+            for (String prop : q.split(",")) {
+                if (prop.startsWith("\"id\"")) {
+                    long id = Long.parseLong(prop.split(":")[1]);
+                    list.get(pos++).setId(id);
+                    break;
+                }
+            }
+        }
+        return list;
     }
 
     /**
      * A method to delete a question.
      * @param url url with question id and owner id/moderator id values
-     * @return 0 if successful, otherwise -1
+     * @return 0 if successful
      * @throws Exception if something goes wrong
      */
     int deleteQuestion(String url) throws Exception {
@@ -119,10 +194,10 @@ class QuestionControllerTest {
     /**
      * A method to edit questions.
      * @param bodyJson JSON representation of parameters used to edit
-     * @return 0 if successful, -1 otherwise
+     * @return 0 if successful
      * @throws Exception if something goes wrong
      */
-    int editQuestion(String bodyJson) throws  Exception {
+    int editQuestion(String bodyJson) throws Exception {
         String result = this.mockMvc
                 .perform(put("/api/question/edit")
                         .contentType(APPLICATION_JSON)
@@ -137,7 +212,7 @@ class QuestionControllerTest {
      * A method to upvote a question.
      * @param qid id of the question
      * @param uid id of the user
-     * @return 0 if successful, otherwise -1
+     * @return 0 if successful
      * @throws Exception if something goes wrong
      */
     int upvote(long qid, long uid) throws Exception {
@@ -148,17 +223,35 @@ class QuestionControllerTest {
     }
 
     /**
-     * A method to anwer a question.
-     *
-     * @param qid id of the question
-     * @param modkey the modkey
-     * @return 0 if successful, otherwise -1
+     * A method to answer a question.
+     * @param qid the id of the question
+     * @param modkey the moderator key
+     * @return 0 if successful
      * @throws Exception if something goes wrong
      */
     int answer(long qid, String modkey) throws Exception {
         String result = this.mockMvc.perform(put("/api/question/answer/" + qid + "/" + modkey)
                 .contentType(APPLICATION_JSON)
-                .content("This is definitely a question asnwer dude")
+                .content("This is definitely a question answer dude")
+                .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        return Integer.parseInt(result);
+    }
+
+    /**
+     * A method to set the status of a question.
+     * @param qid the id of the question
+     * @param modkey the moderator key
+     * @param uid the id of the user
+     * @return 0 if successful
+     * @throws Exception if something goes wrong
+     */
+    int setStatus(long qid, UUID modkey, long uid) throws Exception {
+        String result = this.mockMvc.perform(put("/api/question/status/"
+                    + qid + "/" + uid + "/" + modkey)
+                .contentType(APPLICATION_JSON)
+                .content("editing")
                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
@@ -167,193 +260,183 @@ class QuestionControllerTest {
 
     @Test
     void askQuestionSuccessfulTest() throws Exception {
-        String qid1string = postQuestions(q1Json);
-        long qid1 = Long.parseLong(qid1string);
-        assertTrue(qid1 > 0);
+        String qid1string = postQuestion(createQuestionJson(q1));
+        long qid = Long.parseLong(qid1string);
+        assertTrue(qid > 0);
+        assertNotEquals(q1.getId(), qid);
+
+        //delete the newly created question to make the tests independent
+        questionRepository.deleteById(qid);
     }
 
     @Test
-    void askQuestionUnsuccessfulTest() throws Exception {
-        postQuestions(q1Json);
+    void askQuestionUserBannedTest() throws Exception {
+        questionRepository.deleteById(q2.getId());
 
-        //check that 2 questions with the same id cannot bee asked
-        q2.setId(q1.getId());
-        String q2edited = objectMapper.writeValueAsString(q2);
-        String result = postQuestions(q2edited);
-        assertEquals("-1", result);
+        String result = this.mockMvc.perform(post("/api/question/ask")
+                        .contentType(APPLICATION_JSON)
+                        .content(createQuestionJson(q2))
+                        .characterEncoding("utf-8"))
+                        .andExpect(status().isForbidden())
+                        .andReturn().getResponse().getErrorMessage();
+        assertEquals("This user is banned", result);
+
+        //check if there are no questions with the id of q2
+        QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
+        assertNull(q);
+    }
+
+    @Test
+    public void askQuestionFailingJSONTest() throws Exception {
+        String response = this.mockMvc
+                .perform(post("/api/question/ask")
+                        .contentType(APPLICATION_JSON)
+                        .content("not a question")
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+        assertEquals("Don't do this", response);
     }
 
     @Test
     void fetchQuestionsTest() throws Exception {
-        final long qid1 = Long.parseLong(postQuestions(q1Json));
-        final long qid2 = Long.parseLong(postQuestions(q2Json));
-
         List<QuestionEntity> listLecture1 = getQuestions(lectureEntity1.getUuid().toString());
         List<QuestionEntity> listLecture2 = getQuestions(lectureEntity2.getUuid().toString());
 
         assertEquals(1, listLecture1.size());
         assertEquals(1, listLecture2.size());
 
-        assertEquals(qid1, listLecture1.get(0).getId());
-        assertEquals(qid2, listLecture2.get(0).getId());
+        assertEquals(q1.getId(), listLecture1.get(0).getId());
+        assertEquals(q2.getId(), listLecture2.get(0).getId());
     }
 
     @Test
     void fetchQuestionsFakeIdTest() throws Exception {
-        this.mockMvc
-                .perform(get("/api/question/fetch?lid=" + "something_wrong"))
-                .andExpect(status().is4xxClientError());
+        this.mockMvc.perform(get("/api/question/fetch?lid=" + "something_wrong"))
+                    .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void fetchQuestionsNoQuestionsTest() throws Exception {
+        questionRepository.deleteById(q1.getId());
+        questionRepository.deleteById(q2.getId());
+
+        List<QuestionEntity> listLecture = getQuestions(lectureEntity1.getUuid().toString());
+        assertEquals(0, listLecture.size());
     }
 
     @Test
     void deleteQuestionSuccessfulTest() throws Exception {
-        long qid1 = Long.parseLong(postQuestions(q1Json));
-        postQuestions(q2Json);
-
-
-        int result = deleteQuestion("/api/question/delete?qid=" + qid1
+        int result = deleteQuestion("/api/question/delete?qid=" + q1.getId()
                                                 + "&uid=" + q1.getOwnerId());
         assertEquals(0, result);
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        assertEquals(0, listLecture1after.size());
-        assertEquals(1, listLecture2after.size());
+        assertEquals(0, listLecture.size());
     }
 
     @Test
     void deleteQuestionUnsuccessfulTest() throws Exception {
-        long qid1 = Long.parseLong(postQuestions(q1Json));
-        postQuestions(q2Json);
+        String result = this.mockMvc.perform(delete("/api/question/delete?qid=" + q1.getId()
+                + "&uid=" + q2.getOwnerId())).andExpect(status().isForbidden())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Not allowed to delete this question", result);
 
-        int result = deleteQuestion("/api/question/delete?qid=" + qid1
-                                                + "&uid=" + q2.getOwnerId());
-        assertEquals(-1, result);
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
-
-        assertEquals(1, listLecture1after.size());
-        assertEquals(1, listLecture2after.size());
+        assertEquals(1, listLecture.size());
     }
 
     @Test
     void modDeleteSuccessfulTest() throws Exception {
-        long qid1 = Long.parseLong(postQuestions(q1Json));
-        postQuestions(q2Json);
-
         int result = deleteQuestion("/api/question/moderator/delete?qid="
-                + qid1 + "&modkey=" + lectureEntity1.getModkey().toString());
+                + q1.getId() + "&modkey=" + lectureEntity1.getModkey().toString());
         assertEquals(0, result);
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        assertEquals(0, listLecture1after.size());
-        assertEquals(1, listLecture2after.size());
+        assertEquals(0, listLecture.size());
     }
 
     @Test
     void modDeleteUnsuccessfulTest() throws Exception {
-        long qid1 = Long.parseLong(postQuestions(q1Json));
-        postQuestions(q2Json);
+        String result = this.mockMvc.perform(delete("/api/question/moderator/delete?qid="
+                + q1.getId() + "&modkey=" + lectureEntity2.getModkey().toString()))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
 
-        final int result = deleteQuestion("/api/question/moderator/delete?qid=" + qid1
-                + "&modkey=" + lectureEntity2.getModkey().toString());
-        assertEquals(-1, result);
+        List<QuestionEntity> listLecture = getQuestions(lectureEntity1.getUuid().toString());
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
-
-        assertEquals(1, listLecture1after.size());
-        assertEquals(1, listLecture2after.size());
+        assertEquals(1, listLecture.size());
     }
 
     @Test
     void upvoteSuccessfulTest() throws Exception {
-        final long qid1 = Long.parseLong(postQuestions(q1Json));
-        postQuestions(q2Json);
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        final int oldVotes = listLecture.get(0).getVotes();
 
-        final int oldVotes1 = listLecture1after.get(0).getVotes();
-        final int oldVotes2 = listLecture2after.get(0).getVotes();
-
-        final int result = upvote(qid1, q1.getOwnerId());
+        int result = upvote(q1.getId(), q1.getOwnerId());
         assertEquals(0, result);
 
-        listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        listLecture = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        int newVotes1 = listLecture1after.get(0).getVotes();
-        int newVotes2 = listLecture2after.get(0).getVotes();
+        int newVotes = listLecture.get(0).getVotes();
 
-        assertEquals(oldVotes1 + 1, newVotes1);
-        assertEquals(oldVotes2, newVotes2);
+        assertEquals(oldVotes + 1, newVotes);
     }
 
     @Test
     void unvoteSuccessfulTest() throws Exception {
-        long qid1 = Long.parseLong(postQuestions(q1Json));
-        postQuestions(q2Json);
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        final int oldVotes = listLecture.get(0).getVotes();
 
-        final int oldVotes1 = listLecture1after.get(0).getVotes();
-        final int oldVotes2 = listLecture2after.get(0).getVotes();
-
-        upvote(qid1, q1.getOwnerId());
-        final int result = upvote(qid1, q1.getOwnerId());
+        upvote(q1.getId(), q1.getOwnerId());
+        int result = upvote(q1.getId(), q1.getOwnerId());
         assertEquals(0, result);
 
-        listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        listLecture = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        int newVotes1 = listLecture1after.get(0).getVotes();
-        int newVotes2 = listLecture2after.get(0).getVotes();
-
-        assertEquals(oldVotes1, newVotes1);
-        assertEquals(oldVotes2, newVotes2);
+        int newVotes = listLecture.get(0).getVotes();
+        assertEquals(oldVotes, newVotes);
     }
 
     @Test
     void upvoteUnsuccessfulTest() throws Exception {
-        postQuestions(q1Json);
-        long qid1 = -1;
-        postQuestions(q2Json);
+        userRepository.deleteById(uid1);
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        List<QuestionEntity> listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        final int oldVotes = listLecture.get(0).getVotes();
 
-        final int oldVotes1 = listLecture1after.get(0).getVotes();
-        final int oldVotes2 = listLecture2after.get(0).getVotes();
+        String result = this.mockMvc.perform(put("/api/question/upvote?qid=" + q1.getId()
+                + "&uid=" + q1.getOwnerId())).andExpect(status().isConflict())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("This user is not registered", result);
 
-        upvote(qid1, q1.getOwnerId());
-        final int result = upvote(qid1, q1.getOwnerId());
-        assertEquals(-1, result);
+        listLecture = questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        int newVotes = listLecture.get(0).getVotes();
+        assertEquals(oldVotes, newVotes);
 
-        int newVotes1 = listLecture1after.get(0).getVotes();
-        int newVotes2 = listLecture2after.get(0).getVotes();
-
-        assertEquals(oldVotes1, newVotes1);
-        assertEquals(oldVotes2, newVotes2);
+        userRepository.save(user1);
     }
 
     @Test
     void editSuccessfulTest() throws Exception {
-        long qid1 = Long.parseLong(postQuestions(q1Json));
-
         ObjectNode node = objectMapper.createObjectNode();
-        node.put("id", qid1);
+        node.put("id", q1.getId());
         node.put("modkey", lectureEntity1.getModkey().toString());
         node.put("text", "this is the new text");
-        node.put("uid", 42);
+        node.put("uid", uid1);
         String json = node.toString();
 
         int result = editQuestion(json);
@@ -363,38 +446,18 @@ class QuestionControllerTest {
 
         assertNotNull(question1after);
         assertEquals(question1after.getText(), "this is the new text");
-        assertEquals(0, question1after.getOwnerId());       //check that owner id is not exposed
+        assertTrue(question1after.isEdited());
+        //check that owner id is not exposed
+        assertEquals(0, question1after.getOwnerId());
     }
 
     @Test
     void editUnsuccessfulUnauthorizedTest() throws Exception {
-        long qid1 = Long.parseLong(postQuestions(q1Json));
-
         ObjectNode node = objectMapper.createObjectNode();
-        node.put("id", qid1);
+        node.put("id", q1.getId());
         node.put("modkey", lectureEntity2.getModkey().toString());
         node.put("text", "this is the new text");
-        node.put("uid", 12);
-        String json = node.toString();
-
-        int result = editQuestion(json);
-        assertEquals(-1, result);
-        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
-        assertNotNull(question1after);
-        assertEquals(question1after.getText(),
-                "What would you do if a seagull entered in your house?");
-        assertNotEquals(question1after.getOwnerId(), 12);
-    }
-
-    @Test
-    void editUnsuccessfulBadRequestTest() throws Exception {
-        long qid1 = Long.parseLong(postQuestions(q1Json));
-
-        ObjectNode node = objectMapper.createObjectNode();
-        node.put("id", qid1);
-        node.put("modkey", "oh yes i know this uuid");
-        node.put("text", "this is the new text");
-        node.put("uid", 12);
+        node.put("uid", uid2);
         String json = node.toString();
 
         String result = this.mockMvc
@@ -402,80 +465,165 @@ class QuestionControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(json)
                         .characterEncoding("utf-8"))
-                .andExpect(status().is4xxClientError())
-                .andReturn().getResponse().getContentAsString();
-        assertEquals("Invalid UUID", result);
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
 
         QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
         assertNotNull(question1after);
         assertEquals(question1after.getText(),
                 "What would you do if a seagull entered in your house?");
-        assertNotEquals(question1after.getOwnerId(), 12);
+        assertFalse(question1after.isEdited());
+        assertNotEquals(question1after.getOwnerId(), uid2);
+    }
+
+    @Test
+    void editUnsuccessfulBadRequestTest() throws Exception {
+        ObjectNode node = objectMapper.createObjectNode();
+        node.put("id", q1.getId());
+        node.put("modkey", "oh yes i know this uuid");
+        node.put("text", "this is the new text");
+        node.put("uid", uid2);
+        String json = node.toString();
+
+        String result = this.mockMvc
+                .perform(put("/api/question/edit")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+        assertEquals("UUID is not in the correct format", result);
+
+        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        assertNotNull(question1after);
+        assertFalse(question1after.isEdited());
+        assertEquals(question1after.getText(),
+                "What would you do if a seagull entered in your house?");
+        assertNotEquals(question1after.getOwnerId(), uid2);
+    }
+
+    @Test
+    void editUnsuccessfulNullPointerTest() throws Exception {
+        ObjectNode node = objectMapper.createObjectNode();
+        node.put("id", q1.getId());
+        node.put("modkey", lectureEntity1.getModkey().toString());
+        node.put("uid", uid2);
+        String jason = node.toString();
+
+        String result = this.mockMvc
+                .perform(put("/api/question/edit")
+                        .contentType(APPLICATION_JSON)
+                        .content(jason)
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+        assertEquals("Missing parameter", result);
+
+        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        assertNotNull(question1after);
+        assertFalse(question1after.isEdited());
+        assertEquals(question1after.getText(),
+                "What would you do if a seagull entered in your house?");
+        assertNotEquals(question1after.getOwnerId(), uid2);
     }
 
     @Test
     void answerSuccessfulTest() throws Exception {
-        final long qid1 = Long.parseLong(postQuestions(q1Json));
-        postQuestions(q2Json);
-
-        List<QuestionEntity> listLecture1after;
-        List<QuestionEntity> listLecture2after;
-
-        final int result = answer(qid1, lectureEntity1.getModkey().toString());
+        final int result = answer(q1.getId(), lectureEntity1.getModkey().toString());
         assertEquals(0, result);
 
-        listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture1 =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        boolean q1status = listLecture1after.get(0).isAnswered();
-        boolean q2status = listLecture2after.get(0).isAnswered();
-
-        assertTrue(q1status);
-        assertFalse(q2status);
+        assertTrue(listLecture1.get(0).isAnswered());
     }
 
     @Test
-    void answerUnuccessfulTest() throws Exception {
-        final long qid1 = Long.parseLong(postQuestions(q1Json));
-        postQuestions(q2Json);
+    void answerUnsuccessfulTest() throws Exception {
+        String result = this.mockMvc.perform(put("/api/question/answer/"
+                + q1.getId() + "/" + lectureEntity2.getModkey().toString())
+                .contentType(APPLICATION_JSON)
+                .content("This is definitely a question answer dude")
+                .characterEncoding("utf-8"))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
 
-        List<QuestionEntity> listLecture1after;
-        List<QuestionEntity> listLecture2after;
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        final int result = answer(qid1, lectureEntity2.getModkey().toString());
-        assertEquals(-1, result);
-
-        listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
-
-        boolean q1status = listLecture1after.get(0).isAnswered();
-        boolean q2status = listLecture2after.get(0).isAnswered();
-
-        assertFalse(q1status);
-        assertFalse(q2status);
+        assertFalse(listLecture.get(0).isAnswered());
     }
 
     @Test
-    void answerUnuccessfulInvalidModkeyTest() throws Exception {
-        final long qid1 = Long.parseLong(postQuestions(q1Json));
-        postQuestions(q2Json);
-
-        List<QuestionEntity> listLecture1after;
-        List<QuestionEntity> listLecture2after;
-
+    void answerUnsuccessfulInvalidModkeyTest() throws Exception {
         String resultString = this.mockMvc.perform(
-                put("/api/question/answer/" + qid1 + "/" + "modkey"))
-                .andExpect(status().is4xxClientError())
+                put("/api/question/answer/" + q1.getId() + "/" + "modkey"))
+                .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
-        assertEquals("Invalid UUID", resultString);
+        assertEquals("UUID is not in the correct format", resultString);
 
-        listLecture1after = getQuestions(lectureEntity1.getUuid().toString());
-        listLecture2after = getQuestions(lectureEntity2.getUuid().toString());
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
 
-        boolean q1status = listLecture1after.get(0).isAnswered();
-        boolean q2status = listLecture2after.get(0).isAnswered();
+        assertFalse(listLecture.get(0).isAnswered());
+    }
 
-        assertFalse(q1status);
-        assertFalse(q2status);
+    @Test
+    void setStatusSuccessfulTest() throws Exception {
+        int result = setStatus(q1.getId(), lectureEntity1.getModkey(),
+                user1.getUid());
+        assertEquals(0, result);
+
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+
+        assertEquals("editing", listLecture.get(0).getStatus());
+        assertEquals(user1.getUid(), listLecture.get(0).getEditorId());
+    }
+
+    @Test
+    void setStatusWrongModKeyTest() throws Exception {
+        String result = this.mockMvc.perform(put("/api/question/status/"
+                + q1.getId() + "/" + user1.getUid() + "/" + UUID.randomUUID())
+                .contentType(APPLICATION_JSON)
+                .content("answering")
+                .characterEncoding("utf-8"))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
+
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+
+        assertEquals("new", listLecture.get(0).getStatus());
+        assertEquals(0, listLecture.get(0).getEditorId());
+    }
+
+    @Test
+    void setStatusQuestionAlreadyModifiedTest() throws Exception {
+        q1.setEditorId(42);
+        q1.setStatus("editing");
+        questionRepository.save(q1);
+
+        String result = this.mockMvc.perform(put("/api/question/status/"
+                + q1.getId() + "/" + user1.getUid() + "/" + lectureEntity1.getUuid())
+                .contentType(APPLICATION_JSON)
+                .content("answering")
+                .characterEncoding("utf-8"))
+                .andExpect(status().isConflict())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Another moderator is already handling this question,"
+                + " if you are sure of what you are doing you can continue", result);
+
+        List<QuestionEntity> listLecture =
+                questionRepository.findAllByLectureId(lectureEntity1.getUuid());
+
+        assertEquals("editing", listLecture.get(0).getStatus());
+        assertEquals(42, listLecture.get(0).getEditorId());
+
+        q1.setEditorId(0);
+        q1.setStatus("new");
     }
 }

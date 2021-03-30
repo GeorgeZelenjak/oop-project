@@ -15,8 +15,11 @@ import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 
+import nl.tudelft.oopp.livechat.data.PollAndOptions;
 import nl.tudelft.oopp.livechat.data.Question;
 
+import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
+import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
 import nl.tudelft.oopp.livechat.uielements.QuestionCellUser;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
@@ -48,10 +51,34 @@ public class UserChatSceneController implements Initializable {
     private CheckBox sortByVotesCheckBox;
 
     @FXML
+    private CheckBox sortByTimeCheckBox;
+
+    @FXML
     private CheckBox answeredCheckBox;
 
     @FXML
     private CheckBox unansweredCheckBox;
+
+    @FXML
+    private CheckBox voteOnLectureSpeedFast;
+
+    @FXML
+    private CheckBox voteOnLectureSpeedSlow;
+
+    @FXML
+    private Button participants;
+
+    @FXML
+    private Button goToSettingsButton;
+
+    @FXML
+    private Button goToUserManualButton;
+
+    @FXML
+    private Button gobBackButton;
+
+    @FXML
+    private Button leaveLecture;
 
     /**
      * The Observable list.
@@ -61,20 +88,34 @@ public class UserChatSceneController implements Initializable {
 
     private List<Question> questions;
 
+    private Timeline timelineFetch;
+
     /**
      * Method that runs when the scene is first initialized.
      * @param location location of current scene
      * @param resourceBundle resource bundle
      */
     public void initialize(URL location, ResourceBundle resourceBundle) {
-        lectureNameText.setText(Lecture.getCurrentLecture().getName());
+        lectureNameText.setText(Lecture.getCurrent().getName());
         userNameText.setText(User.getUserName());
+        fetchVotes();
 
-        Timeline timeline = new Timeline(new KeyFrame(
-                Duration.millis(1000),
-            ae -> fetchQuestions()));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+        timelineFetch = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
+            fetchQuestions();
+            getVotesOnLectureSpeed();
+            fetchVotes();
+        }));
+        timelineFetch.setCycleCount(Animation.INDEFINITE);
+        timelineFetch.play();
+
+        //Tooltip
+        participants.setTooltip(new Tooltip("See the lecture participants"));
+        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+
+        goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
+        gobBackButton.setTooltip(new Tooltip("Go back to the main page"));
+
+        leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
     }
 
     /**
@@ -85,12 +126,14 @@ public class UserChatSceneController implements Initializable {
         if (list == null) {
             return;
         }
-        Question.setCurrentQuestions(list);
+        Question.setCurrentList(list);
 
-        questions = Question.getCurrentQuestions();
+        questions = Question.getCurrentList();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
-        QuestionManager.sort(sortByVotesCheckBox.isSelected(), questions);
+        QuestionManager.sort(sortByVotesCheckBox.isSelected(),
+                sortByTimeCheckBox.isSelected(), questions);
+        System.out.println("sorted");
 
         observableList.setAll(questions);
         questionPaneListView.setItems(observableList);
@@ -121,7 +164,8 @@ public class UserChatSceneController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            NavigationController.getCurrentController().goToMainScene();
+            timelineFetch.stop();
+            NavigationController.getCurrent().goToMainScene();
         }
     }
 
@@ -130,7 +174,7 @@ public class UserChatSceneController implements Initializable {
      * @throws IOException the io exception
      */
     public void goToUserManual() throws IOException {
-        NavigationController.getCurrentController().goToUserManual();
+        NavigationController.getCurrent().goToUserManual();
     }
 
     /**
@@ -138,7 +182,7 @@ public class UserChatSceneController implements Initializable {
      * @throws IOException the io exception
      */
     public void goToSettings() throws IOException {
-        NavigationController.getCurrentController().goToSettings();
+        NavigationController.getCurrent().goToSettings();
     }
 
     /**
@@ -150,27 +194,26 @@ public class UserChatSceneController implements Initializable {
      *      -4 - too long question
      *      -5 empty field
      */
-    public int askQuestion() {
+    public boolean askQuestion() {
         String text = questionInputTextArea.getText();
         if (text.length() == 0) {
-            return -5;
+            return false;
         }
         if (text.length() > 2000) {
             AlertController.alertWarning("Long question",
                     "Your question is too long! (max 2000 characters)");
-            return -4;
+            return false;
         }
-        int ret = QuestionCommunication.askQuestion(text);
+        boolean res = QuestionCommunication.askQuestion(
+                User.getUid(), Lecture.getCurrent().getUuid(), text);
         //inputQuestion.setText("");
 
-        System.out.println(ret);
-        if (ret < 0) {
-            AlertController.alertError("ERROR",
-                    "There was a problem with asking question!");
+        if (!res) {
+            System.out.println("not asked");
         }
 
         Question question = new Question(
-                Lecture.getCurrentLecture().getUuid(), questionInputTextArea.getText(), 0);
+                Lecture.getCurrent().getUuid(), questionInputTextArea.getText(), 0);
 
         //questionPaneListView.getItems().add(question.getText());
 
@@ -178,6 +221,79 @@ public class UserChatSceneController implements Initializable {
 
         //TODO this will be removed when we implement a more efficient polling
         fetchQuestions();
-        return (ret);
+        return (false);
     }
+
+    /**
+     * Vote on lecture speed fast.
+     *
+     * @return 0 if everthing is fine -1 if not
+     */
+    public boolean voteOnLectureSpeedFast() {
+        voteOnLectureSpeedSlow.setSelected(false);
+
+        return LectureSpeedCommunication.voteOnLectureSpeed(
+                User.getUid(),
+                Lecture.getCurrent().getUuid(),
+                "faster");
+    }
+
+    /**
+     * Vote on lecture speed slow.
+     *
+     * @return 0 if everthing is fine -1 if not
+     */
+    public boolean voteOnLectureSpeedSlow() {
+        voteOnLectureSpeedFast.setSelected(false);
+
+        return LectureSpeedCommunication.voteOnLectureSpeed(
+                User.getUid(),
+                Lecture.getCurrent().getUuid(),
+                "slower");
+    }
+
+    /**
+     * Gets votes on lecture speed.
+     */
+    public void getVotesOnLectureSpeed() {
+        UUID uuid = Lecture.getCurrent().getUuid();
+        List<Integer> speeds = LectureSpeedCommunication.getVotesOnLectureSpeed(uuid);
+        if (speeds != null && speeds.get(0).equals(0) && speeds.get(1).equals(0)) {
+            voteOnLectureSpeedFast.setSelected(false);
+            voteOnLectureSpeedSlow.setSelected(false);
+        }
+    }
+
+    private void fetchVotes() {
+
+        PollAndOptions fetched = (
+                PollCommunication.fetchPollAndOptionsStudent(
+                        Lecture.getCurrent().getUuid()));
+        if (fetched == null) {
+            return;
+        }
+
+        //If new poll
+        if (!fetched.equals(PollAndOptions.getCurrent())) {
+            PollAndOptions.setCurrent(fetched);
+            NavigationController.getCurrent().popupPollVoting();
+            return;
+        }
+
+        //If poll is closed
+        if (!fetched.getPoll().isOpen()
+                && PollAndOptions.getCurrent().getPoll().isOpen()) {
+            PollAndOptions.setCurrent(fetched);
+            NavigationController.getCurrent().popupPollResult();
+        }
+
+        //If poll is reopened
+        if (!PollAndOptions.getCurrent().getPoll().isOpen()
+                && fetched.getPoll().isOpen()) {
+            PollAndOptions.setCurrent(fetched);
+            NavigationController.getCurrent().popupPollVoting();
+        }
+
+    }
+
 }

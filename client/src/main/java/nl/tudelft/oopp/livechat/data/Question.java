@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Question class.
@@ -14,6 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Question implements Comparable<Question> {
 
     private static List<Question> currentQuestions;
+    private static Question currentQuestion;
 
     @Expose(serialize = false, deserialize = true)
     private long id;
@@ -39,11 +39,17 @@ public class Question implements Comparable<Question> {
     @Expose(serialize = false, deserialize = true)
     private Timestamp answerTime;
 
+    @Expose(serialize = false, deserialize = true)
+    private boolean edited;
+
     @Expose(serialize = true, deserialize = true)
     private long ownerId;
 
     @Expose(serialize = true, deserialize = true)
     private String ownerName;
+
+    @Expose(serialize = false, deserialize = true)
+    private String status = "new";
 
     /**
      * Empty constructor to create a question entity.
@@ -52,11 +58,10 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Instantiates a new Question entity.
-     *
+     * Creates a new question entity.
      * @param lectureId the lecture id
-     * @param text      the text
-     * @param ownerId   the owner id
+     * @param text the text of the question
+     * @param ownerId the id of the owner of the question
      */
     public Question(UUID lectureId, String text, long ownerId) {
         this.lectureId = lectureId;
@@ -65,11 +70,19 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Gets id of the question.
+     * Gets the id of the question.
      * @return the id of the question
      */
     public long getId() {
         return this.id;
+    }
+
+    /**
+     * Sets the id of the question.
+     * @param id the id of the question
+     */
+    public void setId(long id) {
+        this.id = id;
     }
 
     /**
@@ -81,9 +94,8 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Sets time.
-     *
-     * @param time the time
+     * Sets the time the question was asked/changed.
+     * @param time the time the question was asked/changed
      */
     public void setTime(Timestamp time) {
         this.time = time;
@@ -98,22 +110,20 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Sets votes.
-     *
-     * @param votes the votes
+     * Sets the number of votes for the question.
+     * @param votes the number of votes for the question
      */
     public void setVotes(int votes) {
         this.votes = votes;
     }
 
     /**
-     * Gets the number of votes.
-     * @return the number of votes
+     * Gets the number of votes for the question.
+     * @return the number of votes for the question
      */
     public int getVotes() {
         return this.votes;
     }
-
 
     /**
      * Gets the text of the question.
@@ -124,7 +134,15 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Sets answered.
+     * Sets the text of the question (e.g after a moderator has edited).
+     * @param newText the new text of the question
+     */
+    public void setText(String newText) {
+        this.text = newText;
+    }
+
+    /**
+     * Sets the question as answered/unanswered.
      * @param answered boolean indicating if question is answered
      */
     public void setAnswered(boolean answered) {
@@ -140,11 +158,35 @@ public class Question implements Comparable<Question> {
     }
 
     /**
+     * Sets the question as (not) edited.
+     * @param edited boolean indicating if question has been edited
+     */
+    public void setEdited(boolean edited) {
+        this.edited = edited;
+    }
+
+    /**
+     * Checks whether the question is (not) edited.
+     * @return true if the question has been edited, false otherwise
+     */
+    public boolean isEdited() {
+        return this.edited;
+    }
+
+    /**
      * Gets the text of the answer.
      * @return the text of the answer
      */
     public String getAnswerText() {
         return this.answerText;
+    }
+
+    /**
+     * Sets the text of the answer.
+     * @param answerText the text of the answer
+     */
+    public void setAnswerText(String answerText) {
+        this.answerText = answerText;
     }
 
     /**
@@ -156,30 +198,59 @@ public class Question implements Comparable<Question> {
     }
 
     /**
+     * Sets the answer time of the question.
+     * @param answerTime the answer time of the question
+     */
+    public void setAnswerTime(Timestamp answerTime) {
+        this.answerTime = answerTime;
+    }
+
+    /**
      * Gets the id of the owner of the question.
      * @return the id of the owner of the question.
      */
     public long getOwnerId() {
-        return ownerId;
-    }
-
-
-    /**
-     * Gets current questions.
-     *
-     * @return the current questions
-     */
-    public static List<Question> getCurrentQuestions() {
-        return currentQuestions;
+        return this.ownerId;
     }
 
     /**
-     * Sets current questions.
-     *
-     * @param questions the questions
+     * Sets the id of the new owner of the question.
+     * @param newOwnerId the id of the new owner of the question.
      */
-    public static void setCurrentQuestions(List<Question> questions) {
-        currentQuestions = questions;
+    public void setOwnerId(long newOwnerId) {
+        this.ownerId = newOwnerId;
+    }
+
+    /**
+     * Gets the name of the owner of the question.
+     * @return the name of the owner of the question.
+     */
+    public String getOwnerName() {
+        return this.ownerName;
+    }
+
+    /**
+     * Sets the name of the new owner of the question.
+     * @param newName the name of the new owner of the question.
+     */
+    public void setOwnerName(String newName) {
+        this.ownerName = newName;
+    }
+
+    /**
+     * Gets the status of the question.
+     * @return the status of the question
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets status of the question.
+     * @param status the status of the question
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     /**
@@ -189,9 +260,6 @@ public class Question implements Comparable<Question> {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
         if (o instanceof Question) {
             Question q = (Question) o;
             return this.id == q.id;
@@ -205,7 +273,7 @@ public class Question implements Comparable<Question> {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.lectureId, this.time);
+        return Objects.hash(this.id);
     }
 
     /**
@@ -228,13 +296,47 @@ public class Question implements Comparable<Question> {
     }
 
     /**
-     * Compares the current question to the 'other' one.
-     *
-     * @param other the parameter
-     * @return the result of the comparison
+     * Compares the current question to another question.
+     * @param other the question to compare to
+     * @return -1 if current question was asked later
+     *          0 if both questions were asked at the same time
+     *          1 if current question was asked earlier
      */
     @Override
     public int compareTo(Question other) {
         return other.time.compareTo(this.time);
+    }
+
+
+    /**
+     * Gets the list of current questions.
+     * @return the current questions
+     */
+    public static List<Question> getCurrentList() {
+        return currentQuestions;
+    }
+
+    /**
+     * Sets the list of current questions.
+     * @param questions the questions
+     */
+    public static void setCurrentList(List<Question> questions) {
+        currentQuestions = questions;
+    }
+
+    /**
+     * Gets the current question.
+     * @return the current question
+     */
+    public static Question getCurrent() {
+        return currentQuestion;
+    }
+
+    /**
+     * Sets the current question.
+     * @param currentQuestion the current question
+     */
+    public static void setCurrent(Question currentQuestion) {
+        Question.currentQuestion = currentQuestion;
     }
 }

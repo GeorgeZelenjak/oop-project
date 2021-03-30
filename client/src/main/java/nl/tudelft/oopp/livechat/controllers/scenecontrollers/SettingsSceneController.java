@@ -12,7 +12,7 @@ public class SettingsSceneController {
      * Go back to previous Scene.
      */
     public void goBack() {
-        NavigationController.getCurrentController().goBack();
+        NavigationController.getCurrent().goBack();
         System.out.println("Button was pressed!");
     }
 

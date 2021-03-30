@@ -2,7 +2,10 @@ package nl.tudelft.oopp.livechat.entities;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 public class LectureEntityTest {
     private static LectureEntity lectureEntity;
+    private static final UUID modkey = UUID.randomUUID();
+    private static final Timestamp time = new Timestamp(System.currentTimeMillis());
 
     /**
      * Sets up a lecture before starting testing.
@@ -22,7 +27,10 @@ public class LectureEntityTest {
     @BeforeAll
     static void setUp() {
         lectureEntity = new LectureEntity("Algorithms and Data Structures: Red-black trees",
-                "Ivo van Kreveld");
+                "Ivo van Kreveld", time);
+        lectureEntity.setModkey(modkey);
+        lectureEntity.incrementSlowerCount();
+        lectureEntity.incrementFasterCount();
     }
 
     @Test
@@ -33,19 +41,24 @@ public class LectureEntityTest {
     @Test
     void staticConstructorTest() {
         assertNotNull(LectureEntity.create("Algorithms and Data Structures: Red-black trees",
-                "Ivo van Kreveld"));
+                "Ivo van Kreveld", new Timestamp(System.currentTimeMillis())));
     }
 
     @Test
     void getUuidTest() {
-        //cannot test the uuid, since I have no access to it and it is generated randomly
         assertNotNull(lectureEntity.getUuid());
     }
 
     @Test
     void getModkeyTest() {
-        //cannot test the modkey (uuid), since I have no access to it and it is generated randomly
-        assertNotNull(lectureEntity.getModkey());
+        assertEquals(modkey, lectureEntity.getModkey());
+    }
+
+    @Test
+    void setModkeyTest() {
+        UUID newModkey = UUID.randomUUID();
+        lectureEntity.setModkey(newModkey);
+        assertEquals(newModkey, lectureEntity.getModkey());
     }
 
     @Test
@@ -62,17 +75,29 @@ public class LectureEntityTest {
 
     @Test
     void getFasterCountTest() {
-        assertEquals(0, lectureEntity.getFasterCount());
+        assertEquals(1, lectureEntity.getFasterCount());
     }
 
     @Test
     void getSlowerCountTest() {
-        assertEquals(0, lectureEntity.getSlowerCount());
+        assertEquals(1, lectureEntity.getSlowerCount());
     }
 
     @Test
     void getFrequencyTest() {
         assertEquals(60, lectureEntity.getFrequency());
+    }
+
+    @Test
+    void getStartTimeTest() {
+        assertNotNull(lectureEntity.getStartTime());
+    }
+
+    @Test
+    void setStartTimeTest() {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        lectureEntity.setStartTime(time);
+        assertEquals(time, lectureEntity.getStartTime());
     }
 
     @Test
@@ -116,35 +141,54 @@ public class LectureEntityTest {
     }
 
     @Test
-    void testEqualsNullTest() {
+    void isOpenTest() {
+        assertTrue(lectureEntity.isOpen());
+    }
+
+    @Test
+    void reopenTest() {
+        lectureEntity.close();
+        lectureEntity.reOpen();
+        assertTrue(lectureEntity.isOpen());
+    }
+
+    @Test
+    void closeTest() {
+        lectureEntity.close();
+        assertFalse(lectureEntity.isOpen());
+
+        //set back for other tests
+        lectureEntity.reOpen();
+    }
+
+
+    @Test
+    void equalsNullTest() {
         assertNotEquals(lectureEntity, null);
     }
 
     @Test
-    void testEqualsSameTest() {
+    void equalsSameTest() {
         assertEquals(lectureEntity, lectureEntity);
     }
 
     @Test
-    void testEqualsDifferentTest() {
+    void equalsDifferentTest() {
         LectureEntity other = new LectureEntity("Algorithms and Data Structures: Red-black trees",
-                "Ivo van Kreveld");
+                "Ivo van Kreveld", time);
         assertNotEquals(lectureEntity, other);
     }
 
     @Test
-    void testHashCodeTest() {
-        int hash = Objects.hash(lectureEntity.getUuid(), lectureEntity.getModkey(),
-                lectureEntity.getName(),
-                lectureEntity.getCreatorName(),
-                lectureEntity.getStartTime());
+    void hashCodeTest() {
+        int hash = Objects.hash(lectureEntity.getUuid());
         assertEquals(hash, lectureEntity.hashCode());
     }
 
     @Test
-    void reOpenTest() {
-        lectureEntity.close();
-        lectureEntity.reOpen();
-        assertTrue(lectureEntity.isOpen());
+    public void hashCodeDifferentObjectsTest() {
+        LectureEntity lecture = new LectureEntity("Algorithms and Data Structures: Red-black trees",
+                "Ivo van Kreveld", time);
+        assertNotEquals(lecture.hashCode(), lectureEntity.hashCode());
     }
 }

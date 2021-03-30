@@ -17,16 +17,23 @@ class QuestionEntityTest {
     private static final Long ownerId = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
     private static QuestionEntity questionEntity;
     private static final Timestamp time = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+    private static Timestamp answerTime;
 
     /**
      * Sets up a question before starting testing.
      */
     @BeforeAll
-    static void setUp() {
+    static void setUp() throws InterruptedException {
         questionEntity = new QuestionEntity(lectureId,
                 "What is the answer to the Ultimate "
                         + "Question of Life, the Universe, and Everything?",
-                null, ownerId);
+                time, ownerId);
+        questionEntity.setId(14512412354553456L);
+        Thread.sleep(2000);
+        answerTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+        questionEntity.setAnswerTime(answerTime);
+        questionEntity.setOwnerName("predator");
+        questionEntity.setEditorId(666);
     }
 
     @Test
@@ -44,13 +51,24 @@ class QuestionEntityTest {
     }
 
     @Test
-    void setLectureIdTest() {
-        questionEntity.setLectureId(lectureId);
+    void getIdTest() {
+        assertEquals(14512412354553456L, questionEntity.getId());
+    }
+
+    @Test
+    void setIdTest() {
+        questionEntity.setId(53451341241431L);
+        assertEquals(53451341241431L, questionEntity.getId());
+    }
+
+    @Test
+    void getLectureIdTest() {
         assertEquals(lectureId, questionEntity.getLectureId());
     }
 
     @Test
-    void getLectureTest() {
+    void setLectureIdTest() {
+        questionEntity.setLectureId(lectureId);
         assertEquals(lectureId, questionEntity.getLectureId());
     }
 
@@ -94,6 +112,17 @@ class QuestionEntityTest {
     }
 
     @Test
+    void getStatusTest() {
+        assertEquals("new", questionEntity.getStatus());
+    }
+
+    @Test
+    void setStatusTest() {
+        questionEntity.setStatus("editing");
+        assertEquals("editing", questionEntity.getStatus());
+    }
+
+    @Test
     void isAnsweredTest() {
         assertFalse(questionEntity.isAnswered());
     }
@@ -102,6 +131,17 @@ class QuestionEntityTest {
     void setAnsweredTest() {
         questionEntity.setAnswered(true);
         assertTrue(questionEntity.isAnswered());
+    }
+
+    @Test
+    void isEditedTest() {
+        assertFalse(questionEntity.isEdited());
+    }
+
+    @Test
+    void setEditedTest() {
+        questionEntity.setEdited(true);
+        assertTrue(questionEntity.isEdited());
     }
 
     @Test
@@ -118,14 +158,26 @@ class QuestionEntityTest {
 
     @Test
     void getAnswerTimeTest() {
-        assertNull(questionEntity.getAnswerTime());
+        assertEquals(answerTime, questionEntity.getAnswerTime());
     }
 
     @Test
-    void setAnswerTimeTest() {
-        Timestamp t = time;
-        questionEntity.setAnswerTime(t);
-        assertEquals(t, questionEntity.getAnswerTime());
+    void setAnswerTimeTest() throws InterruptedException {
+        Thread.sleep(2000);
+        Timestamp newAnswerTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+        questionEntity.setAnswerTime(newAnswerTime);
+        assertEquals(newAnswerTime, questionEntity.getAnswerTime());
+    }
+
+    @Test
+    void getOwnerNameTest() {
+        assertEquals("predator", questionEntity.getOwnerName());
+    }
+
+    @Test
+    void setOwnerNameTest() {
+        questionEntity.setOwnerName("alien");
+        assertEquals("alien", questionEntity.getOwnerName());
     }
 
     @Test
@@ -141,6 +193,17 @@ class QuestionEntityTest {
     }
 
     @Test
+    void getEditorIdTest() {
+        assertEquals(666, questionEntity.getEditorId());
+    }
+
+    @Test
+    void setEditorIdTest() {
+        questionEntity.setEditorId(404);
+        assertEquals(404, questionEntity.getEditorId());
+    }
+
+    @Test
     void equalsNullTest() {
         assertNotEquals(questionEntity, null);
     }
@@ -148,6 +211,14 @@ class QuestionEntityTest {
     @Test
     void equalsSameTest() {
         assertEquals(questionEntity, questionEntity);
+    }
+
+    @Test
+    void equalsEqualTest() {
+        QuestionEntity q = new QuestionEntity(lectureId,
+                "I am the question with different text", time, ownerId);
+        q.setId(questionEntity.getId());
+        assertEquals(questionEntity, q);
     }
 
     @Test
@@ -159,8 +230,26 @@ class QuestionEntityTest {
 
     @Test
     void hashCodeTest() {
-        int hash = Objects.hash(questionEntity.getId(), lectureId, time);
+        int hash = Objects.hash(questionEntity.getId());
         assertEquals(hash, questionEntity.hashCode());
+    }
+
+    @Test
+    public void hashCodeEqualTest() {
+        QuestionEntity q = questionEntity = new QuestionEntity(lectureId,
+                "What is the answer to the Ultimate "
+                        + "Question of Life, the Universe, and Everything?", time, ownerId);
+        q.setId(questionEntity.getId());
+        assertEquals(q.hashCode(), questionEntity.hashCode());
+    }
+
+    @Test
+    public void hashCodeDifferentIdTest() {
+        QuestionEntity q = new QuestionEntity(lectureId,
+                "What is the answer to the Ultimate "
+                        + "Question of Life, the Universe, and Everything?",
+                time, ownerId);
+        assertNotEquals(questionEntity.hashCode(), q.hashCode());
     }
 
     @Test
@@ -178,5 +267,11 @@ class QuestionEntityTest {
                 + '}';
 
         assertEquals(expected, questionEntity.toString());
+    }
+
+    @Test
+    void nullTimeTest() {
+        QuestionEntity q = new QuestionEntity(UUID.randomUUID(), "lalala", null, 12L);
+        assertNotNull(q.getTime());
     }
 }

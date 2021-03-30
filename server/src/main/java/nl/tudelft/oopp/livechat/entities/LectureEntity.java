@@ -1,8 +1,9 @@
 package nl.tudelft.oopp.livechat.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.sql.Timestamp;
+
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.*;
@@ -13,8 +14,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "lectures")
 public class LectureEntity {
-
-
     @Id
     @Column(name = "uuid")
     private final UUID uuid;
@@ -37,8 +36,9 @@ public class LectureEntity {
     @Column(name = "frequency")
     private int frequency;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
     @Column(name = "startTime")
-    private Timestamp startTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+    private Timestamp startTime;
 
     @Column(name = "open")
     private boolean open = true;
@@ -55,14 +55,16 @@ public class LectureEntity {
      * Constructor to create a lecture entity.
      * @param name the name of the lecture
      * @param creatorName the name of the creator of the lecture
+     * @param startTime the start time
      */
-    public LectureEntity(String name, String creatorName) {
+    public LectureEntity(String name, String creatorName, Timestamp startTime) {
         this.uuid = UUID.randomUUID();
         this.modkey = UUID.randomUUID();
         this.name = name;
         this.creatorName = creatorName;
         this.fasterCount = 0;
         this.slowerCount = 0;
+        this.startTime = startTime;
         this.frequency = 60;
     }
 
@@ -70,17 +72,18 @@ public class LectureEntity {
      * Static constructor to create a lecture entity.
      * @param name the name of the lecture
      * @param creatorName the name of the creator of the lecture
+     * @param startTime the start time
      * @return a new lecture entity
      */
-    public static LectureEntity create(String name, String creatorName) {
-        LectureEntity l = new LectureEntity();
-        l.name = name;
-        l.creatorName = creatorName;
-        l.fasterCount = 0;
-        l.slowerCount = 0;
-        l.frequency = 60;
-        l.startTime = new Timestamp(System.currentTimeMillis());
-        return l;
+    public static LectureEntity create(String name, String creatorName, Timestamp startTime) {
+        LectureEntity lecture = new LectureEntity();
+        lecture.name = name;
+        lecture.creatorName = creatorName;
+        lecture.fasterCount = 0;
+        lecture.slowerCount = 0;
+        lecture.frequency = 60;
+        lecture.startTime = startTime;
+        return lecture;
     }
 
     /**
@@ -102,6 +105,7 @@ public class LectureEntity {
     /**
      * Set modkey to null.
      * this is done only on in-memory objects and not in database
+     * @param modkey the modkey
      */
     public void setModkey(UUID modkey) {
         this.modkey = modkey;
@@ -143,8 +147,19 @@ public class LectureEntity {
      * Gets the start time of the lecture.
      * @return the start time of the lecture
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
     public Timestamp getStartTime() {
         return startTime;
+    }
+
+
+    /**
+     * Sets the start time of the lecture.
+     * @param startTime the start time of the lecture
+     */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
     }
 
     /**
@@ -171,6 +186,13 @@ public class LectureEntity {
     }
 
     /**
+     * Decrement faster count.
+     */
+    public void decrementFasterCount() {
+        --this.fasterCount;
+    }
+
+    /**
      * Increases the "slower" count by 1.
      */
     public void incrementSlowerCount() {
@@ -178,7 +200,15 @@ public class LectureEntity {
     }
 
     /**
+     * Decrement slower count.
+     */
+    public void decrementSlowerCount() {
+        --this.slowerCount;
+    }
+
+    /**
      * Sets the frequency of asking questions.
+     *
      * @param frequency the frequency of asking questions
      */
     public void setFrequency(int frequency) {
@@ -196,7 +226,6 @@ public class LectureEntity {
     /**
      * Closes the lecture.
      */
-    @SuppressWarnings("unused")
     public void close() {
         this.open = false;
     }
@@ -204,7 +233,6 @@ public class LectureEntity {
     /**
      * Re-opens the lecture.
      */
-    @SuppressWarnings("unused")
     public void reOpen() {
         this.open = true;
     }
@@ -213,14 +241,13 @@ public class LectureEntity {
      * Checks whether the lecture is open.
      * @return whether the lecture is open
      */
-    @SuppressWarnings("unused")
     public boolean isOpen() {
         return this.open;
     }
 
     /**
      * Compares the lecture to another object.
-     * @param o object to compare to
+     * @param o the object to compare to
      * @return true iff the other object is also a Lecture and has the same id. False otherwise
      */
     @Override
@@ -241,6 +268,6 @@ public class LectureEntity {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, modkey, name, creatorName, startTime);
+        return Objects.hash(uuid);
     }
 }

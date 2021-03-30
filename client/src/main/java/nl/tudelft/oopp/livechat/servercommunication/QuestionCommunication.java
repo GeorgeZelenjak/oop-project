@@ -2,323 +2,257 @@ package nl.tudelft.oopp.livechat.servercommunication;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
+import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.*;
+
 /**
- * Class for Question server communication.
+ * Class for server communication related to questions.
  */
-public class QuestionCommunication {
+public abstract class QuestionCommunication {
 
-    //Client object for sending requests
-    private static final HttpClient client = HttpClient.newBuilder().build();
-    /* Gson object for parsing Json
-    set to parse fields according to annotations
-    and with specified date format
-     */
-    private static final Gson gson = new GsonBuilder().setDateFormat(
-            "EEE, dd MMM yyyy HH:mm:ss zzz").excludeFieldsWithoutExposeAnnotation().create();
+    private QuestionCommunication() {
 
-    /**
-     * Sends an HTTP request to ask a question with the current Lecture id.
-     * @param questionText the question text
-     * @return  0 if the question was asked successfully
-     *         -1 if current lecture does not exist
-     *         -2 if an exception occurred when communicating with the server
-     *         -3 if unexpected response was received
-     */
-    public static int askQuestion(String questionText) {
-        //Check if current lecture has been set
-        if (Lecture.getCurrentLecture() == null) {
-            System.out.println("You are not connected to a lecture!");
-            return -1;
-        }
-
-        //Parameters for question
-        UUID lectureId = Lecture.getCurrentLecture().getUuid();
-        Question question = new Question(lectureId, questionText,  User.getUid());
-
-        //Parameters for request
-        String json = gson.toJson(question);
-        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString(json);
-        String address = "http://localhost:8080/api/question/ask";
-
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().POST(req).uri(
-                URI.create(address)).setHeader("Content-Type", "application/json").build();
-        HttpResponse<String> response;
-
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("There was an exception!");
-            //e.printStackTrace();
-            return -2;
-        }
-
-        //Unexpected response
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return -3;
-        }
-
-        //Question has been asked successfully
-        System.out.println("The question was asked successfully! " + response.body());
-        User.addQuestionId(Long.parseLong(response.body()));
-        return 0;
     }
 
     /**
-     * Fetch questions list.
+     * Gson object for parsing Json set to parse fields according to annotations
+     *     and with specified date format.
+     */
+    private static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+            .setDateFormat("yyyy-MM-dd HH:mm:ss Z").create();
+
+    /**
+     * The address of the server.
+     */
+    private static final String ADDRESS = CommonCommunication.ADDRESS;
+
+    /**
+     * Sends an HTTP request to ask a question.
+     * @param uid the id of the user
+     * @param lectureId the id of the lecture
+     * @param questionText the text of the question
+     * @return 0 if the question has been asked successfully, -1 if not
+     */
+    public static boolean askQuestion(long uid, UUID lectureId, String questionText) {
+        if (Lecture.getCurrent() == null) {
+            System.out.println("You are not connected to a lecture!");
+            return false;
+        }
+
+        String json = gson.toJson(new Question(lectureId, questionText, uid));
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request = HttpRequest.newBuilder().POST(body).uri(URI.create(ADDRESS
+                + "/api/question/ask")).setHeader("Content-Type",
+                "application/json").build();
+
+        HttpResponse<String> response = sendAndReceive(request);
+        if (handleResponse(response) != 0) {
+            return false;
+        }
+        System.out.println("The question was asked successfully! "
+                + Objects.requireNonNull(response).body());
+        User.addQuestionId(Long.parseLong(response.body()));
+        return true;
+    }
+
+    /**
+     * Sends an HTTP request to fetch questions that have been asked in current lecture.
      * @return the list of questions related to current lecture,
-     *       null if error occurs or no current lecture is set
+     *         null if error occurs or the user is not in the lecture
      */
     public static List<Question> fetchQuestions() {
-        //Check if current lecture has been set
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return null;
         }
 
-        //Parameters for request
-        String lectureId = URLEncoder.encode(
-                Lecture.getCurrentLecture().getUuid().toString(), StandardCharsets.UTF_8);
-        String address = "http://localhost:8080/api/question/fetch?lid=";
-
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(
-                URI.create(address + lectureId)).build();
-        HttpResponse<String> response;
-
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception occurred when trying to communicate with the server!");
-            //e.printStackTrace();
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(ADDRESS
+                + "/api/question/fetch?lid=" + URLEncoder.encode(Lecture.getCurrent()
+                        .getUuid().toString(), StandardCharsets.UTF_8))).build();
+        HttpResponse<String> response = sendAndReceive(request);
+        if (handleResponse(response) != 0) {
             return null;
         }
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return null;
-        }
-
-        //Printing the response body for testing
-        System.out.println("The questions were retrieved successfully! " + response.body());
-
-        //Return object from response
-        Type listType = new TypeToken<List<Question>>(){}.getType();
-        return gson.fromJson(response.body(), listType);
+        System.out.println("The questions were retrieved successfully! "
+                + Objects.requireNonNull(response).body());
+        return gson.fromJson(response.body(), new TypeToken<List<Question>>(){}.getType());
     }
 
-    /** Method that sends a request to upvote a question to the server.
-     * @param qid - the question id
-     * @param uid - the user id
-     * @return - the "status code"
-     *           0 if the question was upvoted/downvoted successfully
-     *          -1 if current lecture does not exist
-     *          -2 if an exception occurred when communicating with the server
-     *          -3 if unexpected response was received
-     *          -4 if the question wasn't upvoted/downvoted (e.g wrong uid, wrong qid etc.)
+    /** Sends an HTTP request to upvote a question.
+     * @param qid the id of the question
+     * @param uid the id of the user
+     * @return true if the question has been upvoted successfully, false if not
      */
-    public static int upvoteQuestion(long qid, long uid) {
-        //Check if current lecture has been set
-        if (Lecture.getCurrentLecture() == null) {
+    public static boolean upvoteQuestion(long qid, long uid) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
-            return -1;
+            return false;
         }
 
-        //Parameters for request
-        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("");
-        String address = "http://localhost:8080/api/question/upvote";
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString("");
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
+                + "/api/question/upvote" + "?qid=" + qid + "&uid=" + uid)).build();
 
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().PUT(req).uri(
-                URI.create(address + "?qid=" + qid + "&uid=" + uid)).build();
-
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception when trying to communicate with the server!");
-            //e.printStackTrace();
-            return -2;
-        }
+        HttpResponse<String> response = sendAndReceive(request);
 
         int result = handleResponse(response);
         if (result == 0) {
             System.out.println("The question was upvoted/downvoted successfully! "
-                                    + response.body());
+                    + Objects.requireNonNull(response).body());
         }
-        return result;
+        return result == 0;
     }
 
     /**
-     * Method that sends a request to mark as answered a question to the server.
+     * Sends an HTTP request to mark a question as answered, possibly with the answer text.
      * @param qid the id of the question
      * @param modkey the moderator key
-     * @return  0 if the question was marked as answered successfully
-     *         -1 if current lecture does not exist
-     *         -2 if an exception occurred when communicating with the server
-     *         -3 if unexpected response was received
-     *         -4 if the question wasn't marked as answered (e.g wrong qid, wrong modkey etc.)
+     * @return true if the question has been marked as answered successfully, false if not
      */
-    public static int markedAsAnswered(long qid, UUID modkey) {
-        //Check if current lecture has been set
-        if (Lecture.getCurrentLecture() == null) {
+    public static boolean markedAsAnswered(long qid, UUID modkey, String answer) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
-            return -1;
+            return false;
         }
+        answer = answer == null ? " " : answer;
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(answer);
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
+                + "/api/question/answer/" + qid + "/" + URLEncoder.encode(modkey.toString(),
+                StandardCharsets.UTF_8))).setHeader("Content-Type",
+                "application/json").build();
 
-        //Parameters for request
-        HttpRequest.BodyPublisher req =  HttpRequest.BodyPublishers.ofString("placeholder");
-        String address = "http://localhost:8080/api/question/answer/" + qid + "/" + modkey;
-
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().PUT(req)
-                .uri(URI.create(address + "?qid=" + qid + "&uid=" + modkey))
-                .setHeader("Content-Type", "application/json").build();
-
-        HttpResponse<String> response;
-
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception occurred when trying to communicate with the server!");
-            //e.printStackTrace();
-            return -2;
-        }
-
+        HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
         if (result == 0) {
             System.out.println("The question was marked as answered successfully!"
-                                    + response.body());
+                    + Objects.requireNonNull(response).body());
         }
-        return result;
+        return result == 0;
     }
 
     /**
-     * Method that sends a request to delete a question (done by the user who asked the question).
+     * Sends an HTTP request to edit a question.
+     * @param qid the id of the question
+     * @param modKey the moderator key
+     * @param newText the edited text of the question
+     * @return true if the question has been edited successfully, false if not
+     */
+    public static boolean edit(long qid, UUID modKey, String newText) {
+        if (Lecture.getCurrent() == null) {
+            System.out.println("You are not connected to a lecture!!!");
+            return false;
+        }
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", qid);
+        jsonObject.addProperty("modkey", modKey.toString());
+        jsonObject.addProperty("text", newText);
+        jsonObject.addProperty("uid", User.getUid());
+        String json = gson.toJson(jsonObject);
+
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(
+                URI.create(ADDRESS + "/api/question/edit")).setHeader("Content-Type",
+                "application/json").build();
+
+        HttpResponse<String> response = sendAndReceive(request);
+        int result = handleResponse(response);
+        if (result == 0) {
+            System.out.println("The question with id " + qid + " was modified successfully!");
+            System.out.println("New text: " + newText);
+        }
+        return result == 0;
+    }
+
+    /**
+     * Sends an HTTP request to delete a question (done by the user who asked the question).
      * @param qid the id of the question
      * @param uid the id of the user
-     * @return  0 if the question was deleted successfully
-     *         -1 if current lecture does not exist
-     *         -2 if an exception occurred when communicating with the server
-     *         -3 if unexpected response was received
-     *         -4 if the question wasn't deleted (e.g wrong uid, wrong qid etc.)
+     * @return  true if the question has been deleted successfully, false if not
      */
-    public static int deleteQuestion(long qid, long uid) {
-        //Check if current lecture has been set
-        if (Lecture.getCurrentLecture() == null) {
+    public static boolean deleteQuestion(long qid, long uid) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
-            return -1;
-        }
-        //Parameters for request
-        String address = "http://localhost:8080/api/question/delete";
-
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().DELETE()
-                .uri(URI.create(address + "?qid=" + qid + "&uid=" + uid)).build();
-
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("Exception occurred when communicating with the server!");
-            //e.printStackTrace();
-            return -2;
+            return false;
         }
 
+        HttpRequest request = HttpRequest.newBuilder().DELETE().uri(URI.create(ADDRESS
+                + "/api/question/delete" + "?qid=" + qid + "&uid=" + uid)).build();
+
+        HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
-        System.out.println("Deleted: " + result);
         if (result == 0) {
             System.out.println("The question with id " + qid + " was deleted successfully!");
             User.deleteQuestionId(qid);
         }
-        return result;
+        return result == 0;
     }
 
     /**
-     * Method that sends a request to delete a question (done by the moderator).
+     * Sends an HTTP request to delete a question (done by the moderator).
      * @param qid the id of the question
      * @param modkey the moderator key
-     * @return  0 if the question was deleted successfully
-     *         -1 if current lecture does not exist
-     *         -2 if an exception occurred when communicating with the server
-     *         -3 if unexpected response was received
-     *         -4 if the question wasn't deleted (e.g wrong qid, wrong modkey etc.)
+     * @return true if the question has been deleted successfully, false if not
      */
     //TODO remove qid from user's set of questions after deletion
-    public static int modDelete(long qid, UUID modkey) {
-        //Check if current lecture has been set
-        if (Lecture.getCurrentLecture() == null) {
+    public static boolean modDelete(long qid, UUID modkey) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
-            return -1;
-        }
-        //Parameters for request
-        String address = "http://localhost:8080/api/question/moderator/delete";
-
-        //Creating request and defining response
-        HttpRequest request = HttpRequest.newBuilder().DELETE()
-                .uri(URI.create(address + "?qid=" + qid + "&modkey=" + modkey)).build();
-
-        HttpResponse<String> response;
-        //Catching error when communicating with server
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            System.out.println("An exception occurred when communicating with the server!");
-            //e.printStackTrace();
-            return -2;
+            return false;
         }
 
+        HttpRequest request = HttpRequest.newBuilder().DELETE().uri(URI.create(ADDRESS
+                + "/api/question/moderator/delete" + "?qid=" + qid + "&modkey="
+                + URLEncoder.encode(modkey.toString(), StandardCharsets.UTF_8))).build();
+
+        HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
         if (result == 0) {
             System.out.println("The question with id " + qid + " was deleted successfully!");
         }
-        return result;
+        return result == 0;
     }
 
     /**
-     * Handles the response for upvoteQuestion and markedAsAnswered methods.
-     * @param response response received from the server
-     * @return -3, -4, 0 according to the "status codes" for these methods
+     * Sends an HTTP request to set the status of a question (answering, editing, new etc.).
+     * @param qid the id of the question
+     * @param modkey the moderator key
+     * @param status the status of the question
+     * @param uid the id of the user
+     * @return true if the status of the question has been set successfully, false if not
      */
-    private static int handleResponse(HttpResponse<String> response) {
-        //Unexpected response
-        if (response.statusCode() != 200) {
-            System.out.println("Status: " + response.statusCode());
-            return -3;
+    public static boolean setStatus(long qid, UUID modkey, String status, long uid) {
+        if (Lecture.getCurrent() == null) {
+            System.out.println("You are not connected to a lecture!");
+            return false;
         }
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(status);
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
+                + "/api/question/status/" + qid + "/" + uid + "/"
+                + URLEncoder.encode(modkey.toString(), StandardCharsets.UTF_8)))
+                .setHeader("Content-Type", "application/json").build();
 
-        //Correct response, but not success
-        if (!response.body().equals("0")) {
-            return -4;
+        HttpResponse<String> response = sendAndReceive(request);
+        int result = handleResponseNoAlerts(response);
+        if (result == 0) {
+            System.out.println("The question with id " + qid + " has changed status!");
+            System.out.println("New status: " + status);
         }
-
-        //Success
-        return 0;
+        return result == 0;
     }
 }
-
-
-
-
-
-

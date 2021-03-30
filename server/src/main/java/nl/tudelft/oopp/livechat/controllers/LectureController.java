@@ -1,11 +1,18 @@
 package nl.tudelft.oopp.livechat.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
+import nl.tudelft.oopp.livechat.exceptions.InvalidModkeyException;
+import nl.tudelft.oopp.livechat.exceptions.LectureException;
 import nl.tudelft.oopp.livechat.services.LectureService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 
@@ -14,80 +21,148 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api")
-public class  LectureController {
+public class LectureController {
 
     private final LectureService service;
 
     /**
-     * Constructor for the lecture controller.
-     * @param service lecture service
+     * The Object mapper.
+     */
+    ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
+     * Creates new LectureController.
+     * @param service the LectureService
      */
     public LectureController(LectureService service) {
         this.service = service;
     }
 
+
     /**
      * GET Endpoint to retrieve a lecture.
-     * @return selected lecture
+     * @param id the id of the lecture
+     * @return the lecture object if successful
+     * @throws LectureException when the lecture is not found or is not started yet
      */
     @GetMapping("/get/{id}")
-    public LectureEntity getLecturesByID(@PathVariable("id") UUID id) {
+    public LectureEntity getLecturesByID(@PathVariable("id") UUID id) throws LectureException {
         return service.getLectureByIdNoModkey(id);
     }
+
 
     /**
      * POST Endpoint to create a new lecture.
      * @param name the name of the lecture
-     * @return a new lecture entity
+     * @param info the object containing the creator name,
+     *             the start time and the frequency of asking questions
+     * @return a new lecture object if successful
+     * @throws JsonProcessingException when invalid json is sent
+     * @throws LectureException when the name is too long
      */
     @PostMapping("/newLecture")
-    public LectureEntity newLecture(@RequestParam String name) {
-        return service.newLecture(name, "placeholder"); //these are placeholders
+    public LectureEntity newLecture(@RequestParam String name, @RequestBody String info)
+            throws JsonProcessingException, LectureException {
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z"));
+        JsonNode jsonNode = objectMapper.readTree(info);
+        String creatorName = jsonNode.get("creatorName").asText();
+        Timestamp startTime = objectMapper.readValue(
+                jsonNode.get("startTime").toString(),Timestamp.class);
+        int frequency = Integer.parseInt(jsonNode.get("frequency").asText());
+        return service.newLecture(name, creatorName, startTime, frequency);
     }
 
     /**
      * DELETE Endpoint to delete a lecture with the specified id iff the moderator key is correct.
      * @param modkey the moderator key to authenticate
-     * @param id UUID of lecture
-     * @return 0 if the lecture has been deleted successfully, -1 if not
+     * @param id the id of the lecture
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     @DeleteMapping("/delete/{id}/{modkey}")
-    public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) {
+    public int delete(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id)
+            throws LectureException, InvalidModkeyException {
         return service.delete(id, modkey);
     }
 
     /**
-     * PUT endpoint to close a lecture with the specified id iff the moderator key is correct.
-     * @param lectureId UUID of lecture
+     * PUT Endpoint to close a lecture with the specified id iff the moderator key is correct.
+     * @param lectureId the id of the lecture
      * @param modkey the moderator key to authenticate
-     * @return 0 if the lecture has been closed successfully, -1 if not
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     @PutMapping("/close/{lid}/{modkey}")
-    public int close(@PathVariable("lid") UUID lectureId, @PathVariable("modkey") UUID modkey) {
+    public int close(@PathVariable("lid") UUID lectureId, @PathVariable("modkey") UUID modkey)
+            throws LectureException, InvalidModkeyException {
         return service.close(lectureId, modkey);
     }
 
     /**
-     * Validate Endpoint.
+     * GET Endpoint to validate moderator key for the lecture.
      * @param modkey the moderator key to authenticate
-     * @param id UUID of lecture
-     * @return 0 if moderator was validated successfully, -1 if not
+     * @param id the id of the lecture
+     * @return 0 if moderator was validated successfully
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
      */
     @GetMapping("/validate/{id}/{modkey}")
-    public int validate(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id) {
+    public int validate(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id)
+            throws LectureException, InvalidModkeyException {
         return service.validateModerator(id, modkey);
     }
 
     /**
      * Exception handler for requests containing invalid uuids.
      * @param exception exception that has occurred
-     * @return response object with 400 Bad Request status code and 'Invalid UUID' message
+     * @return response object with 400 Bad Request status code and 'Don't do this' message
      */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
+    private ResponseEntity<Object> badUUID(IllegalArgumentException exception) {
         System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Invalid UUID");
+                .body("UUID is not in the correct format");
+    }
+
+    /**
+     * Exception handler for invalid JSONs.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Don't do this' message
+     */
+    @ExceptionHandler(JsonProcessingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ResponseEntity<Object> invalidJSON(JsonProcessingException exception) {
+        System.out.println(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Don't do this");
+    }
+
+    /**
+     * Exception handler.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Missing parameter' message
+     */
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ResponseEntity<Object> badParameter(NullPointerException exception) {
+        System.out.println(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Missing parameter");
+    }
+
+    /**
+     * Exception handler.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Not a number' message
+     */
+    @ExceptionHandler(NumberFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ResponseEntity<Object> badParameter(NumberFormatException exception) {
+        System.out.println(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Not a number");
     }
 }

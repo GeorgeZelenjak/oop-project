@@ -11,16 +11,20 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import nl.tudelft.oopp.livechat.businesslogic.PercentageCalculator;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
-import nl.tudelft.oopp.livechat.data.Lecture;
-import nl.tudelft.oopp.livechat.data.Question;
+import nl.tudelft.oopp.livechat.businesslogic.CreateFile;
+import nl.tudelft.oopp.livechat.controllers.popupcontrollers.PollingManagementPopupController;
+import nl.tudelft.oopp.livechat.data.*;
+import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
+import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
 import nl.tudelft.oopp.livechat.uielements.QuestionCellLecturer;
-import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
@@ -68,44 +72,86 @@ public class LecturerChatSceneController implements Initializable {
     private Button goToUserManualButton;
 
     @FXML
-    private Label showText;
+    private Label showLabel;
+
     @FXML
     private Pane pollingBackground;
+
     @FXML
     private Pane speedBackground;
+
     @FXML
     private Text pollingText;
+
     @FXML
     private Text speedText;
+
     @FXML
     private Button pollingButton;
+
     @FXML
     private Button speedButton;
+
     @FXML
     private Button lectureLog;
+
     @FXML
     private Button viewAnswered;
+
     @FXML
     private Button reopenPolling;
+
     @FXML
     private Button goToSettingsButton;
+
     @FXML
     private Button createPolling;
+
+
     @FXML
-    private Button createQuiz;
+    private Button popupVoteResults;
+
     @FXML
     private Label sortByText;
+
     @FXML
     private CheckBox sortByTimeCheckBox;
 
+    @FXML
+    private Text voteCountFast;
 
-    /**
-     * The Observable list.
-     */
+    @FXML
+    private Text voteCountSlow;
+
+    @FXML
+    private Line slowerVotesPercentLine;
+
+    @FXML
+    private Line fasterVotesPercentLine;
+
+    @FXML
+    private Button goToLectureModeButton;
+
+    @FXML
+    private Button exportQA;
+
+    @FXML
+    private Button closeLectureButton;
+
+    @FXML
+    private Button leaveLecture;
+
+    @FXML
+    private Label sortByLabel;
+
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
 
+    private static List<Integer> lectureSpeeds;
+
     private List<Question> questions;
+
+    private Timeline timelineFetch;
 
     /**
      * Method that runs at scene initalization.
@@ -113,13 +159,43 @@ public class LecturerChatSceneController implements Initializable {
      * @param resourceBundle resources brought around
      */
     public void initialize(URL location, ResourceBundle resourceBundle) {
-        lectureNameText.setText(Lecture.getCurrentLecture().getName());
+        lectureNameText.setText(Lecture.getCurrent().getName());
         userNameText.setText(User.getUserName());
-        Timeline timeline = new Timeline(new KeyFrame(
+        slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
+
+        timelineFetch = new Timeline(new KeyFrame(
                 Duration.millis(1500),
-            ae -> fetchQuestions()));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+            ae -> {
+                fetchQuestions();
+                getVotesOnLectureSpeed();
+                adjustLectureSpeedLines();
+                fetchPoll();
+            }));
+        timelineFetch.setCycleCount(Animation.INDEFINITE);
+        timelineFetch.play();
+        setTooltips();
+    }
+
+
+    /**
+     * Gets votes on lecture speed.
+     */
+    public void getVotesOnLectureSpeed() {
+        UUID uuid = Lecture.getCurrent().getUuid();
+        lectureSpeeds = LectureSpeedCommunication.getVotesOnLectureSpeed(uuid);
+        voteCountFast.setText("Too fast: "
+                + lectureSpeeds.get(0));
+        voteCountSlow.setText("Too slow: "
+                + lectureSpeeds.get(1));
+    }
+
+    /**
+     * Reset lecture speed.
+     */
+    public void resetLectureSpeed() {
+        UUID uuid = Lecture.getCurrent().getUuid();
+        UUID modkey = Lecture.getCurrent().getModkey();
+        LectureSpeedCommunication.resetLectureSpeed(uuid,modkey);
     }
 
     /**
@@ -133,12 +209,13 @@ public class LecturerChatSceneController implements Initializable {
         if (list.size() == 0) {
             System.out.println("There are no questions");
         }
-        Question.setCurrentQuestions(list);
+        Question.setCurrentList(list);
 
-        questions = Question.getCurrentQuestions();
+        questions = Question.getCurrentList();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
-        QuestionManager.sort(sortByVotesCheckBox.isSelected(), questions);
+        QuestionManager.sort(sortByVotesCheckBox.isSelected(),
+                sortByTimeCheckBox.isSelected(), questions);
 
         observableList.setAll(questions);
         questionPaneListView.setItems(observableList);
@@ -158,7 +235,7 @@ public class LecturerChatSceneController implements Initializable {
      * Copy lecture id to clipboard.
      */
     public void copyLectureId() {
-        String myString = Lecture.getCurrentLecture().getUuid().toString();
+        String myString = Lecture.getCurrent().getUuid().toString();
         StringSelection stringSelection = new StringSelection(myString);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
@@ -171,7 +248,7 @@ public class LecturerChatSceneController implements Initializable {
      * Copy moderator key to clipboard.
      */
     public void copyModKey() {
-        String myString = Lecture.getCurrentLecture().getModkey().toString();
+        String myString = Lecture.getCurrent().getModkey().toString();
         StringSelection stringSelection = new StringSelection(myString);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
@@ -189,8 +266,9 @@ public class LecturerChatSceneController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            NavigationController.getCurrentController().goBack();
-            NavigationController.getCurrentController().goBack();
+            timelineFetch.stop();
+            NavigationController.getCurrent().goBack();
+            NavigationController.getCurrent().goBack();
         }
     }
 
@@ -199,9 +277,9 @@ public class LecturerChatSceneController implements Initializable {
      *
      * @throws IOException if something happens
      */
-    public void goToUserManual() throws IOException {
+    public void goToUserManual() {
 
-        NavigationController.getCurrentController().goToUserManual();
+        NavigationController.getCurrent().goToUserManual();
     }
 
     /**
@@ -210,7 +288,7 @@ public class LecturerChatSceneController implements Initializable {
      * @throws IOException if something happens
      */
     public void goToSettings() throws IOException {
-        NavigationController.getCurrentController().goToSettings();
+        NavigationController.getCurrent().goToSettings();
     }
 
     /**
@@ -218,59 +296,185 @@ public class LecturerChatSceneController implements Initializable {
      *
      * @throws IOException if something happens
      */
-    public void closeLecture() throws IOException {
-        LectureCommunication.closeLecture(Lecture.getCurrentLecture().getUuid().toString(),
-                Lecture.getCurrentLecture().getModkey().toString());
-        NavigationController.getCurrentController().goToMainScene();
+    public void closeLecture() {
+        Alert alert = AlertController.createAlert(Alert.AlertType.CONFIRMATION,
+                "Confirm your action", "Are you sure do you want to close this lecture?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            timelineFetch.stop();
+            LectureCommunication.closeLecture(Lecture.getCurrent().getUuid().toString(),
+                    Lecture.getCurrent().getModkey().toString());
+            NavigationController.getCurrent().goToMainScene();
+        }
     }
 
     /**
      * Lecturer mode.
      */
     public void lecturerMode() {
-        this.goToUserManualButton.setDisable(!this.goToUserManualButton.isDisabled());
-        this.goToUserManualButton.setVisible(!this.goToUserManualButton.isVisible());
-        this.unansweredCheckBox.setDisable((!this.unansweredCheckBox.isDisabled()));
-        this.sortByVotesCheckBox.setDisable(!this.sortByVotesCheckBox.isDisabled());
-        this.unansweredCheckBox.setVisible((!this.unansweredCheckBox.isVisible()));
-        this.sortByVotesCheckBox.setVisible(!this.sortByVotesCheckBox.isVisible());
-        this.goToSettingsButton.setDisable(!this.goToSettingsButton.isDisabled());
-        this.sortByTimeCheckBox.setDisable(!this.sortByTimeCheckBox.isDisabled());
-        this.goToSettingsButton.setVisible(!this.goToSettingsButton.isVisible());
-        this.sortByTimeCheckBox.setVisible(!this.sortByTimeCheckBox.isVisible());
-        this.pollingBackground.setDisable(!this.pollingBackground.isDisabled());
-        this.pollingBackground.setVisible(!this.pollingBackground.isVisible());
-        this.answeredCheckBox.setDisable(!this.answeredCheckBox.isDisabled());
-        this.answeredCheckBox.setVisible(!this.answeredCheckBox.isVisible());
-        this.speedBackground.setDisable(!this.speedBackground.isDisabled());
-        this.speedBackground.setVisible(!this.speedBackground.isVisible());
-        this.pollingButton.setDisable(!this.pollingButton.isDisabled());
-        this.reopenPolling.setDisable(!this.reopenPolling.isDisabled());
-        this.createPolling.setDisable(!this.createPolling.isDisabled());
-        this.pollingButton.setVisible(!this.pollingButton.isVisible());
-        this.reopenPolling.setVisible(!this.reopenPolling.isVisible());
-        this.createPolling.setVisible(!this.createPolling.isVisible());
-        this.participants.setDisable(!this.participants.isDisabled());
-        this.viewAnswered.setDisable(!this.viewAnswered.isDisabled());
-        this.participants.setVisible(!this.participants.isVisible());
-        this.viewAnswered.setVisible(!this.viewAnswered.isVisible());
-        this.pollingText.setDisable(!this.pollingText.isDisabled());
-        this.speedButton.setDisable(!this.speedButton.isDisabled());
-        this.pollingText.setVisible(!this.pollingText.isVisible());
-        this.speedButton.setVisible(!this.speedButton.isVisible());
-        this.createQuiz.setDisable(!this.createQuiz.isDisabled());
-        this.sortByText.setDisable(!this.sortByText.isDisabled());
         this.lectureLog.setDisable(!this.lectureLog.isDisabled());
         this.lectureLog.setVisible(!this.lectureLog.isVisible());
-        this.createQuiz.setVisible(!this.createQuiz.isVisible());
+
+        this.exportQA.setDisable(!this.exportQA.isDisabled());
+        this.exportQA.setVisible(!this.exportQA.isVisible());
+
+        this.sortByLabel.setDisable(!this.sortByLabel.isDisabled());
+        this.sortByLabel.setVisible(!this.sortByLabel.isVisible());
+
+        this.goToUserManualButton.setDisable(!this.goToUserManualButton.isDisabled());
+        this.goToUserManualButton.setVisible(!this.goToUserManualButton.isVisible());
+
+        this.sortByVotesCheckBox.setDisable(!this.sortByVotesCheckBox.isDisabled());
+        this.sortByVotesCheckBox.setVisible(!this.sortByVotesCheckBox.isVisible());
+
+        this.sortByTimeCheckBox.setDisable(!this.sortByTimeCheckBox.isDisabled());
+        this.sortByTimeCheckBox.setVisible(!this.sortByTimeCheckBox.isVisible());
+
+        this.unansweredCheckBox.setDisable((!this.unansweredCheckBox.isDisabled()));
+        this.unansweredCheckBox.setVisible(!this.unansweredCheckBox.isVisible());
+
+        this.goToSettingsButton.setDisable(!this.goToSettingsButton.isDisabled());
+        this.goToSettingsButton.setVisible(!this.goToSettingsButton.isVisible());
+
+        this.pollingBackground.setDisable(!this.pollingBackground.isDisabled());
+        this.pollingBackground.setVisible(!this.pollingBackground.isVisible());
+
+        this.answeredCheckBox.setDisable(!this.answeredCheckBox.isDisabled());
+        this.answeredCheckBox.setVisible(!this.answeredCheckBox.isVisible());
+
+        this.speedBackground.setDisable(!this.speedBackground.isDisabled());
+        this.speedBackground.setVisible(!this.speedBackground.isVisible());
+
+        this.reopenPolling.setDisable(!this.reopenPolling.isDisabled());
+        this.reopenPolling.setVisible(!this.reopenPolling.isVisible());
+
+        this.createPolling.setDisable(!this.createPolling.isDisabled());
+        this.createPolling.setVisible(!this.createPolling.isVisible());
+
+        this.participants.setDisable(!this.participants.isDisabled());
+        this.participants.setVisible(!this.participants.isVisible());
+
+        this.viewAnswered.setDisable(!this.viewAnswered.isDisabled());
+        this.viewAnswered.setVisible(!this.viewAnswered.isVisible());
+
+        this.pollingText.setDisable(!this.pollingText.isDisabled());
+        this.pollingText.setVisible(!this.pollingText.isVisible());
+
+        this.popupVoteResults.setDisable(!this.popupVoteResults.isDisabled());
+
+        this.lectureLog.setDisable(!this.lectureLog.isDisabled());
+        this.lectureLog.setVisible(!this.lectureLog.isVisible());
+        this.popupVoteResults.setVisible(!this.popupVoteResults.isVisible());
+
+        this.sortByText.setDisable(!this.sortByText.isDisabled());
         this.sortByText.setVisible(!this.sortByText.isVisible());
+
         this.speedText.setDisable(!this.speedText.isDisabled());
         this.speedText.setVisible(!this.speedText.isVisible());
-        this.showText.setDisable(!this.showText.isDisabled());
-        this.showText.setVisible(!this.showText.isVisible());
+
+        this.showLabel.setDisable(!this.showLabel.isDisabled());
+        this.showLabel.setVisible(!this.showLabel.isVisible());
+
         this.copyKey.setDisable(!this.copyKey.isDisabled());
         this.copyKey.setVisible(!this.copyKey.isVisible());
+
         this.copyId.setDisable(!this.copyId.isDisabled());
         this.copyId.setVisible(!this.copyId.isVisible());
     }
+
+    /**
+     * Method that exports all Questions and answers of a lecture.
+     */
+    public void exportQuestionsAndAnswers() {
+
+        String alertText = "Press ok to export all questions and answers to file";
+        Alert alert = AlertController.createAlert(
+                Alert.AlertType.CONFIRMATION, "Exporting Q&A", alertText);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                CreateFile file = new CreateFile("exportedQuestions/");
+
+                List<Question> list = QuestionCommunication.fetchQuestions();
+
+                if (list == null || list.size() == 0)
+                    AlertController.alertError(
+                            "Error exporting questions", "There are no questions!");
+
+                file.writeToFile(list);
+            }
+        });
+    }
+
+    private void adjustLectureSpeedLines() {
+        if (lectureSpeeds == null) {
+            return;
+        }
+        //Sets the
+        slowerVotesPercentLine.setStartX(PercentageCalculator.determineNewStartCoordinates(
+                fasterVotesPercentLine.getStartX(), fasterVotesPercentLine.getEndX(),
+                lectureSpeeds.get(0), lectureSpeeds.get(1)));
+
+        //Makes it so that if the blue line is just a dot, users do not see it
+        slowerVotesPercentLine.setVisible(slowerVotesPercentLine.getEndX()
+                != slowerVotesPercentLine.getStartX());
+    }
+
+
+    /**
+     * Popup polling management.
+     */
+    public void popupPollingManagement() {
+        if (PollingManagementPopupController.getInEditingPoll() == null) {
+            PollingManagementPopupController.setInEditingPoll(new Poll());
+            PollingManagementPopupController.setInEditingOptions(new ArrayList<PollOption>());
+        }
+        NavigationController.getCurrent().popupPollingManagement();
+    }
+
+    private void setTooltips() {
+        //Tooltips
+        copyId.setTooltip(new Tooltip("Copy the lecture's ID to clipboard"));
+        copyKey.setTooltip(new Tooltip("Copy the moderator key to clipboard"));
+
+        participants.setTooltip(new Tooltip("See the lecture participants"));
+        goToLectureModeButton.setTooltip(new Tooltip("Enable/Disable lecturer mode"));
+
+        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+        goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
+
+        pollingButton.setTooltip(new Tooltip("Show poll's results to lecture participants"));
+        speedButton.setTooltip(new Tooltip("Open/Reopen voting on lecture speed"));
+
+        lectureLog.setTooltip(new Tooltip("See an overview of the lecture's activity"));
+        reopenPolling.setTooltip(new Tooltip("Reopen a previous polling question"));
+
+        exportQA.setTooltip(new Tooltip("Export this lecture's content"));
+        closeLectureButton.setTooltip(new Tooltip("Close this lecture"));
+
+        leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
+        createPolling.setTooltip(new Tooltip("Create a polling question"));
+
+        popupVoteResults.setTooltip(new Tooltip("Create a quiz"));
+    }
+
+    private void fetchPoll() {
+
+        PollAndOptions fetched = (
+                PollCommunication.fetchPollAndOptionsModerator(
+                        Lecture.getCurrent().getUuid(),
+                        Lecture.getCurrent().getModkey()));
+        if (fetched == null) {
+            return;
+        }
+        PollAndOptions.setCurrent(fetched);
+    }
+
+    public void popupVoteResults() {
+        NavigationController.getCurrent().popupPollResult();
+    }
+
+
 }
+

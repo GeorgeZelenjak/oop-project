@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="512.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.popupcontrollers.PollVotingPopupController">
+   <children>
+      <ListView fx:id="votingListView" layoutX="40.0" layoutY="67.0" prefHeight="420.0" prefWidth="640.0" />
+      <Text layoutX="307.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Voting">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Text>
+      <Text fx:id="questionText" layoutX="50.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="192.13671875" />
+   </children>
+</AnchorPane>

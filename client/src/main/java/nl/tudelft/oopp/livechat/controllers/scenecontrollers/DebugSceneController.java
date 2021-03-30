@@ -5,9 +5,11 @@ import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
+import nl.tudelft.oopp.livechat.servercommunication.LectureSpeedCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ public class DebugSceneController {
      * @throws IOException exception if something goes wrong
      */
     public void joinAsStudent() throws IOException {
-        NavigationController.getCurrentController().goToUserChatPage();
+        NavigationController.getCurrent().goToUserChatPage();
     }
 
     /**
@@ -30,7 +32,7 @@ public class DebugSceneController {
      * @throws IOException exception if something goes wrong
      */
     public void joinAsModerator() throws IOException {
-        NavigationController.getCurrentController().goToLecturerChatPage();
+        NavigationController.getCurrent().goToLecturerChatPage();
     }
 
     /**
@@ -39,23 +41,30 @@ public class DebugSceneController {
      * @throws IOException the io exception
      */
     public void goToSettings() throws IOException {
-        NavigationController.getCurrentController().goToSettings();
+        NavigationController.getCurrent().goToSettings();
     }
 
     /**
      * Go back.
      */
     public void goBack() {
-        NavigationController.getCurrentController().goBack();
+        NavigationController.getCurrent().goBack();
     }
 
     /**
      * Sets new lecture.
      */
     public void setNewLecture() {
+        User.setUserName("Andy");
         Lecture lecture = LectureCommunication
-                .createLecture("A great history of zebras");
-        Lecture.setCurrentLecture(lecture);
+                .createLecture("A great history of zebras",
+                        "Andy", new Timestamp(System.currentTimeMillis()), 60);
+        Lecture.setCurrent(lecture);
+    }
+
+    public void joinAsBoth() throws IOException {
+        NavigationController.getCurrent().goToUserChatPage();
+        NavigationController.getCurrent().popupLecturerScene();
     }
 
     /**
@@ -63,16 +72,59 @@ public class DebugSceneController {
      */
     public void populate() {
         User.setUserName("Stefan");
-        QuestionCommunication.askQuestion("How do you do, fellow kids?");
-        QuestionCommunication.askQuestion("How do you find the eigen values?");
-        QuestionCommunication.askQuestion("I am confused!!!!");
-        QuestionCommunication.askQuestion("We live in a soc");
+        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
+                67, "Artjom");
+
+        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
+                26, "Codrin");
+
+        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
+                34, "Jegor");
+
+        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
+                42, "Tudor");
+
+        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
+                59, "Oleg");
+
+        QuestionCommunication.askQuestion(
+                67, Lecture.getCurrent().getUuid(), "How do you do, fellow kids?");
+        QuestionCommunication.askQuestion(
+                59, Lecture.getCurrent().getUuid(),"How do you find the eigen values?");
+        QuestionCommunication.askQuestion(
+                26, Lecture.getCurrent().getUuid(),"I am confused!!!!");
+        QuestionCommunication.askQuestion(
+                42, Lecture.getCurrent().getUuid(),"We live in a soc");
         List<Question> questions = QuestionCommunication.fetchQuestions();
-        QuestionCommunication.upvoteQuestion(questions.get(2).getId(),1);
-        QuestionCommunication.upvoteQuestion(questions.get(2).getId(),2);
-        QuestionCommunication.upvoteQuestion(questions.get(2).getId(),3);
-        QuestionCommunication.upvoteQuestion(questions.get(2).getId(),4);
-        QuestionCommunication.upvoteQuestion(questions.get(1).getId(),5);
-        QuestionCommunication.upvoteQuestion(questions.get(1).getId(),6);
+        assert questions != null;
+        assert questions.size() == 4;
+        QuestionCommunication.upvoteQuestion(questions.get(2).getId(),67);
+        QuestionCommunication.upvoteQuestion(questions.get(2).getId(),26);
+        QuestionCommunication.upvoteQuestion(questions.get(2).getId(),34);
+        QuestionCommunication.upvoteQuestion(questions.get(1).getId(),42);
+        QuestionCommunication.upvoteQuestion(questions.get(1).getId(),59);
+
+
+
+        LectureSpeedCommunication.voteOnLectureSpeed(
+                67,
+                Lecture.getCurrent().getUuid(),
+                "faster");
+        LectureSpeedCommunication.voteOnLectureSpeed(
+                26,
+                Lecture.getCurrent().getUuid(),
+                "faster");
+        LectureSpeedCommunication.voteOnLectureSpeed(
+                34,
+                Lecture.getCurrent().getUuid(),
+                "faster");
+        LectureSpeedCommunication.voteOnLectureSpeed(
+                42,
+                Lecture.getCurrent().getUuid(),
+                "slower");
+        LectureSpeedCommunication.voteOnLectureSpeed(
+                59,
+                Lecture.getCurrent().getUuid(),
+                "faster");
     }
 }

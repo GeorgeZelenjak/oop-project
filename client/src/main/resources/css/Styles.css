@@ -10,18 +10,22 @@
         -fx-red: #C3312F;
         -fx-yellow: #F1BE3E;
         -fx-font-family: Roboto;
-        -fx-padding: 0px 0px 0px 0px;
     }
-    /*To be used*/
 
     .button {
         -fx-background-color: -fx-blue;
         -fx-background-radius: 6px;
         -fx-font: 18px Roboto;
         -fx-text-fill: -fx-white;
+        -fx-padding: 0px 0px 0px 0px;
     }
+
     .button:hover {
         -fx-background-color: -fx-dark-blue;
+    }
+
+    .list-cell {
+        -fx-padding: 0em 0em 0em 0em ;
     }
 
     .check-box > .box {
@@ -39,6 +43,7 @@
         -fx-min-width: 228px;
         -fx-max-height: 90px;
         -fx-max-width: 228px;
+        -fx-padding: 0px 0px 0px 0px;
     }
 
     /*This should be added somewhere else!*/
@@ -51,11 +56,28 @@
         -fx-font: 18px Arial;
         -fx-prompt-text-fill: -fx-text-gray;
         -fx-text-fill: black;
+        -fx-padding: 0px 0px 0px 0px;
     }
 
+    .mainSceneButtonCopy {
+        -fx-background-color: #46a20b;
+    }
+
+    .mainSceneButtonCopy:hover {
+        -fx-background-color: #388108;
+    }
+
+    .lectureModeButton {
+        -fx-background-color: rgb(241,190,62);
+    }
+
+    .lectureModeButton:hover {
+        -fx-background-color: #C19832;
+    }
 
     .headerText{
         -fx-font-size: 36px;
+        -fx-padding: 0px 0px 0px 0px;
     }
 
     .leaveLecture{
@@ -63,10 +85,11 @@
         -fx-background-radius: 10px;
         -fx-font: 18px Arial;
         -fx-text-fill: -fx-white;
+        -fx-padding: 0px 0px 0px 0px;
     }
 
     .leaveLecture:hover{
-        -fx-background-color:  #fa6866;
+        -fx-background-color: #af2c2a;
     }
 
     .settingsButton{
@@ -79,13 +102,39 @@
         -fx-background-color: Transparent;
     }
 
+    .deleteButton:hover {
+        -fx-background-color: rgb(212,212,212);
+    }
+
     .markAsAnsweredButton {
         -fx-graphic: url(/images/markAsAnswered.png);
         -fx-background-color: Transparent;
     }
 
+    .markAsAnsweredButton:hover {
+        -fx-background-color: rgb(212,212,212);
+    }
+
+    .editButton {
+        -fx-graphic: url(/images/edit.png);
+        -fx-background-color: Transparent;
+    }
+
+    .banButton {
+        -fx-graphic: url(/images/ban.png);
+        -fx-background-color: Transparent;
+    }
+
+    .banButton:hover {
+        -fx-background-color: rgb(212,212,212);
+    }
+
+    .editButton:hover {
+        -fx-background-color: rgb(212,212,212);
+    }
+
     .settingsButton:hover{
-        -fx-background-image: url(../images/Gear_gray.png);
+        -fx-background-color: rgb(212,212,212);
     }
 
     .sidebarButton{
@@ -94,7 +143,9 @@
     }
 
     .sidebar{
-        -fx-background-color: -fx-blue-green;
+        -fx-background-color: rgb(199,199,199);
+        -fx-border-color: gray;
+        -fx-padding: 0px 0px 0px 0px;
     }
 
     .textBox {
@@ -109,16 +160,14 @@
         -fx-border-width: 2px;
         -fx-border-color: -fx-border-gray;
         -fx-prompt-text-fill: -fx-text-gray;
+        -fx-padding: 0px 0px 0px 0px;
 
     }
 
     .backButton {
         -fx-background-color: -fx-blue;
         -fx-background-radius: 7px;
-        -fx-font: 27px Roboto;
         -fx-text-fill: -fx-white;
-        -fx-pref-width: 136.5px;
-        -fx-pref-height: 50.25px;
     }
 
     .backButton:hover {
@@ -126,10 +175,14 @@
     }
 
     .upvoteButton {
-        -fx-background-color: lightgreen;
+        -fx-background-color: rgb(212,212,212);
         -fx-background-radius: 10px;
-        -fx-font: 10px Arial;
-        -fx-text-fill: black;
+        -fx-font: 18px Arial;
+        -fx-text-fill: #464646;
+    }
+
+    .upvoteButton:hover {
+        -fx-background-color: #aaaaaa;
     }
 
     .answeredTick {
@@ -137,7 +190,43 @@
         -fx-background-color: Transparent;
     }
 
+    .debugButton {
+        -fx-background-color: white;
+        -fx-text-fill: gray;
+        -fx-border-style: solid;
+        -fx-border-color: gray;
+        -fx-border-width: 1px;
+        -fx-border-radius: 7px;
+    }
 
+    .debugButton:hover {
+        -fx-background-color: rgb(250,250,250);
+        -fx-opacity: 0.5;
+    }
+
+    .replyButton {
+        -fx-graphic: url(/images/reply.png);
+        -fx-background-color: Transparent;
+    }
+
+    .questionCell {
+        -fx-border-color: #00A6D6;
+        -fx-border-style: solid;
+        -fx-border-radius: 15px;
+        -fx-border-width: 2px;
+    }
+
+    .replyButton:hover {
+        -fx-background-color: rgb(212,212,212);
+    }
+
+    .participantsButton {
+        -fx-background-color: rgb(212,212,212);
+    }
+
+    .participantsButton:hover {
+        -fx-background-color: #aaaaaa;
+    }
 
 
 

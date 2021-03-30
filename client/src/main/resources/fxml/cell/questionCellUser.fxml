@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="questionBoxAnchorPane" prefWidth="578.0" styleClass="questionCell" stylesheets="@../../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Button fx:id="upvoteButton" layoutX="6.0" layoutY="10.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="upvoteButton" stylesheets="@../../css/Styles.css" text="⬆">
+         <font>
+            <Font size="9.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <Text layoutX="60.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asked By: ">
+         <font>
+            <Font name="Arial Bold" size="10.0" />
+         </font>
+      </Text>
+      <Text fx:id="questionOwner" layoutX="112.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="103.0">
+         <font>
+            <Font name="Arial" size="10.0" />
+         </font>
+      </Text>
+      <Text fx:id="numberOfUpvotes" fill="#464646" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1000" textAlignment="CENTER" wrappingWidth="42.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font></Text>
+      <Text fx:id="dateStamp" layoutX="251.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="163.44822692871094">
+         <font>
+            <Font name="Arial Italic" size="10.0" />
+         </font>
+      </Text>
+      <Button fx:id="deleteButton" disable="true" layoutX="550.0" layoutY="15.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="deleteButton" stylesheets="@../../css/Styles.css" textFill="#f8f8f8" visible="false">
+         <font>
+            <Font size="9.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Label fx:id="answeredTick" layoutX="554.0" layoutY="45.0" prefHeight="20.0" prefWidth="20.0" styleClass="answeredTick" visible="false">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+      <FlowPane hgap="15.0" layoutX="59.0" layoutY="27.0" prefHeight="35.0" prefWidth="471.0">
+         <children>
+              <Text fx:id="questionText" strokeType="OUTSIDE" strokeWidth="0.0" text="fd" wrappingWidth="468.00682830810547" />
+            <Text fx:id="answerText" fill="#07b20d" layoutX="10.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="470.00682830810547">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+            </Text>
+         </children></FlowPane>
+    </children>
+</AnchorPane>

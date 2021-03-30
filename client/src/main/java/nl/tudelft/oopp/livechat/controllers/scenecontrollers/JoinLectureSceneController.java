@@ -1,8 +1,11 @@
 package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
@@ -11,12 +14,14 @@ import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import java.util.UUID;
 
 /**
  * Class for the JoinLecture Scene controller.
  */
-public class JoinLectureSceneController {
+public class JoinLectureSceneController implements Initializable {
 
     @FXML
     private TextField enterNameTextField;
@@ -30,11 +35,29 @@ public class JoinLectureSceneController {
     @FXML
     private CheckBox modkeyCheckBox;
 
+    @FXML
+    private Button goBackButton;
+
+    @FXML
+    private Button goToJoinLectureButton;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        goBackButton.setTooltip(new Tooltip("Go back to previous page"));
+
+        goToJoinLectureButton.setTooltip(
+                new Tooltip("Joins the lecture either as a student "
+                        + "\nor as a lecturer/moderator")
+        );
+
+        modkeyTextField.setTooltip(new Tooltip("Check this box if you are a lecturer/moderator"));
+    }
 
     /**
      * Toggles the visibility of the modKeyTextField.
      */
     public void onCheckBoxAction() {
+
         modkeyTextField.setVisible(!modkeyTextField.isVisible());
     }
 
@@ -73,13 +96,12 @@ public class JoinLectureSceneController {
 
         User.setUserName(enterNameTextField.getText());
 
-        Lecture.setCurrentLecture(
+        Lecture.setCurrent(
                 LectureCommunication.joinLectureById(enterLectureCodeTextField.getText()));
-        Lecture currentLecture = Lecture.getCurrentLecture();
+        Lecture currentLecture = Lecture.getCurrent();
 
         if (currentLecture == null) {
-            AlertController.alertError("Error", "Lecture was not found.");
-
+            System.out.println("no lecture joined");
         } else if (modkeyCheckBox.isSelected()) {
             joinAsModerator();
         } else {
@@ -110,11 +132,11 @@ public class JoinLectureSceneController {
      * @throws IOException exception if something goes wrong
      */
     private void joinAsStudent() throws IOException {
-        if (!Lecture.getCurrentLecture().isOpen()) {
+        if (!Lecture.getCurrent().isOpen()) {
             AlertController.alertInformation(
                     "Lecture not open yet!","This lecture has not started yet!");
         } else {
-            NavigationController.getCurrentController().goToUserChatPage();
+            NavigationController.getCurrent().goToUserChatPage();
         }
     }
 
@@ -142,11 +164,10 @@ public class JoinLectureSceneController {
                 .validateModerator(enterLectureCodeTextField.getText(),modkeyString);
 
         if (!result) {
-            AlertController.alertError("Invalid moderator key","Wrong moderator key!");
             return;
         }
-        Lecture.getCurrentLecture().setModkey(UUID.fromString(modkeyString));
-        NavigationController.getCurrentController().goToLecturerChatPage();
+        Lecture.getCurrent().setModkey(UUID.fromString(modkeyString));
+        NavigationController.getCurrent().goToLecturerChatPage();
     }
 
     /**
@@ -154,7 +175,7 @@ public class JoinLectureSceneController {
      */
     public void goBack() {
 
-        NavigationController.getCurrentController().goBack();
+        NavigationController.getCurrent().goBack();
         System.out.println("Button was pressed!");
     }
 

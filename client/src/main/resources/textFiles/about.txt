@@ -1,0 +1,17 @@
+->This application was developed by Group 56 of the CSE1105 OOP Project Course.
+
+
+
+Designed, developed and perfected by none other than:
+-> Oleg Danilov
+-> Tudor Popica
+-> Artjom Pugatsov
+-> Giulio Segalini
+-> Codrin Socol
+-> Jegor Zelenjak
+
+
+
+
+
+->All "TU Delft" logos and colour schemes used in this project are the property of Delft University of Technology.

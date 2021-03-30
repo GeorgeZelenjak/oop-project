@@ -1,0 +1,9 @@
+->Both students and lecturers have access to questions functionalities.
+
+->By default, all questions are displayed - both answered and unanswered ones. This can be changed by checking/unchecking the "Show Answered" and "Show Unanswered" checkboxes at the top center of the page.
+
+->By default, all questions are sorted by the time they were asked. They can be sorted either by the time they were submitted, but they can also be sorted by the number of votes they currently have. This can be done by checking/unchecking the "Sort by: Votes" / "Sort by: Time" checkboxes at the top center of the page.
+
+->Students can ask questions, upvote other questions or delete their questions.
+
+->Lecturers/Moderators can answer questions, mark a question as answered or delete any question. For more info on this topic, see the Question Handling category.

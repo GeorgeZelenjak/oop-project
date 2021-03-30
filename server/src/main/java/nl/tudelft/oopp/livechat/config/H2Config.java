@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableJpaRepositories("nl.tudelft.oopp.livechat")
+//change to application-postgres.properties to use postgres
 @PropertySource("classpath:./application-dev.properties")
 @EnableTransactionManagement
 public class H2Config {
@@ -24,14 +25,13 @@ public class H2Config {
 
     /**
      * Set up the connection to the database.
+     * @return the data source
      */
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(environment.getProperty("jdbc.driverClassName"));
         dataSource.setUrl(environment.getProperty("jdbc.url"));
-        //System.out.println("username: " + environment.getProperty("jdbc.user"));
-        //System.out.println("password: " + environment.getProperty("jdbc.pass"));
         dataSource.setUsername(environment.getProperty("jdbc.user"));
         dataSource.setPassword(environment.getProperty("jdbc.pass"));
 
