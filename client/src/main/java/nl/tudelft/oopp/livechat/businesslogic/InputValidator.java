@@ -1,5 +1,9 @@
 package nl.tudelft.oopp.livechat.businesslogic;
 
+import nl.tudelft.oopp.livechat.controllers.AlertController;
+
+import java.util.UUID;
+
 public abstract class InputValidator {
 
     private InputValidator() {
@@ -65,5 +69,19 @@ public abstract class InputValidator {
             return 0;
         }
         return -2;
+    }
+
+    /**
+     * Validates UUID.
+     * @param uuidString a String with uuid
+     * @return true if the uuid is valid, false otherwise
+     */
+    public static boolean validateUUID(String uuidString) {
+        try {
+            UUID uuid = UUID.fromString(uuidString);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }
