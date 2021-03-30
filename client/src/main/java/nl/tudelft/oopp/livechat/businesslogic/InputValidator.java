@@ -51,6 +51,21 @@ public abstract class InputValidator {
     }
 
     /**
+     * Validates the frequency of asking questions.
+     * @param num String representing frequency
+     * @return true if the frequency is a valid non-negative number
+     */
+    public static int validateFrequency(String num) {
+        try {
+            int frequency = Integer.parseInt(num);
+            return (frequency >= 0) ? frequency : -1;
+
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    /**
      * Validates user hour input.
      * @param input the user input
      * @return int
@@ -69,6 +84,18 @@ public abstract class InputValidator {
             return 0;
         }
         return -2;
+    }
+
+    /**
+     * Checks the text for curse words.
+     * @param text the text to be checked
+     * @return true if no curse words, false otherwise
+     */
+    public static boolean checkCurseWords(String text) {
+        if (text.contains("fuck") || text.contains("Fuck")) {
+            return false;
+        }
+        return true;
     }
 
     /**
