@@ -90,6 +90,9 @@ public class UserChatSceneController implements Initializable {
 
     private Timeline timelineFetch;
 
+    private Thread fetchingThread;
+
+
     /**
      * Method that runs when the scene is first initialized.
      * @param location location of current scene
@@ -100,13 +103,27 @@ public class UserChatSceneController implements Initializable {
         userNameText.setText(User.getUserName());
         fetchVotes();
 
+        getQuestions(true);
         timelineFetch = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
-            fetchQuestions();
+            setQuestions();
             getVotesOnLectureSpeed();
             fetchVotes();
         }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
+
+        fetchingThread = new Thread(
+            () -> {
+                while (Lecture.getCurrent() != null) {
+                    List<Question> list = QuestionCommunication.fetchQuestions(false);
+                    if (list != null) {
+                        Question.setCurrentList(list);
+                    }
+                }
+            }
+        );
+        fetchingThread.setDaemon(true);
+        fetchingThread.start();
 
         //Tooltip
         participants.setTooltip(new Tooltip("See the lecture participants"));
@@ -121,19 +138,12 @@ public class UserChatSceneController implements Initializable {
     /**
      * Fetch questions.
      */
-    public void fetchQuestions() {
-        List<Question> list = QuestionCommunication.fetchQuestions();
-        if (list == null) {
-            return;
-        }
-        Question.setCurrentList(list);
-
+    public void setQuestions() {
         questions = Question.getCurrentList();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
         QuestionManager.sort(sortByVotesCheckBox.isSelected(),
                 sortByTimeCheckBox.isSelected(), questions);
-        System.out.println("sorted");
 
         observableList.setAll(questions);
         questionPaneListView.setItems(observableList);
@@ -151,6 +161,17 @@ public class UserChatSceneController implements Initializable {
         questionPaneListView.getItems().addAll(questions);
     }
 
+    private void getQuestions(boolean firstTime) {
+        List<Question> list = QuestionCommunication.fetchQuestions(firstTime);
+        if (list == null) {
+            return;
+        }
+        if (list.size() == 0) {
+            System.out.println("There are no questions");
+        }
+        Question.setCurrentList(list);
+    }
+
     /**
      * Go back to main.
      * @throws IOException the io exception
@@ -165,7 +186,11 @@ public class UserChatSceneController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             timelineFetch.stop();
+            fetchingThread.stop();
+            fetchingThread = null;
+            Question.setCurrentList(new ArrayList<>());
             NavigationController.getCurrent().goToMainScene();
+            Lecture.setCurrent(null);
         }
     }
 
@@ -219,8 +244,7 @@ public class UserChatSceneController implements Initializable {
 
         questionInputTextArea.clear();
 
-        //TODO this will be removed when we implement a more efficient polling
-        fetchQuestions();
+        setQuestions();
         return (false);
     }
 
