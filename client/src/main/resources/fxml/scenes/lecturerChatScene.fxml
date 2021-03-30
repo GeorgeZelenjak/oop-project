@@ -28,19 +28,8 @@
             <Button fx:id="copyKey" layoutX="14.0" layoutY="363.0" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy modkey" />
             <Button id="leaveLecture" fx:id="closeLectureButton" layoutX="14.0" layoutY="720.0" mnemonicParsing="false" onAction="#closeLecture" prefHeight="34.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../../css/Styles.css" text="End Lecture" />
          </children></Pane>
-      <Pane fx:id="pollingBackground" layoutX="819.0" layoutY="23.0" prefHeight="216.0" prefWidth="247.0" styleClass="sidebar">
-         <children>
-            <Text fx:id="pollingText" layoutX="7.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Polling Question Results" textAlignment="CENTER" wrappingWidth="232.20000000000005">
-               <font>
-                  <Font name="Arial Bold" size="20.0" />
-               </font>
-            </Text>
-            <Button fx:id="pollingButton" layoutX="52.0" layoutY="173.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="144.0" styleClass="mainSceneButton" text="Release Results" />
-         </children>
-      </Pane>
       <Button fx:id="createPolling" layoutX="226.0" layoutY="701.0" mnemonicParsing="false" onAction="#popupPollingManagement" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Manage polling" />
-      <Button fx:id="reopenPolling" layoutX="826.0" layoutY="523.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="232.0" styleClass="mainSceneButton" text="Reopen a Polling Question" />
-      <Pane fx:id="speedBackground" layoutX="818.0" layoutY="247.0" prefHeight="216.0" prefWidth="247.0" styleClass="sidebar">
+      <Pane fx:id="speedBackground" layoutX="819.0" layoutY="316.0" prefHeight="135.0" prefWidth="247.0" styleClass="sidebar">
          <children>
             <Text fx:id="speedText" layoutX="7.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture speed Results" textAlignment="CENTER" wrappingWidth="232.20000000000005">
                <font>
@@ -61,8 +50,7 @@
             </Text>
          </children>
       </Pane>
-      <Button fx:id="popupVoteResults" layoutX="506.0" layoutY="701.0" mnemonicParsing="false" onAction="#popupVoteResults" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Show poll results" />
-      <Button fx:id="lectureLog" layoutX="825.0" layoutY="560.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="234.0" styleClass="mainSceneButton" text="View Lecture Log" />
+      <Button fx:id="popupVoteResults" layoutX="599.0" layoutY="702.0" mnemonicParsing="false" onAction="#popupVoteResults" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Show poll results" />
       <ListView fx:id="questionPaneListView" layoutX="209.0" layoutY="48.0" prefHeight="642.0" prefWidth="602.0" />
       <Label fx:id="sortByLabel" layoutX="209.0" layoutY="14.0" prefHeight="18.0" prefWidth="47.0" text="Sort by:">
          <font>
@@ -89,8 +77,7 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>
-      <Button fx:id="exportQA" layoutX="826.0" layoutY="655.0" mnemonicParsing="false" onAction="#exportQuestionsAndAnswers" prefHeight="34.0" prefWidth="234.0" styleClass="mainSceneButton" text="Export Questions &amp; Answers" />
-      <Button fx:id="goToSettingsButton" layoutX="1024.0" layoutY="718.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="34.0" prefWidth="34.0" styleClass="settingsButton" />
-      <Button fx:id="goToUserManualButton" layoutX="977.0" layoutY="718.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="34.0" prefWidth="34.0" styleClass="mainSceneButton" text="?" />
+      <Button fx:id="exportQA" layoutX="825.0" layoutY="532.0" mnemonicParsing="false" onAction="#exportQuestionsAndAnswers" prefHeight="34.0" prefWidth="234.0" styleClass="mainSceneButton" text="Export Questions &amp; Answers" />
+      <Button fx:id="goToUserManualButton" layoutX="1031.0" layoutY="719.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="34.0" prefWidth="34.0" styleClass="mainSceneButton" text="?" />
    </children>
 </AnchorPane>
