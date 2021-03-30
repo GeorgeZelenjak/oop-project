@@ -26,15 +26,7 @@ import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import java.net.URL;
-import java.sql.Timestamp;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.ResourceBundle;
-
-import nl.tudelft.oopp.livechat.controllers.NavigationController;
-import nl.tudelft.oopp.livechat.data.Lecture;
-import nl.tudelft.oopp.livechat.data.Question;
-import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 /**
  * Class for Cell data for the lecturer.
@@ -203,7 +195,7 @@ public class CellLecturerController implements Initializable {
      */
     public void setEditButton() {
         editButton.setOnAction((ActionEvent e) -> {
-            Question.setCurrentQ(question);
+            Question.setCurrent(question);
             NavigationController.getCurrent().popupEditQuestion();
         });
     }
@@ -236,7 +228,7 @@ public class CellLecturerController implements Initializable {
      */
     public void replyAnswer() {
         replyButton.setOnAction((ActionEvent event) -> {
-            Question.setCurrentQ(question);
+            Question.setCurrent(question);
             NavigationController.getCurrent().popupAnswerQuestion();
         });
 

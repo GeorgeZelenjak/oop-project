@@ -146,7 +146,7 @@ public class NavigationController {
             Stage stage = new Stage();
             stage.setTitle(title);
             stage.setScene(new Scene(root, width, height));
-            if (!QuestionCommunication.setStatus(Question.getCurrentQ().getId(),
+            if (!QuestionCommunication.setStatus(Question.getCurrent().getId(),
                     Lecture.getCurrent().getModkey(), req, User.getUid())) {
                 AlertController.alertWarning("Question is already being handled",
                         "This question is already being handled, if you want you can continue");
@@ -156,7 +156,7 @@ public class NavigationController {
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent e) {
-                    QuestionCommunication.setStatus(Question.getCurrentQ().getId(),
+                    QuestionCommunication.setStatus(Question.getCurrent().getId(),
                             Lecture.getCurrent().getModkey(), "new", User.getUid());
                 }
             });

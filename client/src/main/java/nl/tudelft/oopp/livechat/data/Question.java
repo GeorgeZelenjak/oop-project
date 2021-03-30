@@ -312,7 +312,7 @@ public class Question implements Comparable<Question> {
      * Gets the list of current questions.
      * @return the current questions
      */
-    public static List<Question> getCurrentQList() {
+    public static List<Question> getCurrentList() {
         return currentQuestions;
     }
 
@@ -320,7 +320,7 @@ public class Question implements Comparable<Question> {
      * Sets the list of current questions.
      * @param questions the questions
      */
-    public static void setCurrentQList(List<Question> questions) {
+    public static void setCurrentList(List<Question> questions) {
         currentQuestions = questions;
     }
 
@@ -328,7 +328,7 @@ public class Question implements Comparable<Question> {
      * Gets the current question.
      * @return the current question
      */
-    public static Question getCurrentQ() {
+    public static Question getCurrent() {
         return currentQuestion;
     }
 
@@ -336,7 +336,7 @@ public class Question implements Comparable<Question> {
      * Sets the current question.
      * @param currentQuestion the current question
      */
-    public static void setCurrentQ(Question currentQuestion) {
+    public static void setCurrent(Question currentQuestion) {
         Question.currentQuestion = currentQuestion;
     }
 }

@@ -34,7 +34,7 @@ public class AnswerQuestionPopupController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        questionText.setText(Question.getCurrentQ().getText());
+        questionText.setText(Question.getCurrent().getText());
     }
 
 
@@ -42,7 +42,7 @@ public class AnswerQuestionPopupController implements Initializable {
      * Submit the answer.
      */
     public void submitAnswer() {
-        QuestionCommunication.markedAsAnswered(Question.getCurrentQ().getId(),
+        QuestionCommunication.markedAsAnswered(Question.getCurrent().getId(),
                 Lecture.getCurrent().getModkey(), answerTextArea.getText());
         closeTheScene();
     }
@@ -51,7 +51,7 @@ public class AnswerQuestionPopupController implements Initializable {
      * Close the scene.
      */
     public void closeTheScene() {
-        QuestionCommunication.setStatus(Question.getCurrentQ().getId(),
+        QuestionCommunication.setStatus(Question.getCurrent().getId(),
                 Lecture.getCurrent().getModkey(), "new", User.getUid());
         Stage stage = (Stage) answerTextArea.getScene().getWindow();
         stage.close();
