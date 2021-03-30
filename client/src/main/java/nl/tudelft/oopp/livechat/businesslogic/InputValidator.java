@@ -2,9 +2,14 @@ package nl.tudelft.oopp.livechat.businesslogic;
 
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public abstract class InputValidator {
+    private static Set<String> badWords = new HashSet<>(List.of("fuck", "nigga", "nigger", "bitch", "ass", "arse",
+            "bastard", "bollocks", "shit"));
 
     private InputValidator() {
 
@@ -92,8 +97,11 @@ public abstract class InputValidator {
      * @return true if no curse words, false otherwise
      */
     public static boolean checkCurseWords(String text) {
-        if (text.contains("fuck") || text.contains("Fuck")) {
-            return false;
+        String t = text.toLowerCase();
+        for (String word : badWords) {
+            if (t.contains(word)) {
+                return false;
+            }
         }
         return true;
     }
