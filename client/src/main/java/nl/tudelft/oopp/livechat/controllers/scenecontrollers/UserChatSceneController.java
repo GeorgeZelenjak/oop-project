@@ -68,8 +68,8 @@ public class UserChatSceneController implements Initializable {
     @FXML
     private Button participants;
 
-//    @FXML
-//    private Button goToSettingsButton;
+    //@FXML
+    //private Button goToSettingsButton;
 
     @FXML
     private Button goToUserManualButton;
@@ -110,7 +110,7 @@ public class UserChatSceneController implements Initializable {
 
         //Tooltip
         participants.setTooltip(new Tooltip("See the lecture participants"));
-//        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+        //goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
 
         goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
         gobBackButton.setTooltip(new Tooltip("Go back to the main page"));
@@ -177,13 +177,13 @@ public class UserChatSceneController implements Initializable {
         NavigationController.getCurrent().goToUserManual();
     }
 
-//    /**
-//     * Go to settings.
-//     * @throws IOException the io exception
-//     */
-//    public void goToSettings() throws IOException {
-//        NavigationController.getCurrent().goToSettings();
-//    }
+    //    /**
+    //     * Go to settings.
+    //     * @throws IOException the io exception
+    //     */
+    //    public void goToSettings() throws IOException {
+    //        NavigationController.getCurrent().goToSettings();
+    //    }
 
     /**
      * Send a question to the server.
