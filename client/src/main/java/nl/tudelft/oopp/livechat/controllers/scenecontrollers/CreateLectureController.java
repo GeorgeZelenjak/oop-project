@@ -236,6 +236,7 @@ public class CreateLectureController implements Initializable {
         lectureScheduleMinuteTextField.setDisable(!lectureSchedulingCheckBox.isSelected());
         lectureScheduleMinuteTextField.setVisible(lectureSchedulingCheckBox.isSelected());
         lectureScheduleHourTextField.setDisable(!lectureSchedulingCheckBox.isSelected());
+        dotsText.setVisible(lectureSchedulingCheckBox.isSelected());
         lectureScheduleHourTextField.setVisible(lectureSchedulingCheckBox.isSelected());
         lectureSchedulingDateDatePicker.setDisable(!lectureSchedulingCheckBox.isSelected());
         lectureSchedulingDateDatePicker.setVisible(lectureSchedulingCheckBox.isSelected());

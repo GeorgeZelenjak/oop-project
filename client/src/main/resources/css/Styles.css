@@ -60,11 +60,11 @@
     }
 
     .mainSceneButtonCopy {
-        -fx-background-color: #46a20b;
+        -fx-background-color: #0C985C;
     }
 
     .mainSceneButtonCopy:hover {
-        -fx-background-color: #388108;
+        -fx-background-color: #097949;
     }
 
     .lectureModeButton {
@@ -91,6 +91,17 @@
     .leaveLecture:hover{
         -fx-background-color: #af2c2a;
     }
+
+    .resetVotingLectureSpeedButton {
+        -fx-background-color: #C3312F;
+        -fx-font: 18px Arial;
+        -fx-text-fill: -fx-white;
+        -fx-padding: 0px 0px 0px 0px;
+    }
+
+        .resetVotingLectureSpeedButton:hover{
+            -fx-background-color: #af2c2a;
+        }
 
     .settingsButton{
         -fx-background-image: url(/images/Gear.png) ;

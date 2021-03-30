@@ -23,15 +23,14 @@
       </Button>
       <TextField fx:id="enterYourNameTextField" alignment="CENTER" layoutX="336.0" layoutY="263.0" prefHeight="47.0" prefWidth="422.0" promptText="Enter your name" styleClass="mainSceneEnterRoomCode" />
         <TextField fx:id="enterLectureNameTextField" alignment="CENTER" layoutX="336.0" layoutY="318.0" onAction="#createLectureEnter" prefHeight="47.0" prefWidth="422.0" promptText="Enter the lecture name" styleClass="mainSceneEnterRoomCode" />
-      <DatePicker fx:id="lectureSchedulingDateDatePicker" disable="true" layoutX="458.0" layoutY="513.0" prefHeight="34.0" prefWidth="204.0" styleClass="lectureScheduling" visible="false" />
-      <TextField fx:id="lectureScheduleHourTextField" alignment="CENTER" disable="true" layoutX="500.0" layoutY="556.0" prefHeight="34.0" prefWidth="34.0" promptText="hh" visible="false" />
-      <CheckBox fx:id="lectureSchedulingCheckBox" layoutX="447.0" layoutY="393.0" mnemonicParsing="false" onAction="#hideLectureScheduling" text="Do you want to schedule your lecture?" />
+      <CheckBox fx:id="lectureSchedulingCheckBox" layoutX="428.0" layoutY="392.0" mnemonicParsing="false" onAction="#hideLectureScheduling" text="Do you want to schedule your lecture?" />
       <TextField fx:id="questionDelay" alignment="CENTER" layoutX="334.0" layoutY="551.0" prefHeight="47.0" prefWidth="422.0" promptText="Enter Question Delay" styleClass="mainSceneEnterRoomCode" />
-      <DatePicker fx:id="lectureSchedulingDateDatePicker" disable="true" layoutX="440.0" layoutY="429.0" prefHeight="18.0" prefWidth="204.0" visible="false" />
-      <TextField fx:id="lectureScheduleMinuteTextField" alignment="CENTER" disable="true" layoutX="581.0" layoutY="499.0" prefHeight="34.0" prefWidth="34.0" promptText="mm" visible="false" />
-      <TextField fx:id="lectureScheduleHourTextField" alignment="CENTER" disable="true" layoutX="470.0" layoutY="499.0" prefHeight="34.0" prefWidth="34.0" promptText="hh" visible="false" />
-      <Text layoutX="338.0" layoutY="618.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter here the desired cooldown time between questions for students (in seconds). If you leave this empty, the default setting is 60 seconds delay." textAlignment="CENTER" wrappingWidth="422.4" />
+      <DatePicker fx:id="lectureSchedulingDateDatePicker" disable="true" layoutX="440.0" layoutY="429.0" prefHeight="34.0" prefWidth="204.0" visible="false" />
+      <TextField fx:id="lectureScheduleMinuteTextField" alignment="CENTER" disable="true" layoutX="551.0" layoutY="471.0" prefHeight="34.0" prefWidth="34.0" promptText="mm" visible="false" />
+      <TextField fx:id="lectureScheduleHourTextField" alignment="CENTER" disable="true" layoutX="492.0" layoutY="471.0" prefHeight="34.0" prefWidth="34.0" promptText="hh" visible="false" />
+      <Text layoutX="338.0" layoutY="618.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter here the desired cooldown time between questions for students (in seconds). If you leave this empty, the default is 60 seconds." textAlignment="CENTER" wrappingWidth="422.4" />
       <Pane layoutX="31.0" layoutY="658.0" prefHeight="90.0" prefWidth="228.0" />
+      <Text fx:id="dotsText" layoutX="537.0" layoutY="491.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":" visible="false" />
     </children>
    <stylesheets>
       <URL value="@../../css/Styles.css" />
