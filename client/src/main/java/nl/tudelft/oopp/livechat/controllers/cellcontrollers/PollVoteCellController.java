@@ -58,7 +58,6 @@ public class PollVoteCellController {
      */
     public void setVoteButton() {
         answerButton.setOnAction((ActionEvent event) -> {
-            System.out.println(option.getId());
             PollCommunication.vote(User.getUid(), option.getId());
             cellAnchorPane.getScene().getWindow().hide();
         });

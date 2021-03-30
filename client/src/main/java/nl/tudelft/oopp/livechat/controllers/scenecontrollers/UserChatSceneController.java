@@ -8,7 +8,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
@@ -134,7 +133,6 @@ public class UserChatSceneController implements Initializable {
                 unansweredCheckBox.isSelected(), questions);
         QuestionManager.sort(sortByVotesCheckBox.isSelected(),
                 sortByTimeCheckBox.isSelected(), questions);
-        System.out.println("sorted");
 
         observableList.setAll(questions);
         questionPaneListView.setItems(observableList);
@@ -146,7 +144,6 @@ public class UserChatSceneController implements Initializable {
                         return new QuestionCellUser();
                     }
                 });
-        //System.out.println(list.size());
 
         questionPaneListView.getItems().clear();
         questionPaneListView.getItems().addAll(questions);
@@ -172,9 +169,8 @@ public class UserChatSceneController implements Initializable {
 
     /**
      * Go to user manual.
-     * @throws IOException the io exception
      */
-    public void goToUserManual() throws IOException {
+    public void goToUserManual() {
         NavigationController.getCurrentController().goToUserManual();
     }
 
@@ -207,7 +203,6 @@ public class UserChatSceneController implements Initializable {
         }
         boolean res = QuestionCommunication.askQuestion(
                 User.getUid(), Lecture.getCurrentLecture().getUuid(), text);
-        //inputQuestion.setText("");
 
         if (!res) {
             System.out.println("not asked");
@@ -215,8 +210,6 @@ public class UserChatSceneController implements Initializable {
 
         Question question = new Question(
                 Lecture.getCurrentLecture().getUuid(), questionInputTextArea.getText(), 0);
-
-        //questionPaneListView.getItems().add(question.getText());
 
         questionInputTextArea.clear();
 

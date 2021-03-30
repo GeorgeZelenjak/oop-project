@@ -115,7 +115,6 @@ public abstract class LectureCommunication {
      */
     public static boolean closeLecture(String lectureId, String modkey) {
         if (Lecture.getCurrentLecture() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
         HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString("");

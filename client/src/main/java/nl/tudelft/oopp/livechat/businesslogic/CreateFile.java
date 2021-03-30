@@ -68,9 +68,8 @@ public class CreateFile {
      */
     private void createFile() {
         try {
-            if (file.createNewFile())
-                System.out.println(ANSI_GREEN + "File created successfully" + ANSI_RESET);
-            else System.out.println(ANSI_RED + "File already exists!" + ANSI_RESET);
+            file.createNewFile();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -107,8 +106,6 @@ public class CreateFile {
             }
 
             writer.close();
-            System.out.println(ANSI_GREEN
-                    + "Questions written successfully to file" + ANSI_RESET);
         } catch (FileNotFoundException e) {
             System.out.println(ANSI_RED + "File not found!" + ANSI_RESET);
         }

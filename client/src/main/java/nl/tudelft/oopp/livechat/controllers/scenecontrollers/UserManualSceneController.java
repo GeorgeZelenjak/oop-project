@@ -22,7 +22,6 @@ public class UserManualSceneController {
      */
     public void goBack() {
         NavigationController.getCurrentController().goBack();
-        System.out.println("Button was pressed!");
     }
 
     /** Displays the Create Lecture Category.

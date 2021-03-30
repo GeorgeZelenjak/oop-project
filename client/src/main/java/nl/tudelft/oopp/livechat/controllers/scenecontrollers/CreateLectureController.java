@@ -146,7 +146,6 @@ public class CreateLectureController implements Initializable {
 
         Lecture.setCurrentLecture(lecture);
         NavigationController.getCurrentController().goToLecturerChatPage();
-        System.out.println(Lecture.getCurrentLecture().getFrequency());
     }
 
     private void createLectureScheduled() throws IOException {
@@ -195,9 +194,7 @@ public class CreateLectureController implements Initializable {
         Lecture.setCurrentLecture(lecture);
         User.setUserName(enterYourNameTextField.getText());
         NavigationController.getCurrentController().goToLecturerChatPage();
-        System.out.println(lecture);
 
-        System.out.println(Lecture.getCurrentLecture().getFrequency());
     }
 
     /**

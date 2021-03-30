@@ -81,7 +81,6 @@ public abstract class CommonCommunication {
                 String error = res.get("error").getAsString();
                 System.out.println(error + ":" + reason);
             }
-            System.out.println("Error:");
             return -1;
         }
         return 0;

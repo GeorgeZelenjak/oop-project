@@ -49,7 +49,6 @@ public abstract class LectureSpeedCommunication {
      */
     public static List<Integer> getVotesOnLectureSpeed(UUID lectureId) {
         if (Lecture.getCurrentLecture() == null) {
-            System.out.println("You are not connected to a lecture!");
             return null;
         }
 
@@ -87,10 +86,7 @@ public abstract class LectureSpeedCommunication {
 
         HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
-        if (result == 0) {
-            System.out.println("Lecture speed was reset! "
-                    + Objects.requireNonNull(response).body());
-        }
+
         return result == 0;
     }
 
@@ -116,10 +112,7 @@ public abstract class LectureSpeedCommunication {
 
         HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
-        if (result == 0) {
-            System.out.println("Lecture speed was voted on successfully! "
-                    + Objects.requireNonNull(response).body());
-        }
+
         return result == 0;
     }
 }
