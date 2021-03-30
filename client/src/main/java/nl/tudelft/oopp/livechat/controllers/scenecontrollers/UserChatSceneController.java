@@ -227,7 +227,8 @@ public class UserChatSceneController implements Initializable {
         }
         if (!InputValidator.checkCurseWords(text)) {
             AlertController.alertWarning("Curse language",
-                    "Your text contains curse language and will not be posted");
+                    "Your text contains curse language and/or offensive words "
+                            + "and will not be posted");
             return false;
         }
         boolean res = QuestionCommunication.askQuestion(

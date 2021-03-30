@@ -20,7 +20,6 @@ public abstract class QuestionManager {
      *      of votes times 42 minus 256 if the question is not answered
      * @param byVotes true iff needs to sort by votes
      * @param questions the list of questions to be sorted
-     * @author Jegor Zelenjak
      */
     public static void sort(boolean byVotes, boolean byTime, List<Question> questions) {
         if (byVotes && !byTime) {
