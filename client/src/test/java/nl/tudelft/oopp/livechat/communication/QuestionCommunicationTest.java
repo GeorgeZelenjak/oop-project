@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -817,5 +818,8 @@ public class QuestionCommunicationTest {
     public static void stopServer() {
         mockServer.stop();
         mockedAlertController.close();
+        while (!mockServer.hasStopped(3,100L, TimeUnit.MILLISECONDS)) {
+            System.out.println("Server has not stopped yet. Waiting until it fully stops");
+        }
     }
 }
