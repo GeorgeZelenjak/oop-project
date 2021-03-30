@@ -258,7 +258,7 @@ public class PollCommunicationTest {
             mockedAlertController.when(() -> AlertController.alertError(any(String.class),
                     any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
         } catch (Exception e) {
-            System.out.println("Caught exception!");
+            e.printStackTrace();
         }
         createExpectationsForCreatePoll();
         createExpectationsForAddOption();

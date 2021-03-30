@@ -18,7 +18,6 @@ public class InputValidatorTest {
         StringBuilder stringBuilder = new StringBuilder("Ha");
         stringBuilder.append(stringBuilder.toString().repeat(26));
         longText = stringBuilder.toString();
-        System.out.println(longText.length());
         correctText = "This is a correct string!";
     }
 
