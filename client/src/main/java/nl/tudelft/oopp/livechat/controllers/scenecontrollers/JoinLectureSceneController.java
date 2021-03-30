@@ -66,11 +66,12 @@ public class JoinLectureSceneController implements Initializable {
      * @throws IOException exception when something goes wrong
      */
     public void goToLecture() throws IOException {
+        String name = enterNameTextField.getText();
+        String uuidString = enterLectureCodeTextField.getText();
 
-        int inputStatusUserName = InputValidator.validateLength(
-                enterNameTextField.getText(), 50);
-        int inputStatusLectureId = InputValidator.validateLength(
-                enterLectureCodeTextField.getText(), 100);
+        int inputStatusUserName = InputValidator.validateLength(name, 50);
+        int inputStatusLectureId = InputValidator.validateLength(uuidString, 100);
+
         if (inputStatusUserName == -1) {
             AlertController.alertWarning("No name entered",
                     "Please enter your name!");
@@ -94,10 +95,15 @@ public class JoinLectureSceneController implements Initializable {
             return;
         }
 
-        User.setUserName(enterNameTextField.getText());
+        if (!InputValidator.validateUUID(uuidString)) {
+            AlertController.alertError("Invalid UUID", "Inserted lecture ID is invalid!");
+            return;
+        }
+
+        User.setUserName(name);
 
         Lecture.setCurrent(
-                LectureCommunication.joinLectureById(enterLectureCodeTextField.getText()));
+                LectureCommunication.joinLectureById(uuidString));
         Lecture currentLecture = Lecture.getCurrent();
 
         if (currentLecture == null) {
@@ -160,10 +166,13 @@ public class JoinLectureSceneController implements Initializable {
             return;
         }
 
-        boolean result = LectureCommunication
-                .validateModerator(enterLectureCodeTextField.getText(),modkeyString);
+        if (!InputValidator.validateUUID(modkeyString)) {
+            AlertController.alertError("Invalid UUID", "Inserted moderator key is invalid!");
+            return;
+        }
 
-        if (!result) {
+        if (!LectureCommunication
+                .validateModerator(enterLectureCodeTextField.getText(), modkeyString)) {
             return;
         }
         Lecture.getCurrent().setModkey(UUID.fromString(modkeyString));
