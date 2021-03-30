@@ -2,14 +2,11 @@ package nl.tudelft.oopp.livechat.businesslogic;
 
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class InputValidator {
-    private static Set<String> badWords = new HashSet<>(List.of("fuck", "nigga", "nigger", "bitch", "ass", "arse",
-            "bastard", "bollocks", "shit"));
+    private static Set<String> badWords = new HashSet<>(List.of("fuck", "nigga", "nigger", "bitch",
+            " ass ", "asshole", " arse ", "bastard", "bollocks", "shit"));
 
     private InputValidator() {
 
@@ -92,11 +89,21 @@ public abstract class InputValidator {
     }
 
     /**
-     * Checks the text for curse words.
-     * @param text the text to be checked
-     * @return true if no curse words, false otherwise
+     * Checks if the name does not contain "Hitler" and "Mussolini".
+     * @param name the name to be checked
+     * @return true if the name does not contain "Hitler" and "Mussolini", false otherwise
      */
-    public static boolean checkCurseWords(String text) {
+    public static boolean checkName(String name) {
+        String n = name.toLowerCase();
+        return !n.contains("hitler") && !n.contains("mussolini");
+    }
+
+    /**
+     * Checks the text for some curse and offensive words.
+     * @param text the text to be checked
+     * @return true if no curse or offensive words, false otherwise
+     */
+    public static boolean checkBadWords(String text) {
         String t = text.toLowerCase();
         for (String word : badWords) {
             if (t.contains(word)) {

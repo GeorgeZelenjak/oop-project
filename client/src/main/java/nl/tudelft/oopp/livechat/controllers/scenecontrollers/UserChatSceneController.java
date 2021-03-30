@@ -200,7 +200,7 @@ public class UserChatSceneController implements Initializable {
                     "Your question is too long! (max 2000 characters)");
             return false;
         }
-        if (!InputValidator.checkCurseWords(text)) {
+        if (!InputValidator.checkBadWords(text)) {
             AlertController.alertWarning("Curse language",
                     "Your text contains curse language and/or offensive words "
                             + "and will not be posted");

@@ -2,10 +2,7 @@ package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
@@ -67,14 +64,14 @@ public class JoinLectureSceneController implements Initializable {
      */
     public void goToLecture() throws IOException {
         String name = enterNameTextField.getText();
-        String uuidString = enterLectureCodeTextField.getText();
-
         int inputStatusUserName = InputValidator.validateLength(name, 50);
-        int inputStatusLectureId = InputValidator.validateLength(uuidString, 100);
 
         if (inputStatusUserName == -1) {
-            AlertController.alertWarning("No name entered",
-                    "Please enter your name!");
+            AlertController.alertWarning("No name entered", "Please enter your name!");
+            return;
+        }
+        if (!InputValidator.checkName(name)) {
+            AlertController.alertError("Wrong name", "Please enter your real name!");
             return;
         }
         if (inputStatusUserName == -2) {
@@ -84,17 +81,15 @@ public class JoinLectureSceneController implements Initializable {
                             + enterNameTextField.getText().length() + ")");
             return;
         }
+
+        String uuidString = enterLectureCodeTextField.getText();
+        int inputStatusLectureId = InputValidator.validateLength(uuidString, 100);
+
         if (inputStatusLectureId == -1) {
             AlertController.alertWarning("No lecture id entered",
                     "Please enter the lecture id!");
             return;
         }
-        if (inputStatusLectureId == -2) {
-            AlertController.alertWarning(
-                    "Too long lecture id", "Lecture id is too long to be valid!");
-            return;
-        }
-
         if (!InputValidator.validateUUID(uuidString)) {
             AlertController.alertError("Invalid UUID", "Inserted lecture ID is invalid!");
             return;
@@ -102,8 +97,7 @@ public class JoinLectureSceneController implements Initializable {
 
         User.setUserName(name);
 
-        Lecture.setCurrent(
-                LectureCommunication.joinLectureById(uuidString));
+        Lecture.setCurrent(LectureCommunication.joinLectureById(uuidString));
         Lecture currentLecture = Lecture.getCurrent();
 
         if (currentLecture == null) {
