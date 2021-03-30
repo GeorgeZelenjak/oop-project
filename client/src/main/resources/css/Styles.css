@@ -93,8 +93,9 @@
     }
 
     .resetVotingLectureSpeedButton {
-        -fx-background-color: #C3312F;
-        -fx-font: 18px Arial;
+        -fx-background-color: #FF6D70;
+        -fx-text-fill: gray;
+        -fx-font: 14px Arial;
         -fx-text-fill: -fx-white;
         -fx-padding: 0px 0px 0px 0px;
     }

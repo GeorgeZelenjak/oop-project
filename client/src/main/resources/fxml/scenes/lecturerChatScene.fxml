@@ -21,34 +21,9 @@
                </font>
             </Text>
             <Button id="leaveLecture" fx:id="closeLectureButton" layoutX="26.0" layoutY="721.0" mnemonicParsing="false" onAction="#closeLecture" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../../css/Styles.css" text="End Lecture" />
-            <Pane fx:id="speedBackground" layoutX="-15.0" layoutY="194.0" prefHeight="144.0" prefWidth="246.0" styleClass="answeredTick">
-               <children>
-                  <Text fx:id="speedText" fill="WHITE" layoutX="7.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture speed " textAlignment="CENTER" wrappingWidth="232.20000000000005">
-                     <font>
-                        <Font name="Arial Bold" size="16.0" />
-                     </font>
-                  </Text>
-                  <Button fx:id="speedButton" layoutX="65.0" layoutY="72.0" mnemonicParsing="false" onAction="#resetLectureSpeed" prefHeight="27.0" prefWidth="117.0" styleClass="resetVotingLectureSpeedButton" text="Reset Voting">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Button>
-                  <Text fx:id="voteCountSlow" fill="#c3312f" layoutX="52.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Too slow">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Text>
-                  <Line fx:id="fasterVotesPercentLine" endX="84.25" layoutX="110.0" layoutY="39.0" startX="-55.0" stroke="#c3312f" strokeWidth="4.0" />
-                  <Text fx:id="voteCountFast" fill="#0022ff" layoutX="145.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Too fast">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Text>
-                  <Line fx:id="slowerVotesPercentLine" endX="100.0" layoutX="111.0" layoutY="39.0" startX="68.5" stroke="#0022ff" strokeWidth="4.0" />
-               </children>
-            </Pane>
-            <Button fx:id="copyId" layoutX="22.0" layoutY="504.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy lecture id" />
-                  <Button fx:id="copyKey" layoutX="22.0" layoutY="465.0" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy modkey" />
+            <Button fx:id="copyId" layoutX="24.0" layoutY="221.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy lecture id" />
+                  <Button fx:id="copyKey" layoutX="24.0" layoutY="182.0" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy modkey" />
+            <Button fx:id="goToLectureModeButton" layoutX="26.0" layoutY="313.0" mnemonicParsing="false" onAction="#lecturerMode" prefHeight="33.0" prefWidth="168.0" style="-fx-text-fill: #ffffff;" styleClass="lectureModeButton" text="Lecturer Mode" textFill="WHITE" />
          </children></Pane>
       <Button fx:id="createPolling" layoutX="226.0" layoutY="718.0" mnemonicParsing="false" onAction="#popupPollingManagement" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Manage polling" />
       <Button fx:id="popupVoteResults" layoutX="504.0" layoutY="718.0" mnemonicParsing="false" onAction="#popupVoteResults" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Show poll results" />
@@ -66,20 +41,45 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>
-      <Label fx:id="showLabel" layoutX="586.0" layoutY="13.0" prefHeight="18.0" prefWidth="40.0" text="Show:">
+      <Label fx:id="showLabel" layoutX="461.0" layoutY="13.0" prefHeight="18.0" prefWidth="40.0" text="Show:">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Label>
-      <CheckBox fx:id="answeredCheckBox" graphicTextGap="1.0" layoutX="630.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" selected="true" text="Answered">
+      <CheckBox fx:id="answeredCheckBox" graphicTextGap="1.0" layoutX="505.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" selected="true" text="Answered">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>
-      <CheckBox fx:id="unansweredCheckBox" layoutX="723.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" selected="true" text="Unanswered">
+      <CheckBox fx:id="unansweredCheckBox" layoutX="598.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" selected="true" text="Unanswered">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>
       <Button fx:id="exportQA" layoutX="767.0" layoutY="718.0" mnemonicParsing="false" onAction="#exportQuestionsAndAnswers" prefHeight="34.0" prefWidth="234.0" styleClass="mainSceneButton" text="Export Questions &amp; Answers" />
       <Button fx:id="goToUserManualButton" layoutX="1031.0" layoutY="718.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="34.0" prefWidth="34.0" styleClass="mainSceneButton" text="?" />
-      <Button fx:id="goToLectureModeButton" layoutX="919.0" layoutY="9.0" mnemonicParsing="false" onAction="#lecturerMode" prefHeight="27.0" prefWidth="153.0" style="-fx-text-fill: #ffffff;" styleClass="lectureModeButton" text="Lecturer Mode" textFill="WHITE" />
+      <Pane fx:id="speedBackground" layoutX="742.0" layoutY="-12.0" prefHeight="79.0" prefWidth="246.0" styleClass="answeredTick">
+         <children>
+            <Text fx:id="speedText" fill="#6c6c6c" layoutX="7.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture speed " textAlignment="CENTER" wrappingWidth="232.20000000000005">
+               <font>
+                  <Font name="Arial Bold" size="16.0" />
+               </font>
+            </Text>
+            <Text fx:id="voteCountSlow" fill="#c3312f" layoutX="52.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Too slow">
+               <font>
+                  <Font name="System Bold" size="10.0" />
+               </font>
+            </Text>
+            <Line fx:id="fasterVotesPercentLine" endX="84.25" layoutX="110.0" layoutY="39.0" startX="-55.0" stroke="#c3312f" strokeWidth="4.0" />
+            <Text fx:id="voteCountFast" fill="#0022ff" layoutX="147.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Too fast">
+               <font>
+                  <Font name="System Bold" size="10.0" />
+               </font>
+            </Text>
+            <Line fx:id="slowerVotesPercentLine" endX="100.0" layoutX="111.0" layoutY="39.0" startX="68.5" stroke="#0022ff" strokeWidth="4.0" />
+            <Button fx:id="speedButton" layoutX="213.0" layoutY="20.0" mnemonicParsing="false" onAction="#resetLectureSpeed" prefHeight="27.0" prefWidth="67.0" styleClass="resetVotingLectureSpeedButton" text="Reset ">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>
