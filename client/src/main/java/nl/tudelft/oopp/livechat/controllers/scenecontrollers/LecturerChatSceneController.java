@@ -101,8 +101,8 @@ public class LecturerChatSceneController implements Initializable {
     @FXML
     private Button reopenPolling;
 
-    @FXML
-    private Button goToSettingsButton;
+//    @FXML
+//    private Button goToSettingsButton;
 
     @FXML
     private Button createPolling;
@@ -282,14 +282,14 @@ public class LecturerChatSceneController implements Initializable {
         NavigationController.getCurrent().goToUserManual();
     }
 
-    /**
-     * Go to settings.
-     *
-     * @throws IOException if something happens
-     */
-    public void goToSettings() throws IOException {
-        NavigationController.getCurrent().goToSettings();
-    }
+//    /**
+//     * Go to settings.
+//     *
+//     * @throws IOException if something happens
+//     */
+//    public void goToSettings() throws IOException {
+//        NavigationController.getCurrent().goToSettings();
+//    }
 
     /**
      * Close lecture.
@@ -334,8 +334,8 @@ public class LecturerChatSceneController implements Initializable {
         this.unansweredCheckBox.setDisable((!this.unansweredCheckBox.isDisabled()));
         this.unansweredCheckBox.setVisible(!this.unansweredCheckBox.isVisible());
 
-        this.goToSettingsButton.setDisable(!this.goToSettingsButton.isDisabled());
-        this.goToSettingsButton.setVisible(!this.goToSettingsButton.isVisible());
+//        this.goToSettingsButton.setDisable(!this.goToSettingsButton.isDisabled());
+//        this.goToSettingsButton.setVisible(!this.goToSettingsButton.isVisible());
 
         this.pollingBackground.setDisable(!this.pollingBackground.isDisabled());
         this.pollingBackground.setVisible(!this.pollingBackground.isVisible());
@@ -441,14 +441,14 @@ public class LecturerChatSceneController implements Initializable {
         participants.setTooltip(new Tooltip("See the lecture participants"));
         goToLectureModeButton.setTooltip(new Tooltip("Enable/Disable lecturer mode"));
 
-        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+//      goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
         goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
 
-        pollingButton.setTooltip(new Tooltip("Show poll's results to lecture participants"));
+//      pollingButton.setTooltip(new Tooltip("Show poll's results to lecture participants"));
         speedButton.setTooltip(new Tooltip("Open/Reopen voting on lecture speed"));
 
-        lectureLog.setTooltip(new Tooltip("See an overview of the lecture's activity"));
-        reopenPolling.setTooltip(new Tooltip("Reopen a previous polling question"));
+//        lectureLog.setTooltip(new Tooltip("See an overview of the lecture's activity"));
+//        reopenPolling.setTooltip(new Tooltip("Reopen a previous polling question"));
 
         exportQA.setTooltip(new Tooltip("Export this lecture's content"));
         closeLectureButton.setTooltip(new Tooltip("Close this lecture"));
