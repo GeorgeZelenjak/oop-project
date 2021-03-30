@@ -17,6 +17,7 @@ import org.mockserver.model.HttpResponse;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -400,7 +401,7 @@ public class LectureCommunicationTest {
 
     @Test
     public void validateModeratorServerRefusesTest() {
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
         mockServer.stop();
         assertFalse(LectureCommunication.validateModerator(lid, modkey));
 
@@ -414,43 +415,43 @@ public class LectureCommunicationTest {
 
     @Test
     public void closeLectureSuccessfulTest() {
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
         assertTrue(LectureCommunication.closeLecture(lid, modkey));
     }
 
     @Test
     public void closeLectureCurrentLectureIsNullTest() {
-        Lecture.setCurrentLecture(null);
+        Lecture.setCurrent(null);
         assertFalse(LectureCommunication.closeLecture(lid, modkey));
     }
 
     @Test
     public void closeLectureInvalidLectureIdTest() {
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
         assertFalse(LectureCommunication.closeLecture("validUUID", modkey));
     }
 
     @Test
     public void closeLectureInvalidModkeyTest() {
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
         assertFalse(LectureCommunication.closeLecture(lid, "validModkey"));
     }
 
     @Test
     public void closeLectureLectureNotFoundTest() {
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
         assertFalse(LectureCommunication.closeLecture(modkey, modkey));
     }
 
     @Test
     public void closeLectureUnsuccessfulTest() {
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
         assertFalse(LectureCommunication.closeLecture(lid, incorrectModkey));
     }
 
     @Test
     public void closeLectureServerRefusesTest() {
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
         mockServer.stop();
         assertFalse(LectureCommunication.closeLecture(lid, modkey));
 
@@ -463,37 +464,37 @@ public class LectureCommunicationTest {
 
     @Test
     public void banByIpSuccessfulTest() {
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
         assertTrue(LectureCommunication.ban(modkey, 42,7, true));
     }
 
     @Test
     public void banByIdSuccessfulTest() {
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
         assertTrue(LectureCommunication.ban(modkey, 42,7, false));
     }
 
     @Test
     public void banByIdIncorrectModkeyTest() {
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
         assertFalse(LectureCommunication.ban(incorrectModkey, 42,7, false));
     }
 
     @Test
     public void banByIpInvalidModkeyTest() {
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
         assertFalse(LectureCommunication.ban("ValidModkey", 42,7, true));
     }
 
     @Test
     public void banNoLectureTest() {
-        Lecture.setCurrentLecture(null);
+        Lecture.setCurrent(null);
         assertFalse(LectureCommunication.ban(modkey, 42,7, true));
     }
 
     @Test
     public void banServerRefusesTest() {
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
         mockServer.stop();
         assertFalse(LectureCommunication.ban(modkey, 42,7, true));
 
@@ -507,5 +508,8 @@ public class LectureCommunicationTest {
     public static void stopServer() {
         mockServer.stop();
         mockedAlertController.close();
+        while (!mockServer.hasStopped(3,100L, TimeUnit.MILLISECONDS)) {
+            System.out.println("Server has not stopped yet. Waiting until it fully stops");
+        }
     }
 }

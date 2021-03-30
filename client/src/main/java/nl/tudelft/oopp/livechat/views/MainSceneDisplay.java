@@ -38,7 +38,7 @@ public class MainSceneDisplay extends Application {
         primaryStage.getIcons().add(
                 new Image("file:client/src/main/resources/images/tudelftLogo.png"));
         primaryStage.show();
-        NavigationController.setCurrentController(
+        NavigationController.setCurrent(
                 new NavigationController(primaryStage.getScene()));
     }
 

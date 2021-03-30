@@ -18,6 +18,7 @@ import org.mockserver.model.Parameter;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -135,7 +136,7 @@ public class LectureSpeedCommunicationTest {
         mockServer = ClientAndServer.startClientAndServer(8080);
         User.setUid();
         userId = User.getUid();
-        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
+        Lecture.setCurrent(new Lecture(lid, modkey, "Lecture", "Lecturer"));
 
         createExpectationsForGetVotes();
         createExpectationsForVoting();
@@ -159,10 +160,10 @@ public class LectureSpeedCommunicationTest {
 
     @Test
     public void getVotesNoLectureTest() {
-        Lecture.setCurrentLecture(null);
+        Lecture.setCurrent(null);
         assertNull(LectureSpeedCommunication.getVotesOnLectureSpeed(lid));
 
-        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
+        Lecture.setCurrent(new Lecture(lid, modkey, "Lecture", "Lecturer"));
     }
 
     @Test
@@ -204,10 +205,10 @@ public class LectureSpeedCommunicationTest {
 
     @Test
     public void voteNoLectureTest() {
-        Lecture.setCurrentLecture(null);
+        Lecture.setCurrent(null);
         assertFalse(LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
 
-        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
+        Lecture.setCurrent(new Lecture(lid, modkey, "Lecture", "Lecturer"));
     }
 
     @Test
@@ -243,10 +244,10 @@ public class LectureSpeedCommunicationTest {
 
     @Test
     public void resetNoLectureTest() {
-        Lecture.setCurrentLecture(null);
+        Lecture.setCurrent(null);
         assertFalse(LectureSpeedCommunication.resetLectureSpeed(lid, modkey));
 
-        Lecture.setCurrentLecture(new Lecture(lid, modkey, "Lecture", "Lecturer"));
+        Lecture.setCurrent(new Lecture(lid, modkey, "Lecture", "Lecturer"));
     }
 
     @Test
@@ -272,9 +273,15 @@ public class LectureSpeedCommunicationTest {
         assertFalse(LectureSpeedCommunication.resetLectureSpeed(lid, incorrectModkey));
     }
 
+    /**
+     * Stop.
+     */
     @AfterAll
     public static void stop() {
         mockServer.stop();
         alertControllerMockedStatic.close();
+        while (!mockServer.hasStopped(3,100L, TimeUnit.MILLISECONDS)) {
+            System.out.println("Server has not stopped yet. Waiting until it fully stops");
+        }
     }
 }

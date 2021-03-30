@@ -6,7 +6,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
@@ -35,7 +34,7 @@ public class AnswerQuestionPopupController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        questionText.setText(Question.getCurrentQuestion().getText());
+        questionText.setText(Question.getCurrent().getText());
     }
 
 
@@ -43,8 +42,8 @@ public class AnswerQuestionPopupController implements Initializable {
      * Submit the answer.
      */
     public void submitAnswer() {
-        QuestionCommunication.markedAsAnswered(Question.getCurrentQuestion().getId(),
-                Lecture.getCurrentLecture().getModkey(), answerTextArea.getText());
+        QuestionCommunication.markedAsAnswered(Question.getCurrent().getId(),
+                Lecture.getCurrent().getModkey(), answerTextArea.getText());
         closeTheScene();
     }
 
@@ -52,8 +51,8 @@ public class AnswerQuestionPopupController implements Initializable {
      * Close the scene.
      */
     public void closeTheScene() {
-        QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
-                Lecture.getCurrentLecture().getModkey(), "new", User.getUid());
+        QuestionCommunication.setStatus(Question.getCurrent().getId(),
+                Lecture.getCurrent().getModkey(), "new", User.getUid());
         Stage stage = (Stage) answerTextArea.getScene().getWindow();
         stage.close();
     }

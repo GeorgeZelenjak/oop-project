@@ -9,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
-import javafx.scene.text.Font;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 
 
@@ -55,7 +54,7 @@ public class MainSceneController implements Initializable {
      * @throws IOException the io exception
      */
     public void goToCreateLecture() throws IOException {
-        NavigationController.getCurrentController().goToCreateRoomScene();
+        NavigationController.getCurrent().goToCreateRoomScene();
     }
 
     /**
@@ -64,7 +63,7 @@ public class MainSceneController implements Initializable {
      * @throws IOException - in case Stage throws an exception
      */
     public void goToLecture() throws IOException {
-        NavigationController.getCurrentController().goToJoinLecturePage();
+        NavigationController.getCurrent().goToJoinLecturePage();
     }
 
     /**
@@ -73,7 +72,7 @@ public class MainSceneController implements Initializable {
      * @throws IOException the io exception
      */
     public void goToUserManual() throws IOException {
-        NavigationController.getCurrentController().goToUserManual();
+        NavigationController.getCurrent().goToUserManual();
     }
 
     /**
@@ -82,7 +81,7 @@ public class MainSceneController implements Initializable {
      * @throws IOException the io exception
      */
     public void goToSettings() throws IOException {
-        NavigationController.getCurrentController().goToSettings();
+        NavigationController.getCurrent().goToSettings();
     }
 
     /**
@@ -91,6 +90,6 @@ public class MainSceneController implements Initializable {
      * @throws IOException the io exception
      */
     public void goToDebug() throws IOException {
-        NavigationController.getCurrentController().goToDebugScene();
+        NavigationController.getCurrent().goToDebugScene();
     }
 }

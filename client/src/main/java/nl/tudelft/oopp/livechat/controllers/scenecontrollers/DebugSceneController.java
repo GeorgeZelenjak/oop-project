@@ -23,7 +23,7 @@ public class DebugSceneController {
      * @throws IOException exception if something goes wrong
      */
     public void joinAsStudent() throws IOException {
-        NavigationController.getCurrentController().goToUserChatPage();
+        NavigationController.getCurrent().goToUserChatPage();
     }
 
     /**
@@ -32,7 +32,7 @@ public class DebugSceneController {
      * @throws IOException exception if something goes wrong
      */
     public void joinAsModerator() throws IOException {
-        NavigationController.getCurrentController().goToLecturerChatPage();
+        NavigationController.getCurrent().goToLecturerChatPage();
     }
 
     /**
@@ -41,14 +41,14 @@ public class DebugSceneController {
      * @throws IOException the io exception
      */
     public void goToSettings() throws IOException {
-        NavigationController.getCurrentController().goToSettings();
+        NavigationController.getCurrent().goToSettings();
     }
 
     /**
      * Go back.
      */
     public void goBack() {
-        NavigationController.getCurrentController().goBack();
+        NavigationController.getCurrent().goBack();
     }
 
     /**
@@ -59,12 +59,12 @@ public class DebugSceneController {
         Lecture lecture = LectureCommunication
                 .createLecture("A great history of zebras",
                         "Andy", new Timestamp(System.currentTimeMillis()), 60);
-        Lecture.setCurrentLecture(lecture);
+        Lecture.setCurrent(lecture);
     }
 
     public void joinAsBoth() throws IOException {
-        NavigationController.getCurrentController().goToUserChatPage();
-        NavigationController.getCurrentController().popupLecturerScene();
+        NavigationController.getCurrent().goToUserChatPage();
+        NavigationController.getCurrent().popupLecturerScene();
     }
 
     /**
@@ -72,29 +72,29 @@ public class DebugSceneController {
      */
     public void populate() {
         User.setUserName("Stefan");
-        LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
+        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
                 67, "Artjom");
 
-        LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
+        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
                 26, "Codrin");
 
-        LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
+        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
                 34, "Jegor");
 
-        LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
+        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
                 42, "Tudor");
 
-        LectureCommunication.registerUserdebug(Lecture.getCurrentLecture().getUuid().toString(),
+        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
                 59, "Oleg");
 
         QuestionCommunication.askQuestion(
-                67, Lecture.getCurrentLecture().getUuid(), "How do you do, fellow kids?");
+                67, Lecture.getCurrent().getUuid(), "How do you do, fellow kids?");
         QuestionCommunication.askQuestion(
-                59, Lecture.getCurrentLecture().getUuid(),"How do you find the eigen values?");
+                59, Lecture.getCurrent().getUuid(),"How do you find the eigen values?");
         QuestionCommunication.askQuestion(
-                26, Lecture.getCurrentLecture().getUuid(),"I am confused!!!!");
+                26, Lecture.getCurrent().getUuid(),"I am confused!!!!");
         QuestionCommunication.askQuestion(
-                42, Lecture.getCurrentLecture().getUuid(),"We live in a soc");
+                42, Lecture.getCurrent().getUuid(),"We live in a soc");
         List<Question> questions = QuestionCommunication.fetchQuestions();
         assert questions != null;
         assert questions.size() == 4;
@@ -108,23 +108,23 @@ public class DebugSceneController {
 
         LectureSpeedCommunication.voteOnLectureSpeed(
                 67,
-                Lecture.getCurrentLecture().getUuid(),
+                Lecture.getCurrent().getUuid(),
                 "faster");
         LectureSpeedCommunication.voteOnLectureSpeed(
                 26,
-                Lecture.getCurrentLecture().getUuid(),
+                Lecture.getCurrent().getUuid(),
                 "faster");
         LectureSpeedCommunication.voteOnLectureSpeed(
                 34,
-                Lecture.getCurrentLecture().getUuid(),
+                Lecture.getCurrent().getUuid(),
                 "faster");
         LectureSpeedCommunication.voteOnLectureSpeed(
                 42,
-                Lecture.getCurrentLecture().getUuid(),
+                Lecture.getCurrent().getUuid(),
                 "slower");
         LectureSpeedCommunication.voteOnLectureSpeed(
                 59,
-                Lecture.getCurrentLecture().getUuid(),
+                Lecture.getCurrent().getUuid(),
                 "faster");
     }
 }

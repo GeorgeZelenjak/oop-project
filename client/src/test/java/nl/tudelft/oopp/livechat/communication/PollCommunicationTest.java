@@ -18,6 +18,7 @@ import org.mockserver.model.HttpResponse;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -250,7 +251,7 @@ public class PollCommunicationTest {
     public static void setUp() {
         User.setUid();
         User.setUserName("Slim Shady");
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
 
         mockServer = ClientAndServer.startClientAndServer(8080);
         try {
@@ -545,10 +546,16 @@ public class PollCommunicationTest {
     }
 
 
+    /**
+     * Close.
+     */
     @AfterAll
     public static void close() {
         mockServer.stop();
         mockedAlertController.close();
+        while (!mockServer.hasStopped(3,100L, TimeUnit.MILLISECONDS)) {
+            System.out.println("Server has not stopped yet. Waiting until it fully stops");
+        }
     }
 
 }

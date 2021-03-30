@@ -29,7 +29,7 @@ public class QuestionTest {
         questionList = List.of(new Question(lectureId, "?", 11),
                 new Question(lectureId, "??", 12),
                 new Question(lectureId, "???", 13));
-        Question.setCurrentQuestions(questionList);
+        Question.setCurrentList(questionList);
 
         lectureId = UUID.randomUUID();
         question = new Question(lectureId, "How do you do, fellow kids?", 69);
@@ -44,7 +44,7 @@ public class QuestionTest {
         question.setAnswerTime(answerTime);
         question.setOwnerName("Eminem");
 
-        Question.setCurrentQuestion(question);
+        Question.setCurrent(question);
     }
 
     @Test
@@ -312,32 +312,32 @@ public class QuestionTest {
 
     @Test
     public void getCurrentQuestionsTest() {
-        assertEquals(questionList, Question.getCurrentQuestions());
+        assertEquals(questionList, Question.getCurrentList());
     }
 
     @Test
     public void getCurrentLectureSetTest() {
         List<Question> newQuestionList = List.of(new Question(lectureId, "$$", 11),
                 new Question(lectureId, "$$$", 13));
-        Question.setCurrentQuestions(newQuestionList);
-        assertEquals(newQuestionList, Question.getCurrentQuestions());
+        Question.setCurrentList(newQuestionList);
+        assertEquals(newQuestionList, Question.getCurrentList());
 
         //set it back for other tests
-        Question.setCurrentQuestions(questionList);
+        Question.setCurrentList(questionList);
     }
 
     @Test
     public void getCurrentQuestionTest() {
-        assertEquals(question, Question.getCurrentQuestion());
+        assertEquals(question, Question.getCurrent());
     }
 
     @Test
     public void setCurrentQuestionTest() {
         Question q = new Question(lectureId, "Hey Yo", 13);
-        Question.setCurrentQuestion(q);
-        assertEquals(q, Question.getCurrentQuestion());
+        Question.setCurrent(q);
+        assertEquals(q, Question.getCurrent());
 
         //set it back for other tests
-        Question.setCurrentQuestion(question);
+        Question.setCurrent(question);
     }
 }

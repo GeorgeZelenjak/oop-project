@@ -159,7 +159,7 @@ public class LecturerChatSceneController implements Initializable {
      * @param resourceBundle resources brought around
      */
     public void initialize(URL location, ResourceBundle resourceBundle) {
-        lectureNameText.setText(Lecture.getCurrentLecture().getName());
+        lectureNameText.setText(Lecture.getCurrent().getName());
         userNameText.setText(User.getUserName());
         slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
 
@@ -181,7 +181,7 @@ public class LecturerChatSceneController implements Initializable {
      * Gets votes on lecture speed.
      */
     public void getVotesOnLectureSpeed() {
-        UUID uuid = Lecture.getCurrentLecture().getUuid();
+        UUID uuid = Lecture.getCurrent().getUuid();
         lectureSpeeds = LectureSpeedCommunication.getVotesOnLectureSpeed(uuid);
         voteCountFast.setText("Too fast: "
                 + lectureSpeeds.get(0));
@@ -193,8 +193,8 @@ public class LecturerChatSceneController implements Initializable {
      * Reset lecture speed.
      */
     public void resetLectureSpeed() {
-        UUID uuid = Lecture.getCurrentLecture().getUuid();
-        UUID modkey = Lecture.getCurrentLecture().getModkey();
+        UUID uuid = Lecture.getCurrent().getUuid();
+        UUID modkey = Lecture.getCurrent().getModkey();
         LectureSpeedCommunication.resetLectureSpeed(uuid,modkey);
     }
 
@@ -209,9 +209,9 @@ public class LecturerChatSceneController implements Initializable {
         if (list.size() == 0) {
             System.out.println("There are no questions");
         }
-        Question.setCurrentQuestions(list);
+        Question.setCurrentList(list);
 
-        questions = Question.getCurrentQuestions();
+        questions = Question.getCurrentList();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
         QuestionManager.sort(sortByVotesCheckBox.isSelected(),
@@ -235,7 +235,7 @@ public class LecturerChatSceneController implements Initializable {
      * Copy lecture id to clipboard.
      */
     public void copyLectureId() {
-        String myString = Lecture.getCurrentLecture().getUuid().toString();
+        String myString = Lecture.getCurrent().getUuid().toString();
         StringSelection stringSelection = new StringSelection(myString);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
@@ -248,7 +248,7 @@ public class LecturerChatSceneController implements Initializable {
      * Copy moderator key to clipboard.
      */
     public void copyModKey() {
-        String myString = Lecture.getCurrentLecture().getModkey().toString();
+        String myString = Lecture.getCurrent().getModkey().toString();
         StringSelection stringSelection = new StringSelection(myString);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
@@ -267,8 +267,8 @@ public class LecturerChatSceneController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             timelineFetch.stop();
-            NavigationController.getCurrentController().goBack();
-            NavigationController.getCurrentController().goBack();
+            NavigationController.getCurrent().goBack();
+            NavigationController.getCurrent().goBack();
         }
     }
 
@@ -279,7 +279,7 @@ public class LecturerChatSceneController implements Initializable {
      */
     public void goToUserManual() {
 
-        NavigationController.getCurrentController().goToUserManual();
+        NavigationController.getCurrent().goToUserManual();
     }
 
     /**
@@ -288,7 +288,7 @@ public class LecturerChatSceneController implements Initializable {
      * @throws IOException if something happens
      */
     public void goToSettings() throws IOException {
-        NavigationController.getCurrentController().goToSettings();
+        NavigationController.getCurrent().goToSettings();
     }
 
     /**
@@ -303,9 +303,9 @@ public class LecturerChatSceneController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             timelineFetch.stop();
-            LectureCommunication.closeLecture(Lecture.getCurrentLecture().getUuid().toString(),
-                    Lecture.getCurrentLecture().getModkey().toString());
-            NavigationController.getCurrentController().goToMainScene();
+            LectureCommunication.closeLecture(Lecture.getCurrent().getUuid().toString(),
+                    Lecture.getCurrent().getModkey().toString());
+            NavigationController.getCurrent().goToMainScene();
         }
     }
 
@@ -430,7 +430,7 @@ public class LecturerChatSceneController implements Initializable {
             PollingManagementPopupController.setInEditingPoll(new Poll());
             PollingManagementPopupController.setInEditingOptions(new ArrayList<PollOption>());
         }
-        NavigationController.getCurrentController().popupPollingManagement();
+        NavigationController.getCurrent().popupPollingManagement();
     }
 
     private void setTooltips() {
@@ -463,16 +463,16 @@ public class LecturerChatSceneController implements Initializable {
 
         PollAndOptions fetched = (
                 PollCommunication.fetchPollAndOptionsModerator(
-                        Lecture.getCurrentLecture().getUuid(),
-                        Lecture.getCurrentLecture().getModkey()));
+                        Lecture.getCurrent().getUuid(),
+                        Lecture.getCurrent().getModkey()));
         if (fetched == null) {
             return;
         }
-        PollAndOptions.setCurrentPollAndOptions(fetched);
+        PollAndOptions.setCurrent(fetched);
     }
 
     public void popupVoteResults() {
-        NavigationController.getCurrentController().popupPollResult();
+        NavigationController.getCurrent().popupPollResult();
     }
 
 

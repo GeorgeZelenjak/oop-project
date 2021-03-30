@@ -49,10 +49,10 @@ public class CreateFile {
         System.out.println(timeStamp);
 
         String fileName;
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             fileName = "null"  + "_" + timeStamp;
         } else {
-            fileName = Lecture.getCurrentLecture().getName() + "_" + timeStamp;
+            fileName = Lecture.getCurrent().getName() + "_" + timeStamp;
         }
 
         fileName = this.sanitizeFilename(fileName);
@@ -141,7 +141,7 @@ public class CreateFile {
      */
     private String headerBuilder(int listSize) {
 
-        Lecture lecture = Lecture.getCurrentLecture();
+        Lecture lecture = Lecture.getCurrent();
         return "Lecture Name: \"" + lecture.getName() + "\""
                 + "\nResponsible Lecturer: " + lecture.getCreatorName()
                 + "\nCreation Date: " + lecture.getStartTime()
