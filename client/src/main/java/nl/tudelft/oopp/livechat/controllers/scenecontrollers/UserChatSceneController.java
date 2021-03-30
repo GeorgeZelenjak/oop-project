@@ -126,9 +126,9 @@ public class UserChatSceneController implements Initializable {
         if (list == null) {
             return;
         }
-        Question.setCurrentQList(list);
+        Question.setCurrentList(list);
 
-        questions = Question.getCurrentQList();
+        questions = Question.getCurrentList();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
         QuestionManager.sort(sortByVotesCheckBox.isSelected(),

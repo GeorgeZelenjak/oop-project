@@ -209,9 +209,9 @@ public class LecturerChatSceneController implements Initializable {
         if (list.size() == 0) {
             System.out.println("There are no questions");
         }
-        Question.setCurrentQList(list);
+        Question.setCurrentList(list);
 
-        questions = Question.getCurrentQList();
+        questions = Question.getCurrentList();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
         QuestionManager.sort(sortByVotesCheckBox.isSelected(),

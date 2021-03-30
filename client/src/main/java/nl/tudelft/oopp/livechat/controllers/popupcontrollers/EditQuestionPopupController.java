@@ -32,8 +32,8 @@ public class EditQuestionPopupController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        questionText.setText(Question.getCurrentQ().getText());
-        editQuestionTextArea.setText(Question.getCurrentQ().getText());
+        questionText.setText(Question.getCurrent().getText());
+        editQuestionTextArea.setText(Question.getCurrent().getText());
     }
 
 
@@ -41,7 +41,7 @@ public class EditQuestionPopupController implements Initializable {
      * Submit the edited question.
      */
     public void submitEditedQuestion() {
-        QuestionCommunication.edit(Question.getCurrentQ().getId(),
+        QuestionCommunication.edit(Question.getCurrent().getId(),
                 Lecture.getCurrent().getModkey(), editQuestionTextArea.getText());
         closeTheScene();
     }
@@ -50,7 +50,7 @@ public class EditQuestionPopupController implements Initializable {
      * Close the scene.
      */
     public void closeTheScene() {
-        QuestionCommunication.setStatus(Question.getCurrentQ().getId(),
+        QuestionCommunication.setStatus(Question.getCurrent().getId(),
                 Lecture.getCurrent().getModkey(), "new", User.getUid());
         Stage stage = (Stage) submitEditedQuestionButton.getScene().getWindow();
         stage.close();
