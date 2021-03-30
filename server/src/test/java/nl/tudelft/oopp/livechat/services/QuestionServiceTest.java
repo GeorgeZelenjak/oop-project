@@ -757,4 +757,14 @@ class QuestionServiceTest {
         assertEquals("new", q.getStatus());
         assertEquals(0, q.getEditorId());
     }
+
+    @Test
+    void lectureDoesNotExists() throws Exception {
+        assertFalse(questionService.lectureExists(UUID.randomUUID()));
+    }
+
+    @Test
+    void lectureWasNotChangedTest() throws Exception {
+        assertFalse(questionService.wasLectureChanged(UUID.randomUUID()));
+    }
 }
