@@ -6,7 +6,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
@@ -33,8 +32,8 @@ public class EditQuestionPopupController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        questionText.setText(Question.getCurrentQuestion().getText());
-        editQuestionTextArea.setText(Question.getCurrentQuestion().getText());
+        questionText.setText(Question.getCurrentQ().getText());
+        editQuestionTextArea.setText(Question.getCurrentQ().getText());
     }
 
 
@@ -42,8 +41,8 @@ public class EditQuestionPopupController implements Initializable {
      * Submit the edited question.
      */
     public void submitEditedQuestion() {
-        QuestionCommunication.edit(Question.getCurrentQuestion().getId(),
-                Lecture.getCurrentLecture().getModkey(), editQuestionTextArea.getText());
+        QuestionCommunication.edit(Question.getCurrentQ().getId(),
+                Lecture.getCurrent().getModkey(), editQuestionTextArea.getText());
         closeTheScene();
     }
 
@@ -51,8 +50,8 @@ public class EditQuestionPopupController implements Initializable {
      * Close the scene.
      */
     public void closeTheScene() {
-        QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
-                Lecture.getCurrentLecture().getModkey(), "new", User.getUid());
+        QuestionCommunication.setStatus(Question.getCurrentQ().getId(),
+                Lecture.getCurrent().getModkey(), "new", User.getUid());
         Stage stage = (Stage) submitEditedQuestionButton.getScene().getWindow();
         stage.close();
     }

@@ -35,9 +35,9 @@ public class PollVotingPopupController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        questionText.setText(PollAndOptions.getCurrentPollAndOptions().getPoll().getQuestionText());
+        questionText.setText(PollAndOptions.getCurrent().getPoll().getQuestionText());
         list = new ArrayList<>();
-        for (PollOption option: PollAndOptions.getCurrentPollAndOptions().getOptions()) {
+        for (PollOption option: PollAndOptions.getCurrent().getOptions()) {
             list.add(new PollOptionVote(option));
         }
         setListViewAsInEditing();

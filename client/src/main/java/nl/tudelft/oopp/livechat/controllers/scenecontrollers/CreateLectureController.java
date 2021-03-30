@@ -9,7 +9,6 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
@@ -144,9 +143,9 @@ public class CreateLectureController implements Initializable {
 
 
 
-        Lecture.setCurrentLecture(lecture);
-        NavigationController.getCurrentController().goToLecturerChatPage();
-        System.out.println(Lecture.getCurrentLecture().getFrequency());
+        Lecture.setCurrent(lecture);
+        NavigationController.getCurrent().goToLecturerChatPage();
+        System.out.println(Lecture.getCurrent().getFrequency());
     }
 
     private void createLectureScheduled() throws IOException {
@@ -192,12 +191,12 @@ public class CreateLectureController implements Initializable {
 
 
 
-        Lecture.setCurrentLecture(lecture);
+        Lecture.setCurrent(lecture);
         User.setUserName(enterYourNameTextField.getText());
-        NavigationController.getCurrentController().goToLecturerChatPage();
+        NavigationController.getCurrent().goToLecturerChatPage();
         System.out.println(lecture);
 
-        System.out.println(Lecture.getCurrentLecture().getFrequency());
+        System.out.println(Lecture.getCurrent().getFrequency());
     }
 
     /**
@@ -222,7 +221,7 @@ public class CreateLectureController implements Initializable {
      * Go back to previous Scene.
      */
     public void goBack() {
-        NavigationController.getCurrentController().goBack();
+        NavigationController.getCurrent().goBack();
     }
 
     /**
@@ -231,7 +230,7 @@ public class CreateLectureController implements Initializable {
      * @throws IOException the io exception
      */
     public void goToSettings() throws IOException {
-        NavigationController.getCurrentController().goToSettings();
+        NavigationController.getCurrent().goToSettings();
     }
 
     /**
@@ -240,7 +239,7 @@ public class CreateLectureController implements Initializable {
      * @throws IOException the io exception
      */
     public void goToUserManual() throws IOException {
-        NavigationController.getCurrentController().goToUserManual();
+        NavigationController.getCurrent().goToUserManual();
     }
 
     /**

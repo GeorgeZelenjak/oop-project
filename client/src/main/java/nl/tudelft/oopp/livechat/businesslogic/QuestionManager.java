@@ -32,11 +32,11 @@ public abstract class QuestionManager {
         } else if (byVotes) {
             questions.sort((q1, q2) -> {
                 System.out.println();
-                int rank1 = (int) (Lecture.getCurrentLecture().getStartTime().getTime()
+                int rank1 = (int) (Lecture.getCurrent().getStartTime().getTime()
                         - q1.getTime().getTime()) / 1000 - (q1.getVotes() * 42);
                 rank1 = !q1.isAnswered() ? rank1 - 256 : rank1;
 
-                int rank2 = (int) (Lecture.getCurrentLecture().getStartTime().getTime()
+                int rank2 = (int) (Lecture.getCurrent().getStartTime().getTime()
                         - q2.getTime().getTime()) / 1000 - (q2.getVotes() * 42);
                 rank2 = !q2.isAnswered() ? rank2 - 256 : rank2;
 

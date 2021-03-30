@@ -8,11 +8,9 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
-import nl.tudelft.oopp.livechat.data.Poll;
 import nl.tudelft.oopp.livechat.data.PollAndOptions;
 import nl.tudelft.oopp.livechat.data.PollOption;
 import nl.tudelft.oopp.livechat.data.PollOptionResult;
-import nl.tudelft.oopp.livechat.uielements.PollOptionCell;
 import nl.tudelft.oopp.livechat.uielements.PollResultCell;
 
 import java.net.URL;
@@ -35,9 +33,9 @@ public class PollResultPopupController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        questionText.setText(PollAndOptions.getCurrentPollAndOptions().getPoll().getQuestionText());
+        questionText.setText(PollAndOptions.getCurrent().getPoll().getQuestionText());
         list = new ArrayList<>();
-        for (PollOption option: PollAndOptions.getCurrentPollAndOptions().getOptions()) {
+        for (PollOption option: PollAndOptions.getCurrent().getOptions()) {
             list.add(new PollOptionResult(option));
         }
         setListViewAsInEditing();

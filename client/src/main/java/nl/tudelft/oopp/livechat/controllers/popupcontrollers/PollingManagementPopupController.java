@@ -1,23 +1,17 @@
 package nl.tudelft.oopp.livechat.controllers.popupcontrollers;
 
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
-import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.*;
 import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
 import nl.tudelft.oopp.livechat.uielements.PollOptionCell;
@@ -106,8 +100,8 @@ public class PollingManagementPopupController implements Initializable {
         });
 
         //Set for ease of access
-        lectureId = Lecture.getCurrentLecture().getUuid();
-        modkey = Lecture.getCurrentLecture().getModkey();
+        lectureId = Lecture.getCurrent().getUuid();
+        modkey = Lecture.getCurrent().getModkey();
 
         //Sets page to match whats was in editing
         setAsInEditing();

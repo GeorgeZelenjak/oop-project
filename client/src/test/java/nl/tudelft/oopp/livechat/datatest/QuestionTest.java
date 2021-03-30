@@ -29,7 +29,7 @@ public class QuestionTest {
         questionList = List.of(new Question(lectureId, "?", 11),
                 new Question(lectureId, "??", 12),
                 new Question(lectureId, "???", 13));
-        Question.setCurrentQuestions(questionList);
+        Question.setCurrentQList(questionList);
 
         lectureId = UUID.randomUUID();
         question = new Question(lectureId, "How do you do, fellow kids?", 69);
@@ -44,7 +44,7 @@ public class QuestionTest {
         question.setAnswerTime(answerTime);
         question.setOwnerName("Eminem");
 
-        Question.setCurrentQuestion(question);
+        Question.setCurrentQ(question);
     }
 
     @Test
@@ -312,32 +312,32 @@ public class QuestionTest {
 
     @Test
     public void getCurrentQuestionsTest() {
-        assertEquals(questionList, Question.getCurrentQuestions());
+        assertEquals(questionList, Question.getCurrentQList());
     }
 
     @Test
     public void getCurrentLectureSetTest() {
         List<Question> newQuestionList = List.of(new Question(lectureId, "$$", 11),
                 new Question(lectureId, "$$$", 13));
-        Question.setCurrentQuestions(newQuestionList);
-        assertEquals(newQuestionList, Question.getCurrentQuestions());
+        Question.setCurrentQList(newQuestionList);
+        assertEquals(newQuestionList, Question.getCurrentQList());
 
         //set it back for other tests
-        Question.setCurrentQuestions(questionList);
+        Question.setCurrentQList(questionList);
     }
 
     @Test
     public void getCurrentQuestionTest() {
-        assertEquals(question, Question.getCurrentQuestion());
+        assertEquals(question, Question.getCurrentQ());
     }
 
     @Test
     public void setCurrentQuestionTest() {
         Question q = new Question(lectureId, "Hey Yo", 13);
-        Question.setCurrentQuestion(q);
-        assertEquals(q, Question.getCurrentQuestion());
+        Question.setCurrentQ(q);
+        assertEquals(q, Question.getCurrentQ());
 
         //set it back for other tests
-        Question.setCurrentQuestion(question);
+        Question.setCurrentQ(question);
     }
 }

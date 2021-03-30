@@ -25,7 +25,7 @@ public class LectureTest {
         lecture = new Lecture(lectureId,null, "History of zebras", "Zebra");
         lecture.setFasterCount(42);
         lecture.setSlowerCount(69);
-        Lecture.setCurrentLecture(lecture);
+        Lecture.setCurrent(lecture);
     }
 
     @Test
@@ -178,16 +178,16 @@ public class LectureTest {
 
     @Test
     public void getCurrentLectureTest() {
-        assertEquals(lecture, Lecture.getCurrentLecture());
+        assertEquals(lecture, Lecture.getCurrent());
     }
 
     @Test
     public void setCurrentLectureTest() {
         Lecture newLecture = new Lecture();
-        Lecture.setCurrentLecture(newLecture);
-        assertEquals(newLecture, Lecture.getCurrentLecture());
+        Lecture.setCurrent(newLecture);
+        assertEquals(newLecture, Lecture.getCurrent());
 
         //set it back for other tests
-        Lecture.setCurrentLecture(lecture);
+        Lecture.setCurrent(lecture);
     }
 }

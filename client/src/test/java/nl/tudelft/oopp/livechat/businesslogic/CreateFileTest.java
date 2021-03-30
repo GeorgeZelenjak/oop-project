@@ -40,7 +40,7 @@ public class CreateFileTest {
 
     @BeforeAll
     public static void setUp() {
-        Lecture.setCurrentLecture(new Lecture(lectureId, modkey, "Linux","root"));
+        Lecture.setCurrent(new Lecture(lectureId, modkey, "Linux","root"));
     }
 
     @Test
@@ -60,7 +60,7 @@ public class CreateFileTest {
 
     @Test
     public void constructorNoFileNoLectureTest() throws IOException {
-        Lecture.setCurrentLecture(null);
+        Lecture.setCurrent(null);
         Path path = Path.of(pathName);
 
         //check if the directory exists
@@ -72,7 +72,7 @@ public class CreateFileTest {
         assertTrue(entries.findFirst().isPresent());
 
         cleanup();
-        Lecture.setCurrentLecture(new Lecture(lectureId, modkey, "Linux","root"));
+        Lecture.setCurrent(new Lecture(lectureId, modkey, "Linux","root"));
     }
 
     @Test
@@ -90,9 +90,9 @@ public class CreateFileTest {
 
         try (BufferedReader bufferedReader = new BufferedReader(
                             new FileReader(p.toString()))) {
-            assertEquals("Lecture Name: \"" + Lecture.getCurrentLecture().getName() + "\"",
+            assertEquals("Lecture Name: \"" + Lecture.getCurrent().getName() + "\"",
                     bufferedReader.readLine());
-            assertEquals("Responsible Lecturer: " + Lecture.getCurrentLecture().getCreatorName(),
+            assertEquals("Responsible Lecturer: " + Lecture.getCurrent().getCreatorName(),
                     bufferedReader.readLine());
 
             //skip some data
