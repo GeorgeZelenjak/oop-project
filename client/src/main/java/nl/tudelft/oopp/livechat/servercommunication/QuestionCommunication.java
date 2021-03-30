@@ -49,7 +49,7 @@ public abstract class QuestionCommunication {
      * @return 0 if the question has been asked successfully, -1 if not
      */
     public static boolean askQuestion(long uid, UUID lectureId, String questionText) {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return false;
         }
@@ -76,13 +76,13 @@ public abstract class QuestionCommunication {
      *         null if error occurs or the user is not in the lecture
      */
     public static List<Question> fetchQuestions() {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return null;
         }
 
         HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(ADDRESS
-                + "/api/question/fetch?lid=" + URLEncoder.encode(Lecture.getCurrentLecture()
+                + "/api/question/fetch?lid=" + URLEncoder.encode(Lecture.getCurrent()
                         .getUuid().toString(), StandardCharsets.UTF_8))).build();
         HttpResponse<String> response = sendAndReceive(request);
         if (handleResponse(response) != 0) {
@@ -99,7 +99,7 @@ public abstract class QuestionCommunication {
      * @return true if the question has been upvoted successfully, false if not
      */
     public static boolean upvoteQuestion(long qid, long uid) {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return false;
         }
@@ -125,7 +125,7 @@ public abstract class QuestionCommunication {
      * @return true if the question has been marked as answered successfully, false if not
      */
     public static boolean markedAsAnswered(long qid, UUID modkey, String answer) {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return false;
         }
@@ -153,7 +153,7 @@ public abstract class QuestionCommunication {
      * @return true if the question has been edited successfully, false if not
      */
     public static boolean edit(long qid, UUID modKey, String newText) {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!!!");
             return false;
         }
@@ -186,7 +186,7 @@ public abstract class QuestionCommunication {
      * @return  true if the question has been deleted successfully, false if not
      */
     public static boolean deleteQuestion(long qid, long uid) {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return false;
         }
@@ -211,7 +211,7 @@ public abstract class QuestionCommunication {
      */
     //TODO remove qid from user's set of questions after deletion
     public static boolean modDelete(long qid, UUID modkey) {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return false;
         }
@@ -237,7 +237,7 @@ public abstract class QuestionCommunication {
      * @return true if the status of the question has been set successfully, false if not
      */
     public static boolean setStatus(long qid, UUID modkey, String status, long uid) {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return false;
         }

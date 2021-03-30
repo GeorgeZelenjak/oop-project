@@ -114,7 +114,7 @@ public abstract class LectureCommunication {
      * @return true if the lecture has been closed by the server, false otherwise
      */
     public static boolean closeLecture(String lectureId, String modkey) {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return false;
         }
@@ -136,7 +136,7 @@ public abstract class LectureCommunication {
      * @return true if the user was banned successfully, false otherwise
      */
     public static boolean ban(String modKey, long questionToBanId, int time, boolean byIp) {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return false;
         }

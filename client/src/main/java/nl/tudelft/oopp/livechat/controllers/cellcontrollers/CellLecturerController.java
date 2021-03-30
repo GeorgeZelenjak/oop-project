@@ -1,7 +1,6 @@
 package nl.tudelft.oopp.livechat.controllers.cellcontrollers;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -26,7 +25,6 @@ import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
@@ -170,7 +168,7 @@ public class CellLecturerController implements Initializable {
         if (question.getAnswerText() == null || question.getAnswerText().equals(" ")) {
             isAnsweredButton.setOnAction((ActionEvent event) -> {
                 QuestionCommunication.markedAsAnswered(question.getId(),
-                        Lecture.getCurrentLecture().getModkey(), null);
+                        Lecture.getCurrent().getModkey(), null);
                 System.out.println(question.getVotes());
             });
         }
@@ -195,7 +193,7 @@ public class CellLecturerController implements Initializable {
             }
             int time = result[0] * 60;
             boolean byIp = result[1] != 0;
-            LectureCommunication.ban(Lecture.getCurrentLecture().getModkey().toString(),
+            LectureCommunication.ban(Lecture.getCurrent().getModkey().toString(),
                     question.getId(), time, byIp);
         });
     }
@@ -205,8 +203,8 @@ public class CellLecturerController implements Initializable {
      */
     public void setEditButton() {
         editButton.setOnAction((ActionEvent e) -> {
-            Question.setCurrentQuestion(question);
-            NavigationController.getCurrentController().popupEditQuestion();
+            Question.setCurrentQ(question);
+            NavigationController.getCurrent().popupEditQuestion();
         });
     }
 
@@ -216,7 +214,7 @@ public class CellLecturerController implements Initializable {
     public void setDeleteQuestion() {
         deleteButton.setOnAction((ActionEvent event) ->
                 QuestionCommunication.modDelete(question.getId(),
-                    Lecture.getCurrentLecture().getModkey()));
+                    Lecture.getCurrent().getModkey()));
     }
 
     /**
@@ -238,8 +236,8 @@ public class CellLecturerController implements Initializable {
      */
     public void replyAnswer() {
         replyButton.setOnAction((ActionEvent event) -> {
-            Question.setCurrentQuestion(question);
-            NavigationController.getCurrentController().popupAnswerQuestion();
+            Question.setCurrentQ(question);
+            NavigationController.getCurrent().popupAnswerQuestion();
         });
 
     }

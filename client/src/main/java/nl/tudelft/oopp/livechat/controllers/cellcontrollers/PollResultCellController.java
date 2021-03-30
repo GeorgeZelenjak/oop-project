@@ -64,7 +64,7 @@ public class PollResultCellController {
      */
     public void setRectangle() {
         double frac = PercentageCalculator.calculatePercentage(
-                (int) PollAndOptions.getCurrentPollAndOptions().getPoll().getVotes(),
+                (int) PollAndOptions.getCurrent().getPoll().getVotes(),
                 (int) option.getVotes());
         resultBarRectangle.setWidth(resultBarRectangle.getWidth() * frac);
     }

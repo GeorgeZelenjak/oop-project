@@ -6,7 +6,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.text.Font;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
@@ -97,9 +96,9 @@ public class JoinLectureSceneController implements Initializable {
 
         User.setUserName(enterNameTextField.getText());
 
-        Lecture.setCurrentLecture(
+        Lecture.setCurrent(
                 LectureCommunication.joinLectureById(enterLectureCodeTextField.getText()));
-        Lecture currentLecture = Lecture.getCurrentLecture();
+        Lecture currentLecture = Lecture.getCurrent();
 
         if (currentLecture == null) {
             System.out.println("no lecture joined");
@@ -133,11 +132,11 @@ public class JoinLectureSceneController implements Initializable {
      * @throws IOException exception if something goes wrong
      */
     private void joinAsStudent() throws IOException {
-        if (!Lecture.getCurrentLecture().isOpen()) {
+        if (!Lecture.getCurrent().isOpen()) {
             AlertController.alertInformation(
                     "Lecture not open yet!","This lecture has not started yet!");
         } else {
-            NavigationController.getCurrentController().goToUserChatPage();
+            NavigationController.getCurrent().goToUserChatPage();
         }
     }
 
@@ -167,8 +166,8 @@ public class JoinLectureSceneController implements Initializable {
         if (!result) {
             return;
         }
-        Lecture.getCurrentLecture().setModkey(UUID.fromString(modkeyString));
-        NavigationController.getCurrentController().goToLecturerChatPage();
+        Lecture.getCurrent().setModkey(UUID.fromString(modkeyString));
+        NavigationController.getCurrent().goToLecturerChatPage();
     }
 
     /**
@@ -176,7 +175,7 @@ public class JoinLectureSceneController implements Initializable {
      */
     public void goBack() {
 
-        NavigationController.getCurrentController().goBack();
+        NavigationController.getCurrent().goBack();
         System.out.println("Button was pressed!");
     }
 

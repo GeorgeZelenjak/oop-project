@@ -27,7 +27,7 @@ public class PollAndOptions {
      * Gets current poll and its options.
      * @return current poll and its options
      */
-    public static PollAndOptions getCurrentPollAndOptions() {
+    public static PollAndOptions getCurrent() {
         return currentPollAndOptions;
     }
 
@@ -35,7 +35,7 @@ public class PollAndOptions {
      * Sets current poll and its options.
      * @param currentPollAndOptions  current poll and its options
      */
-    public static void setCurrentPollAndOptions(PollAndOptions currentPollAndOptions) {
+    public static void setCurrent(PollAndOptions currentPollAndOptions) {
         PollAndOptions.currentPollAndOptions = currentPollAndOptions;
     }
 

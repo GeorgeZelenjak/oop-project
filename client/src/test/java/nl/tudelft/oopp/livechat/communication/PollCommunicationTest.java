@@ -250,7 +250,7 @@ public class PollCommunicationTest {
     public static void setUp() {
         User.setUid();
         User.setUserName("Slim Shady");
-        Lecture.setCurrentLecture(new Lecture());
+        Lecture.setCurrent(new Lecture());
 
         mockServer = ClientAndServer.startClientAndServer(8080);
         try {

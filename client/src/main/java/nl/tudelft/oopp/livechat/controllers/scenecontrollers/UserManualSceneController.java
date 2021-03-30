@@ -21,7 +21,7 @@ public class UserManualSceneController {
      * Go back to the previous scene.
      */
     public void goBack() {
-        NavigationController.getCurrentController().goBack();
+        NavigationController.getCurrent().goBack();
         System.out.println("Button was pressed!");
     }
 

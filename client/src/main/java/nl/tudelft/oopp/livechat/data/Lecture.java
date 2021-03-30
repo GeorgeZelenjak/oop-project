@@ -220,7 +220,7 @@ public class Lecture {
      * Sets current lecture.
      * @param lecture the lecture
      */
-    public static void setCurrentLecture(Lecture lecture) {
+    public static void setCurrent(Lecture lecture) {
         Lecture.currentLecture = lecture;
     }
 
@@ -228,7 +228,7 @@ public class Lecture {
      * Gets current lecture.
      * @return the current lecture
      */
-    public static Lecture getCurrentLecture() {
+    public static Lecture getCurrent() {
         return Lecture.currentLecture;
     }
 

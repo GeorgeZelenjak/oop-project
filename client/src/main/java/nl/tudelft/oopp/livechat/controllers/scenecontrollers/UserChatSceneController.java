@@ -8,7 +8,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
@@ -97,7 +96,7 @@ public class UserChatSceneController implements Initializable {
      * @param resourceBundle resource bundle
      */
     public void initialize(URL location, ResourceBundle resourceBundle) {
-        lectureNameText.setText(Lecture.getCurrentLecture().getName());
+        lectureNameText.setText(Lecture.getCurrent().getName());
         userNameText.setText(User.getUserName());
         fetchVotes();
 
@@ -127,9 +126,9 @@ public class UserChatSceneController implements Initializable {
         if (list == null) {
             return;
         }
-        Question.setCurrentQuestions(list);
+        Question.setCurrentQList(list);
 
-        questions = Question.getCurrentQuestions();
+        questions = Question.getCurrentQList();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
         QuestionManager.sort(sortByVotesCheckBox.isSelected(),
@@ -166,7 +165,7 @@ public class UserChatSceneController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             timelineFetch.stop();
-            NavigationController.getCurrentController().goToMainScene();
+            NavigationController.getCurrent().goToMainScene();
         }
     }
 
@@ -175,7 +174,7 @@ public class UserChatSceneController implements Initializable {
      * @throws IOException the io exception
      */
     public void goToUserManual() throws IOException {
-        NavigationController.getCurrentController().goToUserManual();
+        NavigationController.getCurrent().goToUserManual();
     }
 
     /**
@@ -183,7 +182,7 @@ public class UserChatSceneController implements Initializable {
      * @throws IOException the io exception
      */
     public void goToSettings() throws IOException {
-        NavigationController.getCurrentController().goToSettings();
+        NavigationController.getCurrent().goToSettings();
     }
 
     /**
@@ -206,7 +205,7 @@ public class UserChatSceneController implements Initializable {
             return false;
         }
         boolean res = QuestionCommunication.askQuestion(
-                User.getUid(), Lecture.getCurrentLecture().getUuid(), text);
+                User.getUid(), Lecture.getCurrent().getUuid(), text);
         //inputQuestion.setText("");
 
         if (!res) {
@@ -214,7 +213,7 @@ public class UserChatSceneController implements Initializable {
         }
 
         Question question = new Question(
-                Lecture.getCurrentLecture().getUuid(), questionInputTextArea.getText(), 0);
+                Lecture.getCurrent().getUuid(), questionInputTextArea.getText(), 0);
 
         //questionPaneListView.getItems().add(question.getText());
 
@@ -235,7 +234,7 @@ public class UserChatSceneController implements Initializable {
 
         return LectureSpeedCommunication.voteOnLectureSpeed(
                 User.getUid(),
-                Lecture.getCurrentLecture().getUuid(),
+                Lecture.getCurrent().getUuid(),
                 "faster");
     }
 
@@ -249,7 +248,7 @@ public class UserChatSceneController implements Initializable {
 
         return LectureSpeedCommunication.voteOnLectureSpeed(
                 User.getUid(),
-                Lecture.getCurrentLecture().getUuid(),
+                Lecture.getCurrent().getUuid(),
                 "slower");
     }
 
@@ -257,7 +256,7 @@ public class UserChatSceneController implements Initializable {
      * Gets votes on lecture speed.
      */
     public void getVotesOnLectureSpeed() {
-        UUID uuid = Lecture.getCurrentLecture().getUuid();
+        UUID uuid = Lecture.getCurrent().getUuid();
         List<Integer> speeds = LectureSpeedCommunication.getVotesOnLectureSpeed(uuid);
         if (speeds != null && speeds.get(0).equals(0) && speeds.get(1).equals(0)) {
             voteOnLectureSpeedFast.setSelected(false);
@@ -269,30 +268,30 @@ public class UserChatSceneController implements Initializable {
 
         PollAndOptions fetched = (
                 PollCommunication.fetchPollAndOptionsStudent(
-                        Lecture.getCurrentLecture().getUuid()));
+                        Lecture.getCurrent().getUuid()));
         if (fetched == null) {
             return;
         }
 
         //If new poll
-        if (!fetched.equals(PollAndOptions.getCurrentPollAndOptions())) {
-            PollAndOptions.setCurrentPollAndOptions(fetched);
-            NavigationController.getCurrentController().popupPollVoting();
+        if (!fetched.equals(PollAndOptions.getCurrent())) {
+            PollAndOptions.setCurrent(fetched);
+            NavigationController.getCurrent().popupPollVoting();
             return;
         }
 
         //If poll is closed
         if (!fetched.getPoll().isOpen()
-                && PollAndOptions.getCurrentPollAndOptions().getPoll().isOpen()) {
-            PollAndOptions.setCurrentPollAndOptions(fetched);
-            NavigationController.getCurrentController().popupPollResult();
+                && PollAndOptions.getCurrent().getPoll().isOpen()) {
+            PollAndOptions.setCurrent(fetched);
+            NavigationController.getCurrent().popupPollResult();
         }
 
         //If poll is reopened
-        if (!PollAndOptions.getCurrentPollAndOptions().getPoll().isOpen()
+        if (!PollAndOptions.getCurrent().getPoll().isOpen()
                 && fetched.getPoll().isOpen()) {
-            PollAndOptions.setCurrentPollAndOptions(fetched);
-            NavigationController.getCurrentController().popupPollVoting();
+            PollAndOptions.setCurrent(fetched);
+            NavigationController.getCurrent().popupPollVoting();
         }
 
     }

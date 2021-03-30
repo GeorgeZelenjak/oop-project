@@ -7,13 +7,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import nl.tudelft.oopp.livechat.controllers.popupcontrollers.PollingManagementPopupController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
-import javax.sql.PooledConnection;
 import java.io.IOException;
 import java.util.Stack;
 
@@ -46,7 +44,7 @@ public class NavigationController {
      *
      * @param currentController the current controller
      */
-    public static void setCurrentController(NavigationController currentController) {
+    public static void setCurrent(NavigationController currentController) {
         NavigationController.currentController = currentController;
     }
 
@@ -55,7 +53,7 @@ public class NavigationController {
      *
      * @return the current controller
      */
-    public static NavigationController getCurrentController() {
+    public static NavigationController getCurrent() {
         return currentController;
     }
 
@@ -148,8 +146,8 @@ public class NavigationController {
             Stage stage = new Stage();
             stage.setTitle(title);
             stage.setScene(new Scene(root, width, height));
-            if (!QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
-                    Lecture.getCurrentLecture().getModkey(), req, User.getUid())) {
+            if (!QuestionCommunication.setStatus(Question.getCurrentQ().getId(),
+                    Lecture.getCurrent().getModkey(), req, User.getUid())) {
                 AlertController.alertWarning("Question is already being handled",
                         "This question is already being handled, if you want you can continue");
             }
@@ -158,8 +156,8 @@ public class NavigationController {
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent e) {
-                    QuestionCommunication.setStatus(Question.getCurrentQuestion().getId(),
-                            Lecture.getCurrentLecture().getModkey(), "new", User.getUid());
+                    QuestionCommunication.setStatus(Question.getCurrentQ().getId(),
+                            Lecture.getCurrent().getModkey(), "new", User.getUid());
                 }
             });
         } catch (IOException e) {

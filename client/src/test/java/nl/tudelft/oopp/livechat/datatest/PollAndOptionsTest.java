@@ -28,7 +28,7 @@ public class PollAndOptionsTest {
         option1 = new PollOption(poll.getId(), "Kill it", 11, true);
         option2 = new PollOption(poll.getId(), "Eat it", 27, false);
         pollAndOptions = new PollAndOptions(poll, List.of(option1, option2));
-        PollAndOptions.setCurrentPollAndOptions(pollAndOptions);
+        PollAndOptions.setCurrent(pollAndOptions);
     }
 
     @Test
@@ -130,7 +130,7 @@ public class PollAndOptionsTest {
 
     @Test
     void getCurrentPollAndOptionsTest() {
-        assertEquals(pollAndOptions, PollAndOptions.getCurrentPollAndOptions());
+        assertEquals(pollAndOptions, PollAndOptions.getCurrent());
     }
 
     @Test
@@ -140,9 +140,9 @@ public class PollAndOptionsTest {
         PollOption o1 = new PollOption(p.getId(), "Kill it", 11, true);
         PollOption o2 = new PollOption(p.getId(), "Eat it", 27, false);
         PollAndOptions po = new PollAndOptions(p, List.of(o1, o2));
-        PollAndOptions.setCurrentPollAndOptions(po);
-        assertEquals(po, PollAndOptions.getCurrentPollAndOptions());
+        PollAndOptions.setCurrent(po);
+        assertEquals(po, PollAndOptions.getCurrent());
 
-        PollAndOptions.setCurrentPollAndOptions(pollAndOptions);
+        PollAndOptions.setCurrent(pollAndOptions);
     }
 }

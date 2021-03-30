@@ -6,10 +6,8 @@ import com.google.gson.reflect.TypeToken;
 import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication;
 import nl.tudelft.oopp.livechat.data.Lecture;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
@@ -48,7 +46,7 @@ public abstract class LectureSpeedCommunication {
      *
      */
     public static List<Integer> getVotesOnLectureSpeed(UUID lectureId) {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return null;
         }
@@ -75,7 +73,7 @@ public abstract class LectureSpeedCommunication {
      * @return true if the lecture speed votes have been reset successfully, false if not
      */
     public static boolean resetLectureSpeed(UUID lectureId, UUID modkey) {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return false;
         }
@@ -103,7 +101,7 @@ public abstract class LectureSpeedCommunication {
      * @return true if the vote has been recorded successfully, false if not
      */
     public static boolean voteOnLectureSpeed(long uid, UUID lectureId, String speed) {
-        if (Lecture.getCurrentLecture() == null) {
+        if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return false;
         }
