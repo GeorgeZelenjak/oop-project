@@ -66,12 +66,6 @@ public class UserChatSceneController implements Initializable {
     private CheckBox voteOnLectureSpeedSlow;
 
     @FXML
-    private Button participants;
-
-    //@FXML
-    //private Button goToSettingsButton;
-
-    @FXML
     private Button goToUserManualButton;
 
     @FXML
@@ -109,9 +103,6 @@ public class UserChatSceneController implements Initializable {
         timelineFetch.play();
 
         //Tooltip
-        participants.setTooltip(new Tooltip("See the lecture participants"));
-        //goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
-
         goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
         gobBackButton.setTooltip(new Tooltip("Go back to the main page"));
 
@@ -176,14 +167,6 @@ public class UserChatSceneController implements Initializable {
     public void goToUserManual() throws IOException {
         NavigationController.getCurrent().goToUserManual();
     }
-
-    //    /**
-    //     * Go to settings.
-    //     * @throws IOException the io exception
-    //     */
-    //    public void goToSettings() throws IOException {
-    //        NavigationController.getCurrent().goToSettings();
-    //    }
 
     /**
      * Send a question to the server.
