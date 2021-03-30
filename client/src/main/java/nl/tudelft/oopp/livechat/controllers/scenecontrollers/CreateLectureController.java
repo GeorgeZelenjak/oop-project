@@ -112,16 +112,14 @@ public class CreateLectureController implements Initializable {
         }
         int frequency = 60;
 
-        try {
-            if (questionDelay.getText() != null && questionDelay.getText().length() > 0) {
-                frequency = Integer.parseInt(questionDelay.getText());
+        if (questionDelay.getText() != null && questionDelay.getText().length() > 0) {
+            frequency = InputValidator.validateFrequency(questionDelay.getText());
+            if (frequency < 0) {
+                AlertController.alertError("Invalid input",
+                        "Invalid input. Please enter a positive number or zero");
+                return;
             }
 
-        } catch (NumberFormatException e) {
-            String alert = "Invalid input. Please enter a number (in seconds) and try again.";
-
-            AlertController.alertError("Invalid input", alert);
-            return;
         }
         User.setUserName(enterYourNameTextField.getText());
 

@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
@@ -212,12 +213,7 @@ public class UserChatSceneController implements Initializable {
 
     /**
      * Send a question to the server.
-     * @return Integer showing status of the action
-     *      1- Everything is good
-     *      -1 -Lecture has not been initialized
-     *      -2/ -3 -Server error.
-     *      -4 - too long question
-     *      -5 empty field
+     * @return true if successful, false if not
      */
     public boolean askQuestion() {
         String text = questionInputTextArea.getText();
@@ -227,6 +223,11 @@ public class UserChatSceneController implements Initializable {
         if (text.length() > 2000) {
             AlertController.alertWarning("Long question",
                     "Your question is too long! (max 2000 characters)");
+            return false;
+        }
+        if (!InputValidator.checkCurseWords(text)) {
+            AlertController.alertWarning("Curse language",
+                    "Your text contains curse language and will not be posted");
             return false;
         }
         boolean res = QuestionCommunication.askQuestion(
@@ -251,7 +252,7 @@ public class UserChatSceneController implements Initializable {
     /**
      * Vote on lecture speed fast.
      *
-     * @return 0 if everthing is fine -1 if not
+     * @return true if successful, false if not
      */
     public boolean voteOnLectureSpeedFast() {
         voteOnLectureSpeedSlow.setSelected(false);
@@ -264,16 +265,13 @@ public class UserChatSceneController implements Initializable {
 
     /**
      * Vote on lecture speed slow.
-     *
      * @return 0 if everthing is fine -1 if not
      */
     public boolean voteOnLectureSpeedSlow() {
         voteOnLectureSpeedFast.setSelected(false);
 
-        return LectureSpeedCommunication.voteOnLectureSpeed(
-                User.getUid(),
-                Lecture.getCurrent().getUuid(),
-                "slower");
+        return LectureSpeedCommunication.voteOnLectureSpeed(User.getUid(),
+                Lecture.getCurrent().getUuid(), "slower");
     }
 
     /**
@@ -289,10 +287,8 @@ public class UserChatSceneController implements Initializable {
     }
 
     private void fetchVotes() {
-
-        PollAndOptions fetched = (
-                PollCommunication.fetchPollAndOptionsStudent(
-                        Lecture.getCurrent().getUuid()));
+        PollAndOptions fetched = (PollCommunication
+                .fetchPollAndOptionsStudent(Lecture.getCurrent().getUuid()));
         if (fetched == null) {
             return;
         }
