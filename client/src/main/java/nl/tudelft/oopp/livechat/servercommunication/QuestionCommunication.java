@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -75,7 +76,7 @@ public abstract class QuestionCommunication {
      * @return the list of questions related to current lecture,
      *         null if error occurs or the user is not in the lecture
      */
-    public static List<Question> fetchQuestions() {
+    public static List<Question> fetchQuestions(boolean firstTime) {
         if (Lecture.getCurrent() == null) {
             System.out.println("You are not connected to a lecture!");
             return null;
@@ -83,9 +84,10 @@ public abstract class QuestionCommunication {
 
         HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(ADDRESS
                 + "/api/question/fetch?lid=" + URLEncoder.encode(Lecture.getCurrent()
-                        .getUuid().toString(), StandardCharsets.UTF_8))).build();
+                        .getUuid().toString(),
+                StandardCharsets.UTF_8) + "&firstTime=" + firstTime)).build();
         HttpResponse<String> response = sendAndReceive(request);
-        if (handleResponse(response) != 0) {
+        if (handleResponseNoAlerts(response) != 0) {
             return null;
         }
         System.out.println("The questions were retrieved successfully! "
