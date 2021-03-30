@@ -18,6 +18,7 @@ import org.mockserver.model.Parameter;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -272,9 +273,15 @@ public class LectureSpeedCommunicationTest {
         assertFalse(LectureSpeedCommunication.resetLectureSpeed(lid, incorrectModkey));
     }
 
+    /**
+     * Stop.
+     */
     @AfterAll
     public static void stop() {
         mockServer.stop();
         alertControllerMockedStatic.close();
+        while (!mockServer.hasStopped(3,100L, TimeUnit.MILLISECONDS)) {
+            System.out.println("Server has not stopped yet. Waiting until it fully stops");
+        }
     }
 }
