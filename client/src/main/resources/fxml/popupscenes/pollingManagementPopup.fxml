@@ -1,23 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <AnchorPane fx:id="ap" prefHeight="512.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.popupcontrollers.PollingManagementPopupController">
    <children>
-      <Button layoutX="587.0" layoutY="459.0" mnemonicParsing="false" onAction="#openPolling" text="Open" />
-      <Button layoutX="653.0" layoutY="459.0" mnemonicParsing="false" onAction="#closePoll" text="Close" />
-      <Button layoutX="578.0" layoutY="415.0" mnemonicParsing="false" onAction="#newPoll" text="New Poll" />
-      <Button layoutX="662.0" layoutY="415.0" mnemonicParsing="false" onAction="#restartPoll" text="Reset" />
-      <ListView fx:id="pollOptionsListView" layoutX="47.0" layoutY="124.0" prefHeight="355.0" prefWidth="521.0" />
-      <TextArea fx:id="questionTextTextArea" layoutX="47.0" layoutY="15.0" prefHeight="73.0" prefWidth="521.0" promptText="Imput your question text here" />
-      <Button layoutX="50.0" layoutY="482.0" mnemonicParsing="false" onAction="#addPollOptionCell" prefHeight="16.0" prefWidth="21.0" text="+">
+      <Button fx:id="publishPoll" layoutX="575.0" layoutY="386.0" mnemonicParsing="false" onAction="#openPolling" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: -fx-green;" text="Publish Poll" />
+      <Button fx:id="endVoting" layoutX="575.0" layoutY="459.0" mnemonicParsing="false" onAction="#closePoll" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: -fx-red;" text="End Voting" />
+      <Button fx:id="newPoll" layoutX="575.0" layoutY="74.0" mnemonicParsing="false" onAction="#newPoll" prefHeight="25.0" prefWidth="110.0" text="New Poll" />
+      <Button fx:id="resetVotes" layoutX="575.0" layoutY="422.0" mnemonicParsing="false" onAction="#restartPoll" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: -fx-yellow;" text="Reset Votes" />
+      <ListView fx:id="pollOptionsListView" layoutX="35.0" layoutY="135.0" maxHeight="355.0" minHeight="200.0" prefHeight="350.0" prefWidth="521.0" />
+      <TextArea fx:id="questionTextTextArea" layoutX="35.0" layoutY="26.0" prefHeight="73.0" prefWidth="521.0" promptText="Input your question text here" />
+      <Button layoutX="35.0" layoutY="106.0" maxHeight="-Infinity" mnemonicParsing="false" onAction="#addPollOptionCell" prefHeight="24.0" prefWidth="24.0" styleClass="addOption" text="+" wrapText="true">
          <font>
             <Font size="10.0" />
          </font>
       </Button>
-      <Text fx:id="isOptionCorrectText" layoutX="47.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Is this option correct" />
-      <CheckBox layoutX="179.0" layoutY="107.0" mnemonicParsing="false" onAction="#togglePoll" text="Is this a poll" />
+      <Text fx:id="isOptionCorrectText" layoutX="386.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Is this option correct?">
+         <font>
+            <Font size="14.0" />
+         </font></Text>
+      <CheckBox fx:id="isPollCheckbox" layoutX="579.0" layoutY="27.0" mnemonicParsing="false" onAction="#togglePoll" />
+      <Text layoutX="67.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add an option">
+         <font>
+            <Font size="14.0" />
+         </font></Text>
+      <Text layoutX="600.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Is this a poll?">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
    </children>
+   <stylesheets>
+      <URL value="@../../css/Styles.css" />
+      <URL value="@../../css/pollingManagement.css" />
+   </stylesheets>
 </AnchorPane>
