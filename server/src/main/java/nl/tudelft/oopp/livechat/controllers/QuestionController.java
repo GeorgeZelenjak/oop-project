@@ -68,14 +68,14 @@ public class QuestionController {
                         break;
                     } else {
                         try {
-                            Thread.sleep(200);
+                            Thread.sleep(100);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        count += 200;
+                        count += 100;
                     }
                 }
-            });
+            }).orTimeout(2000, TimeUnit.MILLISECONDS);
         }
         deferredResult.onTimeout(() -> {
             future.cancel(true);
