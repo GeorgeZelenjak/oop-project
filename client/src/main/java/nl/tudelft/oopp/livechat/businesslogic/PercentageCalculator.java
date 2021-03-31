@@ -2,12 +2,15 @@ package nl.tudelft.oopp.livechat.businesslogic;
 
 public abstract class PercentageCalculator {
 
+    private PercentageCalculator() {
+
+    }
+
     /**
      * Determines the new start coordinate for the line
-     * depending on the number of faster and slower count.
-     *
-     * @param minX   the min coordinate
-     * @param maxX   the max coordinate
+     * depending on the number of faster and slower counts.
+     * @param minX the min coordinate
+     * @param maxX the max coordinate
      * @param faster the faster count
      * @param slower the slower count
      * @return where the line should start
@@ -28,16 +31,15 @@ public abstract class PercentageCalculator {
     }
 
     /**
-     * Calculate percentage double.
-     *
-     * @param whole    the whole
-     * @param fraction the fraction
-     * @return the double
+     * Calculate the percentage (fraction).
+     * @param whole the whole part (denominator)
+     * @param fraction the fraction part (numerator)
+     * @return the calculated percentage
      */
     public static double calculatePercentage(int whole, int fraction) {
         if (whole == 0) {
             return 0;
         }
-        return  (double) fraction / whole;
+        return (double) fraction / whole;
     }
 }
