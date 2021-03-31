@@ -50,7 +50,7 @@ public class QuestionController {
         if (!questionService.lectureExists(lid)) {
             throw new LectureNotFoundException();
         }
-        long timeOutInMilliSec = 2 * 1000L;
+        long timeOutInMilliSec = 30 * 1000L;
         DeferredResult<List<QuestionEntity>> deferredResult =
                 new DeferredResult<>(timeOutInMilliSec);
         CompletableFuture<Void> future;
@@ -64,7 +64,7 @@ public class QuestionController {
                     if (questionService.wasLectureChanged(lid)) {
                         deferredResult.setResult(questionService.getQuestionsByLectureId(lid));
                         break;
-                    } else if (count >= 2000) {
+                    } else if (count >= timeOutInMilliSec) {
                         break;
                     } else {
                         try {
