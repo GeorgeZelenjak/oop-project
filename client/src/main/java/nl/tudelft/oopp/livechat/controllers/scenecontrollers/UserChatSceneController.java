@@ -175,9 +175,8 @@ public class UserChatSceneController implements Initializable {
 
     /**
      * Go back to main.
-     * @throws IOException the io exception
      */
-    public void goBackToMain() throws IOException {
+    public void goBackToMain() {
 
         //Navigating back to Main Page
 
@@ -197,17 +196,15 @@ public class UserChatSceneController implements Initializable {
 
     /**
      * Go to user manual.
-     * @throws IOException the io exception
      */
-    public void goToUserManual() throws IOException {
+    public void goToUserManual() {
         NavigationController.getCurrent().goToUserManual();
     }
 
     /**
      * Go to settings.
-     * @throws IOException the io exception
      */
-    public void goToSettings() throws IOException {
+    public void goToSettings() {
         NavigationController.getCurrent().goToSettings();
     }
 
@@ -220,9 +217,11 @@ public class UserChatSceneController implements Initializable {
         if (text.length() == 0) {
             return false;
         }
-        if (text.length() > 2000) {
+        int length = text.length();
+        if (length > 280) {
             AlertController.alertWarning("Long question",
-                    "Your question is too long! (max 2000 characters)");
+                    "Your question is too long! (max " + 280
+                            + " characters,\n you entered: " + length + ")");
             return false;
         }
         if (!InputValidator.checkBadWords(text)) {
