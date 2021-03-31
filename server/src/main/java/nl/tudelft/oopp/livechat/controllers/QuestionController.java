@@ -50,26 +50,39 @@ public class QuestionController {
         if (!questionService.lectureExists(lid)) {
             throw new LectureNotFoundException();
         }
-        long timeOutInMilliSec = 1 * 1000L;
+        long timeOutInMilliSec = 2 * 1000L;
         DeferredResult<List<QuestionEntity>> deferredResult =
                 new DeferredResult<>(timeOutInMilliSec);
+        CompletableFuture<Void> future;
         if (firstTime) {
             deferredResult.setResult(questionService.getQuestionsByLectureId(lid));
             return deferredResult;
         } else {
-            CompletableFuture.runAsync(() -> {
-                try {
-                    if (questionService.wasLectureChanged(lid))
+            future = CompletableFuture.runAsync(() -> {
+                int count = 0;
+                while (true) {
+                    if (questionService.wasLectureChanged(lid)) {
                         deferredResult.setResult(questionService.getQuestionsByLectureId(lid));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                        break;
+                    } else if (count >= 2000) {
+                        break;
+                    } else {
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        count += 200;
+                    }
                 }
             });
         }
-        deferredResult.onTimeout(() ->
-                deferredResult.setErrorResult(
-                        ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
-                                .body("Request timeout occurred.")));
+        deferredResult.onTimeout(() -> {
+            future.cancel(true);
+            deferredResult.setErrorResult(ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+                                .body("Request timeout occurred."));
+            }
+        );
         return deferredResult;
     }
 
