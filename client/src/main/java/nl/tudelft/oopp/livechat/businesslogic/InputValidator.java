@@ -1,6 +1,12 @@
 package nl.tudelft.oopp.livechat.businesslogic;
 
+import nl.tudelft.oopp.livechat.controllers.AlertController;
+
+import java.util.*;
+
 public abstract class InputValidator {
+    private static Set<String> badWords = new HashSet<>(List.of("fuck", "nigga", "nigger", "bitch",
+            " ass ", "asshole", " arse ", "bastard", "bollocks", "shit"));
 
     private InputValidator() {
 
@@ -47,6 +53,21 @@ public abstract class InputValidator {
     }
 
     /**
+     * Validates the frequency of asking questions.
+     * @param num String representing frequency
+     * @return true if the frequency is a valid non-negative number
+     */
+    public static int validateFrequency(String num) {
+        try {
+            int frequency = Integer.parseInt(num);
+            return (frequency >= 0) ? frequency : -1;
+
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    /**
      * Validates user hour input.
      * @param input the user input
      * @return int
@@ -65,5 +86,44 @@ public abstract class InputValidator {
             return 0;
         }
         return -2;
+    }
+
+    /**
+     * Checks if the name does not contain "Hitler" and "Mussolini".
+     * @param name the name to be checked
+     * @return true if the name does not contain "Hitler" and "Mussolini", false otherwise
+     */
+    public static boolean checkName(String name) {
+        String n = name.toLowerCase();
+        return !n.contains("hitler") && !n.contains("mussolini");
+    }
+
+    /**
+     * Checks the text for some curse and offensive words.
+     * @param text the text to be checked
+     * @return true if no curse or offensive words, false otherwise
+     */
+    public static boolean checkBadWords(String text) {
+        String t = text.toLowerCase();
+        for (String word : badWords) {
+            if (t.contains(word)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Validates UUID.
+     * @param uuidString a String with uuid
+     * @return true if the uuid is valid, false otherwise
+     */
+    public static boolean validateUUID(String uuidString) {
+        try {
+            UUID uuid = UUID.fromString(uuidString);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

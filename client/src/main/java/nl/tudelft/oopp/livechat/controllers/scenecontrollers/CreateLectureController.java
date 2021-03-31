@@ -72,37 +72,30 @@ public class CreateLectureController implements Initializable {
     /**
      * Creates the lecture, shows alert with lecture and creator names
      * and returns to the main scene.
-     * @throws IOException the io exception
      */
-    private void createLecture() throws IOException {
-        int inputStatusUserName = InputValidator.validateLength(
-                enterYourNameTextField.getText(), 50);
-        int inputStatusLectureName = InputValidator.validateLength(
-                enterLectureNameTextField.getText(), 255);
+    private void createLecture() {
+        String name = enterYourNameTextField.getText();
+        String lectureName = enterLectureNameTextField.getText();
+
+        int inputStatusUserName = InputValidator.validateLength(name, 50);
+        int inputStatusLectureName = InputValidator.validateLength(lectureName, 150);
+
         if (inputStatusUserName == -1) {
-            AlertController.alertWarning("No name entered",
-                    "Please enter your name!");
+            AlertController.alertWarning("No name entered", "Please enter your name!");
             return;
         }
         if (inputStatusUserName == -2) {
-            AlertController.alertWarning("Long name",
-                    "Your name is too long!\n(max: " + 50
-                            + " characters, you entered: "
-                            + enterYourNameTextField.getText().length() + ")");
+            AlertController.alertWarning("Long name", "Your name is too long!\n(max: "
+                    + 50 + " characters, you entered: " + name.length() + ")");
             return;
         }
         if (inputStatusLectureName == -1) {
-            AlertController.alertWarning("Long lecture name",
-                    "The lecture name is too long!\n(max: " + 255
-                            + " characters, you entered: "
-                            + enterLectureNameTextField.getText().length() + ")");
+            AlertController.alertWarning("No name entered", "Please enter the lecture name!");
             return;
         }
         if (inputStatusLectureName == -2) {
-            AlertController.alertWarning("Long name",
-                    "Your name is too long!\n(max: " + 50
-                            + " characters, you entered: "
-                            + enterYourNameTextField.getText().length() + ")");
+            AlertController.alertWarning("Long name", "The lecture name is too long!\n(max: "
+                    + 150 + " characters, you entered: " + lectureName.length() + ")");
             return;
         }
 
@@ -112,44 +105,34 @@ public class CreateLectureController implements Initializable {
         }
         int frequency = 60;
 
-        try {
-            if (questionDelay.getText() != null && questionDelay.getText().length() > 0) {
-                frequency = Integer.parseInt(questionDelay.getText());
+        if (questionDelay.getText() != null && questionDelay.getText().length() > 0) {
+            frequency = InputValidator.validateFrequency(questionDelay.getText());
+            if (frequency < 0) {
+                AlertController.alertError("Invalid input",
+                        "Invalid input. Please enter a positive number or zero");
+                return;
             }
 
-        } catch (NumberFormatException e) {
-            String alert = "Invalid input. Please enter a number (in seconds) and try again.";
-
-            AlertController.alertError("Invalid input", alert);
-            return;
         }
-        User.setUserName(enterYourNameTextField.getText());
+        User.setUserName(name);
 
-        Lecture lecture = LectureCommunication
-                .createLecture(enterLectureNameTextField.getText(),
-                enterYourNameTextField.getText(),
+        Lecture lecture = LectureCommunication.createLecture(lectureName, name,
                         new Timestamp(System.currentTimeMillis()), frequency);
 
         if (lecture == null) {
             return;
         }
 
-
-
-
         String alertText = "The lecture has been created successfully!"
                 + "\nPress OK to go to the lecture page.";
-        AlertController.alertInformation("Creating lecture", alertText);
-
+        AlertController.alertInformation("Lecture created", alertText);
 
 
         Lecture.setCurrent(lecture);
         NavigationController.getCurrent().goToLecturerChatPage();
-        System.out.println(Lecture.getCurrent().getFrequency());
     }
 
-    private void createLectureScheduled() throws IOException {
-
+    private void createLectureScheduled() {
         if (InputValidator.validateHour(lectureScheduleHourTextField.getText()) != 0
                 || InputValidator.validateMinute(lectureScheduleMinuteTextField.getText()) != 0
                 || lectureSchedulingDateDatePicker.getValue() == null)  {

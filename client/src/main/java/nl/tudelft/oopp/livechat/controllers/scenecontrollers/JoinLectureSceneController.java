@@ -66,14 +66,15 @@ public class JoinLectureSceneController implements Initializable {
      * @throws IOException exception when something goes wrong
      */
     public void goToLecture() throws IOException {
+        String name = enterNameTextField.getText();
+        int inputStatusUserName = InputValidator.validateLength(name, 50);
 
-        int inputStatusUserName = InputValidator.validateLength(
-                enterNameTextField.getText(), 50);
-        int inputStatusLectureId = InputValidator.validateLength(
-                enterLectureCodeTextField.getText(), 100);
         if (inputStatusUserName == -1) {
-            AlertController.alertWarning("No name entered",
-                    "Please enter your name!");
+            AlertController.alertWarning("No name entered", "Please enter your name!");
+            return;
+        }
+        if (!InputValidator.checkName(name)) {
+            AlertController.alertError("Wrong name", "Please enter your real name!");
             return;
         }
         if (inputStatusUserName == -2) {
@@ -83,21 +84,23 @@ public class JoinLectureSceneController implements Initializable {
                             + enterNameTextField.getText().length() + ")");
             return;
         }
+
+        String uuidString = enterLectureCodeTextField.getText();
+        int inputStatusLectureId = InputValidator.validateLength(uuidString, 100);
+
         if (inputStatusLectureId == -1) {
             AlertController.alertWarning("No lecture id entered",
                     "Please enter the lecture id!");
             return;
         }
-        if (inputStatusLectureId == -2) {
-            AlertController.alertWarning(
-                    "Too long lecture id", "Lecture id is too long to be valid!");
+        if (!InputValidator.validateUUID(uuidString)) {
+            AlertController.alertError("Invalid UUID", "Inserted lecture ID is invalid!");
             return;
         }
 
-        User.setUserName(enterNameTextField.getText());
+        User.setUserName(name);
 
-        Lecture.setCurrent(
-                LectureCommunication.joinLectureById(enterLectureCodeTextField.getText()));
+        Lecture.setCurrent(LectureCommunication.joinLectureById(uuidString));
         Lecture currentLecture = Lecture.getCurrent();
 
         if (currentLecture == null) {
@@ -160,10 +163,13 @@ public class JoinLectureSceneController implements Initializable {
             return;
         }
 
-        boolean result = LectureCommunication
-                .validateModerator(enterLectureCodeTextField.getText(),modkeyString);
+        if (!InputValidator.validateUUID(modkeyString)) {
+            AlertController.alertError("Invalid UUID", "Inserted moderator key is invalid!");
+            return;
+        }
 
-        if (!result) {
+        if (!LectureCommunication
+                .validateModerator(enterLectureCodeTextField.getText(), modkeyString)) {
             return;
         }
         Lecture.getCurrent().setModkey(UUID.fromString(modkeyString));
