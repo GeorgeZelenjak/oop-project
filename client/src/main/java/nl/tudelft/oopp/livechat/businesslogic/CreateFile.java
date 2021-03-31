@@ -107,13 +107,13 @@ public class CreateFile {
         try {
             PrintWriter writer = new PrintWriter(file);
 
-            List<Question> list = questions.stream().sorted((q1, q2) -> {
-                if (q1.isAnswered() && !q2.isAnswered())
+            List<Question> list = questions.stream().sorted((question1, question2) -> {
+                if (question1.isAnswered() && !question2.isAnswered())
                     return -1;
-                else if (!q1.isAnswered() && q2.isAnswered())
+                else if (!question1.isAnswered() && question2.isAnswered())
                         return 1;
                 else {
-                    return Integer.compare(q2.getVotes(), q1.getVotes());
+                    return Integer.compare(question2.getVotes(), question1.getVotes());
                 }
             }).collect(Collectors.toList());
 

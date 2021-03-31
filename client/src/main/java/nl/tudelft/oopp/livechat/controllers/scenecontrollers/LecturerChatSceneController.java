@@ -423,7 +423,17 @@ public class LecturerChatSceneController implements Initializable {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                CreateFile file = new CreateFile("exportedQuestions/");
+                CreateFile file = new CreateFile();
+                if (!file.setPath("exportedQuestions/")) {
+                    AlertController.alertError(
+                            "Invalid path name", "Invalid path name!");
+                    return;
+                }
+                if (!file.createFile()) {
+                    AlertController.alertError(
+                            "Error when creating file", "Error when creating file!");
+                    return;
+                }
 
                 List<Question> list = QuestionCommunication.fetchQuestions(true);
 
