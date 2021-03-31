@@ -21,6 +21,7 @@ public class CreateFileTest {
     private static final UUID lectureId = UUID.randomUUID();
     private static final UUID modkey = UUID.randomUUID();
     private static final String pathName = "questions/";
+    private static CreateFile createFile;
 
     /**
      * A helper method to delete files and directory after each test to make them independent.
@@ -40,15 +41,22 @@ public class CreateFileTest {
 
     @BeforeAll
     public static void setUp() {
+        createFile = new CreateFile();
         Lecture.setCurrent(new Lecture(lectureId, modkey, "Linux","root"));
     }
 
     @Test
-    public void constructorNoFileTest() throws IOException {
+    public void invalidPathExceptionTest() {
+        assertFalse(createFile.setPath("////asdfs"));
+    }
+
+    @Test
+    public void createFileNoFileTest() throws IOException {
         Path path = Path.of(pathName);
+        assertTrue(createFile.setPath(pathName));
+        assertTrue(createFile.createFile());
 
         //check if the directory exists
-        new CreateFile(pathName);
         assertTrue(Files.exists(path));
 
         //check if the file is present
@@ -59,12 +67,14 @@ public class CreateFileTest {
     }
 
     @Test
-    public void constructorNoFileNoLectureTest() throws IOException {
+    public void createFileNoFileNoLectureTest() throws IOException {
         Lecture.setCurrent(null);
         Path path = Path.of(pathName);
+        createFile.setPath(pathName);
+
+        assertTrue(createFile.createFile());
 
         //check if the directory exists
-        new CreateFile(pathName);
         assertTrue(Files.exists(path));
 
         //check if the file is present
@@ -73,12 +83,73 @@ public class CreateFileTest {
 
         cleanup();
         Lecture.setCurrent(new Lecture(lectureId, modkey, "Linux","root"));
+    }
+
+    @Test
+    public void createFileDirectoryExistsTest() throws IOException {
+        Path path = Path.of(pathName);
+        Files.createDirectory(path);
+        createFile.setPath(pathName);
+
+        assertTrue(createFile.createFile());
+
+        //check if the directory exists
+        assertTrue(Files.exists(path));
+
+        //check if the file is present
+        Stream<Path> entries = Files.list(path);
+        assertTrue(entries.findFirst().isPresent());
+
+        cleanup();
+    }
+
+    @Test
+    public void createFileNoParentDirectoryTest() throws IOException {
+        createFile.setPath("blob/" + pathName);
+        assertFalse(createFile.createFile());
+
+        cleanup();
+        createFile.setPath(pathName);
+    }
+
+    @Test
+    public void createFileFileExistsTest() throws IOException {
+        createFile.setPath(pathName);
+        createFile.createFile();
+        assertTrue(createFile.createFile());
+
+        cleanup();
+    }
+
+    @Test
+    public void createFileExceptionTest() throws IOException {
+        createFile.setPath("");
+        assertFalse(createFile.createFile());
+
+        cleanup();
+        createFile.setPath(pathName);
+    }
+
+    @Test
+    public void writeToFileNoFileTest() throws IOException {
+        createFile.setPath(pathName);
+        createFile.createFile();
+
+        cleanup();
+        assertFalse(createFile.writeToFile(new ArrayList<>()));
+    }
+
+    @Test
+    public void writeToFileNullFileTest() {
+        CreateFile cf = new CreateFile();
+        assertFalse(cf.writeToFile(new ArrayList<>()));
     }
 
     @Test
     public void testHeaderTest() throws IOException {
         Path path = Path.of(pathName);
-        CreateFile createFile = new CreateFile(pathName);
+        createFile.setPath(pathName);
+        createFile.createFile();
 
         createFile.writeToFile(new ArrayList<>());
 
@@ -112,7 +183,8 @@ public class CreateFileTest {
     @Test
     public void testNoAnswer() throws IOException {
         Path path = Path.of(pathName);
-        CreateFile createFile = new CreateFile(pathName);
+        createFile.setPath(pathName);
+        createFile.createFile();
 
         Question q = new Question(lectureId, "First", 42);
         List<Question> qs = List.of(q);
@@ -148,7 +220,8 @@ public class CreateFileTest {
     @Test
     public void testWithAnswer() throws IOException {
         final Path path = Path.of(pathName);
-        final CreateFile createFile = new CreateFile(pathName);
+        createFile.setPath(pathName);
+        createFile.createFile();
 
         Question q = new Question(lectureId, "Second", 69);
         final List<Question> qs = List.of(q);
@@ -189,8 +262,8 @@ public class CreateFileTest {
 
     @Test
     public void testMultipleAnswerOneAnsweredTest() throws IOException {
-        Path path = Path.of(pathName);
-        CreateFile createFile = new CreateFile(pathName);
+        createFile.setPath(pathName);
+        createFile.createFile();
 
         Question q1 = new Question(lectureId, "First", 42);
         //q1.setVotes(42);
@@ -199,7 +272,7 @@ public class CreateFileTest {
         List<Question> qs = List.of(q2, q1);
         createFile.writeToFile(qs);
 
-        Stream<Path> entries = Files.list(path);
+        Stream<Path> entries = Files.list(Path.of(pathName));
         Path p = entries.findFirst().orElse(null);
         if (p == null) {
             fail();
@@ -231,8 +304,8 @@ public class CreateFileTest {
 
     @Test
     public void testMultipleAnswerOneMoreVotesTest() throws IOException {
-        Path path = Path.of(pathName);
-        CreateFile createFile = new CreateFile(pathName);
+        createFile.setPath(pathName);
+        createFile.createFile();
 
         Question q1 = new Question(lectureId, "First", 42);
         //q1.setVotes(42);
@@ -241,6 +314,7 @@ public class CreateFileTest {
         List<Question> qs = List.of(q2, q1);
         createFile.writeToFile(qs);
 
+        Path path = Path.of(pathName);
         Stream<Path> entries = Files.list(path);
         Path p = entries.findFirst().orElse(null);
         if (p == null) {
