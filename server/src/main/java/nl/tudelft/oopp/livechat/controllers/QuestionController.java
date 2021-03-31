@@ -75,7 +75,7 @@ public class QuestionController {
                         count += 100;
                     }
                 }
-            }).orTimeout(2000, TimeUnit.MILLISECONDS);
+            });
         }
         deferredResult.onTimeout(() -> {
             future.cancel(true);
