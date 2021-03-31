@@ -169,7 +169,7 @@ public class LecturerChatSceneController implements Initializable {
 
         getQuestions(true);
         timelineFetch = new Timeline(new KeyFrame(
-                Duration.millis(1500),
+                Duration.millis(1000),
             ae -> {
                 setQuestions();
                 getVotesOnLectureSpeed();
