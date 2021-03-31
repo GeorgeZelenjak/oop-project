@@ -30,7 +30,7 @@ public class CreateFileTest {
      * A helper method to delete files and directory after each test to make them independent.
      * @throws IOException if something goes wrong
      */
-    private void cleanup() throws IOException {
+    private static void cleanup() throws IOException {
         File fin = new File(pathName);
         File[] files = fin.listFiles();
         if (files == null) {
@@ -46,7 +46,8 @@ public class CreateFileTest {
      * Setup for the tests.
      */
     @BeforeAll
-    public static void setUp() {
+    public static void setUp() throws IOException {
+        cleanup();
         createFile = new CreateFile();
         q1 = new Question(lectureId, "First", 42);
         q2 = new Question(lectureId, "Second", 69);
