@@ -12,12 +12,12 @@
             <Font name="Arial Bold" size="10.0" />
          </font>
       </Text>
-      <Text fx:id="questionOwner" layoutX="109.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="103.0">
+      <Text fx:id="questionOwner" layoutX="109.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="350.0">
          <font>
             <Font name="Arial" size="10.0" />
          </font>
       </Text>
-      <Text fx:id="dateStamp" layoutX="333.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="163.44822692871094">
+      <Text fx:id="dateStamp" layoutX="473.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="163.44822692871094">
          <font>
             <Font name="Arial Italic" size="10.0" />
          </font>
