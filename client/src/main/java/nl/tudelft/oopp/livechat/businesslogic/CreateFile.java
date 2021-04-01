@@ -76,7 +76,6 @@ public class CreateFile {
 
         fileName = this.sanitizeFilename(fileName);
 
-        System.out.println(fileName);
         this.file = new File(path.toString() + "/" + fileName + ".txt");
         return this.createFileHelper();
     }
