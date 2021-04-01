@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
@@ -173,7 +174,6 @@ public class CreateLectureController implements Initializable {
         Lecture.setCurrent(lecture);
         User.setUserName(enterYourNameTextField.getText());
         NavigationController.getCurrent().goToLecturerChatPage();
-        System.out.println(lecture);
 
         System.out.println(Lecture.getCurrent().getFrequency());
     }
