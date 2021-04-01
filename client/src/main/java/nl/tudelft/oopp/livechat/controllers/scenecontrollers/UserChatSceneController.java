@@ -85,6 +85,9 @@ public class UserChatSceneController implements Initializable {
 
     private Timeline timelineFetch;
 
+    private Thread fetchingThread;
+
+
     /**
      * Method that runs when the scene is first initialized.
      * @param location location of current scene
@@ -95,13 +98,27 @@ public class UserChatSceneController implements Initializable {
         userNameText.setText(User.getUserName());
         fetchVotes();
 
+        getQuestions(true);
         timelineFetch = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
-            fetchQuestions();
+            setQuestions();
             getVotesOnLectureSpeed();
             fetchVotes();
         }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
+
+        fetchingThread = new Thread(
+            () -> {
+                while (Lecture.getCurrent() != null) {
+                    List<Question> list = QuestionCommunication.fetchQuestions(false);
+                    if (list != null) {
+                        Question.setCurrentList(list);
+                    }
+                }
+            }
+        );
+        fetchingThread.setDaemon(true);
+        fetchingThread.start();
 
         //Tooltip
         goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
@@ -113,13 +130,7 @@ public class UserChatSceneController implements Initializable {
     /**
      * Fetch questions.
      */
-    public void fetchQuestions() {
-        List<Question> list = QuestionCommunication.fetchQuestions();
-        if (list == null) {
-            return;
-        }
-        Question.setCurrentList(list);
-
+    public void setQuestions() {
         questions = Question.getCurrentList();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
@@ -141,11 +152,21 @@ public class UserChatSceneController implements Initializable {
         questionPaneListView.getItems().addAll(questions);
     }
 
+    private void getQuestions(boolean firstTime) {
+        List<Question> list = QuestionCommunication.fetchQuestions(firstTime);
+        if (list == null) {
+            return;
+        }
+        if (list.size() == 0) {
+            System.out.println("There are no questions");
+        }
+        Question.setCurrentList(list);
+    }
+
     /**
      * Go back to main.
-     * @throws IOException the io exception
      */
-    public void goBackToMain() throws IOException {
+    public void goBackToMain() {
 
         //Navigating back to Main Page
 
@@ -155,7 +176,11 @@ public class UserChatSceneController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             timelineFetch.stop();
+            fetchingThread.stop();
+            fetchingThread = null;
+            Question.setCurrentList(new ArrayList<>());
             NavigationController.getCurrent().goToMainScene();
+            Lecture.setCurrent(null);
         }
     }
 
@@ -167,6 +192,13 @@ public class UserChatSceneController implements Initializable {
     }
 
     /**
+     * Go to settings.
+     */
+    public void goToSettings() {
+        NavigationController.getCurrent().goToSettings();
+    }
+
+    /**
      * Send a question to the server.
      * @return true if successful, false if not
      */
@@ -175,9 +207,11 @@ public class UserChatSceneController implements Initializable {
         if (text.length() == 0) {
             return false;
         }
-        if (text.length() > 2000) {
+        int length = text.length();
+        if (length > 500) {
             AlertController.alertWarning("Long question",
-                    "Your question is too long! (max 2000 characters)");
+                    "Your question is too long! (max " + 500
+                            + " characters,\n you entered: " + length + ")");
             return false;
         }
         if (!InputValidator.checkBadWords(text)) {
@@ -198,8 +232,7 @@ public class UserChatSceneController implements Initializable {
 
         questionInputTextArea.clear();
 
-        //TODO this will be removed when we implement a more efficient polling
-        fetchQuestions();
+        setQuestions();
         return (false);
     }
 

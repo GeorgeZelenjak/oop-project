@@ -26,6 +26,9 @@ public class LoggingFilter extends AbstractRequestLoggingFilter {
 
     @Override
     protected boolean shouldLog(HttpServletRequest request) {
+        if (request.getServletPath().contains("/api/poll/fetch")) {
+            return false;
+        }
         return shouldLog;
     }
 

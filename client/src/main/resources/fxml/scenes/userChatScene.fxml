@@ -37,20 +37,20 @@
       <TextArea fx:id="questionInputTextArea" layoutX="209.0" layoutY="659.0" prefHeight="94.0" prefWidth="694.0" promptText="Enter your question..." styleClass="mainSceneEnterRoomCode" stylesheets="@../../css/mainScene.css" wrapText="true" />
       <Button fx:id="submitButton" layoutX="911.0" layoutY="689.0" mnemonicParsing="false" onAction="#askQuestion" prefHeight="33.0" prefWidth="75.0" text="Submit" />
       <Label fx:id="sortByTextField" layoutX="217.0" layoutY="7.0" prefHeight="18.0" prefWidth="47.0" text="Sort by:" />
-      <CheckBox fx:id="sortByVotesCheckBox" alignment="TOP_LEFT" graphicTextGap="1.0" layoutX="269.0" layoutY="7.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="20.0" text="Votes">
+      <CheckBox fx:id="sortByVotesCheckBox" alignment="TOP_LEFT" graphicTextGap="1.0" layoutX="269.0" layoutY="7.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="20.0" text="Votes">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>
-      <CheckBox fx:id="sortByTimeCheckBox" graphicTextGap="1.0" layoutX="329.0" layoutY="6.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="20.0" text="Time">
+      <CheckBox fx:id="sortByTimeCheckBox" graphicTextGap="1.0" layoutX="329.0" layoutY="6.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="20.0" text="Time">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>
       <Label layoutX="661.0" layoutY="7.0" prefHeight="18.0" prefWidth="40.0" text="Show:" />
-      <CheckBox fx:id="answeredCheckBox" graphicTextGap="1.0" layoutX="701.0" layoutY="7.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" selected="true" text="Answered">
+      <CheckBox fx:id="answeredCheckBox" graphicTextGap="1.0" layoutX="701.0" layoutY="7.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="18.0" selected="true" text="Answered">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>
-      <CheckBox fx:id="unansweredCheckBox" layoutX="786.0" layoutY="7.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" selected="true" text="Unaswered">
+      <CheckBox fx:id="unansweredCheckBox" layoutX="786.0" layoutY="7.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="18.0" selected="true" text="Unaswered">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></CheckBox>

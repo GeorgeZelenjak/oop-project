@@ -19,7 +19,7 @@
             <Font name="Arial Bold" size="10.0" />
          </font>
       </Text>
-      <Text fx:id="questionOwner" layoutX="112.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="103.0">
+      <Text fx:id="questionOwner" layoutX="112.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="260.0">
          <font>
             <Font name="Arial" size="10.0" />
          </font>
@@ -28,7 +28,7 @@
          <font>
             <Font name="System Bold" size="15.0" />
          </font></Text>
-      <Text fx:id="dateStamp" layoutX="333.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="163.44822692871094">
+      <Text fx:id="dateStamp" layoutX="400.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="163.44822692871094">
          <font>
             <Font name="Arial Italic" size="10.0" />
          </font>

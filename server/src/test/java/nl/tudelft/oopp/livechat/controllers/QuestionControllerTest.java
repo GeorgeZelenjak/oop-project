@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
 /**
@@ -158,11 +160,19 @@ class QuestionControllerTest {
      * @return list of question entities associated with the lecture
      * @throws Exception if something goes wrong
      */
-    List<QuestionEntity> getQuestions(String lectureId) throws Exception {
+    List<QuestionEntity> getQuestions(String lectureId, boolean firstTime) throws Exception {
+        MvcResult mvcResult = this.mockMvc
+                .perform(get("/api/question/fetch?lid=" + lectureId + "&firstTime=" + firstTime))
+                .andExpect(MockMvcResultMatchers.request().asyncStarted())
+                .andReturn();
+
+        mvcResult.getRequest().getAsyncContext().setTimeout(10000);
+
         String listLectureString = this.mockMvc
-                .perform(get("/api/question/fetch?lid=" + lectureId))
+                .perform(asyncDispatch(mvcResult))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
+
         List<QuestionEntity> list = objectMapper.readValue(listLectureString,
                 new TypeReference<>(){});
         int pos = 0;
@@ -300,14 +310,21 @@ class QuestionControllerTest {
 
     @Test
     void fetchQuestionsTest() throws Exception {
-        List<QuestionEntity> listLecture1 = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2 = getQuestions(lectureEntity2.getUuid().toString());
+        user2.setAllowed(true);
+        userRepository.save(user2);
+
+        List<QuestionEntity> listLecture1 = getQuestions(lectureEntity1.getUuid().toString(), true);
+        List<QuestionEntity> listLecture2 = getQuestions(lectureEntity2.getUuid().toString(), true);
 
         assertEquals(1, listLecture1.size());
         assertEquals(1, listLecture2.size());
 
         assertEquals(q1.getId(), listLecture1.get(0).getId());
         assertEquals(q2.getId(), listLecture2.get(0).getId());
+
+
+        user2.setAllowed(false);
+        userRepository.save(user2);
     }
 
     @Test
@@ -321,7 +338,7 @@ class QuestionControllerTest {
         questionRepository.deleteById(q1.getId());
         questionRepository.deleteById(q2.getId());
 
-        List<QuestionEntity> listLecture = getQuestions(lectureEntity1.getUuid().toString());
+        List<QuestionEntity> listLecture = getQuestions(lectureEntity1.getUuid().toString(), false);
         assertEquals(0, listLecture.size());
     }
 
@@ -370,7 +387,8 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getErrorMessage();
         assertEquals("Wrong modkey, don't do this", result);
 
-        List<QuestionEntity> listLecture = getQuestions(lectureEntity1.getUuid().toString());
+        List<QuestionEntity> listLecture = questionRepository
+                .findAllByLectureId(lectureEntity1.getUuid());
 
         assertEquals(1, listLecture.size());
     }
@@ -442,7 +460,8 @@ class QuestionControllerTest {
         int result = editQuestion(json);
         assertEquals(0, result);
 
-        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid()
+                .toString(), false).get(0);
 
         assertNotNull(question1after);
         assertEquals(question1after.getText(), "this is the new text");
@@ -469,7 +488,8 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getErrorMessage();
         assertEquals("Wrong modkey, don't do this", result);
 
-        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        QuestionEntity question1after = questionRepository
+                .findAllByLectureId(lectureEntity1.getUuid()).get(0);
         assertNotNull(question1after);
         assertEquals(question1after.getText(),
                 "What would you do if a seagull entered in your house?");
@@ -495,7 +515,8 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getContentAsString();
         assertEquals("UUID is not in the correct format", result);
 
-        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        QuestionEntity question1after = questionRepository
+                .findAllByLectureId(lectureEntity1.getUuid()).get(0);
         assertNotNull(question1after);
         assertFalse(question1after.isEdited());
         assertEquals(question1after.getText(),
@@ -520,7 +541,8 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getContentAsString();
         assertEquals("Missing parameter", result);
 
-        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        QuestionEntity question1after = questionRepository
+                .findAllByLectureId(lectureEntity1.getUuid()).get(0);
         assertNotNull(question1after);
         assertFalse(question1after.isEdited());
         assertEquals(question1after.getText(),

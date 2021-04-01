@@ -24,7 +24,7 @@ public class UserEntity {
     /**
      * The Username.
      */
-    @Column(name = "userName")
+    @Column(name = "userName", length = 50)
     String userName;
 
     /**

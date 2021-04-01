@@ -95,7 +95,7 @@ public class DebugSceneController {
                 26, Lecture.getCurrent().getUuid(),"I am confused!!!!");
         QuestionCommunication.askQuestion(
                 42, Lecture.getCurrent().getUuid(),"We live in a soc");
-        List<Question> questions = QuestionCommunication.fetchQuestions();
+        List<Question> questions = QuestionCommunication.fetchQuestions(true);
         assert questions != null;
         assert questions.size() == 4;
         QuestionCommunication.upvoteQuestion(questions.get(2).getId(),67);

@@ -1,6 +1,7 @@
 package nl.tudelft.oopp.livechat.services;
 
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,8 @@ import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 
@@ -30,6 +33,10 @@ public class QuestionService {
 
     private final UserQuestionRepository userQuestionRepository;
 
+    private final TaskScheduler taskScheduler;
+
+    private Set<UUID> lectureChanged = new HashSet<>();
+
     /**
      * Constructor for the question service.
      * @param questionRepository question repository
@@ -39,11 +46,13 @@ public class QuestionService {
      */
     public QuestionService(QuestionRepository questionRepository,
                            LectureRepository lectureRepository, UserRepository userRepository,
-                           UserQuestionRepository userQuestionRepository) {
+                           UserQuestionRepository userQuestionRepository,
+                           TaskScheduler taskScheduler) {
         this.questionRepository = questionRepository;
         this.lectureRepository = lectureRepository;
         this.userRepository = userRepository;
         this.userQuestionRepository = userQuestionRepository;
+        this.taskScheduler = taskScheduler;
     }
 
     /**
@@ -109,6 +118,7 @@ public class QuestionService {
         q.setOwnerName(userAsked.getUserName());
         questionRepository.save(q);
         userRepository.save(userAsked);
+        addLectureChanged(q.getLectureId());
         return q.getId();
     }
 
@@ -141,6 +151,7 @@ public class QuestionService {
         }
         questionRepository.deleteById(id);
         userQuestionRepository.deleteAllByQuestionId(id);
+        addLectureChanged(q.getLectureId());
         return 0;
     }
 
@@ -162,6 +173,7 @@ public class QuestionService {
         if (lecture.getModkey().equals(modkey)) {
             questionRepository.deleteById(id);
             userQuestionRepository.deleteAllByQuestionId(id);
+            addLectureChanged(q.getLectureId());
             return 0;
         }
         throw new InvalidModkeyException();
@@ -200,6 +212,7 @@ public class QuestionService {
             q.setOwnerName(user.getUserName());
             q.setEdited(true);
             questionRepository.save(q);
+            addLectureChanged(q.getLectureId());
             return 0;
         }
         throw new InvalidModkeyException();
@@ -240,6 +253,7 @@ public class QuestionService {
             userQuestionRepository.deleteAllByQuestionIdAndUserId(id, userId);
         }
         questionRepository.save(q);
+        addLectureChanged(q.getLectureId());
         return 0;
     }
 
@@ -268,6 +282,7 @@ public class QuestionService {
             q.setAnswerTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
             q.setAnswerText(answerText);
             questionRepository.save(q);
+            addLectureChanged(q.getLectureId());
             return 0;
         }
         throw new InvalidModkeyException();
@@ -300,6 +315,7 @@ public class QuestionService {
                 q.setEditorId(uid);
             }
             questionRepository.save(q);
+            addLectureChanged(q.getLectureId());
             return 0;
         }
         throw new InvalidModkeyException();
@@ -324,5 +340,50 @@ public class QuestionService {
             throw new LectureNotFoundException();
         }
         return lecture;
+    }
+
+    /**
+     * Method that returns if a lecture was changed and schedule the removal
+     *      of the lecture from the set.
+     *
+     * @param lid the lecture id
+     * @return true if changed, false otherwise
+     */
+    public boolean wasLectureChanged(UUID lid) {
+        if (lectureChanged.contains(lid)) {
+            removeLectureChanged(lid);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean lectureExists(UUID lid) {
+        return lectureRepository.findLectureEntityByUuid(lid) != null;
+    }
+
+    /**
+     * Remove lecture changed.
+     *
+     * @param lid the lecture id
+     */
+    public void removeLectureChanged(UUID lid) {
+        taskScheduler.schedule(() -> {
+            lectureChanged.remove(lid);
+        }, new Date(OffsetDateTime.now().plusSeconds(1).toInstant().toEpochMilli()));
+    }
+
+    /**
+     * Add lecture changed.
+     *
+     * @param lid the lecture id
+     */
+    public void addLectureChanged(UUID lid) {
+        if (!lectureChanged.contains(lid)) {
+            lectureChanged.add(lid);
+            return;
+        }
+        taskScheduler.schedule(() -> {
+            lectureChanged.add(lid);
+        }, new Date(OffsetDateTime.now().plusSeconds(2).toInstant().toEpochMilli()));
     }
 }

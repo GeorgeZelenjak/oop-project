@@ -5,15 +5,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
-import nl.tudelft.oopp.livechat.exceptions.InvalidModkeyException;
-import nl.tudelft.oopp.livechat.exceptions.LectureException;
-import nl.tudelft.oopp.livechat.exceptions.QuestionException;
-import nl.tudelft.oopp.livechat.exceptions.UserException;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.services.QuestionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
 /**
  * Class for the Question controller.
@@ -43,9 +44,48 @@ public class QuestionController {
      * @return the list of questions associated with a particular lecture, or empty list
      */
     @GetMapping("/fetch")
-    public List<QuestionEntity> fetchQuestions(@RequestParam UUID lid) {
-        return questionService.getQuestionsByLectureId(lid);
+    public DeferredResult<List<QuestionEntity>> fetchQuestions(@RequestParam UUID lid,
+                                                               @RequestParam boolean firstTime)
+            throws LectureNotFoundException {
+        if (!questionService.lectureExists(lid)) {
+            throw new LectureNotFoundException();
+        }
+        long timeOutInMilliSec = 30 * 1000L;
+        DeferredResult<List<QuestionEntity>> deferredResult =
+                new DeferredResult<>(timeOutInMilliSec);
+        CompletableFuture<Void> future;
+        if (firstTime) {
+            deferredResult.setResult(questionService.getQuestionsByLectureId(lid));
+            return deferredResult;
+        } else {
+            future = CompletableFuture.runAsync(() -> {
+                int count = 0;
+                while (true) {
+                    if (questionService.wasLectureChanged(lid)) {
+                        deferredResult.setResult(questionService.getQuestionsByLectureId(lid));
+                        break;
+                    } else if (count >= timeOutInMilliSec) {
+                        break;
+                    } else {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        count += 100;
+                    }
+                }
+            });
+        }
+        deferredResult.onTimeout(() -> {
+            future.cancel(true);
+            deferredResult.setErrorResult(ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+                                .body("Request timeout occurred."));
+            }
+        );
+        return deferredResult;
     }
+
 
     /**
      * POST Endpoint to ask a question and store it in the database.

@@ -3,8 +3,10 @@ package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -126,6 +128,8 @@ public class LecturerChatSceneController implements Initializable {
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
 
+    private Thread fetchingThread;
+
     private static List<Integer> lectureSpeeds;
 
     private List<Question> questions;
@@ -144,16 +148,30 @@ public class LecturerChatSceneController implements Initializable {
         System.out.println(fasterVotesPercentLine.getEndX());
         slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
 
+        getQuestions(true);
         timelineFetch = new Timeline(new KeyFrame(
-                Duration.millis(1500),
+                Duration.millis(1000),
             ae -> {
-                fetchQuestions();
+                setQuestions();
                 getVotesOnLectureSpeed();
                 adjustLectureSpeedLines();
                 fetchPoll();
             }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
+        fetchingThread = new Thread(
+            () -> {
+                while (Lecture.getCurrent() != null) {
+                    List<Question> list = QuestionCommunication.fetchQuestions(false);
+                    if (list != null) {
+                        Question.setCurrentList(list);
+                        System.out.println("i'm alive");
+                    }
+                }
+            }
+                );
+        fetchingThread.setDaemon(true);
+        fetchingThread.start();
         setTooltips();
     }
 
@@ -179,18 +197,21 @@ public class LecturerChatSceneController implements Initializable {
         LectureSpeedCommunication.resetLectureSpeed(uuid,modkey);
     }
 
-    /**
-     * Fetch questions.
-     */
-    public void fetchQuestions() {
-        List<Question> list = QuestionCommunication.fetchQuestions();
+    private void getQuestions(boolean firstTime) {
+        List<Question> list = QuestionCommunication.fetchQuestions(firstTime);
         if (list == null) {
             return;
         }
         if (list.size() == 0) {
             System.out.println("There are no questions");
         }
-        Question.setCurrentList(list);
+    }
+
+    /**
+     * Fetch questions.
+     */
+    public void setQuestions() {
+        List<Question> list = Question.getCurrentList();
 
         questions = Question.getCurrentList();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
@@ -248,8 +269,12 @@ public class LecturerChatSceneController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             timelineFetch.stop();
+            fetchingThread.stop();
+            fetchingThread = null;
+            Question.setCurrentList(new ArrayList<>());
             NavigationController.getCurrent().goBack();
             NavigationController.getCurrent().goBack();
+            Lecture.setCurrent(null);
         }
     }
 
@@ -276,9 +301,13 @@ public class LecturerChatSceneController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             timelineFetch.stop();
+            fetchingThread.stop();
+            fetchingThread = null;
+            Question.setCurrentList(new ArrayList<>());
             LectureCommunication.closeLecture(Lecture.getCurrent().getUuid().toString(),
                     Lecture.getCurrent().getModkey().toString());
             NavigationController.getCurrent().goToMainScene();
+            Lecture.setCurrent(null);
         }
     }
 
@@ -311,9 +340,19 @@ public class LecturerChatSceneController implements Initializable {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                CreateFile file = new CreateFile("exportedQuestions/");
+                CreateFile file = new CreateFile();
+                if (!file.setPath("exportedQuestions/")) {
+                    AlertController.alertError(
+                            "Invalid path name", "Invalid path name!");
+                    return;
+                }
+                if (!file.createFile()) {
+                    AlertController.alertError(
+                            "Error when creating file", "Error when creating file!");
+                    return;
+                }
 
-                List<Question> list = QuestionCommunication.fetchQuestions();
+                List<Question> list = QuestionCommunication.fetchQuestions(true);
 
                 if (list == null || list.size() == 0)
                     AlertController.alertError(

@@ -34,12 +34,12 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <CheckBox fx:id="sortByVotesCheckBox" alignment="TOP_LEFT" graphicTextGap="1.0" layoutX="75.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" text="Votes">
+            <CheckBox fx:id="sortByVotesCheckBox" alignment="TOP_LEFT" graphicTextGap="1.0" layoutX="75.0" layoutY="14.0" mnemonicParsing="false" onAction="#setQuestions" text="Votes">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </CheckBox>
-            <CheckBox fx:id="sortByTimeCheckBox" graphicTextGap="1.0" layoutX="144.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" text="Time">
+            <CheckBox fx:id="sortByTimeCheckBox" graphicTextGap="1.0" layoutX="144.0" layoutY="14.0" mnemonicParsing="false" onAction="#setQuestions" text="Time">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -49,17 +49,17 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <CheckBox fx:id="answeredCheckBox" graphicTextGap="1.0" layoutX="300.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" selected="true" text="Answered">
+            <CheckBox fx:id="answeredCheckBox" graphicTextGap="1.0" layoutX="300.0" layoutY="14.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="18.0" selected="true" text="Answered">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </CheckBox>
-            <CheckBox fx:id="unansweredCheckBox" layoutX="393.0" layoutY="14.0" mnemonicParsing="false" onAction="#fetchQuestions" prefHeight="18.0" selected="true" text="Unanswered">
+            <CheckBox fx:id="unansweredCheckBox" layoutX="393.0" layoutY="14.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="18.0" selected="true" text="Unanswered">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </CheckBox>
-            <Pane fx:id="speedBackground" layoutX="537.0" layoutY="-12.0" prefHeight="79.0" prefWidth="246.0" styleClass="answeredTick">
+            <Pane fx:id="speedBackground" layoutX="536.0" layoutY="-10.0" prefHeight="48.0" prefWidth="246.0" styleClass="answeredTick">
                <children>
                   <Text fx:id="speedText" fill="#6c6c6c" layoutX="7.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture speed " textAlignment="CENTER" wrappingWidth="232.20000000000005">
                      <font>

@@ -38,7 +38,6 @@ import static org.mockserver.model.HttpRequest.request;
  * Class for Question communication tests.
  */
 public class QuestionCommunicationTest {
-
     public static MockServerClient mockServer;
 
     private static final Gson gson = new GsonBuilder()
@@ -97,14 +96,16 @@ public class QuestionCommunicationTest {
         String question2 = createJsonQuestion(qid2, "koiko");
         String questions = createQuestionsList(question1, question2);
         mockServer.when(request().withMethod("GET").withPath("/api/question/fetch")
-                .withQueryStringParameter("lid", lid.toString()))
+                .withQueryStringParameters(new Parameter("lid", lid.toString()),
+                        new Parameter("firstTime", "true")))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody(questions)
                         .withHeader("Content-Type","application/json"));
 
         //No questions found
         mockServer.when(request().withMethod("GET").withPath("/api/question/fetch")
-                .withQueryStringParameter("lid", modkey.toString()))
+                .withQueryStringParameters(new Parameter("lid", modkey.toString()),
+                        new Parameter("firstTime", "true")))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("[]")
                         .withHeader("Content-Type","application/json"));
@@ -112,7 +113,8 @@ public class QuestionCommunicationTest {
         //Invalid lecture id - send 400
         //  (treat "incorrectModkey" as invalid UUID to test BAD REQUEST)
         mockServer.when(request().withMethod("GET").withPath("/api/question/fetch")
-                .withQueryStringParameter("lid", incorrectModkey.toString()))
+                .withQueryStringParameters(new Parameter("lid", incorrectModkey.toString()),
+                        new Parameter("firstTime", "true")))
                 .respond(HttpResponse.response().withStatusCode(400));
     }
 
@@ -431,7 +433,7 @@ public class QuestionCommunicationTest {
     public void fetchQuestionsCurrentSuccessfulTest() {
         Lecture.setCurrent(new Lecture(lid,
                 modkey, "HCI", "Not Sebastian"));
-        List<Question> questions = QuestionCommunication.fetchQuestions();
+        List<Question> questions = QuestionCommunication.fetchQuestions(true);
 
         assertNotNull(questions);
         assertEquals(2, questions.size());
@@ -457,14 +459,14 @@ public class QuestionCommunicationTest {
     @Test
     public void fetchQuestionsCurrentNoLectureExistsTest() {
         Lecture.setCurrent(null);
-        assertNull(QuestionCommunication.fetchQuestions());
+        assertNull(QuestionCommunication.fetchQuestions(true));
     }
 
     @Test
     public void fetchQuestionsNotFoundTest() {
         Lecture.setCurrent(new Lecture(modkey,
                 modkey, "Welcome to OOPP", "Sander"));
-        assertEquals(new ArrayList<Question>(), QuestionCommunication.fetchQuestions());
+        assertEquals(new ArrayList<Question>(), QuestionCommunication.fetchQuestions(true));
     }
 
     @Test
@@ -472,7 +474,7 @@ public class QuestionCommunicationTest {
         mockServer.stop();
         Lecture.setCurrent(new Lecture(lid,
                 modkey, "empty", "placeholder"));
-        assertNull(QuestionCommunication.fetchQuestions());
+        assertNull(QuestionCommunication.fetchQuestions(true));
 
         startServer();
     }
@@ -481,7 +483,7 @@ public class QuestionCommunicationTest {
     public void fetchQuestionsInvalidLectureIdTest() {
         Lecture.setCurrent(new Lecture(incorrectModkey,
                 modkey, "*", "Anonymous"));
-        assertNull(QuestionCommunication.fetchQuestions());
+        assertNull(QuestionCommunication.fetchQuestions(true));
     }
 
     /**

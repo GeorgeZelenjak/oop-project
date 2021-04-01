@@ -2,18 +2,13 @@ package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
 import nl.tudelft.oopp.livechat.controllers.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
-
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -57,20 +52,22 @@ public class JoinLectureSceneController implements Initializable {
      * Toggles the visibility of the modKeyTextField.
      */
     public void onCheckBoxAction() {
-
         modkeyTextField.setVisible(!modkeyTextField.isVisible());
     }
 
     /**
      * Go to the lecture if successful.
-     * @throws IOException exception when something goes wrong
      */
-    public void goToLecture() throws IOException {
+    public void goToLecture() {
         String name = enterNameTextField.getText();
         int inputStatusUserName = InputValidator.validateLength(name, 50);
 
         if (inputStatusUserName == -1) {
             AlertController.alertWarning("No name entered", "Please enter your name!");
+            return;
+        }
+        if (!InputValidator.checkBadWords(name)) {
+            AlertController.alertError("Curse language", "Your name contains curse language!");
             return;
         }
         if (!InputValidator.checkName(name)) {
@@ -114,27 +111,22 @@ public class JoinLectureSceneController implements Initializable {
 
     /**
      * Go to lecture by pressing the button.
-     *
-     * @throws IOException the io exception
      */
-    public void goToLectureButton() throws IOException {
+    public void goToLectureButton() {
         goToLecture();
     }
 
     /**
      * Go to lecture by pressing enter.
-     *
-     * @throws IOException the io exception
      */
-    public void goToLectureEnter() throws IOException {
+    public void goToLectureEnter() {
         goToLecture();
     }
 
     /**
      * Join lecture as a student.
-     * @throws IOException exception if something goes wrong
      */
-    private void joinAsStudent() throws IOException {
+    private void joinAsStudent() {
         if (!Lecture.getCurrent().isOpen()) {
             AlertController.alertInformation(
                     "Lecture not open yet!","This lecture has not started yet!");
@@ -145,9 +137,8 @@ public class JoinLectureSceneController implements Initializable {
 
     /**
      * Join lecture as a moderator.
-     * @throws IOException exception if something goes wrong
      */
-    private void joinAsModerator() throws IOException {
+    private void joinAsModerator() {
         String modkeyString = modkeyTextField.getText();
 
         int inputStatusModKey = InputValidator.validateLength(
@@ -157,14 +148,8 @@ public class JoinLectureSceneController implements Initializable {
                     "No moderator key entered", "Please enter the moderator key!");
             return;
         }
-        if (inputStatusModKey == -2) {
-            AlertController.alertWarning(
-                    "Too long moderator key", "Moderator key is too long to be valid!");
-            return;
-        }
-
         if (!InputValidator.validateUUID(modkeyString)) {
-            AlertController.alertError("Invalid UUID", "Inserted moderator key is invalid!");
+            AlertController.alertWarning("Invalid UUID", "Inserted moderator key is invalid!");
             return;
         }
 
@@ -180,7 +165,6 @@ public class JoinLectureSceneController implements Initializable {
      * Navigate to the previous scene.
      */
     public void goBack() {
-
         NavigationController.getCurrent().goBack();
     }
 

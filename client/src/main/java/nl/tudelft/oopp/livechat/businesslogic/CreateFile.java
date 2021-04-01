@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CreateFile {
-
-    private final File file;
+    private File file;
     private final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    private String pathName;
+    private Path path;
+
     /**
      * Text HighLighters.
      */
@@ -31,47 +31,69 @@ public class CreateFile {
     /**
      * Creates a new CreateFile object.
      */
-    public CreateFile(String pathName) {
-        this.pathName = pathName;
+    public CreateFile() {
+    }
 
-        Path path = Path.of(pathName);
+    /**
+     * Sets path of the CreateFile object.
+     * @param pathName the string representing a path
+     * @return true iff successfully set, false otherwise
+     */
+    public boolean setPath(String pathName) {
+        try {
+            this.path = Path.of(pathName);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
+    /**
+     * Creates a file in the set path.
+     * @return true if successfully created, false otherwise
+     */
+    public boolean createFile() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
         String timeStamp = sdf.format(timestamp);
+
         try {
             if (Files.notExists(path)) {
-                System.out.println(ANSI_RED + "No such directory!" + ANSI_RESET);
+                System.out.println(ANSI_RED + "Directory not found" + ANSI_RESET);
                 Files.createDirectory(path);
+                System.out.println(ANSI_GREEN + "Directory created" + ANSI_RESET);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
         }
-        System.out.println(timeStamp);
 
         String fileName;
         if (Lecture.getCurrent() == null) {
-            fileName = "null"  + "_" + timeStamp;
+            fileName = "unnamed"  + "_" + timeStamp;
         } else {
             fileName = Lecture.getCurrent().getName() + "_" + timeStamp;
         }
 
         fileName = this.sanitizeFilename(fileName);
 
-        System.out.println(fileName);
         this.file = new File(path.toString() + "/" + fileName + ".txt");
-        this.createFile();
-
+        return this.createFileHelper();
     }
 
     /**
      * A helper method for creating file.
      */
-    private void createFile() {
+    private boolean createFileHelper() {
         try {
-            file.createNewFile();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            if (file.createNewFile()) {
+                System.out.println(ANSI_GREEN + "File created successfully" + ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED + "File already exists!" + ANSI_RESET);
+            }
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
         }
     }
 
@@ -80,17 +102,17 @@ public class CreateFile {
      * Main method of the class that writes all questions to file.
      * @param questions list of questions
      */
-    public void writeToFile(List<Question> questions) {
+    public boolean writeToFile(List<Question> questions) {
         try {
             PrintWriter writer = new PrintWriter(file);
 
-            List<Question> list = questions.stream().sorted((q1, q2) -> {
-                if (q1.isAnswered() && !q2.isAnswered())
+            List<Question> list = questions.stream().sorted((question1, question2) -> {
+                if (question1.isAnswered() && !question2.isAnswered())
                     return -1;
-                else if (!q1.isAnswered() && q2.isAnswered())
+                else if (!question1.isAnswered() && question2.isAnswered())
                         return 1;
                 else {
-                    return Integer.compare(q2.getVotes(), q1.getVotes());
+                    return Integer.compare(question2.getVotes(), question1.getVotes());
                 }
             }).collect(Collectors.toList());
 
@@ -106,9 +128,11 @@ public class CreateFile {
             }
 
             writer.close();
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | NullPointerException e) {
             System.out.println(ANSI_RED + "File not found!" + ANSI_RESET);
+            return false;
         }
+        return true;
     }
 
     /**

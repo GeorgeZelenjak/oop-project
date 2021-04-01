@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,8 @@ public class UserService {
 
     private final TaskScheduler taskScheduler;
 
+    private final QuestionService questionService;
+
     /**
      * Creates new UserService object.
      * @param userRepository the user repository
@@ -42,12 +45,14 @@ public class UserService {
      */
     public UserService(UserRepository userRepository, LectureRepository lectureRepository,
                        QuestionRepository questionRepository,
-                       UserQuestionRepository userQuestionRepository, TaskScheduler taskScheduler) {
+                       UserQuestionRepository userQuestionRepository,
+                       TaskScheduler taskScheduler, QuestionService questionService) {
         this.userRepository = userRepository;
         this.lectureRepository = lectureRepository;
         this.questionRepository = questionRepository;
         this.userQuestionRepository = userQuestionRepository;
         this.taskScheduler = taskScheduler;
+        this.questionService = questionService;
     }
 
     /**
@@ -224,13 +229,14 @@ public class UserService {
      * @param uid the id of the banned user
      */
     private void editRepositoryAfterBanning(long qid, long uid) {
-        if (questionRepository.findById(qid).isPresent()) {
+        Optional<QuestionEntity> question = questionRepository.findById(qid);
+        if (question.isPresent()) {
+            questionService.addLectureChanged(question.get().getLectureId());
             questionRepository.deleteById(qid);
         }
         if (!userQuestionRepository.getAllByQuestionId(qid).isEmpty()) {
             userQuestionRepository.deleteAllByQuestionId(qid);
         }
-
         List<QuestionEntity> qs = questionRepository.findAllByOwnerId(uid);
         qs.forEach(q -> q.setOwnerName(q.getOwnerName() + " (banned)"));
         questionRepository.saveAll(qs);

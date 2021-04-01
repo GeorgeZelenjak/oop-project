@@ -13,12 +13,16 @@ import org.mockito.stubbing.Answer;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 
 public class UserTest {
-
+    private static final Set<Long> askedIds =
+            new HashSet<>(Arrays.asList(123456789L, 987654321L));
+    private static final Set<Long> upvotedIds =
+            new HashSet<>(Arrays.asList(123423123L, 4324553242L));
     /**
      * Setup for the tests.
      */
@@ -28,10 +32,8 @@ public class UserTest {
         User.setUid();
         User.setUserName("Bobby from the lobby");
 
-        Set<Long> questionIds = new HashSet<>();
-        questionIds.add(123456789L);
-        questionIds.add(987654321L);
-        User.setAskedQuestionsIds(questionIds);
+        User.setAskedQuestionsIds(askedIds);
+        User.setUpvotedQuestionIds(upvotedIds);
     }
 
     @Test
@@ -76,8 +78,24 @@ public class UserTest {
     }
 
     @Test
+    public void getUpvotedQuestionsIdsTest() {
+        assertEquals(upvotedIds, User.getUpvotedQuestionIds());
+    }
+
+    @Test
+    public void setUpvotedQuestionsIdsTest() {
+        Set<Long> ids = new HashSet<>();
+        ids.add(42L);
+        ids.add(69L);
+        User.setAskedQuestionsIds(ids);
+        assertEquals(ids, User.getAskedQuestionIds());
+
+        User.setUpvotedQuestionIds(upvotedIds);
+    }
+
+    @Test
     public void getAskedQuestionsIdsTest() {
-        assertNotNull(User.getAskedQuestionIds());
+        assertEquals(askedIds, User.getAskedQuestionIds());
     }
 
     @Test
@@ -86,8 +104,9 @@ public class UserTest {
         ids.add(42L);
         ids.add(69L);
         User.setAskedQuestionsIds(ids);
-
         assertEquals(ids, User.getAskedQuestionIds());
+
+        User.setAskedQuestionsIds(askedIds);
     }
 
     @Test
