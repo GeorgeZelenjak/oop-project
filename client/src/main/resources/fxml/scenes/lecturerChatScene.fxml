@@ -59,7 +59,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </CheckBox>
-            <Pane fx:id="speedBackground" layoutX="537.0" layoutY="-12.0" prefHeight="79.0" prefWidth="246.0" styleClass="answeredTick">
+            <Pane fx:id="speedBackground" layoutX="536.0" layoutY="-10.0" prefHeight="48.0" prefWidth="246.0" styleClass="answeredTick">
                <children>
                   <Text fx:id="speedText" fill="#6c6c6c" layoutX="7.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture speed " textAlignment="CENTER" wrappingWidth="232.20000000000005">
                      <font>
