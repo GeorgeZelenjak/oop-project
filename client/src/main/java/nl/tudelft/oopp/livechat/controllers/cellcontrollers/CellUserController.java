@@ -140,7 +140,6 @@ public class CellUserController implements Initializable {
             } else {
                 User.getUpvotedQuestionIds().add(question.getId());
             }
-            System.out.println(question.getVotes());
         });
     }
 

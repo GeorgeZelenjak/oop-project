@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
@@ -48,9 +49,6 @@ public class CreateLectureController implements Initializable {
     private Button goToHelpButton;
 
     @FXML
-    private Button goToSettingsButton;
-
-    @FXML
     private Button goBackButton;
 
     @FXML
@@ -62,7 +60,6 @@ public class CreateLectureController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         goToHelpButton.setTooltip(new Tooltip("Open Help & Documentation Page"));
-        goToSettingsButton.setTooltip(new Tooltip("Open Settings Page"));
 
         goBackButton.setTooltip(new Tooltip("Go back to previous page"));
         createLectureButton.setTooltip(new Tooltip("Creates a new lecture and "
@@ -177,7 +174,6 @@ public class CreateLectureController implements Initializable {
         Lecture.setCurrent(lecture);
         User.setUserName(enterYourNameTextField.getText());
         NavigationController.getCurrent().goToLecturerChatPage();
-        System.out.println(lecture);
 
         System.out.println(Lecture.getCurrent().getFrequency());
     }
@@ -208,15 +204,6 @@ public class CreateLectureController implements Initializable {
     }
 
     /**
-     * Go to settings Scene.
-     *
-     * @throws IOException the io exception
-     */
-    public void goToSettings() throws IOException {
-        NavigationController.getCurrent().goToSettings();
-    }
-
-    /**
      * Go to user manual Scene.
      *
      * @throws IOException the io exception
@@ -232,6 +219,7 @@ public class CreateLectureController implements Initializable {
         lectureScheduleMinuteTextField.setDisable(!lectureSchedulingCheckBox.isSelected());
         lectureScheduleMinuteTextField.setVisible(lectureSchedulingCheckBox.isSelected());
         lectureScheduleHourTextField.setDisable(!lectureSchedulingCheckBox.isSelected());
+        dotsText.setVisible(lectureSchedulingCheckBox.isSelected());
         lectureScheduleHourTextField.setVisible(lectureSchedulingCheckBox.isSelected());
         lectureSchedulingDateDatePicker.setDisable(!lectureSchedulingCheckBox.isSelected());
         lectureSchedulingDateDatePicker.setVisible(lectureSchedulingCheckBox.isSelected());

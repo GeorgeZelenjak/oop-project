@@ -1,0 +1,66 @@
+.list-view > * {
+    -fx-background-color: -fx-white;
+}
+
+/*.list-view > .virtual-flow > .corner {*/
+/*    -fx-background-color: -fx-white;*/
+/*}*/
+.list-view {
+    -fx-background-color: -fx-white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.list-view:focused {
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+}
+
+
+
+.list-cell {
+    -fx-padding: 0px 1px 1px 0px;
+    -fx-background-color: -fx-white;
+}
+.list-cell:odd,
+.list-cell:even {
+    -fx-background-color: -fx-white;
+}
+.list-cell:focused, .list-cell:selected, .list-cell:pressed, .list-cell:filled:selected{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+}
+
+.list-view .scroll-bar:vertical {
+    -fx-scale-x: 0;
+    -fx-padding: -10;
+    -fx-opacity: 0;
+}
+.deleteButton {
+    -fx-graphic: none;
+    -fx-background-image: url(/images/trash.png);
+    -fx-background-size: 20px 20px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+}
+
+.addOption {
+    -fx-background-color: -fx-white;
+    -fx-border-color: -fx-blue;
+    -fx-border-radius: 6px;
+    -fx-text-fill: -fx-blue;
+}
+.addOption:hover {
+    -fx-background-color: -fx-blue;
+    -fx-text-fill: -fx-white;
+}
+
+.isThisAPoll:hover {
+    -fx-font-size: 14px;
+}
+.isThisAPoll:selected {
+    -fx-font-size: 14px;
+}

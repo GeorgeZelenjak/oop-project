@@ -161,7 +161,6 @@ public class CellLecturerController implements Initializable {
             isAnsweredButton.setOnAction((ActionEvent event) -> {
                 QuestionCommunication.markedAsAnswered(question.getId(),
                         Lecture.getCurrent().getModkey(), null);
-                System.out.println(question.getVotes());
             });
         }
     }

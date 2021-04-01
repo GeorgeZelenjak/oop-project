@@ -28,7 +28,7 @@ import nl.tudelft.oopp.livechat.uielements.QuestionCellLecturer;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
@@ -60,9 +60,6 @@ public class LecturerChatSceneController implements Initializable {
     private CheckBox unansweredCheckBox;
 
     @FXML
-    private Button participants;
-
-    @FXML
     private Button copyKey;
 
     @FXML
@@ -75,34 +72,13 @@ public class LecturerChatSceneController implements Initializable {
     private Label showLabel;
 
     @FXML
-    private Pane pollingBackground;
-
-    @FXML
     private Pane speedBackground;
-
-    @FXML
-    private Text pollingText;
 
     @FXML
     private Text speedText;
 
     @FXML
-    private Button pollingButton;
-
-    @FXML
     private Button speedButton;
-
-    @FXML
-    private Button lectureLog;
-
-    @FXML
-    private Button viewAnswered;
-
-    @FXML
-    private Button reopenPolling;
-
-    @FXML
-    private Button goToSettingsButton;
 
     @FXML
     private Button createPolling;
@@ -110,9 +86,6 @@ public class LecturerChatSceneController implements Initializable {
 
     @FXML
     private Button popupVoteResults;
-
-    @FXML
-    private Label sortByText;
 
     @FXML
     private CheckBox sortByTimeCheckBox;
@@ -145,6 +118,12 @@ public class LecturerChatSceneController implements Initializable {
     private Label sortByLabel;
 
     @FXML
+    private Pane hideBottomPane;
+
+    @FXML
+    private Pane hideTopPane;
+
+    @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
 
     private static List<Integer> lectureSpeeds;
@@ -161,6 +140,8 @@ public class LecturerChatSceneController implements Initializable {
     public void initialize(URL location, ResourceBundle resourceBundle) {
         lectureNameText.setText(Lecture.getCurrent().getName());
         userNameText.setText(User.getUserName());
+
+        System.out.println(fasterVotesPercentLine.getEndX());
         slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
 
         timelineFetch = new Timeline(new KeyFrame(
@@ -282,14 +263,6 @@ public class LecturerChatSceneController implements Initializable {
         NavigationController.getCurrent().goToUserManual();
     }
 
-    /**
-     * Go to settings.
-     *
-     * @throws IOException if something happens
-     */
-    public void goToSettings() throws IOException {
-        NavigationController.getCurrent().goToSettings();
-    }
 
     /**
      * Close lecture.
@@ -313,68 +286,12 @@ public class LecturerChatSceneController implements Initializable {
      * Lecturer mode.
      */
     public void lecturerMode() {
-        this.lectureLog.setDisable(!this.lectureLog.isDisabled());
-        this.lectureLog.setVisible(!this.lectureLog.isVisible());
 
-        this.exportQA.setDisable(!this.exportQA.isDisabled());
-        this.exportQA.setVisible(!this.exportQA.isVisible());
+        this.hideBottomPane.setDisable(!this.hideBottomPane.isDisabled());
+        this.hideBottomPane.setVisible(!this.hideBottomPane.isVisible());
 
-        this.sortByLabel.setDisable(!this.sortByLabel.isDisabled());
-        this.sortByLabel.setVisible(!this.sortByLabel.isVisible());
-
-        this.goToUserManualButton.setDisable(!this.goToUserManualButton.isDisabled());
-        this.goToUserManualButton.setVisible(!this.goToUserManualButton.isVisible());
-
-        this.sortByVotesCheckBox.setDisable(!this.sortByVotesCheckBox.isDisabled());
-        this.sortByVotesCheckBox.setVisible(!this.sortByVotesCheckBox.isVisible());
-
-        this.sortByTimeCheckBox.setDisable(!this.sortByTimeCheckBox.isDisabled());
-        this.sortByTimeCheckBox.setVisible(!this.sortByTimeCheckBox.isVisible());
-
-        this.unansweredCheckBox.setDisable((!this.unansweredCheckBox.isDisabled()));
-        this.unansweredCheckBox.setVisible(!this.unansweredCheckBox.isVisible());
-
-        this.goToSettingsButton.setDisable(!this.goToSettingsButton.isDisabled());
-        this.goToSettingsButton.setVisible(!this.goToSettingsButton.isVisible());
-
-        this.pollingBackground.setDisable(!this.pollingBackground.isDisabled());
-        this.pollingBackground.setVisible(!this.pollingBackground.isVisible());
-
-        this.answeredCheckBox.setDisable(!this.answeredCheckBox.isDisabled());
-        this.answeredCheckBox.setVisible(!this.answeredCheckBox.isVisible());
-
-        this.speedBackground.setDisable(!this.speedBackground.isDisabled());
-        this.speedBackground.setVisible(!this.speedBackground.isVisible());
-
-        this.reopenPolling.setDisable(!this.reopenPolling.isDisabled());
-        this.reopenPolling.setVisible(!this.reopenPolling.isVisible());
-
-        this.createPolling.setDisable(!this.createPolling.isDisabled());
-        this.createPolling.setVisible(!this.createPolling.isVisible());
-
-        this.participants.setDisable(!this.participants.isDisabled());
-        this.participants.setVisible(!this.participants.isVisible());
-
-        this.viewAnswered.setDisable(!this.viewAnswered.isDisabled());
-        this.viewAnswered.setVisible(!this.viewAnswered.isVisible());
-
-        this.pollingText.setDisable(!this.pollingText.isDisabled());
-        this.pollingText.setVisible(!this.pollingText.isVisible());
-
-        this.popupVoteResults.setDisable(!this.popupVoteResults.isDisabled());
-
-        this.lectureLog.setDisable(!this.lectureLog.isDisabled());
-        this.lectureLog.setVisible(!this.lectureLog.isVisible());
-        this.popupVoteResults.setVisible(!this.popupVoteResults.isVisible());
-
-        this.sortByText.setDisable(!this.sortByText.isDisabled());
-        this.sortByText.setVisible(!this.sortByText.isVisible());
-
-        this.speedText.setDisable(!this.speedText.isDisabled());
-        this.speedText.setVisible(!this.speedText.isVisible());
-
-        this.showLabel.setDisable(!this.showLabel.isDisabled());
-        this.showLabel.setVisible(!this.showLabel.isVisible());
+        this.hideTopPane.setDisable(!this.hideTopPane.isDisabled());
+        this.hideTopPane.setVisible(!this.hideTopPane.isVisible());
 
         this.copyKey.setDisable(!this.copyKey.isDisabled());
         this.copyKey.setVisible(!this.copyKey.isVisible());
@@ -438,17 +355,11 @@ public class LecturerChatSceneController implements Initializable {
         copyId.setTooltip(new Tooltip("Copy the lecture's ID to clipboard"));
         copyKey.setTooltip(new Tooltip("Copy the moderator key to clipboard"));
 
-        participants.setTooltip(new Tooltip("See the lecture participants"));
         goToLectureModeButton.setTooltip(new Tooltip("Enable/Disable lecturer mode"));
 
-        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
         goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
 
-        pollingButton.setTooltip(new Tooltip("Show poll's results to lecture participants"));
         speedButton.setTooltip(new Tooltip("Open/Reopen voting on lecture speed"));
-
-        lectureLog.setTooltip(new Tooltip("See an overview of the lecture's activity"));
-        reopenPolling.setTooltip(new Tooltip("Reopen a previous polling question"));
 
         exportQA.setTooltip(new Tooltip("Export this lecture's content"));
         closeLectureButton.setTooltip(new Tooltip("Close this lecture"));
