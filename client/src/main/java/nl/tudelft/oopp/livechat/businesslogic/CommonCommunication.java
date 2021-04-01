@@ -35,7 +35,6 @@ public abstract class CommonCommunication {
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
         return response;

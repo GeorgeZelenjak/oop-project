@@ -38,7 +38,6 @@ import static org.mockserver.model.HttpRequest.request;
  * Class for Question communication tests.
  */
 public class QuestionCommunicationTest {
-
     public static MockServerClient mockServer;
 
     private static final Gson gson = new GsonBuilder()
