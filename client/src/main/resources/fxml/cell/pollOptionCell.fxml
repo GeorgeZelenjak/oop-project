@@ -4,11 +4,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="optionCellAnchorPane" maxHeight="33.0" minHeight="33.0" prefHeight="33.0" prefWidth="502.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="optionCellAnchorPane" maxHeight="33.0" minHeight="33.0" prefHeight="33.0" prefWidth="514.0" stylesheets="@../../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TextField fx:id="optionTextField" layoutX="26.0" layoutY="4.0" prefHeight="25.0" prefWidth="436.0" promptText="Enter a possible answer" />
-      <CheckBox fx:id="pollOptionCellIsCorrectCheckBox" layoutX="6.0" layoutY="8.0" mnemonicParsing="false" />
-      <Button fx:id="deleteButton" layoutX="471.0" layoutY="5.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="16.0" text="🗑">
+      <TextField fx:id="optionTextField" layoutX="6.0" layoutY="4.0" prefHeight="26.0" prefWidth="450.0" promptText="Enter a possible answer" />
+      <CheckBox fx:id="pollOptionCellIsCorrectCheckBox" layoutX="464.0" layoutY="8.0" mnemonicParsing="false" />
+      <Button fx:id="deleteButton" layoutX="488.0" layoutY="3.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" styleClass="deleteButton">
          <font>
             <Font size="11.0" />
          </font></Button>

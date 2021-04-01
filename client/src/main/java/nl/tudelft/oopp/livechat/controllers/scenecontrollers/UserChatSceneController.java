@@ -67,12 +67,6 @@ public class UserChatSceneController implements Initializable {
     private CheckBox voteOnLectureSpeedSlow;
 
     @FXML
-    private Button participants;
-
-    @FXML
-    private Button goToSettingsButton;
-
-    @FXML
     private Button goToUserManualButton;
 
     @FXML
@@ -127,9 +121,6 @@ public class UserChatSceneController implements Initializable {
         fetchingThread.start();
 
         //Tooltip
-        participants.setTooltip(new Tooltip("See the lecture participants"));
-        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
-
         goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
         gobBackButton.setTooltip(new Tooltip("Go back to the main page"));
 
@@ -156,7 +147,6 @@ public class UserChatSceneController implements Initializable {
                         return new QuestionCellUser();
                     }
                 });
-        //System.out.println(list.size());
 
         questionPaneListView.getItems().clear();
         questionPaneListView.getItems().addAll(questions);
@@ -232,7 +222,6 @@ public class UserChatSceneController implements Initializable {
         }
         boolean res = QuestionCommunication.askQuestion(
                 User.getUid(), Lecture.getCurrent().getUuid(), text);
-        //inputQuestion.setText("");
 
         if (!res) {
             System.out.println("not asked");
@@ -240,8 +229,6 @@ public class UserChatSceneController implements Initializable {
 
         Question question = new Question(
                 Lecture.getCurrent().getUuid(), questionInputTextArea.getText(), 0);
-
-        //questionPaneListView.getItems().add(question.getText());
 
         questionInputTextArea.clear();
 

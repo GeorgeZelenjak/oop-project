@@ -159,7 +159,6 @@ public class UserService {
             throws UserException, LectureException, QuestionException {
         QuestionEntity incriminated = questionRepository.findById(qid).orElse(null);
         if (incriminated == null) {
-            System.out.println("No question");
             throw new QuestionNotFoundException();
         }
         UserEntity user = userRepository.getUserEntityByUid(incriminated.getOwnerId());

@@ -26,8 +26,8 @@ public class MainSceneController implements Initializable {
     @FXML
     private Button goToExportQAFromLectureButton;
 
-    @FXML
-    private Button goToSettingsButton;
+    //    @FXML
+    //    private Button goToSettingsButton;
 
     @FXML
     private Button goToHelpButton;
@@ -41,7 +41,7 @@ public class MainSceneController implements Initializable {
         goToJoinLectureButton.setTooltip(new Tooltip("Go to Join Lecture Page"));
 
         goToExportQAFromLectureButton.setTooltip(new Tooltip("Export Questions and Answers"));
-        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+        //        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
 
         goToHelpButton.setTooltip(new Tooltip("Open Help & Documentation page"));
         goToRestoreLectureButton.setTooltip(new Tooltip("Open the Restore Lecture Page"));
@@ -75,14 +75,14 @@ public class MainSceneController implements Initializable {
         NavigationController.getCurrent().goToUserManual();
     }
 
-    /**
-     * Go to settings.
-     *
-     * @throws IOException the io exception
-     */
-    public void goToSettings() throws IOException {
-        NavigationController.getCurrent().goToSettings();
-    }
+    //    /**
+    //     * Go to settings.
+    //     *
+    //     * @throws IOException the io exception
+    //     */
+    //    public void goToSettings() throws IOException {
+    //        NavigationController.getCurrent().goToSettings();
+    //    }
 
     /**
      * Go to debug scene.

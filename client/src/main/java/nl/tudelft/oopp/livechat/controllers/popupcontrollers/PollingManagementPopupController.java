@@ -6,9 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
@@ -35,6 +33,18 @@ public class PollingManagementPopupController implements Initializable {
 
     @FXML
     private Text isOptionCorrectText;
+
+    @FXML
+    private Button newPoll;
+
+    @FXML
+    private Button resetVotes;
+
+    @FXML
+    private Button endVoting;
+
+    @FXML
+    private CheckBox isPollCheckbox;
 
     public static List<PollOption> getInEditingOptions() {
         return inEditingOptions;
@@ -112,6 +122,9 @@ public class PollingManagementPopupController implements Initializable {
      * Add poll option cell to inEditingOptions.
      */
     public void addPollOptionCell() {
+        if (!newPoll.isVisible())newPoll.setVisible(true);
+        if (!isPollCheckbox.isSelected() && !isOptionCorrectText.isVisible())
+            isOptionCorrectText.setVisible(true);
         pollOptionsListView.getItems().add(new PollOption());
         inEditingOptions = pollOptionsListView.getItems();
     }
@@ -129,6 +142,8 @@ public class PollingManagementPopupController implements Initializable {
             PollCommunication.toggle(inEditingPoll.getId(), modkey);
             inEditingPoll.setOpen(true);
         }
+        resetVotes.setVisible(true);
+        endVoting.setVisible(true);
     }
 
     /**
@@ -139,6 +154,9 @@ public class PollingManagementPopupController implements Initializable {
             PollCommunication.toggle(fetchedPoll.getId(), modkey);
             fetchedPoll.setOpen(false);
         }
+        inEditingPoll.setOpen(false);
+        resetVotes.setVisible(false);
+        endVoting.setVisible(false);
     }
 
     /**
@@ -160,6 +178,10 @@ public class PollingManagementPopupController implements Initializable {
 
         inEditingPoll = new Poll();
         inEditingOptions = new ArrayList<PollOption>();
+        newPoll.setVisible(false);
+        isPollCheckbox.setSelected(false);
+        isOptionCorrectText.setVisible(false);
+
         setAsInEditing();
     }
 
@@ -169,9 +191,26 @@ public class PollingManagementPopupController implements Initializable {
     private void setAsInEditing() {
         //Sets question text
         questionTextTextArea.setText(inEditingPoll.getQuestionText());
-
         //Sets options
         setListViewAsInEditing();
+
+        if (inEditingOptions != null && inEditingOptions.size() != 0) {
+            newPoll.setVisible(true);
+        } else newPoll.setVisible(false);
+
+        if (isPollCheckbox.isSelected()) isOptionCorrectText.setVisible(false);
+        if (!isPollCheckbox.isSelected()
+                && inEditingOptions != null && inEditingOptions.size() != 0) {
+            isOptionCorrectText.setVisible(true);
+        } else isOptionCorrectText.setVisible(false);
+
+        if (inEditingPoll.isOpen()) {
+            resetVotes.setVisible(true);
+            endVoting.setVisible(true);
+        } else {
+            resetVotes.setVisible(false);
+            endVoting.setVisible(false);
+        }
     }
 
     private void setListViewAsInEditing() {
@@ -199,13 +238,13 @@ public class PollingManagementPopupController implements Initializable {
     private void publishPoll() {
 
         if (!checkIfNotEmpty()) {
-            AlertController.alertWarning("Emty fields", "You have empty fields");
+            AlertController.alertWarning("Empty fields", "You have empty fields");
             return;
         }
         //Sends request for poll
         Poll sentPoll = PollCommunication.createPoll(
                 lectureId, modkey, questionTextTextArea.getText());
-
+        AlertController.alertConfirmation("Poll creation", "Poll was published");
         if (sentPoll != null) {
             List<PollOption> sentPollOptions = new ArrayList<PollOption>();
 
@@ -222,6 +261,9 @@ public class PollingManagementPopupController implements Initializable {
             inEditingOptions = sentPollOptions;
             inEditingPoll = sentPoll;
             forceUpdateFetch();
+            //
+            resetVotes.setVisible(true);
+            endVoting.setVisible(true);
         }
     }
 
@@ -241,7 +283,12 @@ public class PollingManagementPopupController implements Initializable {
      * Toggle poll.
      */
     public void togglePoll() {
-        isOptionCorrectText.setVisible(allCorrect);
+        //isOptionCorrectText.setVisible(allCorrect);
+        if (isPollCheckbox.isSelected()) isOptionCorrectText.setVisible(false);
+        if (!isPollCheckbox.isSelected()
+                && inEditingOptions != null && inEditingOptions.size() != 0) {
+            isOptionCorrectText.setVisible(true);
+        }
         allCorrect = !allCorrect;
         if (allCorrect) {
             for (PollOption pollOption: inEditingOptions) {

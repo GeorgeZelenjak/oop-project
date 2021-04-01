@@ -128,8 +128,6 @@ public class CreateFile {
             }
 
             writer.close();
-            System.out.println(ANSI_GREEN
-                    + "Questions written successfully to file" + ANSI_RESET);
         } catch (FileNotFoundException | NullPointerException e) {
             System.out.println(ANSI_RED + "File not found!" + ANSI_RESET);
             return false;

@@ -101,7 +101,7 @@ public class JoinLectureSceneController implements Initializable {
         Lecture currentLecture = Lecture.getCurrent();
 
         if (currentLecture == null) {
-            System.out.println("no lecture joined");
+            AlertController.alertError("Lecture joining error.", "No lecture joined!");
         } else if (modkeyCheckBox.isSelected()) {
             joinAsModerator();
         } else {
@@ -166,7 +166,6 @@ public class JoinLectureSceneController implements Initializable {
      */
     public void goBack() {
         NavigationController.getCurrent().goBack();
-        System.out.println("Button was pressed!");
     }
 
 }

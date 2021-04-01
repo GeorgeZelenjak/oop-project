@@ -78,7 +78,6 @@ public abstract class QuestionCommunication {
      */
     public static List<Question> fetchQuestions(boolean firstTime) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return null;
         }
 
@@ -102,7 +101,6 @@ public abstract class QuestionCommunication {
      */
     public static boolean upvoteQuestion(long qid, long uid) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 
@@ -173,11 +171,8 @@ public abstract class QuestionCommunication {
                 "application/json").build();
 
         HttpResponse<String> response = sendAndReceive(request);
+
         int result = handleResponse(response);
-        if (result == 0) {
-            System.out.println("The question with id " + qid + " was modified successfully!");
-            System.out.println("New text: " + newText);
-        }
         return result == 0;
     }
 
@@ -189,7 +184,6 @@ public abstract class QuestionCommunication {
      */
     public static boolean deleteQuestion(long qid, long uid) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 
@@ -199,7 +193,6 @@ public abstract class QuestionCommunication {
         HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
         if (result == 0) {
-            System.out.println("The question with id " + qid + " was deleted successfully!");
             User.deleteQuestionId(qid);
         }
         return result == 0;
@@ -214,7 +207,6 @@ public abstract class QuestionCommunication {
     //TODO remove qid from user's set of questions after deletion
     public static boolean modDelete(long qid, UUID modkey) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 
@@ -224,9 +216,7 @@ public abstract class QuestionCommunication {
 
         HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
-        if (result == 0) {
-            System.out.println("The question with id " + qid + " was deleted successfully!");
-        }
+
         return result == 0;
     }
 
@@ -251,10 +241,7 @@ public abstract class QuestionCommunication {
 
         HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponseNoAlerts(response);
-        if (result == 0) {
-            System.out.println("The question with id " + qid + " has changed status!");
-            System.out.println("New status: " + status);
-        }
+
         return result == 0;
     }
 }
