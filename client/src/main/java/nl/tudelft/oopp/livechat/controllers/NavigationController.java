@@ -107,7 +107,7 @@ public class NavigationController {
             backStack.push(this.main);
             Parent root = FXMLLoader.load(getClass().getResource(javaFxFile));
             Stage window = (Stage) main.getWindow();
-            Scene main = new Scene(root, 1080, 768);
+            Scene main = new Scene(root, window.getWidth(), window.getHeight());
             this.main = main;
             window.setScene(main);
 
