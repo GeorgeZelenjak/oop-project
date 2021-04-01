@@ -140,7 +140,7 @@ public class LecturerChatSceneController implements Initializable {
 
     private Timeline timelineFetch;
 
-    public LecturerChatSceneController() {
+    private LecturerChatSceneController() {
     }
 
     /**
