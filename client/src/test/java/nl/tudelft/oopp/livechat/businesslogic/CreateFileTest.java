@@ -56,7 +56,7 @@ public class CreateFileTest {
 
     @Test
     public void invalidPathExceptionTest() {
-        assertFalse(createFile.setPath("////asdfs"));
+        assertFalse(createFile.setPath("////\\\\\\ asdfs"));
     }
 
     @Test
@@ -133,10 +133,12 @@ public class CreateFileTest {
     @Test
     public void createFileExceptionTest() throws IOException {
         createFile.setPath("");
+        Lecture.setCurrent(new Lecture(UUID.randomUUID(), UUID.randomUUID(), "ёмаё.pdf", "папа"));
         assertFalse(createFile.createFile());
 
         cleanup();
         createFile.setPath(pathName);
+        Lecture.setCurrent(null);
     }
 
     @Test
