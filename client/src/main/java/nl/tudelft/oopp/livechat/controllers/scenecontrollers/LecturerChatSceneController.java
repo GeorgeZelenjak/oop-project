@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
@@ -27,7 +28,7 @@ import nl.tudelft.oopp.livechat.uielements.QuestionCellLecturer;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
@@ -115,6 +116,12 @@ public class LecturerChatSceneController implements Initializable {
 
     @FXML
     private Label sortByLabel;
+
+    @FXML
+    private Pane hideBottomPane;
+
+    @FXML
+    private Pane hideTopPane;
 
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
@@ -280,41 +287,11 @@ public class LecturerChatSceneController implements Initializable {
      */
     public void lecturerMode() {
 
-        this.exportQA.setDisable(!this.exportQA.isDisabled());
-        this.exportQA.setVisible(!this.exportQA.isVisible());
+        this.hideBottomPane.setDisable(!this.hideBottomPane.isDisabled());
+        this.hideBottomPane.setVisible(!this.hideBottomPane.isVisible());
 
-        this.sortByLabel.setDisable(!this.sortByLabel.isDisabled());
-        this.sortByLabel.setVisible(!this.sortByLabel.isVisible());
-
-        this.goToUserManualButton.setDisable(!this.goToUserManualButton.isDisabled());
-        this.goToUserManualButton.setVisible(!this.goToUserManualButton.isVisible());
-
-        this.sortByVotesCheckBox.setDisable(!this.sortByVotesCheckBox.isDisabled());
-        this.sortByVotesCheckBox.setVisible(!this.sortByVotesCheckBox.isVisible());
-
-        this.sortByTimeCheckBox.setDisable(!this.sortByTimeCheckBox.isDisabled());
-        this.sortByTimeCheckBox.setVisible(!this.sortByTimeCheckBox.isVisible());
-
-        this.unansweredCheckBox.setDisable((!this.unansweredCheckBox.isDisabled()));
-        this.unansweredCheckBox.setVisible(!this.unansweredCheckBox.isVisible());
-
-        this.answeredCheckBox.setDisable(!this.answeredCheckBox.isDisabled());
-        this.answeredCheckBox.setVisible(!this.answeredCheckBox.isVisible());
-
-        this.speedBackground.setDisable(!this.speedBackground.isDisabled());
-        this.speedBackground.setVisible(!this.speedBackground.isVisible());
-
-        this.createPolling.setDisable(!this.createPolling.isDisabled());
-        this.createPolling.setVisible(!this.createPolling.isVisible());
-
-        this.popupVoteResults.setDisable(!this.popupVoteResults.isDisabled());
-        this.popupVoteResults.setVisible(!this.popupVoteResults.isVisible());
-
-        this.speedText.setDisable(!this.speedText.isDisabled());
-        this.speedText.setVisible(!this.speedText.isVisible());
-
-        this.showLabel.setDisable(!this.showLabel.isDisabled());
-        this.showLabel.setVisible(!this.showLabel.isVisible());
+        this.hideTopPane.setDisable(!this.hideTopPane.isDisabled());
+        this.hideTopPane.setVisible(!this.hideTopPane.isVisible());
 
         this.copyKey.setDisable(!this.copyKey.isDisabled());
         this.copyKey.setVisible(!this.copyKey.isVisible());
