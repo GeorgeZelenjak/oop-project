@@ -48,9 +48,6 @@ public class CreateLectureController implements Initializable {
     private Button goToHelpButton;
 
     @FXML
-    private Button goToSettingsButton;
-
-    @FXML
     private Button goBackButton;
 
     @FXML
@@ -62,7 +59,6 @@ public class CreateLectureController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         goToHelpButton.setTooltip(new Tooltip("Open Help & Documentation Page"));
-        goToSettingsButton.setTooltip(new Tooltip("Open Settings Page"));
 
         goBackButton.setTooltip(new Tooltip("Go back to previous page"));
         createLectureButton.setTooltip(new Tooltip("Creates a new lecture and "
@@ -208,15 +204,6 @@ public class CreateLectureController implements Initializable {
     }
 
     /**
-     * Go to settings Scene.
-     *
-     * @throws IOException the io exception
-     */
-    public void goToSettings() throws IOException {
-        NavigationController.getCurrent().goToSettings();
-    }
-
-    /**
      * Go to user manual Scene.
      *
      * @throws IOException the io exception
@@ -232,6 +219,7 @@ public class CreateLectureController implements Initializable {
         lectureScheduleMinuteTextField.setDisable(!lectureSchedulingCheckBox.isSelected());
         lectureScheduleMinuteTextField.setVisible(lectureSchedulingCheckBox.isSelected());
         lectureScheduleHourTextField.setDisable(!lectureSchedulingCheckBox.isSelected());
+        dotsText.setVisible(lectureSchedulingCheckBox.isSelected());
         lectureScheduleHourTextField.setVisible(lectureSchedulingCheckBox.isSelected());
         lectureSchedulingDateDatePicker.setDisable(!lectureSchedulingCheckBox.isSelected());
         lectureSchedulingDateDatePicker.setVisible(lectureSchedulingCheckBox.isSelected());

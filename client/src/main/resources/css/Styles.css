@@ -25,7 +25,7 @@
     }
 
     .list-cell {
-        -fx-padding: 0em 0em 0em 0em ;
+        -fx-padding: 0px 10px 8px 3px;
     }
 
     .check-box > .box {
@@ -60,11 +60,11 @@
     }
 
     .mainSceneButtonCopy {
-        -fx-background-color: #46a20b;
+        -fx-background-color: #0C985C;
     }
 
     .mainSceneButtonCopy:hover {
-        -fx-background-color: #388108;
+        -fx-background-color: #097949;
     }
 
     .lectureModeButton {
@@ -91,6 +91,18 @@
     .leaveLecture:hover{
         -fx-background-color: #af2c2a;
     }
+
+    .resetVotingLectureSpeedButton {
+        -fx-background-color: #FF6D70;
+        -fx-text-fill: gray;
+        -fx-font: 14px Arial;
+        -fx-text-fill: -fx-white;
+        -fx-padding: 0px 0px 0px 0px;
+    }
+
+        .resetVotingLectureSpeedButton:hover{
+            -fx-background-color: #af2c2a;
+        }
 
     .settingsButton{
         -fx-background-image: url(/images/Gear.png) ;
@@ -209,11 +221,20 @@
         -fx-background-color: Transparent;
     }
 
+    .numberOfUpvotesText {
+        -fx-position: fixed;
+        -fx-left: 50%;
+        -fx-bottom: 15px;
+    }
+
     .questionCell {
-        -fx-border-color: #00A6D6;
+        -fx-background-radius: 15px;
+        -fx-background-color: white;
+        -fx-border-color: rgb(212,212,212);
         -fx-border-style: solid;
-        -fx-border-radius: 7px;
-        -fx-border-width: 2px;
+        -fx-border-radius: 15px;
+        -fx-border-width: 1px;
+        -fx-effect: dropshadow(three-pass-box, gray, 10, 0, 2, 2);
     }
 
     .replyButton:hover {
