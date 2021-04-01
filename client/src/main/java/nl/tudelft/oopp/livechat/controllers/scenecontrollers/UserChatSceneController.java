@@ -208,9 +208,9 @@ public class UserChatSceneController implements Initializable {
             return false;
         }
         int length = text.length();
-        if (length > 280) {
+        if (length > 500) {
             AlertController.alertWarning("Long question",
-                    "Your question is too long! (max " + 280
+                    "Your question is too long! (max " + 500
                             + " characters,\n you entered: " + length + ")");
             return false;
         }
