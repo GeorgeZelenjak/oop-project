@@ -21,7 +21,7 @@ public class LectureEntity {
     @Column(name = "modkey")
     private UUID modkey;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 50)
     private String name;
 
     @Column(name = "creatorName")

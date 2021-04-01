@@ -75,7 +75,7 @@ public class CreateLectureController implements Initializable {
         String lectureName = enterLectureNameTextField.getText();
 
         int inputStatusUserName = InputValidator.validateLength(name, 50);
-        int inputStatusLectureName = InputValidator.validateLength(lectureName, 150);
+        int inputStatusLectureName = InputValidator.validateLength(lectureName, 50);
 
         if (inputStatusUserName == -1) {
             AlertController.alertWarning("No name entered", "Please enter your name!");

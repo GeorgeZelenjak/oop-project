@@ -61,7 +61,7 @@ public class QuestionEntity {
     @Column(name = "editorId")
     private long editorId;
 
-    @Column(name = "ownername")
+    @Column(name = "ownername", length = 50)
     String ownerName;
 
     /**
