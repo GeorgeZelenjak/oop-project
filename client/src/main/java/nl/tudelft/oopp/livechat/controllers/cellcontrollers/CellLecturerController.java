@@ -12,6 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.controllers.AlertController;
 import javafx.scene.control.Button;
 
@@ -244,7 +245,10 @@ public class CellLecturerController implements Initializable {
         }
     }
 
-    //res[0] is time, res[1] is 0 if by id, 1 if by ip, res[2] if the button was submitted
+    /**
+     * A helper method for a popup to select the banning mode and time.
+     * @return res[0] is time, res[1] is 0 if by id, 1 if by ip, res[2] if the button was submitted
+     */
     private int[] showPopup() {
         ToggleGroup toggleGroup = new ToggleGroup();
         RadioButton byId = new RadioButton("Ban by user id");
@@ -254,7 +258,7 @@ public class CellLecturerController implements Initializable {
         byIp.setToggleGroup(toggleGroup);
 
         Spinner<Integer> time = new Spinner<>();
-        time.setEditable(true);
+        time.setInitialDelay(new Duration(0));
         time.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 200));
 
         int[] res = new int[3];

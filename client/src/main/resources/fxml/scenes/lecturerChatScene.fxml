@@ -15,9 +15,18 @@
                <center>
                   <Group>
                      <children>
-                        <Button fx:id="copyId" layoutY="39.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy lecture id" />
-                              <Button fx:id="copyKey" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy modkey" />
-                        <Button fx:id="goToLectureModeButton" layoutX="2.0" layoutY="131.0" mnemonicParsing="false" onAction="#lecturerMode" prefHeight="33.0" prefWidth="168.0" style="-fx-text-fill: #ffffff;" styleClass="lectureModeButton" text="Lecturer Mode" textFill="WHITE" />
+                        <Group fx:id="lecturerGroup">
+                           <children>
+                              <Button fx:id="copyId" layoutY="39.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy lecture id" />
+                                    <Button fx:id="copyKey" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy modkey" />
+                              <Button fx:id="frequencyButton" layoutX="2.0" layoutY="153.0" mnemonicParsing="false" onAction="#setFrequency" prefHeight="32.0" prefWidth="166.0" styleClass="lectureModeButton" text="Configure frequency">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </Group>
+                        <Button fx:id="goToLectureModeButton" layoutX="1.0" layoutY="192.0" mnemonicParsing="false" onAction="#lecturerMode" prefHeight="30.0" prefWidth="168.0" style="-fx-text-fill: #ffffff;" styleClass="lectureModeButton" text="Lecturer Mode" textFill="WHITE" />
                      </children>
                      <BorderPane.margin>
                         <Insets top="-100.0" />
