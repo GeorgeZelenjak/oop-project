@@ -115,6 +115,21 @@ public class LectureController {
     }
 
     /**
+     * PUT Endpoint to set the frequency of asking questions of the lecture.
+     * @param id the id of the lecture
+     * @param modkey the moderator key
+     * @param frequency the frequency of asking questions
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
+     */
+    @PutMapping("/validate/{id}/{modkey}")
+    public int setFrequency(@PathVariable("id") UUID id, @PathVariable("modkey") UUID modkey,
+                            @RequestParam int frequency) throws LectureException, InvalidModkeyException {
+        return service.setFrequency(id, modkey, frequency);
+    }
+
+    /**
      * Exception handler for requests containing invalid uuids.
      * @param exception exception that has occurred
      * @return response object with 400 Bad Request status code and 'Don't do this' message
