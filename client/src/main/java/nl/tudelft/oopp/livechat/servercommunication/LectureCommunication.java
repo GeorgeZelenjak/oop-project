@@ -178,6 +178,7 @@ public abstract class LectureCommunication {
         HttpResponse<String> response = sendAndReceive(request);
         if (handleResponse(response) == 0) {
             Lecture.getCurrent().setFrequency(frequency);
+            return true;
         }
         return false;
     }
