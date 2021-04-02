@@ -14,7 +14,6 @@ import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +34,7 @@ public class QuestionService {
 
     private final TaskScheduler taskScheduler;
 
-    private Set<UUID> lectureChanged = new HashSet<>();
+    private final Set<UUID> lectureChanged = new HashSet<>();
 
     /**
      * Constructor for the question service.
@@ -343,10 +342,9 @@ public class QuestionService {
     }
 
     /**
-     * Method that returns if a lecture was changed and schedule the removal
-     *      of the lecture from the set.
-     *
-     * @param lid the lecture id
+     * Checks if a lecture was changed
+     *     and removes its id from the changed lecture ids set if it is changed.
+     * @param lid the id of the lecture
      * @return true if changed, false otherwise
      */
     public boolean wasLectureChanged(UUID lid) {
@@ -357,33 +355,38 @@ public class QuestionService {
         return false;
     }
 
+    /**
+     * Checks if the lecture exists in the repository.
+     * @param lid the id of the lecture to be checked
+     * @return true if exists, false otherwise
+     */
     public boolean lectureExists(UUID lid) {
         return lectureRepository.findLectureEntityByUuid(lid) != null;
     }
 
     /**
-     * Remove lecture changed.
-     *
-     * @param lid the lecture id
+     * Removes the lecture id from the changed lecture ids set.
+     * @param lid the id of the lecture
      */
     public void removeLectureChanged(UUID lid) {
-        taskScheduler.schedule(() -> {
-            lectureChanged.remove(lid);
-        }, new Date(OffsetDateTime.now().plusSeconds(1).toInstant().toEpochMilli()));
+        taskScheduler.schedule(() ->
+                lectureChanged.remove(lid),
+                new Date(OffsetDateTime.now().plusSeconds(1).toInstant().toEpochMilli())
+        );
     }
 
     /**
-     * Add lecture changed.
-     *
-     * @param lid the lecture id
+     * Add lecture id to the changed lecture ids set.
+     * @param lid the id of the lecture
      */
     public void addLectureChanged(UUID lid) {
         if (!lectureChanged.contains(lid)) {
             lectureChanged.add(lid);
             return;
         }
-        taskScheduler.schedule(() -> {
-            lectureChanged.add(lid);
-        }, new Date(OffsetDateTime.now().plusSeconds(2).toInstant().toEpochMilli()));
+        taskScheduler.schedule(() ->
+                lectureChanged.add(lid),
+                new Date(OffsetDateTime.now().plusSeconds(2).toInstant().toEpochMilli())
+        );
     }
 }
