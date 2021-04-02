@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
@@ -107,7 +108,7 @@ public class NavigationController {
             backStack.push(this.main);
             Parent root = FXMLLoader.load(getClass().getResource(javaFxFile));
             Stage window = (Stage) main.getWindow();
-            Scene main = new Scene(root, 1080, 768);
+            Scene main = new Scene(root, this.main.getWidth(), this.main.getHeight());
             this.main = main;
             window.setScene(main);
 
@@ -191,7 +192,11 @@ public class NavigationController {
      */
     public void goBack() {
         Stage window = (Stage) main.getWindow();
+        double remWidth = window.getWidth();
+        double remHeight = window.getHeight();
         this.main = backStack.pop();
+        window.setWidth(remWidth);
+        window.setHeight(remHeight);
         window.setScene(main);
     }
 

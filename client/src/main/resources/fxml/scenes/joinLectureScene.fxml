@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -8,18 +9,33 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.JoinLectureSceneController">
    <children>
-      <Button fx:id="goToJoinLectureButton" layoutX="312.0" layoutY="497.0" mnemonicParsing="false" onAction="#goToLecture" prefHeight="34.0" prefWidth="230.0" styleClass="joinLectureButton" text="Join Lecture" />
-      <TextField fx:id="enterNameTextField" alignment="CENTER" layoutX="313.0" layoutY="248.0" prefHeight="47.0" prefWidth="422.0" promptText="Enter your name" styleClass="textBox" />
-      <Text layoutX="293.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 72;" styleClass="headerText" text="Join the lecture" wrappingWidth="497.0" AnchorPane.leftAnchor="293.0" AnchorPane.topAnchor="71.0" />
-      <TextField fx:id="modkeyTextField" alignment="CENTER" layoutX="311.0" layoutY="437.0" promptText="Enter Mod Key" styleClass="textBox" visible="false" />
-      <TextField fx:id="enterLectureCodeTextField" alignment="CENTER" layoutX="311.0" layoutY="319.0" prefHeight="47.0" prefWidth="422.0" promptText="Enter lecture id" styleClass="textBox" />
-      <Button fx:id="goBackButton" layoutX="43.5" layoutY="35.25" mnemonicParsing="false" onAction="#goBack" prefHeight="50.25" prefWidth="136.5" styleClass="backButton" text="Back" />
-      <Pane layoutX="31.0" layoutY="658.0" prefHeight="90.0" prefWidth="228.0" styleClass="tudLogo" />
-      <CheckBox fx:id="modkeyCheckBox" graphicTextGap="1.0" layoutX="452.0" layoutY="399.0" mnemonicParsing="false" onAction="#onCheckBoxAction" prefHeight="37.0" prefWidth="156.0" text="Are you a moderator?">
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor></CheckBox>
-      <Button layoutX="1031.0" layoutY="719.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="34.0" text="?" />
+      <BorderPane prefHeight="768.0" prefWidth="1080.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 72;" styleClass="headerText" text="Join the lecture" wrappingWidth="497.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets top="50.0" />
+               </BorderPane.margin>
+            </Text>
+         </top>
+         <center>
+            <Group BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="goToJoinLectureButton" layoutX="1.0" layoutY="249.0" mnemonicParsing="false" onAction="#goToLecture" prefHeight="34.0" prefWidth="230.0" styleClass="joinLectureButton" text="Join Lecture" />
+                  <TextField fx:id="enterNameTextField" alignment="CENTER" layoutX="2.0" prefHeight="47.0" prefWidth="422.0" promptText="Enter your name" styleClass="textBox" />
+                  <TextField fx:id="modkeyTextField" alignment="CENTER" layoutY="189.0" promptText="Enter Mod Key" styleClass="textBox" visible="false" />
+                  <TextField fx:id="enterLectureCodeTextField" alignment="CENTER" layoutY="71.0" prefHeight="47.0" prefWidth="422.0" promptText="Enter lecture id" styleClass="textBox" />
+                  <CheckBox fx:id="modkeyCheckBox" graphicTextGap="1.0" layoutX="141.0" layoutY="151.0" mnemonicParsing="false" onAction="#onCheckBoxAction" prefHeight="37.0" prefWidth="156.0" text="Are you a moderator?">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </CheckBox>
+               </children>
+            </Group>
+         </center>
+      </BorderPane>
+      <Button fx:id="goBackButton" layoutX="44.0" layoutY="35.0" mnemonicParsing="false" onAction="#goBack" prefHeight="47.0" prefWidth="111.0" styleClass="backButton" text="Back" AnchorPane.leftAnchor="44.0" AnchorPane.topAnchor="35.0" />
+      <Pane layoutX="31.0" layoutY="658.0" prefHeight="90.0" prefWidth="228.0" styleClass="tudLogo" AnchorPane.bottomAnchor="19.599999999999994" AnchorPane.leftAnchor="31.0" />
+      <Button layoutX="1031.0" layoutY="719.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="34.0" text="?" AnchorPane.bottomAnchor="14.600000000000001" AnchorPane.rightAnchor="14.600000000000001" />
    </children>
    <stylesheets>
       <URL value="@../../css/Styles.css" />
