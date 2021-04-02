@@ -7,53 +7,90 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1080.0" stylesheets="@../../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.UserChatSceneController">
    <children>
-      <Pane prefHeight="768.0" prefWidth="200.0" style="-fx-background-color: #00A6D6;" styleClass="sidebar">
+      <AnchorPane layoutX="3.0" layoutY="4.0" prefHeight="753.0" prefWidth="186.0" style="-fx-background-color: #00A6D6;" styleClass="sidebar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button id="leaveLecture" fx:id="leaveLecture" layoutX="16.0" layoutY="721.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../../css/Styles.css" text="Leave Lecture" />
-            <Text fx:id="lectureNameText" fill="WHITE" layoutX="16.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Name" textAlignment="CENTER" wrappingWidth="168.0703125">
+            <BorderPane prefHeight="768.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <center>
+                  <Group BorderPane.alignment="CENTER">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture speed:" textAlignment="CENTER" wrappingWidth="176.0703125">
+                           <font>
+                              <Font name="Arial Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <CheckBox fx:id="voteOnLectureSpeedFast" layoutX="52.0" layoutY="47.373046875" mnemonicParsing="false" onAction="#voteOnLectureSpeedFast" text="Too fast" textFill="#0022ff" />
+                        <CheckBox fx:id="voteOnLectureSpeedSlow" layoutX="53.0" layoutY="76.373046875" mnemonicParsing="false" onAction="#voteOnLectureSpeedSlow" text="Too slow" textFill="#c3312f" />
+                     </children>
+                  </Group>
+               </center>
+            </BorderPane>
+            <Button id="leaveLecture" fx:id="leaveLecture" layoutX="6.0" layoutY="717.107421875" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../../css/Styles.css" text="Leave Lecture" AnchorPane.bottomAnchor="17.292578125" AnchorPane.leftAnchor="4.0" />
+            <Text fx:id="lectureNameText" fill="WHITE" layoutX="6.0" layoutY="84.525390625" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Name" textAlignment="CENTER" wrappingWidth="168.0703125" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="62.943359375">
                <font>
                   <Font name="Arial Bold" size="20.0" />
                </font>
             </Text>
-            <Text fx:id="userNameText" fill="WHITE" layoutX="10.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecturer Name" wrappingWidth="176.0703125">
+            <Text fx:id="userNameText" fill="WHITE" layoutX="11.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecturer Name" wrappingWidth="176.0703125" AnchorPane.leftAnchor="11.0" AnchorPane.topAnchor="8.892578125">
                <font>
                   <Font name="Arial" size="14.0" />
                </font>
             </Text>
-            <Button id="backButton" fx:id="gobBackButton" layoutX="14.0" layoutY="679.0" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" text="Back to Main Page">
+            <Button id="backButton" fx:id="gobBackButton" layoutX="4.0" layoutY="675.107421875" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" text="Back to Main Page" AnchorPane.bottomAnchor="59.292578125" AnchorPane.leftAnchor="4.0">
                <font>
                   <Font size="10.0" />
                </font>
             </Button>
-            <Text layoutX="10.0" layoutY="275.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture speed:" textAlignment="CENTER" wrappingWidth="176.0703125">
-               <font>
-                  <Font name="Arial Bold" size="15.0" />
-               </font>
-            </Text>
-            <CheckBox fx:id="voteOnLectureSpeedFast" layoutX="62.0" layoutY="290.0" mnemonicParsing="false" onAction="#voteOnLectureSpeedFast" text="Too fast" textFill="#0022ff" />
-            <CheckBox fx:id="voteOnLectureSpeedSlow" layoutX="63.0" layoutY="319.0" mnemonicParsing="false" onAction="#voteOnLectureSpeedSlow" text="Too slow" textFill="#c3312f" />
-         </children></Pane>
-      <ListView fx:id="questionPaneListView" layoutX="209.0" layoutY="35.0" prefHeight="617.0" prefWidth="848.0" />
-      <TextArea fx:id="questionInputTextArea" layoutX="209.0" layoutY="659.0" prefHeight="94.0" prefWidth="694.0" promptText="Enter your question..." styleClass="mainSceneEnterRoomCode" stylesheets="@../../css/mainScene.css" wrapText="true" />
-      <Button fx:id="submitButton" layoutX="911.0" layoutY="689.0" mnemonicParsing="false" onAction="#askQuestion" prefHeight="33.0" prefWidth="75.0" text="Submit" />
-      <Label fx:id="sortByTextField" layoutX="217.0" layoutY="7.0" prefHeight="18.0" prefWidth="47.0" text="Sort by:" />
-      <CheckBox fx:id="sortByVotesCheckBox" alignment="TOP_LEFT" graphicTextGap="1.0" layoutX="269.0" layoutY="7.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="20.0" text="Votes">
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor></CheckBox>
-      <CheckBox fx:id="sortByTimeCheckBox" graphicTextGap="1.0" layoutX="329.0" layoutY="6.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="20.0" text="Time">
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor></CheckBox>
-      <Label layoutX="661.0" layoutY="7.0" prefHeight="18.0" prefWidth="40.0" text="Show:" />
-      <CheckBox fx:id="answeredCheckBox" graphicTextGap="1.0" layoutX="701.0" layoutY="7.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="18.0" selected="true" text="Answered">
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor></CheckBox>
-      <CheckBox fx:id="unansweredCheckBox" layoutX="786.0" layoutY="7.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="18.0" selected="true" text="Unaswered">
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor></CheckBox>
-      <Button fx:id="goToUserManualButton" layoutX="1031.0" layoutY="719.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="30.0" prefWidth="30.0" styleClass="mainSceneButton" text="?" />
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="768.0" prefWidth="1080.0" />
+      <BorderPane layoutX="208.0" prefHeight="766.0" prefWidth="872.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="208.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <ListView fx:id="questionPaneListView" maxWidth="848.0" prefHeight="617.0" prefWidth="848.0" style="-fx-background-color: #F7F7F7;" BorderPane.alignment="CENTER" />
+         </center>
+         <bottom>
+            <Group BorderPane.alignment="CENTER">
+               <children>
+                  <TextArea fx:id="questionInputTextArea" prefHeight="94.0" prefWidth="694.0" promptText="Enter your question..." styleClass="mainSceneEnterRoomCode" stylesheets="@../../css/mainScene.css" wrapText="true" />
+                  <Button fx:id="submitButton" layoutX="702.0" layoutY="30.0" mnemonicParsing="false" onAction="#askQuestion" prefHeight="33.0" prefWidth="75.0" text="Submit" />
+                  <Button fx:id="goToUserManualButton" layoutX="822.0" layoutY="60.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="30.0" prefWidth="30.0" styleClass="mainSceneButton" text="?" />
+               </children>
+            </Group>
+         </bottom>
+         <top>
+            <Group BorderPane.alignment="CENTER">
+               <children>
+                  <Group>
+                     <children>
+                        <Label fx:id="sortByTextField" layoutY="1.0" prefHeight="18.0" prefWidth="47.0" text="Sort by:" />
+                        <CheckBox fx:id="sortByVotesCheckBox" alignment="TOP_LEFT" graphicTextGap="1.0" layoutX="52.0" layoutY="1.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="20.0" text="Votes">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </CheckBox>
+                        <CheckBox fx:id="sortByTimeCheckBox" graphicTextGap="1.0" layoutX="112.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="20.0" text="Time">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </CheckBox>
+                     </children>
+                  </Group>
+                  <Group layoutX="443.693359375" layoutY="1.0">
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="40.0" text="Show:" />
+                        <CheckBox fx:id="answeredCheckBox" graphicTextGap="1.0" layoutX="40.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="18.0" selected="true" text="Answered">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </CheckBox>
+                        <CheckBox fx:id="unansweredCheckBox" layoutX="125.0" mnemonicParsing="false" onAction="#setQuestions" prefHeight="18.0" selected="true" text="Unaswered">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </CheckBox>
+                     </children>
+                  </Group>
+               </children>
+            </Group>
+         </top></BorderPane>
    </children>
 </AnchorPane>
