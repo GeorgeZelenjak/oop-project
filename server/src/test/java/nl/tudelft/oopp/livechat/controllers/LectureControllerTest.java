@@ -59,7 +59,7 @@ class LectureControllerTest {
      * @return JSON representation of the new lecture entity
      * @throws Exception if something goes wrong
      */
-    String createLecture(String url, String content) throws Exception {
+    private String createLecture(String url, String content) throws Exception {
         return this.mockMvc.perform(post(url).content(content)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -74,7 +74,7 @@ class LectureControllerTest {
      * @return JSON representation of the new lecture entity
      * @throws Exception if something goes wrong
      */
-    String getLecture(String url) throws Exception {
+    private String getLecture(String url) throws Exception {
         return this.mockMvc.perform(get(url))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -85,10 +85,10 @@ class LectureControllerTest {
     /**
      * A method to delete a lecture.
      * @param url url with lecture id and moderator key values
-     * @return 0 if successful, otherwise -1
+     * @return 0 if successful
      * @throws Exception if something goes wrong
      */
-    int deleteLecture(String url) throws Exception {
+    private int deleteLecture(String url) throws Exception {
         String result = this.mockMvc.perform(delete(url))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -100,10 +100,10 @@ class LectureControllerTest {
     /**
      * A method to close a lecture.
      * @param url url with lecture id and moderator key values
-     * @return 0 if successful, otherwise -1
+     * @return 0 if successful
      * @throws Exception if something goes wrong
      */
-    int closeLecture(String url) throws Exception {
+    private int closeLecture(String url) throws Exception {
         String result = this.mockMvc.perform(put(url))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -115,11 +115,26 @@ class LectureControllerTest {
     /**
      * A method to validate a moderator key.
      * @param url url with lecture id and moderator key values
-     * @return 0 if successful, otherwise -1
+     * @return 0 if successful
      * @throws Exception if something goes wrong
      */
-    int validateModkey(String url) throws Exception {
+    private int validateModkey(String url) throws Exception {
         String result = this.mockMvc.perform(get(url))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        return Integer.parseInt(result);
+    }
+
+    /**
+     * A method to set the frequency of asking questions of the lecture.
+     * @param url url with lecture id,, moderator key and frequency values
+     * @return 0 if successful
+     * @throws Exception if something goes wrong
+     */
+    private int setFrequency(String url) throws Exception {
+        String result = this.mockMvc.perform(put(url))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -136,13 +151,13 @@ class LectureControllerTest {
 
     @Test
     void createLectureTest() {
-        assertDoesNotThrow(() -> createLecture("/api/newLecture?name=test1",
+        assertDoesNotThrow(() -> createLecture("/api/newLecture?name=test",
                 createJson("Papa", time, 70)));
     }
 
     @Test
     void createLectureModkeyTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test2", createJson("Mama", time, 60));
+        String json = createLecture("/api/newLecture?name=test", createJson("Mama", time, 60));
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         assertNotNull(lectureEntity);
         assertNotNull(lectureEntity.getModkey());
@@ -151,7 +166,7 @@ class LectureControllerTest {
     @Test
     public void createLectureFailingJSONTest() throws Exception {
         String response = this.mockMvc
-                .perform(post("/api/newLecture?name=test2")
+                .perform(post("/api/newLecture?name=test")
                         .contentType(APPLICATION_JSON)
                         .content("bla")
                         .characterEncoding("utf-8"))
@@ -162,7 +177,7 @@ class LectureControllerTest {
 
     @Test
     void getLecturesByIDSuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test1", createJson("Mim", time, 60));
+        String json = createLecture("/api/newLecture?name=test", createJson("Mim", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
 
@@ -174,7 +189,7 @@ class LectureControllerTest {
         LectureEntity gotBack = objectMapper.readValue(m, LectureEntity.class);
         assertEquals(gotBack, lectureEntity);
 
-        assertEquals(lectureEntity.getName(), "test1");
+        assertEquals(lectureEntity.getName(), "test");
         assertEquals(lectureEntity.getCreatorName(), "Mim");
         assertEquals(time, lectureEntity.getStartTime());
         assertNull(gotBack.getModkey());
@@ -182,7 +197,7 @@ class LectureControllerTest {
 
     @Test
     void getLecturesByIDUnsuccessfulTest() throws Exception {
-        createLecture("/api/newLecture?name=test1", createJson("mops", time, 60));
+        createLecture("/api/newLecture?name=test", createJson("mops", time, 60));
 
         String uuid = UUID.randomUUID().toString();
         String r = this.mockMvc.perform(get("/api/get/" + uuid))
@@ -195,7 +210,7 @@ class LectureControllerTest {
 
     @Test
     void whenPostingReturns200Test() throws Exception {
-        this.mockMvc.perform(post("/api/newLecture?name=test2")
+        this.mockMvc.perform(post("/api/newLecture?name=test")
                 .content(createJson("Papa", time, 60)))
                 .andExpect(status().isOk());
     }
@@ -214,7 +229,7 @@ class LectureControllerTest {
 
     @Test
     void deleteLectureSuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test3", createJson("Nina", time, 60));
+        String json = createLecture("/api/newLecture?name=test", createJson("Nina", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
@@ -242,7 +257,7 @@ class LectureControllerTest {
 
     @Test
     void deleteLectureUnsuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test3", createJson("Pavel", time, 60));
+        String json = createLecture("/api/newLecture?name=test", createJson("Pasha", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
@@ -305,7 +320,7 @@ class LectureControllerTest {
 
     @Test
     void closeLectureSuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test4", createJson("Gosha", time, 60));
+        String json = createLecture("/api/newLecture?name=test", createJson("Gosha", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
@@ -321,7 +336,7 @@ class LectureControllerTest {
 
     @Test
     void closeLectureUnsuccessfulTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test4", createJson("Katja", time, 60));
+        String json = createLecture("/api/newLecture?name=test", createJson("Katja", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
@@ -341,7 +356,7 @@ class LectureControllerTest {
 
     @Test
     void closeLectureNoLectureTest() throws Exception {
-        String json = createLecture("/api/newLecture?name=test4", createJson("Vova", time, 60));
+        String json = createLecture("/api/newLecture?name=test", createJson("Vova", time, 60));
 
         LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
         String uuid = lectureEntity.getUuid().toString();
@@ -354,6 +369,66 @@ class LectureControllerTest {
                 .andReturn()
                 .getResponse().getErrorMessage();
         assertEquals("Lecture not found", result);
+    }
+
+    @Test
+    void setFrequencySuccessfulTest() throws Exception {
+        String json = createLecture("/api/newLecture?name=test", createJson("Vasja", time, 60));
+
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
+        String uuid = lectureEntity.getUuid().toString();
+
+        assertEquals(0, setFrequency("/api/frequency/" + uuid + "/"
+                + lectureEntity.getModkey() + "?frequency=180"));
+
+        String lecture = getLecture("/api/get/" + uuid);
+        LectureEntity l = objectMapper.readValue(lecture, LectureEntity.class);
+        assertEquals(180, l.getFrequency());
+    }
+
+    @Test
+    void setFrequencyNoLectureTest() throws Exception {
+        String result = this.mockMvc.perform(put("/api/frequency/" + UUID.randomUUID() + "/"
+                + UUID.randomUUID() + "?frequency=180"))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Lecture not found", result);
+    }
+
+    @Test
+    void setFrequencyInvalidModkeyTest() throws Exception {
+        String json = createLecture("/api/newLecture?name=test", createJson("Sasha", time, 60));
+
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
+        String uuid = lectureEntity.getUuid().toString();
+
+        String result = this.mockMvc.perform(put("/api/frequency/" + uuid + "/"
+                + uuid + "?frequency=180"))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Wrong modkey, don't do this", result);
+
+        String lecture = getLecture("/api/get/" + uuid);
+        LectureEntity l = objectMapper.readValue(lecture, LectureEntity.class);
+        assertEquals(60, l.getFrequency());
+    }
+
+    @Test
+    void setFrequencyInvalidFrequencyTest() throws Exception {
+        String json = createLecture("/api/newLecture?name=test", createJson("Petja", time, 60));
+
+        LectureEntity lectureEntity = objectMapper.readValue(json, LectureEntity.class);
+        String uuid = lectureEntity.getUuid().toString();
+
+        String result = this.mockMvc.perform(put("/api/frequency/" + uuid + "/"
+                + lectureEntity.getModkey() + "?frequency=360"))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("The frequency must be between 0 and 300 seconds", result);
+
+        String lecture = getLecture("/api/get/" + uuid);
+        LectureEntity l = objectMapper.readValue(lecture, LectureEntity.class);
+        assertEquals(60, l.getFrequency());
     }
 
     @Test

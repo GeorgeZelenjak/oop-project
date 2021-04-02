@@ -123,9 +123,10 @@ public class LectureController {
      * @throws LectureException when the lecture is not found
      * @throws InvalidModkeyException when the moderator key is incorrect
      */
-    @PutMapping("/validate/{id}/{modkey}")
-    public int setFrequency(@PathVariable("id") UUID id, @PathVariable("modkey") UUID modkey,
-                            @RequestParam int frequency) throws LectureException, InvalidModkeyException {
+    @PutMapping("/frequency/{id}/{modkey}")
+    public int setFrequency(@PathVariable("id") UUID id,
+                            @PathVariable("modkey") UUID modkey, @RequestParam int frequency)
+            throws LectureException, InvalidModkeyException {
         return service.setFrequency(id, modkey, frequency);
     }
 
