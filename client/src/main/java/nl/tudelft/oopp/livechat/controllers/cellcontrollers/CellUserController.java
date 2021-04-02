@@ -81,7 +81,7 @@ public class CellUserController implements Initializable {
      * @param content the question content
      */
     public void setContent(String content) {
-       // questionText.wrappingWidthProperty().bind(flowPane.widthProperty());
+        //questionText.wrappingWidthProperty().bind(flowPane.widthProperty());
         questionText.setText(content);
     }
 
