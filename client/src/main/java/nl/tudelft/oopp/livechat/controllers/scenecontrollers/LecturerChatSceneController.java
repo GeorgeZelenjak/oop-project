@@ -9,12 +9,17 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.businesslogic.PercentageCalculator;
@@ -71,6 +76,9 @@ public class LecturerChatSceneController implements Initializable {
     private Button goToUserManualButton;
 
     @FXML
+    private Button frequencyButton;
+
+    @FXML
     private Label showLabel;
 
     @FXML
@@ -84,7 +92,6 @@ public class LecturerChatSceneController implements Initializable {
 
     @FXML
     private Button createPolling;
-
 
     @FXML
     private Button popupVoteResults;
@@ -124,6 +131,9 @@ public class LecturerChatSceneController implements Initializable {
 
     @FXML
     private Pane hideTopPane;
+
+    @FXML
+    private Group lecturerGroup;
 
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
@@ -189,7 +199,7 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
-     * Reset lecture speed.
+     * Resets lecture speed.
      */
     public void resetLectureSpeed() {
         UUID uuid = Lecture.getCurrent().getUuid();
@@ -208,17 +218,22 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
-     * Fetch questions.
+     * Fetches questions.
      */
     public void setQuestions() {
-        List<Question> list = Question.getCurrentList();
-
         questions = Question.getCurrentList();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
         QuestionManager.sort(sortByVotesCheckBox.isSelected(),
                 sortByTimeCheckBox.isSelected(), questions);
 
+        displayQuestions();
+    }
+
+    /**
+     * Displays the questions.
+     */
+    private void displayQuestions() {
         observableList.setAll(questions);
         questionPaneListView.setItems(observableList);
 
@@ -260,6 +275,19 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
+     * Set the frequency of asking questions.
+     */
+    public void setFrequency() {
+        int[] result = showPopup();
+        if (result[1] != 1) {
+            return;
+        }
+        int time = result[0];
+        LectureCommunication.setFrequency(Lecture.getCurrent().getUuid().toString(),
+                Lecture.getCurrent().getModkey().toString(), time);
+    }
+
+    /**
      * Go back to main page.
      */
     public void goBackToMain() {
@@ -279,9 +307,39 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
+     * A helper method for a popup to select the frequency of asking questions.
+     * @return res[0] is the selected frequency, res[1] if the button was submitted
+     */
+    private int[] showPopup() {
+        Spinner<Integer> frequency = new Spinner<>();
+        frequency.setInitialDelay(new Duration(0));
+        frequency.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 300));
+        frequency.setPromptText("0");
+
+        int[] result = new int[2];
+        Stage window = new Stage();
+        Button submit = new Button("Submit");
+        submit.setOnAction(e -> {
+            result[1] = 1;
+            window.close();
+        });
+
+        Label label = new Label("Choose the frequency of asking questions in seconds");
+
+        VBox box = new VBox();
+        box.setAlignment(Pos.CENTER);
+        box.getChildren().addAll(label, frequency, submit);
+
+        Scene scene = new Scene(box, 250, 150);
+        window.setScene(scene);
+        window.showAndWait();
+
+        result[0] = frequency.getValue() > 300 ? 300 : frequency.getValue();
+        return result;
+    }
+
+    /**
      * Go to user manual.
-     *
-     * @throws IOException if something happens
      */
     public void goToUserManual() {
 
@@ -291,8 +349,6 @@ public class LecturerChatSceneController implements Initializable {
 
     /**
      * Close lecture.
-     *
-     * @throws IOException if something happens
      */
     public void closeLecture() {
         Alert alert = AlertController.createAlert(Alert.AlertType.CONFIRMATION,
@@ -315,18 +371,40 @@ public class LecturerChatSceneController implements Initializable {
      * Lecturer mode.
      */
     public void lecturerMode() {
-
         this.hideBottomPane.setDisable(!this.hideBottomPane.isDisabled());
         this.hideBottomPane.setVisible(!this.hideBottomPane.isVisible());
 
         this.hideTopPane.setDisable(!this.hideTopPane.isDisabled());
         this.hideTopPane.setVisible(!this.hideTopPane.isVisible());
 
-        this.copyKey.setDisable(!this.copyKey.isDisabled());
-        this.copyKey.setVisible(!this.copyKey.isVisible());
+        this.lecturerGroup.setDisable(!this.lecturerGroup.isDisabled());
+        this.lecturerGroup.setVisible(!this.lecturerGroup.isVisible());
 
-        this.copyId.setDisable(!this.copyId.isDisabled());
-        this.copyId.setVisible(!this.copyId.isVisible());
+        updateQuestionsLecturerMode();
+        if (goToLectureModeButton.getText().equals("Lecturer Mode")) {
+            goToLectureModeButton.setText("Quit Lecturer Mode");
+        } else goToLectureModeButton.setText("Lecturer Mode");
+    }
+
+    /**
+     * A helper method to show only relevant questions in the lecturer mode.
+     */
+    private void updateQuestionsLecturerMode() {
+        if (!this.lecturerGroup.isVisible()) {
+            answeredCheckBox.setSelected(false);
+            unansweredCheckBox.setSelected(true);
+            sortByTimeCheckBox.setSelected(false);
+            sortByVotesCheckBox.setSelected(true);
+            questions = QuestionManager.filter(false, true, Question.getCurrentList());
+            QuestionManager.sort(true, false, questions);
+        } else {
+            answeredCheckBox.setSelected(true);
+            unansweredCheckBox.setSelected(true);
+            sortByTimeCheckBox.setSelected(true);
+            sortByVotesCheckBox.setSelected(false);
+            questions = QuestionManager.filter(false, true, Question.getCurrentList());
+            QuestionManager.sort(false, true, questions);
+        }
     }
 
     /**
@@ -367,7 +445,6 @@ public class LecturerChatSceneController implements Initializable {
         if (lectureSpeeds == null) {
             return;
         }
-        //Sets the
         slowerVotesPercentLine.setStartX(PercentageCalculator.determineNewStartCoordinates(
                 fasterVotesPercentLine.getStartX(), fasterVotesPercentLine.getEndX(),
                 lectureSpeeds.get(0), lectureSpeeds.get(1)));
@@ -375,6 +452,7 @@ public class LecturerChatSceneController implements Initializable {
         //Makes it so that if the blue line is just a dot, users do not see it
         slowerVotesPercentLine.setVisible(slowerVotesPercentLine.getEndX()
                 != slowerVotesPercentLine.getStartX());
+        displayQuestions();
     }
 
 
