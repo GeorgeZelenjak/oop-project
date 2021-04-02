@@ -150,8 +150,31 @@ public abstract class LectureCommunication {
         HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(json);
         String address = byIp ? ADDRESS + "/api/user/ban/ip" : ADDRESS + "/api/user/ban/id";
 
-        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(
-                URI.create(address)).setHeader("Content-Type", "application/json").build();
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(address))
+                .setHeader("Content-Type", "application/json").build();
+        HttpResponse<String> response = sendAndReceive(request);
+        return handleResponse(response) == 0;
+    }
+
+    /**
+     * Sends an HTTP request to ban a user by id or ip (done by moderator).
+     * @param lectureId the id of the lecture
+     * @param modkey the moderator key
+     * @param frequency the frequency of asking questions
+     * @return true if successful, false otherwise
+     */
+    public static boolean setFrequency(String lectureId, String modkey, int frequency) {
+        if (Lecture.getCurrent() == null) {
+            System.out.println("You are not connected to a lecture!");
+            return false;
+        }
+
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString("");
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
+                + "/frequency/" + URLEncoder.encode(lectureId, StandardCharsets.UTF_8)
+                + "/" + URLEncoder.encode(modkey, StandardCharsets.UTF_8)
+                + "?frequency=" + frequency)).build();
+
         HttpResponse<String> response = sendAndReceive(request);
         return handleResponse(response) == 0;
     }
