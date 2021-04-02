@@ -171,7 +171,7 @@ public abstract class LectureCommunication {
 
         HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString("");
         HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
-                + "/frequency/" + URLEncoder.encode(lectureId, StandardCharsets.UTF_8)
+                + "/api/frequency/" + URLEncoder.encode(lectureId, StandardCharsets.UTF_8)
                 + "/" + URLEncoder.encode(modkey, StandardCharsets.UTF_8)
                 + "?frequency=" + frequency)).build();
 
