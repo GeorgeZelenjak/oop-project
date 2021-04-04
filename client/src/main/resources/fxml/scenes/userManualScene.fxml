@@ -43,7 +43,7 @@
                   <Font name="Arial Bold" size="30.0" />
                </font>
             </Text>
-            <ScrollPane layoutX="5.0" layoutY="60.0" prefHeight="449.0" prefWidth="214.0" style="-fx-background-color: #F7F7F7;" AnchorPane.bottomAnchor="8.0" AnchorPane.topAnchor="60.0">
+            <ScrollPane layoutX="5.0" layoutY="60.0" prefHeight="399.0" prefWidth="214.0" style="-fx-background-color: #F7F7F7;" AnchorPane.bottomAnchor="58.0" AnchorPane.topAnchor="60.0">
                <content>
                   <Group>
                      <children>

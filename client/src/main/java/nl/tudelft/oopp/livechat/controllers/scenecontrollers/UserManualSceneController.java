@@ -73,26 +73,44 @@ public class UserManualSceneController {
         showCategoryX("client/src/main/resources/textFiles/questionInfo.txt");
     }
 
+    /** Displays the Question Handling Category.
+     *
+     */
     public void showQuestionHandlingText() {
         showCategoryX("client/src/main/resources/textFiles/questionHandling.txt");
     }
 
+    /** Displays the Exporting Question Category.
+     *
+     */
     public void showExportingQuestionsText() {
         showCategoryX("client/src/main/resources/textFiles/questionExporting.txt");
     }
 
+    /** Displays the Lecture Speed Voting Category.
+     *
+     */
     public void showLectureSpeedVotingText() {
         showCategoryX("client/src/main/resources/textFiles/lectureSpeedVoting.txt");
     }
 
+    /** Displays the Create Polls Category.
+     *
+     */
     public void showCreatePollsText() {
         showCategoryX("client/src/main/resources/textFiles/createPolls.txt");
     }
 
+    /** Displays the Interacting With Polls Category.
+     *
+     */
     public void showInteractingPollsText() {
         showCategoryX("client/src/main/resources/textFiles/interactWithPolls.txt");
     }
 
+    /** Displays the Banning Users Category.
+     *
+     */
     public void showBanningUsersText() {
         showCategoryX("client/src/main/resources/textFiles/banningUsers.txt");
     }
