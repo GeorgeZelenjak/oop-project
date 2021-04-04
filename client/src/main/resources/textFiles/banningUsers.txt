@@ -1,0 +1,7 @@
+As a lecturer/moderator, you can ban malicious users for a certain period of time.
+
+-> To ban a user, navigate to the specific question of the unwanted user and select the red icon button on the question.
+
+-> This will open a pop-up that will allow you to choose how you want to ban them, by their user ID or by their IP address.
+
+-> Then, select the desired duration of the ban (in minutes). Until this time runs out, they will not be able to answer questions.
