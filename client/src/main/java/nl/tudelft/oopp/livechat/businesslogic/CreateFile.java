@@ -116,13 +116,12 @@ public class CreateFile {
                 }
             }).collect(Collectors.toList());
 
-            writer.println(this.headerBuilder(list.size()));
+            headerBuilder(list.size(), writer);
 
             for (int i = 0; i < list.size(); i++) {
 
                 Question question = list.get(i);
-
-                writer.println(this.stringHelper(question));
+                questionPrinter(question, writer);
                 if (i < list.size() - 1)
                 writer.println(separatorLine);
             }
@@ -140,19 +139,16 @@ public class CreateFile {
      * @param question The Question Object
      * @return the string representation
      */
-    private String stringHelper(Question question) {
-        String result = "Q: \""
-                + question.getText() + "\" asked on " + question.getTime();
+    private void questionPrinter(Question question, PrintWriter writer) {
+        writer.println("Q: \""
+                + question.getText() + "\" asked on " + question.getTime());
 
-        String answerText;
         if (question.getAnswerText() != null && !question.getAnswerText().equals(" ")) {
-            answerText = "A: -> \"" + question.getAnswerText() + "\" answered on "
-                    + question.getAnswerTime();
+            writer.println("A: -> \"" + question.getAnswerText() + "\" answered on "
+                    + question.getAnswerTime());
 
-        } else answerText = "A: -> No answer available";
+        } else writer.println("A: -> No answer available");
 
-        result += "\n" + answerText;
-        return result;
     }
 
     /**
@@ -160,15 +156,17 @@ public class CreateFile {
      * @param listSize size of question size
      * @return the string representation
      */
-    private String headerBuilder(int listSize) {
+    private void headerBuilder(int listSize, PrintWriter writer) {
 
         Lecture lecture = Lecture.getCurrent();
-        return "Lecture Name: \"" + lecture.getName() + "\""
-                + "\nResponsible Lecturer: " + lecture.getCreatorName()
-                + "\nCreation Date: " + lecture.getStartTime()
-                + "\n\nExported at: " + timestamp
-                + "\nNumber of questions: " + listSize
-                + "\n";
+        writer.println("Lecture Name: \"" + lecture.getName() + "\"");
+        writer.println("Responsible Lecturer: " + lecture.getCreatorName());
+        writer.println("Creation Date: " + lecture.getStartTime());
+        writer.println("");
+        writer.println("Exported at: " + timestamp);
+        writer.println("Number of questions: " + listSize);
+        writer.println("");
+
     }
 
     /**

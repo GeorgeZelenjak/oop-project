@@ -19,6 +19,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -38,6 +40,7 @@ import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -418,8 +421,12 @@ public class LecturerChatSceneController implements Initializable {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
+                DirectoryChooser directoryChooser = new DirectoryChooser();
+                File selectedDirectory = directoryChooser.showDialog(
+                        showLabel.getScene().getWindow());
                 CreateFile file = new CreateFile();
-                if (!file.setPath("exportedQuestions/")) {
+
+                if (!file.setPath(selectedDirectory.getAbsolutePath())) {
                     AlertController.alertError(
                             "Invalid path name", "Invalid path name!");
                     return;
