@@ -85,6 +85,18 @@ public class UserManualSceneController {
         showCategoryX("client/src/main/resources/textFiles/lectureSpeedVoting.txt");
     }
 
+    public void showCreatePollsText() {
+        showCategoryX("client/src/main/resources/textFiles/createPolls.txt");
+    }
+
+    public void showInteractingPollsText() {
+        showCategoryX("client/src/main/resources/textFiles/interactWithPolls.txt");
+    }
+
+    public void showBanningUsersText() {
+        showCategoryX("client/src/main/resources/textFiles/banningUsers.txt");
+    }
+
     /** Helper Method that loads a File from a given path, parses it as a string and displays the
      *      requested text of the selected help category.
      *      This method catches an FileNotFoundException in case
