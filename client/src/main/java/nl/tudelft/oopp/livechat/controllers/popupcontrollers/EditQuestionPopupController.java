@@ -25,9 +25,6 @@ public class EditQuestionPopupController implements Initializable {
     private Button submitEditedQuestionButton;
 
     @FXML
-    private Button cancelButton;
-
-    @FXML
     private Text questionText;
 
     @Override
