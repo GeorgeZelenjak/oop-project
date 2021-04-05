@@ -1,11 +1,11 @@
-->To create a lecture, press the "Create Lecture" Button on the main page of the application.
+To create a lecture, press the "Create Lecture" Button on the main page of the application.
 
-->Then, on the Create Lecture page, type your name in the first field, and in the second field type the name of the lecture.
+-> Then, on the Create Lecture page, type your name in the first field, and in the second field type the name of the lecture.
 
-->If you want to schedule the lecture for a later time, tick the checkbox and select the date and time (hours & minutes) when the lecture will start.
+-> If you want to schedule the lecture for a later time, tick the checkbox and select the date and time (hours & minutes) when the lecture will start.
 
-->Finally, to reduce the spam of questions, students are only allowed to ask new questions after a certain interval of time. This interval is set to 60 seconds by default. If you want to keep this interval, dont enter any number in the "Set Question Delay" field. If you want to modify this value, enter the desired value (in seconds) in the "Set Question Delay" text field.
+-> Finally, to reduce the spam of questions, students are only allowed to ask new questions after a certain interval of time. This interval is set to 60 seconds by default. If you want to keep this interval, dont enter any number in the "Set Question Delay" field. If you want to modify this value, enter the desired value (in seconds) in the "Set Question Delay" text field.
 
-->Afterwards, click on the "Create Lecture" Button and when the notification pops up, press "OK" to be redirected to the lecture page.
+-> Afterwards, click on the "Create Lecture" Button and when the notification pops up, press "OK" to be redirected to the lecture page.
 
-->If you want to go back, press the "Back" button.
+-> If you want to go back, press the "Back" button.

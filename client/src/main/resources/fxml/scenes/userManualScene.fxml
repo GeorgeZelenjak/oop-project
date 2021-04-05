@@ -43,7 +43,7 @@
                   <Font name="Arial Bold" size="30.0" />
                </font>
             </Text>
-            <ScrollPane layoutY="55.373046875" prefHeight="456.0" prefWidth="214.0" style="-fx-background-color: #F7F7F7;" AnchorPane.bottomAnchor="4.626953125" AnchorPane.topAnchor="55.373046875">
+            <ScrollPane layoutX="5.0" layoutY="60.0" prefHeight="399.0" prefWidth="214.0" style="-fx-background-color: #F7F7F7;" AnchorPane.bottomAnchor="58.0" AnchorPane.topAnchor="60.0">
                <content>
                   <Group>
                      <children>
@@ -56,7 +56,9 @@
                         <Button layoutY="226.0" mnemonicParsing="false" onAction="#showQuestionInfoText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Question Information" />
                         <Button layoutY="316.0" mnemonicParsing="false" onAction="#showExportingQuestionsText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Exporting Questions" />
                         <Button layoutY="361.0" mnemonicParsing="false" onAction="#showLectureSpeedVotingText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Lecture Speed Voting" />
-                        <Button layoutY="406.0" mnemonicParsing="false" onAction="#showLectureSpeedVotingText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="New Category" />
+                        <Button fx:id="createPollsText" layoutY="406.0" mnemonicParsing="false" onAction="#showCreatePollsText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Creating Polls/Quizzes" />
+                        <Button fx:id="createPollsText1" layoutY="450.0" mnemonicParsing="false" onAction="#showInteractingPollsText" prefHeight="30.0" prefWidth="192.0" styleClass="mainSceneButton" text="Interacting with Polls" />
+                        <Button fx:id="createPollsText11" layoutY="490.0" mnemonicParsing="false" onAction="#showBanningUsersText" prefHeight="30.0" prefWidth="192.0" styleClass="mainSceneButton" text="Banning Users" />
                      </children>
                   </Group>
                </content>
@@ -64,6 +66,6 @@
             <Line endX="-100.0" endY="286.20001220703125" layoutX="323.5" layoutY="228.0730438232422" startX="-100.0" startY="-181.8000030517578" stroke="#6699ff" AnchorPane.bottomAnchor="1.226959228515625" AnchorPane.topAnchor="45.773040771484375" />
          </children>
       </AnchorPane>
-      <Button layoutX="29.0" layoutY="694.0" mnemonicParsing="false" onAction="#showAboutApplicationText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="About Application" AnchorPane.bottomAnchor="39.6" AnchorPane.leftAnchor="29.0" />
+      <Button layoutX="29.0" layoutY="694.0" mnemonicParsing="false" onAction="#showAboutApplicationText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="About Application" AnchorPane.bottomAnchor="39.6" AnchorPane.leftAnchor="47.0" />
    </children>
 </AnchorPane>

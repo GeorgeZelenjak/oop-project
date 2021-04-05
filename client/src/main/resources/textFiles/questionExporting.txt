@@ -6,6 +6,6 @@ Lecturers can export the questions and answers of a lecture to post FAQs on Brig
 
 -> To export questions and answers, click on the blue "Export Questions and Answers" button in the bottom right corner.
 
--> You can find all exported text files in a folder named "exportedQuestions".
+-> You can where to store exported files by providing a path when prompted.
 
 -> Note: it is possible to export multiple text files during a lecture.

@@ -1,0 +1,7 @@
+As a lecturer, you can create quizzes and polling questions during your lecture that students can answer.
+
+-> To create such a question, click on the "Manage Polling" button. If this is a poll, select the corresponding checkbox. Input the question text and add options to your poll by pressing the "+" on the left. You can delete any unwanted options and if it is a polling question, you can select which answers are correct.
+-> To release a question to the students, click on "Publish Poll".
+-> To reset the results, click on "Reset Votes".
+-> To end the polling question, click on "End Voting". After you press this, students will no longer be able to give answers to this question.
+-> To publish the results for the students, close the "Manage Polling" pop-up and click on "Show Poll Results". They will see a pop-up with the results of the polling question, as well as which answers were correct.

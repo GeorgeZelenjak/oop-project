@@ -5,7 +5,6 @@ import nl.tudelft.oopp.livechat.data.Question;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -137,7 +136,6 @@ public class CreateFile {
     /**
      * Helper method that builds the String representation of a question.
      * @param question The Question Object
-     * @return the string representation
      */
     private void questionPrinter(Question question, PrintWriter writer) {
         writer.println("Q: \""
@@ -154,7 +152,6 @@ public class CreateFile {
     /**
      * Helper method that builds the header of the file.
      * @param listSize size of question size
-     * @return the string representation
      */
     private void headerBuilder(int listSize, PrintWriter writer) {
 
