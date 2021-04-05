@@ -191,13 +191,6 @@ public class UserChatSceneController implements Initializable {
     }
 
     /**
-     * Go to settings.
-     */
-    public void goToSettings() {
-        NavigationController.getCurrent().goToSettings();
-    }
-
-    /**
      * Send a question to the server.
      * @return true if successful, false if not
      */

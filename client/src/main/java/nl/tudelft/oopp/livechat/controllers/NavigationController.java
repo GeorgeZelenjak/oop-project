@@ -167,12 +167,6 @@ public class NavigationController {
     }
 
 
-    /**
-     * Go to settings.
-     */
-    public void goToSettings() {
-        goToSceneHelper("/fxml/scenes/settingsScene.fxml");
-    }
 
     /**
      * Go to test scene.
