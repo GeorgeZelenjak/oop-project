@@ -26,7 +26,6 @@ import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import javafx.util.Callback;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
