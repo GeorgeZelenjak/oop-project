@@ -17,10 +17,8 @@
          <center>
             <Group BorderPane.alignment="CENTER">
                <children>
-                  <Button id="joinLecture" fx:id="goToJoinLectureButton" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#goToLecture" prefHeight="47.0" prefWidth="422.0" styleClass="mainSceneButton" text="Join Lecture" textAlignment="CENTER" />
-                  <Button id="createLecture" fx:id="goToCreateLectureButton" layoutY="66.0" mnemonicParsing="false" onAction="#goToCreateLecture" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Create Lecture" />
-                  <Button id="restoreLecture" fx:id="goToRestoreLectureButton" layoutY="190.5" mnemonicParsing="false" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Restore Lecture" />
-                  <Button fx:id="goToExportQAFromLectureButton" layoutY="256.5" mnemonicParsing="false" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Lecture Archive" />
+                  <Button id="joinLecture" fx:id="goToJoinLectureButton" contentDisplay="CENTER" layoutX="-4.0" layoutY="41.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#goToLecture" prefHeight="47.0" prefWidth="422.0" styleClass="mainSceneButton" text="Join Lecture" textAlignment="CENTER" />
+                  <Button id="createLecture" fx:id="goToCreateLectureButton" layoutX="-4.0" layoutY="122.0" mnemonicParsing="false" onAction="#goToCreateLecture" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Create Lecture" />
                   <Button fx:id="debugButton" layoutX="3.0" layoutY="362.5" mnemonicParsing="false" onAction="#goToDebug" prefHeight="51.0" prefWidth="456.0" styleClass="debugButton" text="Debug scene" />
                </children>
             </Group>
