@@ -24,27 +24,14 @@ public class MainSceneController implements Initializable {
     private Button goToCreateLectureButton;
 
     @FXML
-    private Button goToExportQAFromLectureButton;
-
-    //    @FXML
-    //    private Button goToSettingsButton;
-
-    @FXML
     private Button goToHelpButton;
-
-    @FXML
-    private Button goToRestoreLectureButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         goToCreateLectureButton.setTooltip(new Tooltip("Go to Create Lecture Page"));
         goToJoinLectureButton.setTooltip(new Tooltip("Go to Join Lecture Page"));
 
-        goToExportQAFromLectureButton.setTooltip(new Tooltip("Export Questions and Answers"));
-        //        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
-
         goToHelpButton.setTooltip(new Tooltip("Open Help & Documentation page"));
-        goToRestoreLectureButton.setTooltip(new Tooltip("Open the Restore Lecture Page"));
 
     }
 
