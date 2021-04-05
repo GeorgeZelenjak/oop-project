@@ -275,7 +275,7 @@ public class UserChatSceneController implements Initializable {
     private void fetchVotes() {
         PollAndOptions fetched = (PollCommunication
                 .fetchPollAndOptionsStudent(Lecture.getCurrent().getUuid()));
-        if (fetched == null) {
+        if (fetched == null || fetched.getOptions() == null || fetched.getOptions().size() == 0) {
             return;
         }
 
@@ -291,6 +291,7 @@ public class UserChatSceneController implements Initializable {
                 && PollAndOptions.getCurrent().getPoll().isOpen()) {
             PollAndOptions.setCurrent(fetched);
             NavigationController.getCurrent().popupPollResult();
+            return;
         }
 
         //If poll is reopened
