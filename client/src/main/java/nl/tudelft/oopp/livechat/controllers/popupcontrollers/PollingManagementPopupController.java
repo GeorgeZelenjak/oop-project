@@ -101,7 +101,7 @@ public class PollingManagementPopupController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        questionTextTextArea.focusedProperty().addListener(new ChangeListener<Boolean>() {
+        questionTextTextArea.focusedProperty().addListener(new ChangeListener<>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> arg0,
                                 Boolean oldPropertyValue, Boolean newPropertyValue) {
@@ -177,7 +177,7 @@ public class PollingManagementPopupController implements Initializable {
         }
 
         inEditingPoll = new Poll();
-        inEditingOptions = new ArrayList<PollOption>();
+        inEditingOptions = new ArrayList<>();
         newPoll.setVisible(false);
         isPollCheckbox.setSelected(false);
         isOptionCorrectText.setVisible(false);
@@ -220,7 +220,7 @@ public class PollingManagementPopupController implements Initializable {
 
         //Setup cellFactory
         pollOptionsListView.setCellFactory(
-                new Callback<ListView<PollOption>, ListCell<PollOption>>() {
+                new Callback<>() {
                     @Override
                     public ListCell<PollOption> call(ListView<PollOption> listView) {
                         return new PollOptionCell();
@@ -246,7 +246,7 @@ public class PollingManagementPopupController implements Initializable {
                 lectureId, modkey, questionTextTextArea.getText());
         AlertController.alertConfirmation("Poll creation", "Poll was published");
         if (sentPoll != null) {
-            List<PollOption> sentPollOptions = new ArrayList<PollOption>();
+            List<PollOption> sentPollOptions = new ArrayList<>();
 
             //Sends requests for every pollOption
             for (PollOption pollOption : inEditingOptions) {
@@ -291,6 +291,7 @@ public class PollingManagementPopupController implements Initializable {
         }
         allCorrect = !allCorrect;
         if (allCorrect) {
+            assert inEditingOptions != null;
             for (PollOption pollOption: inEditingOptions) {
                 pollOption.setCorrect(true);
             }
