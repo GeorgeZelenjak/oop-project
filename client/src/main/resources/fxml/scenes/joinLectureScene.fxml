@@ -35,7 +35,7 @@
       </BorderPane>
       <Button fx:id="goBackButton" layoutX="44.0" layoutY="35.0" mnemonicParsing="false" onAction="#goBack" prefHeight="47.0" prefWidth="111.0" styleClass="backButton" text="Back" AnchorPane.leftAnchor="44.0" AnchorPane.topAnchor="35.0" />
       <Pane layoutX="31.0" layoutY="658.0" prefHeight="90.0" prefWidth="228.0" styleClass="tudLogo" AnchorPane.bottomAnchor="19.599999999999994" AnchorPane.leftAnchor="31.0" />
-      <Button layoutX="1031.0" layoutY="719.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="34.0" text="?" AnchorPane.bottomAnchor="14.600000000000001" AnchorPane.rightAnchor="14.600000000000001" />
+      <Button layoutX="1031.0" layoutY="719.0" mnemonicParsing="false" onAction="#goToUserManualScene" prefHeight="34.0" prefWidth="34.0" text="?" AnchorPane.bottomAnchor="14.600000000000001" AnchorPane.rightAnchor="14.600000000000001" />
    </children>
    <stylesheets>
       <URL value="@../../css/Styles.css" />
