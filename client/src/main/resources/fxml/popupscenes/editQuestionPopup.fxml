@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.popupcontrollers.EditQuestionPopupController">
    <children>
-      <TextArea fx:id="editQuestionTextArea" layoutX="27.0" layoutY="135.0" prefHeight="227.0" prefWidth="390.0" promptText="Edit the question here!" />
-      <Button fx:id="submitEditedQuestionButton" layoutX="467.0" layoutY="200.0" mnemonicParsing="false" onAction="#submitEditedQuestion" text="Submit answer" />
-      <Button fx:id="cancelButton" layoutX="467.0" layoutY="264.0" mnemonicParsing="false" onAction="#closeTheScene" prefHeight="25.0" prefWidth="94.0" text="Cancel" />
+      <TextArea fx:id="editQuestionTextArea" layoutX="27.0" layoutY="135.0" prefHeight="227.0" prefWidth="461.0" promptText="Edit the question here!" />
+      <Button fx:id="submitEditedQuestionButton" layoutX="519.0" layoutY="222.0" mnemonicParsing="false" onAction="#submitEditedQuestion" text=" Edit " />
       <Text fx:id="questionText" layoutX="39.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text of the question being edited, which is quite long here so that we can see what a typical long question can look like directly in the Scene builder. Also I want to add that Scene builder is a wonderful app!!!" wrappingWidth="521.0546875">
          <font>
             <Font size="14.0" />
          </font>
       </Text>
    </children>
+   <stylesheets>
+      <URL value="@../../css/Styles.css" />
+   </stylesheets>
 </AnchorPane>
