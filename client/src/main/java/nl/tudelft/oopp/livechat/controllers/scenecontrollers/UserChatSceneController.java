@@ -26,7 +26,6 @@ import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import javafx.util.Callback;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -192,13 +191,6 @@ public class UserChatSceneController implements Initializable {
     }
 
     /**
-     * Go to settings.
-     */
-    public void goToSettings() {
-        NavigationController.getCurrent().goToSettings();
-    }
-
-    /**
      * Send a question to the server.
      * @return true if successful, false if not
      */
@@ -276,7 +268,7 @@ public class UserChatSceneController implements Initializable {
     private void fetchVotes() {
         PollAndOptions fetched = (PollCommunication
                 .fetchPollAndOptionsStudent(Lecture.getCurrent().getUuid()));
-        if (fetched == null) {
+        if (fetched == null || fetched.getOptions() == null || fetched.getOptions().size() == 0) {
             return;
         }
 
@@ -292,6 +284,7 @@ public class UserChatSceneController implements Initializable {
                 && PollAndOptions.getCurrent().getPoll().isOpen()) {
             PollAndOptions.setCurrent(fetched);
             NavigationController.getCurrent().popupPollResult();
+            return;
         }
 
         //If poll is reopened

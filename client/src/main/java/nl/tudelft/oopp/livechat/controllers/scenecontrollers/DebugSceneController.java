@@ -36,15 +36,6 @@ public class DebugSceneController {
     }
 
     /**
-     * Go to settings.
-     *
-     * @throws IOException the io exception
-     */
-    public void goToSettings() throws IOException {
-        NavigationController.getCurrent().goToSettings();
-    }
-
-    /**
      * Go back.
      */
     public void goBack() {

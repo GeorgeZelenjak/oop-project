@@ -135,6 +135,10 @@ public class JoinLectureSceneController implements Initializable {
         }
     }
 
+    public void goToUserManualScene() {
+        NavigationController.getCurrent().goToUserManual();
+    }
+
     /**
      * Join lecture as a moderator.
      */

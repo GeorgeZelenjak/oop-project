@@ -2,7 +2,6 @@ package nl.tudelft.oopp.livechat.controllers.popupcontrollers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -22,12 +21,6 @@ public class AnswerQuestionPopupController implements Initializable {
 
     @FXML
     private TextArea answerTextArea;
-
-    @FXML
-    private Button submitAnswerButton;
-
-    @FXML
-    private Button cancelButton;
 
     @FXML
     private Text questionText;

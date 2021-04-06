@@ -24,72 +24,44 @@ public class MainSceneController implements Initializable {
     private Button goToCreateLectureButton;
 
     @FXML
-    private Button goToExportQAFromLectureButton;
-
-    //    @FXML
-    //    private Button goToSettingsButton;
-
-    @FXML
     private Button goToHelpButton;
-
-    @FXML
-    private Button goToRestoreLectureButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         goToCreateLectureButton.setTooltip(new Tooltip("Go to Create Lecture Page"));
         goToJoinLectureButton.setTooltip(new Tooltip("Go to Join Lecture Page"));
 
-        goToExportQAFromLectureButton.setTooltip(new Tooltip("Export Questions and Answers"));
-        //        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
-
         goToHelpButton.setTooltip(new Tooltip("Open Help & Documentation page"));
-        goToRestoreLectureButton.setTooltip(new Tooltip("Open the Restore Lecture Page"));
 
     }
 
     /**
      * Navigates to lecture creation scene.
-     *
-     * @throws IOException the io exception
+
      */
-    public void goToCreateLecture() throws IOException {
+    public void goToCreateLecture() {
         NavigationController.getCurrent().goToCreateRoomScene();
     }
 
     /**
      * Navigates to Lecture scene (for Students).
-     *
-     * @throws IOException - in case Stage throws an exception
      */
-    public void goToLecture() throws IOException {
+    public void goToLecture() {
         NavigationController.getCurrent().goToJoinLecturePage();
     }
 
     /**
      * Go to user manual.
-     *
-     * @throws IOException the io exception
      */
-    public void goToUserManual() throws IOException {
+    public void goToUserManual() {
         NavigationController.getCurrent().goToUserManual();
     }
 
-    //    /**
-    //     * Go to settings.
-    //     *
-    //     * @throws IOException the io exception
-    //     */
-    //    public void goToSettings() throws IOException {
-    //        NavigationController.getCurrent().goToSettings();
-    //    }
-
     /**
      * Go to debug scene.
-     *
-     * @throws IOException the io exception
      */
-    public void goToDebug() throws IOException {
+    public void goToDebug() {
         NavigationController.getCurrent().goToDebugScene();
     }
 }

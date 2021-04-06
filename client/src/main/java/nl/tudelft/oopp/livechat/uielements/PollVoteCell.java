@@ -1,7 +1,6 @@
 package nl.tudelft.oopp.livechat.uielements;
 
 import javafx.scene.control.ListCell;
-import nl.tudelft.oopp.livechat.controllers.cellcontrollers.CellLecturerController;
 import nl.tudelft.oopp.livechat.controllers.cellcontrollers.PollVoteCellController;
 import nl.tudelft.oopp.livechat.data.PollOptionVote;
 

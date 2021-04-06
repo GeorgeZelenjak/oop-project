@@ -8,7 +8,6 @@
     <children>
         <Button fx:id="goToUserChatButton" layoutX="312.0" layoutY="139.0" mnemonicParsing="false" onAction="#joinAsStudent" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Student Scene" />
         <Button fx:id="goToLecturerChatButton" layoutX="312.0" layoutY="207.0" mnemonicParsing="false" onAction="#joinAsModerator" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Lecturer Scene" />
-        <Button fx:id="goToSettingsButton" layoutX="977.0" layoutY="686.0" mnemonicParsing="false" onAction="#goToSettings" prefHeight="33.0" prefWidth="33.0" styleClass="settingsButton" />
         <Button layoutX="14.0" layoutY="516.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="287.0" styleClass="tudLogo" visible="false" />
         <Pane layoutX="45" layoutY="630" prefHeight="90" prefWidth="228" styleClass="tudLogo" />
       <Button fx:id="populateButton" layoutX="312.0" layoutY="375.0" mnemonicParsing="false" onAction="#populate" prefHeight="54.0" prefWidth="456.0" styleClass="populateButton" stylesheets="@../../css/debugScene.css" text="Populate with questions" />
