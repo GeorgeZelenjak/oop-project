@@ -112,8 +112,6 @@ public class NavigationController {
             Scene main = new Scene(root, width, height);
             this.main = main;
             window.setScene(main);
-            window.setWidth(window.getWidth() + 0.001);
-            window.setWidth(window.getWidth() - 0.001);
             //Closes the entire program when the main scene is closed
             window.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
