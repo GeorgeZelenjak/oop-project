@@ -1,20 +1,10 @@
 package nl.tudelft.oopp.livechat.controllers;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.UUID;
-
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
@@ -24,16 +14,30 @@ import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
 import nl.tudelft.oopp.livechat.services.LectureService;
 import nl.tudelft.oopp.livechat.services.QuestionService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockAsyncContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.servlet.AsyncContext;
+import javax.servlet.AsyncListener;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 /**
@@ -357,21 +361,45 @@ class QuestionControllerTest {
 
     @Test
     void fetchQuestionsNotFirstTimeTest() throws Exception {
-        /*LectureEntity lectureEntity = new LectureEntity();
+        LectureEntity lectureEntity = new LectureEntity();
         lectureRepository.save(lectureEntity);
 
         MvcResult mvcResult = mockMvc.perform(get("/api/question/fetch?lid="
-                + lectureEntity.getUuid() + "&firstTime=" + false))
+                + lectureEntity.getUuid() + "&firstTime=false"))
                 .andExpect(MockMvcResultMatchers.request().asyncStarted())
-                .andDo(MockMvcResultHandlers.log())
                 .andReturn();
 
+        MockAsyncContext ctx = (MockAsyncContext) mvcResult.getRequest().getAsyncContext();
+        assert ctx != null;
+        for (AsyncListener listener : ctx.getListeners()) {
+            listener.onTimeout(null);
+        }
         mockMvc.perform(asyncDispatch(mvcResult))
                 .andExpect(status().isRequestTimeout())
                 .andExpect(content().string("Request timeout occurred."));
 
-        lectureRepository.deleteById(lectureEntity.getUuid());*/
+        lectureRepository.deleteById(lectureEntity.getUuid());
     }
+
+    @Test
+    void fetchQuestionsTooMuchTimeThreadKilledTest() throws Exception {
+        LectureEntity lectureEntity = new LectureEntity();
+        lectureRepository.save(lectureEntity);
+
+        MvcResult mvcResult = mockMvc.perform(get("/api/question/fetch?lid="
+                + lectureEntity.getUuid() + "&firstTime=false"))
+                .andExpect(MockMvcResultMatchers.request().asyncStarted())
+                .andReturn();
+
+        Objects.requireNonNull(mvcResult.getRequest().getAsyncContext()).setTimeout(40000);
+
+        mockMvc.perform(asyncDispatch(mvcResult))
+                .andExpect(status().isIAmATeapot())
+                .andExpect(content().string("Thread killed himself for too much time passing"));
+
+        lectureRepository.deleteById(lectureEntity.getUuid());
+    }
+
 
     @Test
     void fetchQuestionsFakeIdTest() throws Exception {
