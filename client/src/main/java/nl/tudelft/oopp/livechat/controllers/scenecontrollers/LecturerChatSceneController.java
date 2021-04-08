@@ -159,11 +159,11 @@ public class LecturerChatSceneController implements Initializable {
 
         getQuestions(true);
         timelineFetch = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
-                setQuestions();
-                getVotesOnLectureSpeed();
-                adjustLectureSpeedLines();
-                fetchPoll();
-            }));
+            setQuestions();
+            getVotesOnLectureSpeed();
+            adjustLectureSpeedLines();
+            fetchPoll();
+        }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
         fetchingThread = new Thread(
