@@ -3,6 +3,7 @@ package nl.tudelft.oopp.livechat.controllers;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,7 +30,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import javax.servlet.AsyncContext;
 
 
 /**
@@ -165,8 +169,9 @@ class QuestionControllerTest {
                 .perform(get("/api/question/fetch?lid=" + lectureId + "&firstTime=" + firstTime))
                 .andExpect(MockMvcResultMatchers.request().asyncStarted())
                 .andReturn();
-
-        mvcResult.getRequest().getAsyncContext().setTimeout(10000);
+        AsyncContext context = mvcResult.getRequest().getAsyncContext();
+        if (context == null) return  null;
+        context.setTimeout(10000);
 
         String listLectureString = this.mockMvc
                 .perform(asyncDispatch(mvcResult))
@@ -351,9 +356,35 @@ class QuestionControllerTest {
     }
 
     @Test
+    void fetchQuestionsNotFirstTimeTest() throws Exception {
+        /*LectureEntity lectureEntity = new LectureEntity();
+        lectureRepository.save(lectureEntity);
+
+        MvcResult mvcResult = mockMvc.perform(get("/api/question/fetch?lid="
+                + lectureEntity.getUuid() + "&firstTime=" + false))
+                .andExpect(MockMvcResultMatchers.request().asyncStarted())
+                .andDo(MockMvcResultHandlers.log())
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(mvcResult))
+                .andExpect(status().isRequestTimeout())
+                .andExpect(content().string("Request timeout occurred."));
+
+        lectureRepository.deleteById(lectureEntity.getUuid());*/
+    }
+
+    @Test
     void fetchQuestionsFakeIdTest() throws Exception {
         this.mockMvc.perform(get("/api/question/fetch?lid=" + "something_wrong"))
                     .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void fetchQuestionsNoLectureTest() throws Exception {
+        String result = this.mockMvc.perform(get("/api/question/fetch?lid="
+                + UUID.randomUUID() + "&firstTime=" + true)).andExpect(status().isNotFound())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Lecture not found", result);
     }
 
     @Test
