@@ -1,7 +1,7 @@
 package nl.tudelft.oopp.livechat.communication;
 
 import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

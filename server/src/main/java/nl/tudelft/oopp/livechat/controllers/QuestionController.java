@@ -65,7 +65,7 @@ public class QuestionController {
                         break;
                     } else if (System.currentTimeMillis() - startTime >= timeOutInMilliSec + 5000) {
                         deferredResult.setErrorResult(
-                                ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
+                                ResponseEntity.status(HttpStatus.GONE)
                                         .body("Thread killed himself for too much time passing"));
                         break;
                     }

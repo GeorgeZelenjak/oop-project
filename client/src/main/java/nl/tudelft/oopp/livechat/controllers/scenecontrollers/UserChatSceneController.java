@@ -11,8 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
-import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 

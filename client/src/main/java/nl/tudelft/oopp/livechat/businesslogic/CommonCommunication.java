@@ -2,7 +2,7 @@ package nl.tudelft.oopp.livechat.businesslogic;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;

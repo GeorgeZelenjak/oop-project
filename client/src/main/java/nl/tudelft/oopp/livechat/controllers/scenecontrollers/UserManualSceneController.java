@@ -3,7 +3,7 @@ package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.controllers.gui.NavigationController;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;

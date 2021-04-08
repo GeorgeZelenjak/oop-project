@@ -394,7 +394,7 @@ class QuestionControllerTest {
         Objects.requireNonNull(mvcResult.getRequest().getAsyncContext()).setTimeout(40000);
 
         mockMvc.perform(asyncDispatch(mvcResult))
-                .andExpect(status().isIAmATeapot())
+                .andExpect(status().isGone())
                 .andExpect(content().string("Thread killed himself for too much time passing"));
 
         lectureRepository.deleteById(lectureEntity.getUuid());

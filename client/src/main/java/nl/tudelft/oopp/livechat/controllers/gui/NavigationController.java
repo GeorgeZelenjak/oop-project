@@ -1,4 +1,4 @@
-package nl.tudelft.oopp.livechat.controllers;
+package nl.tudelft.oopp.livechat.controllers.gui;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
