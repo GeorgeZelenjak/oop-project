@@ -30,7 +30,6 @@ subprojects {
                 fileTree(dir: it, exclude: [//client-side
                         'nl/tudelft/oopp/livechat/controllers/AlertController.class',
                         'nl/tudelft/oopp/livechat/controllers/NavigationController.class',
-                        'nl/tudelft/oopp/livechat/controllers/*.class',
                         'nl/tudelft/oopp/livechat/controllers/scenecontrollers/**',
                         'nl/tudelft/oopp/livechat/controllers/cellcontrollers/**',
                         'nl/tudelft/oopp/livechat/controllers/popupcontrollers/**',

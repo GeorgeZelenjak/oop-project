@@ -309,6 +309,29 @@ class QuestionControllerTest {
     }
 
     @Test
+    public void askQuestionTooEarlyExceptionTest() throws Exception {
+        lectureEntity1.setFrequency(300);
+        lectureRepository.save(lectureEntity1);
+        user1.setLastQuestion(new Timestamp(System.currentTimeMillis()));
+        userRepository.save(user1);
+
+        String response = this.mockMvc
+                .perform(post("/api/question/ask")
+                        .contentType(APPLICATION_JSON)
+                        .content(createQuestionJson(q1))
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isTooEarly())
+                .andReturn().getResponse().getContentAsString();
+        System.out.println(response);
+        assertTrue(response.contains("Not enough time has passed between questions"));
+
+        lectureEntity1.setFrequency(0);
+        lectureRepository.save(lectureEntity1);
+        user1.setLastQuestion(null);
+        userRepository.save(user1);
+    }
+
+    @Test
     void fetchQuestionsTest() throws Exception {
         user2.setAllowed(true);
         userRepository.save(user2);
