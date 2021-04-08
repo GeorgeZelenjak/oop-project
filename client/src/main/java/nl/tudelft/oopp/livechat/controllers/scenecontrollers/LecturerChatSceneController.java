@@ -146,7 +146,7 @@ public class LecturerChatSceneController implements Initializable {
     private Timeline timelineFetch;
 
     /**
-     * Method that runs at scene initalization.
+     * Method that runs at scene initialization.
      * @param location location of scene
      * @param resourceBundle resources brought around
      */
@@ -158,9 +158,7 @@ public class LecturerChatSceneController implements Initializable {
         slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
 
         getQuestions(true);
-        timelineFetch = new Timeline(new KeyFrame(
-                Duration.millis(1000),
-            ae -> {
+        timelineFetch = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
                 setQuestions();
                 getVotesOnLectureSpeed();
                 adjustLectureSpeedLines();
@@ -191,10 +189,9 @@ public class LecturerChatSceneController implements Initializable {
     public void getVotesOnLectureSpeed() {
         UUID uuid = Lecture.getCurrent().getUuid();
         lectureSpeeds = LectureSpeedCommunication.getVotesOnLectureSpeed(uuid);
-        voteCountFast.setText("Too fast: "
-                + lectureSpeeds.get(0));
-        voteCountSlow.setText("Too slow: "
-                + lectureSpeeds.get(1));
+        if (lectureSpeeds == null) return;
+        voteCountFast.setText("Too fast: " + lectureSpeeds.get(0));
+        voteCountSlow.setText("Too slow: " + lectureSpeeds.get(1));
     }
 
     /**
@@ -310,10 +307,8 @@ public class LecturerChatSceneController implements Initializable {
      * @return res[0] is the selected frequency, res[1] if the button was submitted
      */
     private int[] showPopup() {
-        Spinner<Integer> frequency = new Spinner<>();
+        Spinner<Integer> frequency = new Spinner<>(0, 300, 60);
         frequency.setInitialDelay(new Duration(0));
-        frequency.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 300));
-        frequency.setPromptText("0");
 
         int[] result = new int[2];
         Stage window = new Stage();
@@ -323,13 +318,13 @@ public class LecturerChatSceneController implements Initializable {
             window.close();
         });
 
-        Label label = new Label("Choose the frequency of asking questions in seconds");
+        Label label = new Label("Choose the frequency of asking questions in seconds (max 300)");
 
         VBox box = new VBox();
         box.setAlignment(Pos.CENTER);
         box.getChildren().addAll(label, frequency, submit);
 
-        Scene scene = new Scene(box, 250, 150);
+        Scene scene = new Scene(box, 350, 150);
         window.setScene(scene);
         window.showAndWait();
 

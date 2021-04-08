@@ -28,6 +28,7 @@ import nl.tudelft.oopp.livechat.views.MainSceneDisplay;
  */
 public class MainApp {
     public static void main(String[] args) {
+        System.setProperty("prism.allowhidpi", "false");
         MainSceneDisplay.main(new String[0]);
     }
 }
