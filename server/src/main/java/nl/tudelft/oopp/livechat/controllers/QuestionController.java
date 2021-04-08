@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.exceptions.*;
@@ -59,20 +58,16 @@ public class QuestionController {
             return deferredResult;
         } else {
             future = CompletableFuture.runAsync(() -> {
-                int count = 0;
+                long startTime = System.currentTimeMillis();
                 while (true) {
                     if (questionService.wasLectureChanged(lid)) {
                         deferredResult.setResult(questionService.getQuestionsByLectureId(lid));
                         break;
-                    } else if (count >= timeOutInMilliSec) {
+                    } else if (System.currentTimeMillis() - startTime >= timeOutInMilliSec + 5000) {
+                        deferredResult.setErrorResult(
+                                ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
+                                        .body("Thread killed himself for too much time passing"));
                         break;
-                    } else {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        count += 100;
                     }
                 }
             });
@@ -244,4 +239,5 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Missing parameter");
     }
+
 }
