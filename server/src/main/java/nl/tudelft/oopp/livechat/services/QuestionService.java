@@ -108,10 +108,12 @@ public class QuestionService {
         if (!userAsked.isAllowed()) {
             throw new UserBannedException();
         }
-        if (userAsked.getLastQuestion() != null
-                && System.currentTimeMillis() - userAsked.getLastQuestion().getTime()
-                < lecture.getFrequency() * 1000) {
-            throw new QuestionFrequencyTooFastException();
+        if (userAsked.getLastQuestion() != null) {
+            long passed = System.currentTimeMillis() - userAsked.getLastQuestion().getTime();
+            if (passed < lecture.getFrequency() * 1000) {
+                int left = (int) ((lecture.getFrequency() * 1000 - passed) / 1000);
+                throw new QuestionFrequencyTooFastException("Wait for " + left + " seconds more");
+            }
         }
         userAsked.setLastQuestion(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
         q.setOwnerName(userAsked.getUserName());

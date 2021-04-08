@@ -195,6 +195,18 @@ public class QuestionController {
     }
 
     /**
+     * Exception handler for invalid JSONs.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Don't do this' message
+     */
+    @ExceptionHandler(QuestionFrequencyTooFastException.class)
+    @ResponseStatus(HttpStatus.TOO_EARLY)
+    private ResponseEntity<Object> tooEarly(QuestionFrequencyTooFastException exception) {
+        return ResponseEntity.status(HttpStatus.TOO_EARLY)
+                .body("Not enough time has passed between questions\n" + exception.getMessage());
+    }
+
+    /**
      * Exception handler for invalid uuids.
      * @param exception exception that has occurred
      * @return response body with 400 and 'Don't do this' message
