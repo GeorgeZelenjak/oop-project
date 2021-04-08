@@ -6,6 +6,11 @@ import org.springframework.web.filter.AbstractRequestLoggingFilter;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Logging Filter configuration.
+ * By default it reads the shouldLog variable in application.properties and
+ * if that is true it ignores logging for requests to fetchPoll endpoints
+ */
 @Component
 public class LoggingFilter extends AbstractRequestLoggingFilter {
 
