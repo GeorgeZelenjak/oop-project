@@ -77,6 +77,11 @@ public class UserService {
         if (userRepository.findById(user.getUid()).isEmpty() && count > 5) {
             throw new UserTooManyUsersException();
         }
+        Optional<UserEntity> oldUser = userRepository.findById(user.getUid());
+
+        if (oldUser.isPresent() && !oldUser.get().isAllowed()) {
+            user.setAllowed(false);
+        }
         userRepository.save(user);
         return 0;
     }
