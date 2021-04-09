@@ -128,25 +128,31 @@ public class LectureSpeedCommunicationTest {
                         .withBody("-1").withHeader("Content-Type", "application/json"));
     }
 
+    private static void startServer() {
+        mockServer = ClientAndServer.startClientAndServer(8080);
+
+        createExpectationsForGetVotes();
+        createExpectationsForVoting();
+        createExpectationsForResetting();
+    }
+
     /**
      * Setup for the tests.
      */
     @BeforeAll
     public static void setUp() {
-        mockServer = ClientAndServer.startClientAndServer(8080);
         User.setUid();
         userId = User.getUid();
         Lecture.setCurrent(new Lecture(lid, modkey, "Lecture", "Lecturer"));
 
-        createExpectationsForGetVotes();
-        createExpectationsForVoting();
-        createExpectationsForResetting();
+        startServer();
+
         try {
             alertControllerMockedStatic = Mockito.mockStatic(AlertController.class);
             alertControllerMockedStatic.when(() -> AlertController.alertError(any(String.class),
                     any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Exception caught");
         }
     }
 
@@ -171,7 +177,7 @@ public class LectureSpeedCommunicationTest {
         mockServer.stop();
         assertNull(LectureSpeedCommunication.getVotesOnLectureSpeed(lid));
 
-        setUp();
+        startServer();
     }
 
     @Test
@@ -216,7 +222,7 @@ public class LectureSpeedCommunicationTest {
         mockServer.stop();
         assertFalse(LectureSpeedCommunication.voteOnLectureSpeed(userId, lid, "faster"));
 
-        setUp();
+        startServer();
     }
 
     @Test
@@ -255,7 +261,7 @@ public class LectureSpeedCommunicationTest {
         mockServer.stop();
         assertFalse(LectureSpeedCommunication.resetLectureSpeed(lid, modkey));
 
-        setUp();
+        startServer();
     }
 
     @Test

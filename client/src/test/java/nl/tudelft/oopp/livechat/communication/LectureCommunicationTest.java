@@ -28,7 +28,6 @@ import static org.mockserver.model.HttpRequest.request;
  * Class for Lecture communication tests.
  */
 public class LectureCommunicationTest {
-
     private static MockServerClient mockServer;
     private static String jsonLecture;
     private static String jsonUser;
@@ -265,18 +264,7 @@ public class LectureCommunicationTest {
                 .respond(HttpResponse.response().withStatusCode(400));
     }
 
-    /**
-     * Starts the server and assigns expectations.
-     */
-    @BeforeAll
-    public static void startServer() {
-        User.setUid();
-        User.setUserName("name");
-
-        jsonLecture = createJsonLecture();
-        jsonUser = createJsonUser(User.getUid(), User.getUserName());
-        jsonBanning = createJsonForBanning(modkey);
-
+    private static void startServer() {
         mockServer = ClientAndServer.startClientAndServer(8080);
 
         createExpectationsForCreateLecture();
@@ -286,15 +274,28 @@ public class LectureCommunicationTest {
         createExpectationsForCloseLecture();
         createExpectationsForBanning();
         createExpectationsForSettingFrequency();
+    }
 
-        if (mockedAlertController == null) {
-            try {
-                mockedAlertController = Mockito.mockStatic(AlertController.class);
-                mockedAlertController.when(() -> AlertController.alertError(any(String.class),
-                        any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    /**
+     * Starts the server and assigns expectations.
+     */
+    @BeforeAll
+    public static void setUp() {
+        User.setUid();
+        User.setUserName("name");
+
+        startServer();
+
+        jsonLecture = createJsonLecture();
+        jsonUser = createJsonUser(User.getUid(), User.getUserName());
+        jsonBanning = createJsonForBanning(modkey);
+
+        try {
+            mockedAlertController = Mockito.mockStatic(AlertController.class);
+            mockedAlertController.when(() -> AlertController.alertError(any(String.class),
+                    any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
+        } catch (Exception e) {
+            System.err.println("Exception caught");
         }
     }
 

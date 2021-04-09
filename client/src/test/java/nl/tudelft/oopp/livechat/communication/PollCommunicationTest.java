@@ -244,6 +244,18 @@ public class PollCommunicationTest {
                 + invalidUUID)).respond(HttpResponse.response().withStatusCode(400));
     }
 
+    private static void startServer() {
+        mockServer = ClientAndServer.startClientAndServer(8080);
+
+        createExpectationsForCreatePoll();
+        createExpectationsForAddOption();
+        createExpectationsForToggle();
+        createExpectationsForVote();
+        createExpectationsForFetchStudent();
+        createExpectationsForFetchModerator();
+        createExpectationsForReset();
+    }
+
     /**
      * Set up for the tests.
      */
@@ -253,21 +265,14 @@ public class PollCommunicationTest {
         User.setUserName("Slim Shady");
         Lecture.setCurrent(new Lecture());
 
-        mockServer = ClientAndServer.startClientAndServer(8080);
+        startServer();
         try {
             mockedAlertController = Mockito.mockStatic(AlertController.class);
             mockedAlertController.when(() -> AlertController.alertError(any(String.class),
                     any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Exception caught");
         }
-        createExpectationsForCreatePoll();
-        createExpectationsForAddOption();
-        createExpectationsForToggle();
-        createExpectationsForVote();
-        createExpectationsForFetchStudent();
-        createExpectationsForFetchModerator();
-        createExpectationsForReset();
     }
 
     /**
@@ -297,7 +302,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertNull(PollCommunication.createPoll(lectureId, modkey, "Guess who's back?"));
 
-        setUp();
+        startServer();
     }
 
     @Test
@@ -340,7 +345,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertNull(PollCommunication.addOption(pollId, modkey, true, "Slim Shady"));
 
-        setUp();
+        startServer();
     }
 
     @Test
@@ -374,7 +379,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertFalse(PollCommunication.toggle(pollId, modkey));
 
-        setUp();
+        startServer();
     }
 
     @Test
@@ -405,7 +410,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertFalse(PollCommunication.vote(userId, pollOptionId));
 
-        setUp();
+        startServer();
     }
 
     @Test
@@ -460,7 +465,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertNull(PollCommunication.fetchPollAndOptionsStudent(lectureId));
 
-        setUp();
+        startServer();
     }
 
     /**
@@ -511,7 +516,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertNull(PollCommunication.fetchPollAndOptionsModerator(lectureId, modkey));
 
-        setUp();
+        startServer();
     }
 
     /**
@@ -527,7 +532,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertFalse(PollCommunication.resetVotes(pollId, modkey));
 
-        setUp();
+        startServer();
     }
 
     @Test
