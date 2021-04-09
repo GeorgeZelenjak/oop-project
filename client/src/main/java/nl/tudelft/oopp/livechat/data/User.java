@@ -1,16 +1,14 @@
 package nl.tudelft.oopp.livechat.data;
 
 import com.google.gson.annotations.Expose;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * User class.
- */
+
 public class User {
     private static String userName;
 

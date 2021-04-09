@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.exceptions.*;
@@ -16,9 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
-/**
- * Class for the Question controller.
- */
+
 @RestController
 @RequestMapping("/api/question")
 public class QuestionController {
@@ -59,20 +56,16 @@ public class QuestionController {
             return deferredResult;
         } else {
             future = CompletableFuture.runAsync(() -> {
-                int count = 0;
+                long startTime = System.currentTimeMillis();
                 while (true) {
                     if (questionService.wasLectureChanged(lid)) {
                         deferredResult.setResult(questionService.getQuestionsByLectureId(lid));
                         break;
-                    } else if (count >= timeOutInMilliSec) {
+                    } else if (System.currentTimeMillis() - startTime >= timeOutInMilliSec + 5000) {
+                        deferredResult.setErrorResult(
+                                ResponseEntity.status(HttpStatus.GONE)
+                                        .body("Thread killed himself for too much time passing"));
                         break;
-                    } else {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        count += 100;
                     }
                 }
             });
@@ -195,6 +188,18 @@ public class QuestionController {
     }
 
     /**
+     * Exception handler for invalid JSONs.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Don't do this' message
+     */
+    @ExceptionHandler(QuestionFrequencyTooFastException.class)
+    @ResponseStatus(HttpStatus.TOO_EARLY)
+    private ResponseEntity<Object> tooEarly(QuestionFrequencyTooFastException exception) {
+        return ResponseEntity.status(HttpStatus.TOO_EARLY)
+                .body("Not enough time has passed between questions\n" + exception.getMessage());
+    }
+
+    /**
      * Exception handler for invalid uuids.
      * @param exception exception that has occurred
      * @return response body with 400 and 'Don't do this' message
@@ -232,4 +237,5 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Missing parameter");
     }
+
 }

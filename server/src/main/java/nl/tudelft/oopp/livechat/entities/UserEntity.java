@@ -6,9 +6,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-/**
- * The type User entity.
- */
+
 @Entity(name = "user")
 @Table(name = "users")
 @DynamicUpdate

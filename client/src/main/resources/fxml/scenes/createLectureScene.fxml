@@ -35,7 +35,10 @@
                   <DatePicker fx:id="lectureSchedulingDateDatePicker" disable="true" layoutX="106.0" layoutY="360.0" prefHeight="34.0" prefWidth="204.0" visible="false" />
                   <TextField fx:id="lectureScheduleMinuteTextField" alignment="CENTER" disable="true" layoutX="217.0" layoutY="402.0" prefHeight="34.0" prefWidth="34.0" promptText="mm" visible="false" />
                   <TextField fx:id="lectureScheduleHourTextField" alignment="CENTER" disable="true" layoutX="158.0" layoutY="402.0" prefHeight="34.0" prefWidth="34.0" promptText="hh" visible="false" />
-                  <Text layoutX="4.0" layoutY="548.05078125" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter here the desired cooldown time between questions for students (in seconds). If you leave this empty, the default is 60 seconds." textAlignment="CENTER" wrappingWidth="422.4" />
+                  <Text layoutX="26.0" layoutY="551.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The frequency of asking questions for students (in seconds). Default: 60 seconds, max: 300 seconds." textAlignment="CENTER" wrappingWidth="381.4">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Text>
                   <Text fx:id="dotsText" layoutX="203.0" layoutY="409.05078125" strokeType="OUTSIDE" strokeWidth="0.0" text=":" visible="false" />
                </children>
             </Group>

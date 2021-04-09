@@ -57,12 +57,9 @@ public class CreateFile {
 
         try {
             if (Files.notExists(path)) {
-                System.out.println(ANSI_RED + "Directory not found" + ANSI_RESET);
                 Files.createDirectory(path);
-                System.out.println(ANSI_GREEN + "Directory created" + ANSI_RESET);
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return false;
         }
 
@@ -84,11 +81,7 @@ public class CreateFile {
      */
     private boolean createFileHelper() {
         try {
-            if (file.createNewFile()) {
-                System.out.println(ANSI_GREEN + "File created successfully" + ANSI_RESET);
-            } else {
-                System.out.println(ANSI_RED + "File already exists!" + ANSI_RESET);
-            }
+            file.createNewFile();
             return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -127,7 +120,6 @@ public class CreateFile {
 
             writer.close();
         } catch (FileNotFoundException | NullPointerException e) {
-            System.out.println(ANSI_RED + "File not found!" + ANSI_RESET);
             return false;
         }
         return true;

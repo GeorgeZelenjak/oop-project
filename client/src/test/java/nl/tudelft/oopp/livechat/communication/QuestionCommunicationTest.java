@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
@@ -34,9 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.model.HttpRequest.request;
 
-/**
- * Class for Question communication tests.
- */
+
 public class QuestionCommunicationTest {
     public static MockServerClient mockServer;
 
@@ -335,27 +333,8 @@ public class QuestionCommunicationTest {
         return sb.toString();
     }
 
-
-    /**
-     * Starts mock server.
-     */
-    @BeforeAll
-    public static void startServer() {
+    private static void startServer() {
         mockServer = ClientAndServer.startClientAndServer(8080);
-        User.setUid();
-        userId = User.getUid();
-        goodQuestion = gson.toJson(
-                new Question(lid, "Is there anybody?",  userId));
-        normalQuestion = gson.toJson(
-                new Question(lid, "Will we get 10?",  userId));
-        badQuestion = gson.toJson(
-                new Question(lid, "F*ck",  userId));
-
-        json1 = createJson(Long.parseLong(qid1), modkey, "Edited", userId);
-        json2 = createJson(Long.parseLong(qid2), lid, "Edited question", userId);
-        json3 = createJson(Long.parseLong(qid3), incorrectModkey, "Edited by ...", userId);
-        json4 = createJson(666, modkey, "Edited or not", userId);
-
         createExpectationsForAsking();
         createExpectationsForFetching();
         createExpectationsForUpvote();
@@ -364,13 +343,33 @@ public class QuestionCommunicationTest {
         createExpectationsForModDelete();
         createExpectationsForEdit();
         createExpectationsForSetStatus();
+    }
+
+
+    /**
+     * Starts mock server.
+     */
+    @BeforeAll
+    public static void setUp() {
+        User.setUid();
+        startServer();
+
+        userId = User.getUid();
+        goodQuestion = gson.toJson(new Question(lid, "Is there anybody?", userId));
+        normalQuestion = gson.toJson(new Question(lid, "Will we get 10?", userId));
+        badQuestion = gson.toJson(new Question(lid, "F*ck",  userId));
+
+        json1 = createJson(Long.parseLong(qid1), modkey, "Edited", userId);
+        json2 = createJson(Long.parseLong(qid2), lid, "Edited question", userId);
+        json3 = createJson(Long.parseLong(qid3), incorrectModkey, "Edited by ...", userId);
+        json4 = createJson(666, modkey, "Edited or not", userId);
 
         try {
             mockedAlertController = Mockito.mockStatic(AlertController.class);
             mockedAlertController.when(() -> AlertController.alertError(any(String.class),
                     any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println();
         }
     }
 

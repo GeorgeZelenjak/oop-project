@@ -10,7 +10,7 @@
    <children>
       <BorderPane prefHeight="768.0" prefWidth="1080.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
-            <Text id="appName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="Friendly Chat" textAlignment="CENTER" wrappingWidth="426.0" BorderPane.alignment="CENTER">
+            <Text id="appName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="WAT" textAlignment="CENTER" wrappingWidth="347.0" BorderPane.alignment="CENTER">
          
       </Text>
          </top>
@@ -19,7 +19,6 @@
                <children>
                   <Button id="joinLecture" fx:id="goToJoinLectureButton" contentDisplay="CENTER" layoutX="-4.0" layoutY="41.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#goToLecture" prefHeight="47.0" prefWidth="422.0" styleClass="mainSceneButton" text="Join Lecture" textAlignment="CENTER" />
                   <Button id="createLecture" fx:id="goToCreateLectureButton" layoutX="-4.0" layoutY="122.0" mnemonicParsing="false" onAction="#goToCreateLecture" prefHeight="34.0" prefWidth="287.0" styleClass="mainSceneButton" text="Create Lecture" />
-                  <Button fx:id="debugButton" layoutX="3.0" layoutY="362.5" mnemonicParsing="false" onAction="#goToDebug" prefHeight="51.0" prefWidth="456.0" styleClass="debugButton" text="Debug scene" />
                </children>
             </Group>
          </center>

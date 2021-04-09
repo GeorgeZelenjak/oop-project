@@ -1,4 +1,4 @@
-package nl.tudelft.oopp.livechat.controllers;
+package nl.tudelft.oopp.livechat.controllers.gui;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -15,11 +15,7 @@ import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 import java.io.IOException;
 import java.util.Stack;
 
-/**
- * Class for navigation between scenes.
- * For navigation use:
- * NavigationController.getCurrentController().goToWhateverPage9();
- */
+
 public class NavigationController {
 
     private Scene main;
@@ -31,8 +27,7 @@ public class NavigationController {
 
     /**
      * Instantiates a new Navigation controller.
-     *
-     * @param main The main scene of the application
+     * @param main the main scene of the application
      */
     public NavigationController(Scene main) {
         this.main = main;
@@ -40,8 +35,7 @@ public class NavigationController {
     }
 
     /**
-     * Sets current controller.
-     *
+     * Sets the current controller.
      * @param currentController the current controller
      */
     public static void setCurrent(NavigationController currentController) {
@@ -49,8 +43,7 @@ public class NavigationController {
     }
 
     /**
-     * Gets current controller.
-     *
+     * Gets the current controller.
      * @return the current controller
      */
     public static NavigationController getCurrent() {
@@ -112,8 +105,6 @@ public class NavigationController {
             Scene main = new Scene(root, width, height);
             this.main = main;
             window.setScene(main);
-            window.setWidth(window.getWidth() + 0.001);
-            window.setWidth(window.getWidth() - 0.001);
             //Closes the entire program when the main scene is closed
             window.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
@@ -123,7 +114,7 @@ public class NavigationController {
             });
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("An exception");
         }
     }
 
@@ -137,7 +128,7 @@ public class NavigationController {
             stage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            return;
         }
     }
 
@@ -164,7 +155,7 @@ public class NavigationController {
                 }
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            return;
         }
 
     }

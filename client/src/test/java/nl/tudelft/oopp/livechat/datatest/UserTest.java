@@ -3,7 +3,7 @@ package nl.tudelft.oopp.livechat.datatest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 import nl.tudelft.oopp.livechat.data.User;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,5 @@
 package nl.tudelft.oopp.livechat.data;
 
-
 public class PollOptionResult extends PollOption {
 
     /**

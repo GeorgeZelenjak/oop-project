@@ -8,9 +8,6 @@ import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import org.springframework.stereotype.Service;
 
 
-/**
- * Class for the Lecture service.
- */
 @Service
 public class LectureService {
 
@@ -36,14 +33,7 @@ public class LectureService {
      */
     public LectureEntity getLectureByIdNoModkey(UUID id) throws LectureException {
         LectureEntity toSend = lectureRepository.findLectureEntityByUuid(id);
-        if (toSend == null) {
-            throw new LectureNotFoundException();
-        }
-
-        //check if lecture has started
-        if (toSend.getStartTime().compareTo(new Timestamp(System.currentTimeMillis())) >= 0) {
-            throw new LectureNotStartedException();
-        }
+        if (toSend == null) throw new LectureNotFoundException();
         toSend.setModkey(null);
         return toSend;
     }

@@ -1,7 +1,7 @@
 package nl.tudelft.oopp.livechat.communication;
 
 import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -64,19 +64,23 @@ public class CommonCommunicationTest {
                         + "?qid=" + qid + "&uid=" + uid)).build();
     }
 
+    private static void startServer() {
+        mockServer = ClientAndServer.startClientAndServer(8080);
+        createExpectations();
+    }
+
     /**
      * Setup for the tests.
      */
     @BeforeAll
     public static void setUp() {
-        mockServer = ClientAndServer.startClientAndServer(8080);
-        createExpectations();
+        startServer();
         try {
             mockedAlertController = Mockito.mockStatic(AlertController.class);
             mockedAlertController.when(() -> AlertController.alertError(any(String.class),
                     any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
         } catch (Exception e) {
-            System.out.println("Caught exception!");
+            System.err.println("Exception caught");
         }
     }
 
@@ -95,7 +99,7 @@ public class CommonCommunicationTest {
         mockServer.stop();
         assertNull(CommonCommunication.sendAndReceive(buildRequest(42, 443)));
 
-        setUp();
+        startServer();
     }
 
 

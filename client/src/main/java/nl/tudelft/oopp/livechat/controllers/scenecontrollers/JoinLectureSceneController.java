@@ -3,9 +3,9 @@ package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
-import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.controllers.gui.NavigationController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
@@ -13,9 +13,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
-/**
- * Class for the JoinLecture Scene controller.
- */
+
 public class JoinLectureSceneController implements Initializable {
 
     @FXML
@@ -49,14 +47,7 @@ public class JoinLectureSceneController implements Initializable {
     }
 
     /**
-     * Toggles the visibility of the modKeyTextField.
-     */
-    public void onCheckBoxAction() {
-        modkeyTextField.setVisible(!modkeyTextField.isVisible());
-    }
-
-    /**
-     * Go to the lecture if successful.
+     * Goes to the lecture page if successful.
      */
     public void goToLecture() {
         String name = enterNameTextField.getText();
@@ -75,10 +66,9 @@ public class JoinLectureSceneController implements Initializable {
             return;
         }
         if (inputStatusUserName == -2) {
-            AlertController.alertWarning("Long name",
-                    "Your name is too long!\n(max: " + 50
+            AlertController.alertWarning("Long name", "Your name is too long!\n(max: " + 50
                             + " characters, you entered: "
-                            + enterNameTextField.getText().length() + ")");
+                            + name.length() + ")");
             return;
         }
 
@@ -86,8 +76,7 @@ public class JoinLectureSceneController implements Initializable {
         int inputStatusLectureId = InputValidator.validateLength(uuidString, 100);
 
         if (inputStatusLectureId == -1) {
-            AlertController.alertWarning("No lecture id entered",
-                    "Please enter the lecture id!");
+            AlertController.alertWarning("No lecture id entered", "Please enter the lecture id!");
             return;
         }
         if (!InputValidator.validateUUID(uuidString)) {
@@ -110,46 +99,34 @@ public class JoinLectureSceneController implements Initializable {
     }
 
     /**
-     * Go to lecture by pressing the button.
+     * Toggles the visibility of the modKeyTextField.
      */
-    public void goToLectureButton() {
-        goToLecture();
+    public void onCheckBoxAction() {
+        modkeyTextField.setVisible(!modkeyTextField.isVisible());
     }
 
     /**
-     * Go to lecture by pressing enter.
-     */
-    public void goToLectureEnter() {
-        goToLecture();
-    }
-
-    /**
-     * Join lecture as a student.
+     * Joins lecture as a student.
      */
     private void joinAsStudent() {
-        if (!Lecture.getCurrent().isOpen()) {
-            AlertController.alertInformation(
-                    "Lecture not open yet!","This lecture has not started yet!");
+        if (!Lecture.getCurrent().isOpen()
+                || Lecture.getCurrent().getStartTime().getTime() > System.currentTimeMillis()) {
+            AlertController.alertInformation("Lecture not open yet!",
+                    "This lecture has not started yet!");
         } else {
             NavigationController.getCurrent().goToUserChatPage();
         }
     }
 
-    public void goToUserManualScene() {
-        NavigationController.getCurrent().goToUserManual();
-    }
-
     /**
-     * Join lecture as a moderator.
+     * Joins lecture as a moderator.
      */
     private void joinAsModerator() {
         String modkeyString = modkeyTextField.getText();
 
-        int inputStatusModKey = InputValidator.validateLength(
-                modkeyTextField.getText(), 255);
-        if (inputStatusModKey == -1) {
-            AlertController.alertWarning(
-                    "No moderator key entered", "Please enter the moderator key!");
+        if (InputValidator.validateLength(modkeyTextField.getText(), 300) < 0) {
+            AlertController.alertWarning("No moderator key entered",
+                    "Please enter the moderator key!");
             return;
         }
         if (!InputValidator.validateUUID(modkeyString)) {
@@ -157,8 +134,8 @@ public class JoinLectureSceneController implements Initializable {
             return;
         }
 
-        if (!LectureCommunication
-                .validateModerator(enterLectureCodeTextField.getText(), modkeyString)) {
+        if (!LectureCommunication.validateModerator(enterLectureCodeTextField.getText(),
+                modkeyString)) {
             return;
         }
         Lecture.getCurrent().setModkey(UUID.fromString(modkeyString));
@@ -166,10 +143,17 @@ public class JoinLectureSceneController implements Initializable {
     }
 
     /**
-     * Navigate to the previous scene.
+     * Goes to the previous scene.
      */
     public void goBack() {
         NavigationController.getCurrent().goBack();
+    }
+
+    /**
+     * Goes to the user manual page.
+     */
+    public void goToUserManualScene() {
+        NavigationController.getCurrent().goToUserManual();
     }
 
 }

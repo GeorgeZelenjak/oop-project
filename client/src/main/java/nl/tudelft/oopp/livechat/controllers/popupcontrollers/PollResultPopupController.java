@@ -22,8 +22,10 @@ public class PollResultPopupController implements Initializable {
 
     @FXML
     private ListView<PollOptionResult> resultsListView;
+
     @FXML
     private Text questionText;
+
     @FXML
     ObservableList<PollOptionResult> observableList = FXCollections.observableArrayList();
 
@@ -42,12 +44,13 @@ public class PollResultPopupController implements Initializable {
 
     }
 
+    /**
+     * Sets list view as in editing.
+     */
     private void setListViewAsInEditing() {
-
         observableList.setAll(list);
         resultsListView.setItems(observableList);
 
-        //Setup cellFactory
         resultsListView.setCellFactory(
                 new Callback<ListView<PollOptionResult>, ListCell<PollOptionResult>>() {
                     @Override

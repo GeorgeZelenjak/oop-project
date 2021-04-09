@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Class for Question tests.
- */
+
 public class QuestionTest {
 
     private static Question question;

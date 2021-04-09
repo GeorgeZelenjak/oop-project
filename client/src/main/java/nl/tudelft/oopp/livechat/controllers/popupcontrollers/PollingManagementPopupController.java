@@ -9,7 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 import nl.tudelft.oopp.livechat.data.*;
 import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
 import nl.tudelft.oopp.livechat.uielements.PollOptionCell;
@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
-/**
- * The type Polling management popup controller.
- */
+
 public class PollingManagementPopupController implements Initializable {
 
     @FXML
@@ -46,37 +44,10 @@ public class PollingManagementPopupController implements Initializable {
     @FXML
     private CheckBox isPollCheckbox;
 
-    public static List<PollOption> getInEditingOptions() {
-        return inEditingOptions;
-    }
-
-    public static void setInEditingOptions(List<PollOption> inEditingOptions) {
-        PollingManagementPopupController.inEditingOptions = inEditingOptions;
-    }
-
-    public static Poll getInEditingPoll() {
-        return inEditingPoll;
-    }
-
-    public static void setInEditingPoll(Poll inEditingPoll) {
-        PollingManagementPopupController.inEditingPoll = inEditingPoll;
-    }
-
-    //Setup for ease of access
     private static List<PollOption> inEditingOptions;
+
     private static Poll inEditingPoll;
 
-    public static boolean isAllCorrect() {
-        return allCorrect;
-    }
-
-    public static void setAllCorrect(boolean allCorrect) {
-        PollingManagementPopupController.allCorrect = allCorrect;
-    }
-
-    public static boolean getAllCorrect() {
-        return allCorrect;
-    }
 
     private static boolean allCorrect;
 
@@ -88,19 +59,11 @@ public class PollingManagementPopupController implements Initializable {
 
     private UUID modkey;
 
-    /**
-     * The Observable list.
-     */
     @FXML
     ObservableList<PollOption> observableList = FXCollections.observableArrayList();
 
-    /**
-     * Fetch poll options.
-     */
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         questionTextTextArea.focusedProperty().addListener(new ChangeListener<>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> arg0,
@@ -109,17 +72,14 @@ public class PollingManagementPopupController implements Initializable {
             }
         });
 
-        //Set for ease of access
         lectureId = Lecture.getCurrent().getUuid();
         modkey = Lecture.getCurrent().getModkey();
-
-        //Sets page to match whats was in editing
         setAsInEditing();
     }
 
 
     /**
-     * Add poll option cell to inEditingOptions.
+     * Adds a poll option cell to inEditingOptions.
      */
     public void addPollOptionCell() {
         if (!newPoll.isVisible())newPoll.setVisible(true);
@@ -130,7 +90,7 @@ public class PollingManagementPopupController implements Initializable {
     }
 
     /**
-     * Open polling.
+     * Opens a poll.
      */
     public void openPolling() {
         if (!inEditingPoll.equals(fetchedPoll)) {
@@ -147,7 +107,7 @@ public class PollingManagementPopupController implements Initializable {
     }
 
     /**
-     * Close poll.
+     * Closes the poll.
      */
     public void closePoll() {
         if (fetchedPoll != null && fetchedPoll.isOpen()) {
@@ -160,20 +120,76 @@ public class PollingManagementPopupController implements Initializable {
     }
 
     /**
-     * Restart poll.
+     * Restarts the poll.
      */
     public void restartPoll() {
         PollCommunication.resetVotes(inEditingPoll.getId(), modkey);
     }
 
     /**
-     * New poll.
+     * Gets inEditingOptions.
+     * @return the list inEditingOptions
+     */
+    public static List<PollOption> getInEditingOptions() {
+        return inEditingOptions;
+    }
+
+    /**
+     * Sets inEditingOptions list.
+     * @param inEditingOptions inEditingOptions list
+     */
+    public static void setInEditingOptions(List<PollOption> inEditingOptions) {
+        PollingManagementPopupController.inEditingOptions = inEditingOptions;
+    }
+
+    /**
+     * Gets inEditingPoll.
+     * @return inEditingPoll
+     */
+    public static Poll getInEditingPoll() {
+        return inEditingPoll;
+    }
+
+    /**
+     * Sets inEditingPoll.
+     * @param inEditingPoll inEditingPoll
+     */
+    public static void setInEditingPoll(Poll inEditingPoll) {
+        PollingManagementPopupController.inEditingPoll = inEditingPoll;
+    }
+
+    /**
+     * Checks if all options are correct.
+     * @return true if all options are correct
+     */
+    public static boolean isAllCorrect() {
+        return allCorrect;
+    }
+
+    /**
+     * Sets all options as correct.
+     * @param allCorrect true if all options as correct
+     */
+    public static void setAllCorrect(boolean allCorrect) {
+        PollingManagementPopupController.allCorrect = allCorrect;
+    }
+
+    /**
+     * Checks if all options are correct.
+     * @return true if all options are correct
+     */
+    public static boolean getAllCorrect() {
+        return allCorrect;
+    }
+
+    /**
+     * Creates a new poll.
      */
     public void newPoll() {
         try {
             closePoll();
         } catch (Exception e) {
-            System.out.println("Current poll is null");
+            return;
         }
 
         inEditingPoll = new Poll();
@@ -213,12 +229,13 @@ public class PollingManagementPopupController implements Initializable {
         }
     }
 
+    /**
+     * Sets the list view as in editing.
+     */
     private void setListViewAsInEditing() {
-
         observableList.setAll(inEditingOptions);
         pollOptionsListView.setItems(observableList);
 
-        //Setup cellFactory
         pollOptionsListView.setCellFactory(
                 new Callback<>() {
                     @Override
@@ -230,13 +247,18 @@ public class PollingManagementPopupController implements Initializable {
         pollOptionsListView.getItems().addAll(inEditingOptions);
     }
 
+    /**
+     * Forces update fetch.
+     */
     private void forceUpdateFetch() {
         fetchedPoll = inEditingPoll;
         fetchedOptions = inEditingOptions;
     }
 
+    /**
+     * Publishes poll results.
+     */
     private void publishPoll() {
-
         if (!checkIfNotEmpty()) {
             AlertController.alertWarning("Empty fields", "You have empty fields");
             return;
@@ -250,7 +272,6 @@ public class PollingManagementPopupController implements Initializable {
 
             //Sends requests for every pollOption
             for (PollOption pollOption : inEditingOptions) {
-                System.out.println(pollOption.getOptionText());
                 sentPollOptions.add(PollCommunication.addOption(sentPoll.getId(),
                         modkey, pollOption.isCorrect(), pollOption.getOptionText()));
             }
@@ -261,12 +282,15 @@ public class PollingManagementPopupController implements Initializable {
             inEditingOptions = sentPollOptions;
             inEditingPoll = sentPoll;
             forceUpdateFetch();
-            //
             resetVotes.setVisible(true);
             endVoting.setVisible(true);
         }
     }
 
+    /**
+     * Checks if the text is not empty.
+     * @return true if the text is not empty
+     */
     private boolean checkIfNotEmpty() {
         if (inEditingPoll.getQuestionText() == null || inEditingPoll.getQuestionText().equals("")) {
             return false;
@@ -280,10 +304,9 @@ public class PollingManagementPopupController implements Initializable {
     }
 
     /**
-     * Toggle poll.
+     * Toggles the poll.
      */
     public void togglePoll() {
-        //isOptionCorrectText.setVisible(allCorrect);
         if (isPollCheckbox.isSelected()) isOptionCorrectText.setVisible(false);
         if (!isPollCheckbox.isSelected()
                 && inEditingOptions != null && inEditingOptions.size() != 0) {
@@ -296,7 +319,5 @@ public class PollingManagementPopupController implements Initializable {
                 pollOption.setCorrect(true);
             }
         }
-
     }
-
 }

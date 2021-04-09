@@ -2,7 +2,7 @@ package nl.tudelft.oopp.livechat.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 import nl.tudelft.oopp.livechat.data.*;
 import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
 import org.junit.jupiter.api.AfterAll;
@@ -24,9 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.model.HttpRequest.request;
 
-/**
- * Class for PollCommunication tests.
- */
+
 public class PollCommunicationTest {
     private static MockServerClient mockServer;
 
@@ -244,6 +242,18 @@ public class PollCommunicationTest {
                 + invalidUUID)).respond(HttpResponse.response().withStatusCode(400));
     }
 
+    private static void startServer() {
+        mockServer = ClientAndServer.startClientAndServer(8080);
+
+        createExpectationsForCreatePoll();
+        createExpectationsForAddOption();
+        createExpectationsForToggle();
+        createExpectationsForVote();
+        createExpectationsForFetchStudent();
+        createExpectationsForFetchModerator();
+        createExpectationsForReset();
+    }
+
     /**
      * Set up for the tests.
      */
@@ -253,21 +263,14 @@ public class PollCommunicationTest {
         User.setUserName("Slim Shady");
         Lecture.setCurrent(new Lecture());
 
-        mockServer = ClientAndServer.startClientAndServer(8080);
+        startServer();
         try {
             mockedAlertController = Mockito.mockStatic(AlertController.class);
             mockedAlertController.when(() -> AlertController.alertError(any(String.class),
                     any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Exception caught");
         }
-        createExpectationsForCreatePoll();
-        createExpectationsForAddOption();
-        createExpectationsForToggle();
-        createExpectationsForVote();
-        createExpectationsForFetchStudent();
-        createExpectationsForFetchModerator();
-        createExpectationsForReset();
     }
 
     /**
@@ -297,7 +300,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertNull(PollCommunication.createPoll(lectureId, modkey, "Guess who's back?"));
 
-        setUp();
+        startServer();
     }
 
     @Test
@@ -340,7 +343,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertNull(PollCommunication.addOption(pollId, modkey, true, "Slim Shady"));
 
-        setUp();
+        startServer();
     }
 
     @Test
@@ -374,7 +377,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertFalse(PollCommunication.toggle(pollId, modkey));
 
-        setUp();
+        startServer();
     }
 
     @Test
@@ -405,7 +408,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertFalse(PollCommunication.vote(userId, pollOptionId));
 
-        setUp();
+        startServer();
     }
 
     @Test
@@ -460,7 +463,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertNull(PollCommunication.fetchPollAndOptionsStudent(lectureId));
 
-        setUp();
+        startServer();
     }
 
     /**
@@ -511,7 +514,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertNull(PollCommunication.fetchPollAndOptionsModerator(lectureId, modkey));
 
-        setUp();
+        startServer();
     }
 
     /**
@@ -527,7 +530,7 @@ public class PollCommunicationTest {
         mockServer.stop();
         assertFalse(PollCommunication.resetVotes(pollId, modkey));
 
-        setUp();
+        startServer();
     }
 
     @Test

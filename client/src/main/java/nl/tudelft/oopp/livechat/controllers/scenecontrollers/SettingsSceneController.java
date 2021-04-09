@@ -1,6 +1,6 @@
 package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
-import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.controllers.gui.NavigationController;
 
 /**
  * Class for the Settings Scene controller.

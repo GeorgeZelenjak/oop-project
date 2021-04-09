@@ -5,10 +5,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Class to store a combination of user id and question id
- *       to track which questions the user has asked.
- */
+
 public class UserQuestionPairId implements Serializable {
 
     private long userId;

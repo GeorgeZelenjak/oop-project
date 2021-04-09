@@ -2,7 +2,7 @@ package nl.tudelft.oopp.livechat.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
@@ -24,11 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.model.HttpRequest.request;
 
-/**
- * Class for Lecture communication tests.
- */
-public class LectureCommunicationTest {
 
+public class LectureCommunicationTest {
     private static MockServerClient mockServer;
     private static String jsonLecture;
     private static String jsonUser;
@@ -265,18 +262,7 @@ public class LectureCommunicationTest {
                 .respond(HttpResponse.response().withStatusCode(400));
     }
 
-    /**
-     * Starts the server and assigns expectations.
-     */
-    @BeforeAll
-    public static void startServer() {
-        User.setUid();
-        User.setUserName("name");
-
-        jsonLecture = createJsonLecture();
-        jsonUser = createJsonUser(User.getUid(), User.getUserName());
-        jsonBanning = createJsonForBanning(modkey);
-
+    private static void startServer() {
         mockServer = ClientAndServer.startClientAndServer(8080);
 
         createExpectationsForCreateLecture();
@@ -286,15 +272,28 @@ public class LectureCommunicationTest {
         createExpectationsForCloseLecture();
         createExpectationsForBanning();
         createExpectationsForSettingFrequency();
+    }
 
-        if (mockedAlertController == null) {
-            try {
-                mockedAlertController = Mockito.mockStatic(AlertController.class);
-                mockedAlertController.when(() -> AlertController.alertError(any(String.class),
-                        any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    /**
+     * Starts the server and assigns expectations.
+     */
+    @BeforeAll
+    public static void setUp() {
+        User.setUid();
+        User.setUserName("name");
+
+        startServer();
+
+        jsonLecture = createJsonLecture();
+        jsonUser = createJsonUser(User.getUid(), User.getUserName());
+        jsonBanning = createJsonForBanning(modkey);
+
+        try {
+            mockedAlertController = Mockito.mockStatic(AlertController.class);
+            mockedAlertController.when(() -> AlertController.alertError(any(String.class),
+                    any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
+        } catch (Exception e) {
+            System.err.println("Exception caught");
         }
     }
 
@@ -402,24 +401,12 @@ public class LectureCommunicationTest {
         startServer();
     }
 
-    //TODO REMOVE THE FOLLOWING 3 TESTS WHEN WE REMOVE THE DEBUG SCENE
-
-    @Test
-    public void registerUserDebugUnsuccessfulTest() {
-        assertFalse(LectureCommunication.registerUserdebug(lid, User.getUid(), e));
-    }
-
-    @Test
-    public void registerUserDebugSuccessfulTest() {
-        assertTrue(LectureCommunication.registerUserdebug(lid, User.getUid(), User.getUserName()));
-    }
-
     @Test
     public void registerUserDebugServerRefusesTest() {
-        mockServer.stop();
-        assertFalse(LectureCommunication.registerUserdebug(lid, User.getUid(), User.getUserName()));
-
-        startServer();
+        String temp = User.getUserName();
+        User.setUserName(e);
+        assertNull(LectureCommunication.joinLectureById(lid));
+        User.setUserName(temp);
     }
 
     /**

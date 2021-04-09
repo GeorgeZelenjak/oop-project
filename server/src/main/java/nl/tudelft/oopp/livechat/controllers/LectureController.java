@@ -16,9 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 
-/**
- * Class for the Lecture controller.
- */
 @RestController
 @RequestMapping("/api")
 public class LectureController {

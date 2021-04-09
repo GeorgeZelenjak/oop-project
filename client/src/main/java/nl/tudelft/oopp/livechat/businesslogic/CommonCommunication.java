@@ -2,7 +2,7 @@ package nl.tudelft.oopp.livechat.businesslogic;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -71,19 +71,9 @@ public abstract class CommonCommunication {
      */
     public static int handleResponseNoAlerts(HttpResponse<String> response) {
         if (response == null) {
-            System.out.println("Something happened");
             return -1;
         }
         if (response.statusCode() != 200) {
-            if (response.body().contains("{")) {
-                JsonObject res = JsonParser.parseString(response.body()).getAsJsonObject();
-                String reason = res.get("message").getAsString();
-                String error = res.get("error").getAsString();
-                System.out.println(res.get("status").getAsString());
-                System.out.println(error + ":" + reason);
-            } else {
-                System.out.println(response.body());
-            }
             return -1;
         }
         return 0;

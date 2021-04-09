@@ -14,9 +14,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-/**
- * The type Answer question popup controller.
- */
 public class AnswerQuestionPopupController implements Initializable {
 
     @FXML
@@ -30,9 +27,8 @@ public class AnswerQuestionPopupController implements Initializable {
         questionText.setText(Question.getCurrent().getText());
     }
 
-
     /**
-     * Submit the answer.
+     * Submits the answer.
      */
     public void submitAnswer() {
         QuestionCommunication.markedAsAnswered(Question.getCurrent().getId(),
@@ -41,7 +37,7 @@ public class AnswerQuestionPopupController implements Initializable {
     }
 
     /**
-     * Close the scene.
+     * Closes the scene.
      */
     public void closeTheScene() {
         QuestionCommunication.setStatus(Question.getCurrent().getId(),

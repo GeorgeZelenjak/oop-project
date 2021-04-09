@@ -6,9 +6,6 @@ import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Lecture class.
- */
 public class Lecture {
 
     @Expose(serialize = true, deserialize = true)

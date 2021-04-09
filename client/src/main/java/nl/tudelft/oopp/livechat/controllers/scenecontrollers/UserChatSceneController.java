@@ -11,8 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
-import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 
@@ -30,9 +30,6 @@ import java.net.URL;
 import java.util.*;
 
 
-/**
- * Class for the UserChat Scene controller.
- */
 public class UserChatSceneController implements Initializable {
 
     @FXML
@@ -69,14 +66,8 @@ public class UserChatSceneController implements Initializable {
     private Button goToUserManualButton;
 
     @FXML
-    private Button gobBackButton;
-
-    @FXML
     private Button leaveLecture;
 
-    /**
-     * The Observable list.
-     */
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
 
@@ -84,7 +75,16 @@ public class UserChatSceneController implements Initializable {
 
     private Timeline timelineFetch;
 
-    private Thread fetchingThread;
+    private Thread fetchingThread = new Thread(
+        () -> {
+            while (Lecture.getCurrent() != null) {
+                List<Question> list = QuestionCommunication.fetchQuestions(false);
+                if (list != null) {
+                    Question.setCurrentList(list);
+                }
+            }
+        }
+    );
 
 
     /**
@@ -119,15 +119,13 @@ public class UserChatSceneController implements Initializable {
         fetchingThread.setDaemon(true);
         fetchingThread.start();
 
-        //Tooltip
-        goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
-        gobBackButton.setTooltip(new Tooltip("Go back to the main page"));
 
+        goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
         leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
     }
 
     /**
-     * Fetch questions.
+     * Fetches the questions asked in the current lecture.
      */
     public void setQuestions() {
         questions = Question.getCurrentList();
@@ -151,24 +149,20 @@ public class UserChatSceneController implements Initializable {
         questionPaneListView.getItems().addAll(questions);
     }
 
+    /**
+     * Gets the questions asked in the current lecture.
+     * @param firstTime if asked for the first time
+     */
     private void getQuestions(boolean firstTime) {
         List<Question> list = QuestionCommunication.fetchQuestions(firstTime);
-        if (list == null) {
-            return;
-        }
-        if (list.size() == 0) {
-            System.out.println("There are no questions");
-        }
+        if (list == null) return;
         Question.setCurrentList(list);
     }
 
     /**
-     * Go back to main.
+     * Goes back to the main page.
      */
     public void goBackToMain() {
-
-        //Navigating back to Main Page
-
         Alert alert = AlertController.createAlert(Alert.AlertType.CONFIRMATION,
                 "Confirm your action", "Are you sure do you want to quit this lecture?");
 
@@ -184,14 +178,14 @@ public class UserChatSceneController implements Initializable {
     }
 
     /**
-     * Go to user manual.
+     * Goes to the user manual page.
      */
     public void goToUserManual() {
         NavigationController.getCurrent().goToUserManual();
     }
 
     /**
-     * Send a question to the server.
+     * Sends a question to the server.
      * @return true if successful, false if not
      */
     public boolean askQuestion() {
@@ -212,49 +206,34 @@ public class UserChatSceneController implements Initializable {
                             + "and will not be posted");
             return false;
         }
-        boolean res = QuestionCommunication.askQuestion(
-                User.getUid(), Lecture.getCurrent().getUuid(), text);
-
-        if (!res) {
-            System.out.println("not asked");
-        }
-
-        Question question = new Question(
-                Lecture.getCurrent().getUuid(), questionInputTextArea.getText(), 0);
-
+        QuestionCommunication.askQuestion(User.getUid(), Lecture.getCurrent().getUuid(), text);
         questionInputTextArea.clear();
-
         setQuestions();
         return (false);
     }
 
     /**
-     * Vote on lecture speed fast.
-     *
+     * Votes on the lecture speed with the "fast" indication.
      * @return true if successful, false if not
      */
     public boolean voteOnLectureSpeedFast() {
         voteOnLectureSpeedSlow.setSelected(false);
-
-        return LectureSpeedCommunication.voteOnLectureSpeed(
-                User.getUid(),
-                Lecture.getCurrent().getUuid(),
-                "faster");
+        return LectureSpeedCommunication.voteOnLectureSpeed(User.getUid(),
+                Lecture.getCurrent().getUuid(),"faster");
     }
 
     /**
-     * Vote on lecture speed slow.
-     * @return 0 if everthing is fine -1 if not
+     * Votes on the lecture speed with the "slow" indication.
+     * @return true if successful, false if not
      */
     public boolean voteOnLectureSpeedSlow() {
         voteOnLectureSpeedFast.setSelected(false);
-
         return LectureSpeedCommunication.voteOnLectureSpeed(User.getUid(),
                 Lecture.getCurrent().getUuid(), "slower");
     }
 
     /**
-     * Gets votes on lecture speed.
+     * Gets votes on the lecture speed and configures the checkboxes accordingly.
      */
     public void getVotesOnLectureSpeed() {
         UUID uuid = Lecture.getCurrent().getUuid();
@@ -265,35 +244,32 @@ public class UserChatSceneController implements Initializable {
         }
     }
 
+    /**
+     * Fetches the poll and opens/reopens it.
+     */
     private void fetchVotes() {
-        PollAndOptions fetched = (PollCommunication
-                .fetchPollAndOptionsStudent(Lecture.getCurrent().getUuid()));
+        PollAndOptions fetched = PollCommunication
+                .fetchPollAndOptionsStudent(Lecture.getCurrent().getUuid());
         if (fetched == null || fetched.getOptions() == null || fetched.getOptions().size() == 0) {
             return;
         }
 
-        //If new poll
         if (!fetched.equals(PollAndOptions.getCurrent())) {
             PollAndOptions.setCurrent(fetched);
             NavigationController.getCurrent().popupPollVoting();
             return;
         }
 
-        //If poll is closed
-        if (!fetched.getPoll().isOpen()
-                && PollAndOptions.getCurrent().getPoll().isOpen()) {
+        if (!fetched.getPoll().isOpen() && PollAndOptions.getCurrent().getPoll().isOpen()) {
             PollAndOptions.setCurrent(fetched);
             NavigationController.getCurrent().popupPollResult();
             return;
         }
 
         //If poll is reopened
-        if (!PollAndOptions.getCurrent().getPoll().isOpen()
-                && fetched.getPoll().isOpen()) {
+        if (!PollAndOptions.getCurrent().getPoll().isOpen() && fetched.getPoll().isOpen()) {
             PollAndOptions.setCurrent(fetched);
             NavigationController.getCurrent().popupPollVoting();
         }
-
     }
-
 }

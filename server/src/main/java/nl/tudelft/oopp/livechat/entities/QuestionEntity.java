@@ -12,9 +12,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
-/**
- * The class that represents a question entity.
- */
 @Entity(name = "question")
 @Table(name = "questions")
 @DynamicUpdate

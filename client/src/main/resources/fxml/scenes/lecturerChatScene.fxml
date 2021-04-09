@@ -17,9 +17,9 @@
                      <children>
                         <Group fx:id="lecturerGroup">
                            <children>
-                              <Button fx:id="copyId" layoutY="39.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy lecture id" />
-                                    <Button fx:id="copyKey" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy modkey" />
-                              <Button fx:id="frequencyButton" layoutX="2.0" layoutY="153.0" mnemonicParsing="false" onAction="#setFrequency" prefHeight="32.0" prefWidth="166.0" styleClass="lectureModeButton" text="Configure frequency">
+                              <Button fx:id="copyId" layoutY="39.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy Lecture ID" />
+                                    <Button fx:id="copyKey" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy Moderator Key" />
+                              <Button fx:id="frequencyButton" layoutX="2.0" layoutY="153.0" mnemonicParsing="false" onAction="#setFrequency" prefHeight="32.0" prefWidth="166.0" styleClass="lectureModeButton" text="Configure Frequency">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
@@ -58,8 +58,8 @@
          <bottom>
             <Pane fx:id="hideBottomPane" maxWidth="838.0" prefHeight="41.0" prefWidth="838.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="createPolling" layoutY="4.0" mnemonicParsing="false" onAction="#popupPollingManagement" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Manage polling" />
-                  <Button fx:id="popupVoteResults" layoutX="278.0" layoutY="4.0" mnemonicParsing="false" onAction="#popupVoteResults" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Show poll results" />
+                  <Button fx:id="createPolling" layoutY="4.0" mnemonicParsing="false" onAction="#popupPollingManagement" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Manage Polling" />
+                  <Button fx:id="popupVoteResults" layoutX="278.0" layoutY="4.0" mnemonicParsing="false" onAction="#popupVoteResults" prefHeight="34.0" prefWidth="200.0" styleClass="mainSceneButton" text="Show Poll Results" />
                   <Button fx:id="exportQA" layoutX="541.0" layoutY="4.0" mnemonicParsing="false" onAction="#exportQuestionsAndAnswers" prefHeight="34.0" prefWidth="234.0" styleClass="mainSceneButton" text="Export Questions &amp; Answers" />
                   <Button fx:id="goToUserManualButton" layoutX="805.0" layoutY="4.0" mnemonicParsing="false" onAction="#goToUserManual" prefHeight="34.0" prefWidth="34.0" styleClass="mainSceneButton" text="?" />
                </children>
