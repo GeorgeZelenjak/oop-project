@@ -51,7 +51,6 @@ public abstract class QuestionCommunication {
      */
     public static boolean askQuestion(long uid, UUID lectureId, String questionText) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 
@@ -65,8 +64,7 @@ public abstract class QuestionCommunication {
         if (handleResponse(response) != 0) {
             return false;
         }
-        System.out.println("The question was asked successfully! "
-                + Objects.requireNonNull(response).body());
+        Objects.requireNonNull(response).body();
         User.addQuestionId(Long.parseLong(response.body()));
         return true;
     }
@@ -89,8 +87,7 @@ public abstract class QuestionCommunication {
         if (handleResponseNoAlerts(response) != 0) {
             return null;
         }
-        System.out.println("The questions were retrieved successfully! "
-                + Objects.requireNonNull(response).body());
+        Objects.requireNonNull(response).body();
         return gson.fromJson(response.body(), new TypeToken<List<Question>>(){}.getType());
     }
 
@@ -112,8 +109,7 @@ public abstract class QuestionCommunication {
 
         int result = handleResponse(response);
         if (result == 0) {
-            System.out.println("The question was upvoted/downvoted successfully! "
-                    + Objects.requireNonNull(response).body());
+            Objects.requireNonNull(response).body();
         }
         return result == 0;
     }
@@ -126,7 +122,6 @@ public abstract class QuestionCommunication {
      */
     public static boolean markedAsAnswered(long qid, UUID modkey, String answer) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
         answer = answer == null ? " " : answer;
@@ -139,8 +134,7 @@ public abstract class QuestionCommunication {
         HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
         if (result == 0) {
-            System.out.println("The question was marked as answered successfully!"
-                    + Objects.requireNonNull(response).body());
+            Objects.requireNonNull(response).body();
         }
         return result == 0;
     }
@@ -154,7 +148,6 @@ public abstract class QuestionCommunication {
      */
     public static boolean edit(long qid, UUID modKey, String newText) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!!!");
             return false;
         }
 
@@ -230,7 +223,6 @@ public abstract class QuestionCommunication {
      */
     public static boolean setStatus(long qid, UUID modkey, String status, long uid) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
         HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(status);

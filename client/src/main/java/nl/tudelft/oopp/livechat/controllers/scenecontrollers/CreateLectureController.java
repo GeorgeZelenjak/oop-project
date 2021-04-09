@@ -168,13 +168,10 @@ public class CreateLectureController implements Initializable {
         AlertController.alertInformation("Creating lecture", alertText);
         AlertController.alertWarning("ModKey Warning", alertText2.toUpperCase(Locale.ROOT));
 
-
-
         Lecture.setCurrent(lecture);
         User.setUserName(enterYourNameTextField.getText());
         NavigationController.getCurrent().goToLecturerChatPage();
 
-        System.out.println(Lecture.getCurrent().getFrequency());
     }
 
     /**

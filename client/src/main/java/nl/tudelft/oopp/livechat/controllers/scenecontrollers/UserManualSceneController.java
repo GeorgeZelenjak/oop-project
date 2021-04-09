@@ -138,7 +138,7 @@ public class UserManualSceneController {
             helpText.setTextAlignment(TextAlignment.JUSTIFY);
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            return;
         }
     }
 }

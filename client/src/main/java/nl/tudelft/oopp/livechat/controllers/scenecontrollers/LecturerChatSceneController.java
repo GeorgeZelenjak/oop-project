@@ -154,7 +154,6 @@ public class LecturerChatSceneController implements Initializable {
         lectureNameText.setText(Lecture.getCurrent().getName());
         userNameText.setText(User.getUserName());
 
-        System.out.println(fasterVotesPercentLine.getEndX());
         slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
 
         getQuestions(true);
@@ -164,6 +163,7 @@ public class LecturerChatSceneController implements Initializable {
             adjustLectureSpeedLines();
             fetchPoll();
         }));
+
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
         fetchingThread = new Thread(
@@ -172,7 +172,6 @@ public class LecturerChatSceneController implements Initializable {
                     List<Question> list = QuestionCommunication.fetchQuestions(false);
                     if (list != null) {
                         Question.setCurrentList(list);
-                        System.out.println("i'm alive");
                     }
                 }
             }
@@ -205,12 +204,6 @@ public class LecturerChatSceneController implements Initializable {
 
     private void getQuestions(boolean firstTime) {
         List<Question> list = QuestionCommunication.fetchQuestions(firstTime);
-        if (list == null) {
-            return;
-        }
-        if (list.size() == 0) {
-            System.out.println("There are no questions");
-        }
     }
 
     /**

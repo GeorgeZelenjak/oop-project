@@ -152,9 +152,6 @@ public class UserChatSceneController implements Initializable {
         if (list == null) {
             return;
         }
-        if (list.size() == 0) {
-            System.out.println("There are no questions");
-        }
         Question.setCurrentList(list);
     }
 
@@ -211,9 +208,6 @@ public class UserChatSceneController implements Initializable {
         boolean res = QuestionCommunication.askQuestion(
                 User.getUid(), Lecture.getCurrent().getUuid(), text);
 
-        if (!res) {
-            System.out.println("not asked");
-        }
 
         Question question = new Question(
                 Lecture.getCurrent().getUuid(), questionInputTextArea.getText(), 0);

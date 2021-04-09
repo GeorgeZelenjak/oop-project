@@ -136,7 +136,6 @@ public abstract class LectureCommunication {
      */
     public static boolean ban(String modKey, long questionToBanId, int time, boolean byIp) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 
@@ -165,7 +164,6 @@ public abstract class LectureCommunication {
      */
     public static boolean setFrequency(String lectureId, String modkey, int frequency) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 

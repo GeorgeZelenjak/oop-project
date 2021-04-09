@@ -173,7 +173,7 @@ public class PollingManagementPopupController implements Initializable {
         try {
             closePoll();
         } catch (Exception e) {
-            System.out.println("Current poll is null");
+            return;
         }
 
         inEditingPoll = new Poll();
@@ -250,7 +250,6 @@ public class PollingManagementPopupController implements Initializable {
 
             //Sends requests for every pollOption
             for (PollOption pollOption : inEditingOptions) {
-                System.out.println(pollOption.getOptionText());
                 sentPollOptions.add(PollCommunication.addOption(sentPoll.getId(),
                         modkey, pollOption.isCorrect(), pollOption.getOptionText()));
             }

@@ -59,9 +59,8 @@ public abstract class LectureSpeedCommunication {
         if (result != 0) {
             return null;
         }
-        System.out.println("Lecture speed votes were retrieved successfully! "
-                + Objects.requireNonNull(response).body());
 
+        Objects.requireNonNull(response).body();
         return gson.fromJson(response.body(), new TypeToken<List<Integer>>(){}.getType());
     }
 
@@ -73,7 +72,6 @@ public abstract class LectureSpeedCommunication {
      */
     public static boolean resetLectureSpeed(UUID lectureId, UUID modkey) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 
@@ -98,7 +96,6 @@ public abstract class LectureSpeedCommunication {
      */
     public static boolean voteOnLectureSpeed(long uid, UUID lectureId, String speed) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 

@@ -121,7 +121,7 @@ public class NavigationController {
             });
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            return;
         }
     }
 
@@ -135,7 +135,7 @@ public class NavigationController {
             stage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            return;
         }
     }
 
@@ -162,7 +162,7 @@ public class NavigationController {
                 }
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            return;
         }
 
     }
