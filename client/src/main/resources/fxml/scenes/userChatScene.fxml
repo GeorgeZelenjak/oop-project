@@ -13,13 +13,13 @@
                <center>
                   <Group BorderPane.alignment="CENTER">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture speed:" textAlignment="CENTER" wrappingWidth="176.0703125">
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Speed:" textAlignment="CENTER" wrappingWidth="176.0703125">
                            <font>
                               <Font name="Arial Bold" size="15.0" />
                            </font>
                         </Text>
-                        <CheckBox fx:id="voteOnLectureSpeedFast" layoutX="52.0" layoutY="47.373046875" mnemonicParsing="false" onAction="#voteOnLectureSpeedFast" text="Too fast" textFill="#0022ff" />
-                        <CheckBox fx:id="voteOnLectureSpeedSlow" layoutX="53.0" layoutY="76.373046875" mnemonicParsing="false" onAction="#voteOnLectureSpeedSlow" text="Too slow" textFill="#c3312f" />
+                        <CheckBox fx:id="voteOnLectureSpeedFast" layoutX="52.0" layoutY="47.373046875" mnemonicParsing="false" onAction="#voteOnLectureSpeedFast" text="Too Fast" textFill="#0022ff" />
+                        <CheckBox fx:id="voteOnLectureSpeedSlow" layoutX="53.0" layoutY="76.373046875" mnemonicParsing="false" onAction="#voteOnLectureSpeedSlow" text="Too Slow" textFill="#c3312f" />
                      </children>
                   </Group>
                </center>
