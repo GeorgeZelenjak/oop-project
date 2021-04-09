@@ -26,7 +26,7 @@ public class NavigationController {
 
 
     /**
-     * Instantiates a new Navigation controller.
+     * Creates a new Navigation controller.
      * @param main the main scene of the application
      */
     public NavigationController(Scene main) {
@@ -93,7 +93,7 @@ public class NavigationController {
     }
 
     /**
-     * Go to scene helper.
+     * A helper method to go to a scene.
      */
     private void goToSceneHelper(String javaFxFile) {
         try {
@@ -120,6 +120,13 @@ public class NavigationController {
         }
     }
 
+    /**
+     * A helper method to display a popup.
+     * @param javaFxFile the fx file of the popup
+     * @param width the width of the window
+     * @param height the height of the window
+     * @param title the title of the popup
+     */
     private void popupHelper(String javaFxFile, int width, int height, String title) {
         Parent root;
         try {
@@ -130,10 +137,18 @@ public class NavigationController {
             stage.show();
 
         } catch (IOException e) {
-            return;
+            System.err.println("Error occurred");
         }
     }
 
+    /**
+     * A helper method to display a popup when modifying the question.
+     * @param javaFxFile the fx file of the popup
+     * @param width the width of the window
+     * @param height the height of the window
+     * @param req the status
+     * @param title the title of the popup
+     */
     private void popupHelperSendRequests(String javaFxFile, int width, int height,
                                          String req, String title) {
         Parent root;
@@ -148,6 +163,7 @@ public class NavigationController {
                         "This question is already being handled, if you want you can continue");
             }
             stage.show();
+
             //Closes the entire program when the main scene is closed
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
@@ -157,24 +173,11 @@ public class NavigationController {
                 }
             });
         } catch (IOException e) {
-            return;
+            System.err.println("Error occurred");
         }
 
     }
 
-
-
-    /**
-     * Go to test scene.
-     */
-    @SuppressWarnings("unused")
-    public void goToTestScene() {
-        goToSceneHelper("/fxml/scenes/newUserChatScene.fxml");
-    }
-
-    public void goToDebugScene() {
-        goToSceneHelper("/fxml/scenes/debugScene.fxml");
-    }
 
     /**
      * Navigates to the previous scene.

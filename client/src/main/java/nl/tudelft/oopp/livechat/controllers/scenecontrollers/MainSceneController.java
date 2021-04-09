@@ -44,16 +44,9 @@ public class MainSceneController implements Initializable {
     }
 
     /**
-     * Go to the user manual page.
+     * Goes to the user manual page.
      */
     public void goToUserManual() {
         NavigationController.getCurrent().goToUserManual();
-    }
-
-    /**
-     * Go to the debug scene.
-     */
-    public void goToDebug() {
-        NavigationController.getCurrent().goToDebugScene();
     }
 }

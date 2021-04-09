@@ -31,7 +31,7 @@ public class CellPollOptionController {
     private PollOption option;
 
     /**
-     * Instantiates a new Cell data poll option.
+     * Creates a new Cell data poll option.
      */
     public CellPollOptionController() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
@@ -46,7 +46,7 @@ public class CellPollOptionController {
 
 
     /**
-     * Sets listener.
+     * Sets a listener for options.
      */
     public void setListener() {
         optionTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
@@ -60,7 +60,7 @@ public class CellPollOptionController {
 
 
     /**
-     * Sets delete button.
+     * Sets the delete button.
      */
     public void setDeleteButton() {
         deleteButton.setOnAction((ActionEvent event) -> {
@@ -69,7 +69,7 @@ public class CellPollOptionController {
     }
 
     /**
-     * Sets poll option cell is correct check box.
+     * Sets a poll option cell "is correct" check box.
      */
     public void setPollOptionCellIsCorrectCheckBox() {
         pollOptionCellIsCorrectCheckBox.setSelected(option.isCorrect());
@@ -85,16 +85,16 @@ public class CellPollOptionController {
     }
 
     /**
-     * Sets the question.
-     * @param option the question
+     * Sets the poll option.
+     * @param option the poll option
      */
     public void setPollOption(PollOption option) {
         this.option = option;
     }
 
     /**
-     * Sets option text.
-     * @param value the value
+     * Sets the option text.
+     * @param value the option text
      */
     public void setOptionText(String value) {
         if (value != null) {
@@ -103,7 +103,7 @@ public class CellPollOptionController {
     }
 
     /**
-     * Sets poll type.
+     * Sets the type of the poll.
      */
     public void setPollType() {
         if (PollingManagementPopupController.getAllCorrect()) {
@@ -113,8 +113,8 @@ public class CellPollOptionController {
     }
 
     /**
-     * Gets box.
-     * @return the box
+     * Gets the anchor pane.
+     * @return the anchor pane
      */
     public AnchorPane getBox() {
         return optionCellAnchorPane;

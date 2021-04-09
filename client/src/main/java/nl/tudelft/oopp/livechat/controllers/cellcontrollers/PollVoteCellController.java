@@ -39,14 +39,25 @@ public class PollVoteCellController {
         }
     }
 
+    /**
+     * Sets the pol option.
+     * @param option the pol option
+     */
     public void setOption(PollOption option) {
         this.option = option;
     }
 
+    /**
+     * Sets the option text.
+     */
     public void setText() {
         optionText.setText(option.getOptionText());
     }
 
+    /**
+     * Gets the anchor pane.
+     * @return the anchor pane
+     */
     public AnchorPane getBox() {
         return cellAnchorPane;
     }

@@ -402,7 +402,7 @@ public class LectureCommunicationTest {
     }
 
     @Test
-    public void registerUserDebugServerRefusesTest() {
+    public void registerUserUnsuccessfulRegisteringTest() {
         String temp = User.getUserName();
         User.setUserName(e);
         assertNull(LectureCommunication.joinLectureById(lid));
