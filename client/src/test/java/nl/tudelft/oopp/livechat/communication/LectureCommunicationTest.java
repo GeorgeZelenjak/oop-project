@@ -401,25 +401,6 @@ public class LectureCommunicationTest {
         startServer();
     }
 
-    //TODO REMOVE THE FOLLOWING 3 TESTS WHEN WE REMOVE THE DEBUG SCENE
-
-    @Test
-    public void registerUserDebugUnsuccessfulTest() {
-        assertFalse(LectureCommunication.registerUserdebug(lid, User.getUid(), e));
-    }
-
-    @Test
-    public void registerUserDebugSuccessfulTest() {
-        assertTrue(LectureCommunication.registerUserdebug(lid, User.getUid(), User.getUserName()));
-    }
-
-    @Test
-    public void registerUserDebugServerRefusesTest() {
-        mockServer.stop();
-        assertFalse(LectureCommunication.registerUserdebug(lid, User.getUid(), User.getUserName()));
-
-        startServer();
-    }
 
     /**
      * Tests for validating a moderator.
