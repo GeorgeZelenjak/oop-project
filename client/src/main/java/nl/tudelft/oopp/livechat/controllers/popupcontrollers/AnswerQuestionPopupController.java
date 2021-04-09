@@ -14,9 +14,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-/**
- * The type Answer question popup controller.
- */
 public class AnswerQuestionPopupController implements Initializable {
 
     @FXML

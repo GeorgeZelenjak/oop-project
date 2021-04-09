@@ -12,9 +12,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- * The type Poll entity.
- */
+
 @Entity
 @Table(name = "polls")
 public class PollEntity {

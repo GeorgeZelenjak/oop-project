@@ -8,9 +8,6 @@ import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import org.springframework.stereotype.Service;
 
 
-/**
- * Class for the Lecture service.
- */
 @Service
 public class LectureService {
 

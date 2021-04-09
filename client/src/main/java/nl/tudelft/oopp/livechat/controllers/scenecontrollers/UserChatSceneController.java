@@ -30,9 +30,6 @@ import java.net.URL;
 import java.util.*;
 
 
-/**
- * Class for the UserChat Scene controller.
- */
 public class UserChatSceneController implements Initializable {
 
     @FXML

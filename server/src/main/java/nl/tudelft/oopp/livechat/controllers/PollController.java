@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-/**
- * Class for the Poll controller.
- */
+
 @RestController
 @RequestMapping("/api/poll")
 public class PollController {

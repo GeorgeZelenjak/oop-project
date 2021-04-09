@@ -18,9 +18,7 @@ import java.util.Objects;
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponse;
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.sendAndReceive;
 
-/**
- * Class for Lecture server communication.
- */
+
 public abstract class LectureCommunication {
 
     private LectureCommunication() {

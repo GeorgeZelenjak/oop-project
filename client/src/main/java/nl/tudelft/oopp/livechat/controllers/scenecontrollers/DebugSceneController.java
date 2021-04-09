@@ -12,9 +12,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 
-/**
- * Class for the Debug Scene controller.
- */
+
 public class DebugSceneController {
 
     /**

@@ -3,9 +3,7 @@ package nl.tudelft.oopp.livechat.entities.poll;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Class that represents a pair of user and poll vote.
- */
+
 public class UserPollVotePairId implements Serializable {
     /**
      * The id of the user.

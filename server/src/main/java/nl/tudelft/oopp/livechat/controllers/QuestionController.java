@@ -15,9 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
-/**
- * Class for the Question controller.
- */
+
 @RestController
 @RequestMapping("/api/question")
 public class QuestionController {

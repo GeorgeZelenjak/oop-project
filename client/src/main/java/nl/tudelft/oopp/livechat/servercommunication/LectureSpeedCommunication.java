@@ -18,9 +18,7 @@ import java.util.UUID;
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponse;
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.sendAndReceive;
 
-/**
- * Class to send requests regarding lecture speed.
- */
+
 public abstract class LectureSpeedCommunication {
     /**
      * Gson object for parsing Json set to parse fields according to annotations

@@ -14,9 +14,7 @@ import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * The type Edit question popup controller.
- */
+
 public class EditQuestionPopupController implements Initializable {
     @FXML
     private TextArea editQuestionTextArea;

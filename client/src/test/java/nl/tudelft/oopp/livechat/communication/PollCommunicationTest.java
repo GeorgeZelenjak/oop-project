@@ -24,9 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.model.HttpRequest.request;
 
-/**
- * Class for PollCommunication tests.
- */
+
 public class PollCommunicationTest {
     private static MockServerClient mockServer;
 

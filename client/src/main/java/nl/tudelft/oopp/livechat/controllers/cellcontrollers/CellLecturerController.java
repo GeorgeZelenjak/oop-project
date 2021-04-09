@@ -29,9 +29,7 @@ import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * Class for Cell data for the lecturer.
- */
+
 public class CellLecturerController implements Initializable {
 
     @FXML

@@ -42,9 +42,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 
-/**
- * Class for the LectureChat Scene controller.
- */
+
 public class LecturerChatSceneController implements Initializable {
 
     @FXML

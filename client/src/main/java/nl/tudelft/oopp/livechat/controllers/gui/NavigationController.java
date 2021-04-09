@@ -15,11 +15,7 @@ import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 import java.io.IOException;
 import java.util.Stack;
 
-/**
- * Class for navigation between scenes.
- * For navigation use:
- * NavigationController.getCurrentController().goToWhateverPage9();
- */
+
 public class NavigationController {
 
     private Scene main;

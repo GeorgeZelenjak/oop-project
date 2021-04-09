@@ -12,10 +12,7 @@ import javafx.stage.Stage;
 import nl.tudelft.oopp.livechat.controllers.gui.NavigationController;
 import nl.tudelft.oopp.livechat.data.User;
 
-/**
- * Loads the MainScene.fxml file
- * And initializes the NavigationController
- */
+
 public class MainSceneDisplay extends Application {
 
     /**

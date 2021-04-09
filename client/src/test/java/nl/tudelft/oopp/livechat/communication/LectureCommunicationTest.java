@@ -24,9 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.model.HttpRequest.request;
 
-/**
- * Class for Lecture communication tests.
- */
+
 public class LectureCommunicationTest {
     private static MockServerClient mockServer;
     private static String jsonLecture;

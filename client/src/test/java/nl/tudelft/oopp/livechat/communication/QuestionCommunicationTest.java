@@ -34,9 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.model.HttpRequest.request;
 
-/**
- * Class for Question communication tests.
- */
+
 public class QuestionCommunicationTest {
     public static MockServerClient mockServer;
 

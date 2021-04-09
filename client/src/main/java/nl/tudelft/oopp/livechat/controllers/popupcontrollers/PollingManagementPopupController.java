@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
-/**
- * The type Polling management popup controller.
- */
+
 public class PollingManagementPopupController implements Initializable {
 
     @FXML

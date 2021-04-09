@@ -8,9 +8,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.*;
 
-/**
- * The class that represents a lecture entity.
- */
+
 @Entity
 @Table(name = "lectures")
 public class LectureEntity {

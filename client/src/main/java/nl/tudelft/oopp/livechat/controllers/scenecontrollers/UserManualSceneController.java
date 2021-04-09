@@ -8,9 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-/**
- * Class for the UserManual Scene controller.
- */
+
 public class UserManualSceneController {
 
 

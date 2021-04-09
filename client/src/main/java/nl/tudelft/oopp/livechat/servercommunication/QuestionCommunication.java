@@ -21,9 +21,7 @@ import java.util.UUID;
 
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.*;
 
-/**
- * Class for server communication related to questions.
- */
+
 public abstract class QuestionCommunication {
 
     private QuestionCommunication() {

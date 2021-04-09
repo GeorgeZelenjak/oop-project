@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Question class.
- */
+
 public class Question implements Comparable<Question> {
 
     private static List<Question> currentQuestions = new ArrayList<>();

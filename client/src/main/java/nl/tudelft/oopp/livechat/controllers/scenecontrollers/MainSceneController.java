@@ -11,9 +11,6 @@ import javafx.scene.control.Tooltip;
 import nl.tudelft.oopp.livechat.controllers.gui.NavigationController;
 
 
-/**
- * Class for Main Scene controller.
- */
 public class MainSceneController implements Initializable {
 
     @FXML

@@ -18,9 +18,7 @@ import java.util.UUID;
 
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.*;
 
-/**
- * Class for server communication related to polls.
- */
+
 public abstract class PollCommunication {
     /**
      * Gson object for parsing Json set to parse fields according to annotations

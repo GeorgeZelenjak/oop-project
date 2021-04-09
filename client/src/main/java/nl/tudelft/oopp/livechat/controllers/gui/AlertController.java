@@ -5,9 +5,7 @@ import javafx.scene.control.ButtonType;
 
 import java.util.Optional;
 
-/**
- * Class for the Alert controller.
- */
+
 public class AlertController {
 
     /**

@@ -6,9 +6,6 @@ import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * The type User lecture speed table.
- */
 
 @Table(name = "UserLectureSpeedTable")
 @Entity

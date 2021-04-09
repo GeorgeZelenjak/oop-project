@@ -17,9 +17,6 @@ import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 
 
-/**
- * Class for the CreateLecture Scene controller.
- */
 public class CreateLectureController implements Initializable {
 
     @FXML

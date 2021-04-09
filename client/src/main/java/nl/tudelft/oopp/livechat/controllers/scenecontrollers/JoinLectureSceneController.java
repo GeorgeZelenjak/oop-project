@@ -13,9 +13,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
-/**
- * Class for the JoinLecture Scene controller.
- */
+
 public class JoinLectureSceneController implements Initializable {
 
     @FXML

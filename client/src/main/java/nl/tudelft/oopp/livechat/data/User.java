@@ -8,9 +8,7 @@ import java.net.NetworkInterface;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * User class.
- */
+
 public class User {
     private static String userName;
 
