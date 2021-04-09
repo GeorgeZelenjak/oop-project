@@ -10,8 +10,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
-import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.businesslogic.InputValidator;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.NavigationController;
 import nl.tudelft.oopp.livechat.businesslogic.QuestionManager;
 import nl.tudelft.oopp.livechat.data.Lecture;
 
@@ -25,14 +26,10 @@ import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 
 import javafx.util.Callback;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
 
-/**
- * Class for the UserChat Scene controller.
- */
 public class UserChatSceneController implements Initializable {
 
     @FXML
@@ -66,29 +63,29 @@ public class UserChatSceneController implements Initializable {
     private CheckBox voteOnLectureSpeedSlow;
 
     @FXML
-    private Button participants;
-
-    @FXML
-    private Button goToSettingsButton;
-
-    @FXML
     private Button goToUserManualButton;
-
-    @FXML
-    private Button gobBackButton;
 
     @FXML
     private Button leaveLecture;
 
-    /**
-     * The Observable list.
-     */
     @FXML
     ObservableList<Question> observableList = FXCollections.observableArrayList();
 
     private List<Question> questions;
 
     private Timeline timelineFetch;
+
+    private Thread fetchingThread = new Thread(
+        () -> {
+            while (Lecture.getCurrent() != null) {
+                List<Question> list = QuestionCommunication.fetchQuestions(false);
+                if (list != null) {
+                    Question.setCurrentList(list);
+                }
+            }
+        }
+    );
+
 
     /**
      * Method that runs when the scene is first initialized.
@@ -100,40 +97,42 @@ public class UserChatSceneController implements Initializable {
         userNameText.setText(User.getUserName());
         fetchVotes();
 
+        getQuestions(true);
         timelineFetch = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
-            fetchQuestions();
+            setQuestions();
             getVotesOnLectureSpeed();
             fetchVotes();
         }));
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
 
-        //Tooltip
-        participants.setTooltip(new Tooltip("See the lecture participants"));
-        goToSettingsButton.setTooltip(new Tooltip("Open Settings page"));
+        fetchingThread = new Thread(
+            () -> {
+                while (Lecture.getCurrent() != null) {
+                    List<Question> list = QuestionCommunication.fetchQuestions(false);
+                    if (list != null) {
+                        Question.setCurrentList(list);
+                    }
+                }
+            }
+        );
+        fetchingThread.setDaemon(true);
+        fetchingThread.start();
+
 
         goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
-        gobBackButton.setTooltip(new Tooltip("Go back to the main page"));
-
         leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
     }
 
     /**
-     * Fetch questions.
+     * Fetches the questions asked in the current lecture.
      */
-    public void fetchQuestions() {
-        List<Question> list = QuestionCommunication.fetchQuestions();
-        if (list == null) {
-            return;
-        }
-        Question.setCurrentList(list);
-
+    public void setQuestions() {
         questions = Question.getCurrentList();
         questions = QuestionManager.filter(answeredCheckBox.isSelected(),
                 unansweredCheckBox.isSelected(), questions);
         QuestionManager.sort(sortByVotesCheckBox.isSelected(),
                 sortByTimeCheckBox.isSelected(), questions);
-        System.out.println("sorted");
 
         observableList.setAll(questions);
         questionPaneListView.setItems(observableList);
@@ -145,115 +144,96 @@ public class UserChatSceneController implements Initializable {
                         return new QuestionCellUser();
                     }
                 });
-        //System.out.println(list.size());
 
         questionPaneListView.getItems().clear();
         questionPaneListView.getItems().addAll(questions);
     }
 
     /**
-     * Go back to main.
-     * @throws IOException the io exception
+     * Gets the questions asked in the current lecture.
+     * @param firstTime if asked for the first time
      */
-    public void goBackToMain() throws IOException {
+    private void getQuestions(boolean firstTime) {
+        List<Question> list = QuestionCommunication.fetchQuestions(firstTime);
+        if (list == null) return;
+        Question.setCurrentList(list);
+    }
 
-        //Navigating back to Main Page
-
+    /**
+     * Goes back to the main page.
+     */
+    public void goBackToMain() {
         Alert alert = AlertController.createAlert(Alert.AlertType.CONFIRMATION,
                 "Confirm your action", "Are you sure do you want to quit this lecture?");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             timelineFetch.stop();
+            fetchingThread.stop();
+            fetchingThread = null;
+            Question.setCurrentList(new ArrayList<>());
             NavigationController.getCurrent().goToMainScene();
+            Lecture.setCurrent(null);
         }
     }
 
     /**
-     * Go to user manual.
-     * @throws IOException the io exception
+     * Goes to the user manual page.
      */
-    public void goToUserManual() throws IOException {
+    public void goToUserManual() {
         NavigationController.getCurrent().goToUserManual();
     }
 
     /**
-     * Go to settings.
-     * @throws IOException the io exception
-     */
-    public void goToSettings() throws IOException {
-        NavigationController.getCurrent().goToSettings();
-    }
-
-    /**
-     * Send a question to the server.
-     * @return Integer showing status of the action
-     *      1- Everything is good
-     *      -1 -Lecture has not been initialized
-     *      -2/ -3 -Server error.
-     *      -4 - too long question
-     *      -5 empty field
+     * Sends a question to the server.
+     * @return true if successful, false if not
      */
     public boolean askQuestion() {
         String text = questionInputTextArea.getText();
         if (text.length() == 0) {
             return false;
         }
-        if (text.length() > 2000) {
+        int length = text.length();
+        if (length > 500) {
             AlertController.alertWarning("Long question",
-                    "Your question is too long! (max 2000 characters)");
+                    "Your question is too long! (max " + 500
+                            + " characters,\n you entered: " + length + ")");
             return false;
         }
-        boolean res = QuestionCommunication.askQuestion(
-                User.getUid(), Lecture.getCurrent().getUuid(), text);
-        //inputQuestion.setText("");
-
-        if (!res) {
-            System.out.println("not asked");
+        if (!InputValidator.checkBadWords(text)) {
+            AlertController.alertWarning("Curse language",
+                    "Your text contains curse language and/or offensive words "
+                            + "and will not be posted");
+            return false;
         }
-
-        Question question = new Question(
-                Lecture.getCurrent().getUuid(), questionInputTextArea.getText(), 0);
-
-        //questionPaneListView.getItems().add(question.getText());
-
+        QuestionCommunication.askQuestion(User.getUid(), Lecture.getCurrent().getUuid(), text);
         questionInputTextArea.clear();
-
-        //TODO this will be removed when we implement a more efficient polling
-        fetchQuestions();
+        setQuestions();
         return (false);
     }
 
     /**
-     * Vote on lecture speed fast.
-     *
-     * @return 0 if everthing is fine -1 if not
+     * Votes on the lecture speed with the "fast" indication.
+     * @return true if successful, false if not
      */
     public boolean voteOnLectureSpeedFast() {
         voteOnLectureSpeedSlow.setSelected(false);
-
-        return LectureSpeedCommunication.voteOnLectureSpeed(
-                User.getUid(),
-                Lecture.getCurrent().getUuid(),
-                "faster");
+        return LectureSpeedCommunication.voteOnLectureSpeed(User.getUid(),
+                Lecture.getCurrent().getUuid(),"faster");
     }
 
     /**
-     * Vote on lecture speed slow.
-     *
-     * @return 0 if everthing is fine -1 if not
+     * Votes on the lecture speed with the "slow" indication.
+     * @return true if successful, false if not
      */
     public boolean voteOnLectureSpeedSlow() {
         voteOnLectureSpeedFast.setSelected(false);
-
-        return LectureSpeedCommunication.voteOnLectureSpeed(
-                User.getUid(),
-                Lecture.getCurrent().getUuid(),
-                "slower");
+        return LectureSpeedCommunication.voteOnLectureSpeed(User.getUid(),
+                Lecture.getCurrent().getUuid(), "slower");
     }
 
     /**
-     * Gets votes on lecture speed.
+     * Gets votes on the lecture speed and configures the checkboxes accordingly.
      */
     public void getVotesOnLectureSpeed() {
         UUID uuid = Lecture.getCurrent().getUuid();
@@ -264,36 +244,32 @@ public class UserChatSceneController implements Initializable {
         }
     }
 
+    /**
+     * Fetches the poll and opens/reopens it.
+     */
     private void fetchVotes() {
-
-        PollAndOptions fetched = (
-                PollCommunication.fetchPollAndOptionsStudent(
-                        Lecture.getCurrent().getUuid()));
-        if (fetched == null) {
+        PollAndOptions fetched = PollCommunication
+                .fetchPollAndOptionsStudent(Lecture.getCurrent().getUuid());
+        if (fetched == null || fetched.getOptions() == null || fetched.getOptions().size() == 0) {
             return;
         }
 
-        //If new poll
         if (!fetched.equals(PollAndOptions.getCurrent())) {
             PollAndOptions.setCurrent(fetched);
             NavigationController.getCurrent().popupPollVoting();
             return;
         }
 
-        //If poll is closed
-        if (!fetched.getPoll().isOpen()
-                && PollAndOptions.getCurrent().getPoll().isOpen()) {
+        if (!fetched.getPoll().isOpen() && PollAndOptions.getCurrent().getPoll().isOpen()) {
             PollAndOptions.setCurrent(fetched);
             NavigationController.getCurrent().popupPollResult();
+            return;
         }
 
         //If poll is reopened
-        if (!PollAndOptions.getCurrent().getPoll().isOpen()
-                && fetched.getPoll().isOpen()) {
+        if (!PollAndOptions.getCurrent().getPoll().isOpen() && fetched.getPoll().isOpen()) {
             PollAndOptions.setCurrent(fetched);
             NavigationController.getCurrent().popupPollVoting();
         }
-
     }
-
 }

@@ -3,14 +3,12 @@ package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import nl.tudelft.oopp.livechat.controllers.NavigationController;
+import nl.tudelft.oopp.livechat.controllers.gui.NavigationController;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-/**
- * Class for the UserManual Scene controller.
- */
+
 public class UserManualSceneController {
 
 
@@ -18,98 +16,122 @@ public class UserManualSceneController {
     private Text helpText;
 
     /**
-     * Go back to the previous scene.
+     * Goes back to the previous page.
      */
     public void goBack() {
         NavigationController.getCurrent().goBack();
-        System.out.println("Button was pressed!");
     }
 
-    /** Displays the Create Lecture Category.
-     *
+    /**
+     * Displays the Create Lecture category.
      */
     public void showCreateLectureText() {
         showCategoryX("client/src/main/resources/textFiles/createLecture.txt");
     }
 
-    /** Displays the Join Lecture Category.
-     *
+    /**
+     * Displays the Join Lecture category.
      */
     public void showJoinLectureText() {
         showCategoryX("client/src/main/resources/textFiles/joinLecture.txt");
     }
 
-    /** Displays the About Application Category.
-     *
+    /**
+     * Displays the About Application category.
      */
     public void showAboutApplicationText() {
         showCategoryX("client/src/main/resources/textFiles/about.txt");
     }
 
-    /** Displays the Share Lecture ID Category.
-     *
+    /**
+     * Displays the Share Lecture ID category.
      */
     public void showShareLectureIDText() {
         showCategoryX("client/src/main/resources/textFiles/shareLectureID.txt");
     }
 
-    /** Displays the Asking Questions Category.
-     *
+    /**
+     * Displays the Asking Questions category.
      */
     public void showAskingQuestionsText() {
         showCategoryX("client/src/main/resources/textFiles/askingQuestions.txt");
     }
 
-    /** Displays the Lecturer Mode Category.
-     *
+    /**
+     * Displays the Lecturer Mode category.
      */
     public void showLecturerModeText() {
         showCategoryX("client/src/main/resources/textFiles/lecturerMode.txt");
     }
 
-    /** Displays the Question Information Category.
-     *
+    /**
+     * Displays the Question Information category.
      */
     public void showQuestionInfoText() {
         showCategoryX("client/src/main/resources/textFiles/questionInfo.txt");
     }
 
+    /**
+     * Displays the Question Handling category.
+     */
     public void showQuestionHandlingText() {
         showCategoryX("client/src/main/resources/textFiles/questionHandling.txt");
     }
 
+    /**
+     * Displays the Exporting Question category.
+     */
     public void showExportingQuestionsText() {
         showCategoryX("client/src/main/resources/textFiles/questionExporting.txt");
     }
 
+    /**
+     * Displays the Lecture Speed Voting category.
+     */
     public void showLectureSpeedVotingText() {
         showCategoryX("client/src/main/resources/textFiles/lectureSpeedVoting.txt");
     }
 
-    /** Helper Method that loads a File from a given path, parses it as a string and displays the
-     *      requested text of the selected help category.
-     *      This method catches an FileNotFoundException in case
-     *          the filepath is incorrect or file is not found.
-     * @param fileName - String representing the path of the text file
+    /**
+     * Displays the Create Polls category.
+     */
+    public void showCreatePollsText() {
+        showCategoryX("client/src/main/resources/textFiles/createPolls.txt");
+    }
+
+    /**
+     * Displays the Interacting With Polls category.
+     */
+    public void showInteractingPollsText() {
+        showCategoryX("client/src/main/resources/textFiles/interactWithPolls.txt");
+    }
+
+    /**
+     * Displays the Banning Users category.
+     */
+    public void showBanningUsersText() {
+        showCategoryX("client/src/main/resources/textFiles/banningUsers.txt");
+    }
+
+    /**
+     * A helper method that loads a file from a given path, parses it as a string and displays the
+     *   requested text of the selected help category.
+     * @param fileName the path to the text file
      */
     public void showCategoryX(String fileName) {
         File file = new File(fileName);
-
         StringBuilder text = new StringBuilder();
 
         try {
             Scanner scanner = new Scanner(file);
-
             while (scanner.hasNextLine()) {
                 text.append(scanner.nextLine()).append("\n");
-
             }
-
             helpText.setText(text.toString());
             helpText.setTextAlignment(TextAlignment.JUSTIFY);
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.err.println("File not found");
         }
     }
 }

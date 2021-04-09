@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
@@ -34,11 +34,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.model.HttpRequest.request;
 
-/**
- * Class for Question communication tests.
- */
-public class QuestionCommunicationTest {
 
+public class QuestionCommunicationTest {
     public static MockServerClient mockServer;
 
     private static final Gson gson = new GsonBuilder()
@@ -97,14 +94,16 @@ public class QuestionCommunicationTest {
         String question2 = createJsonQuestion(qid2, "koiko");
         String questions = createQuestionsList(question1, question2);
         mockServer.when(request().withMethod("GET").withPath("/api/question/fetch")
-                .withQueryStringParameter("lid", lid.toString()))
+                .withQueryStringParameters(new Parameter("lid", lid.toString()),
+                        new Parameter("firstTime", "true")))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody(questions)
                         .withHeader("Content-Type","application/json"));
 
         //No questions found
         mockServer.when(request().withMethod("GET").withPath("/api/question/fetch")
-                .withQueryStringParameter("lid", modkey.toString()))
+                .withQueryStringParameters(new Parameter("lid", modkey.toString()),
+                        new Parameter("firstTime", "true")))
                 .respond(HttpResponse.response().withStatusCode(200)
                         .withBody("[]")
                         .withHeader("Content-Type","application/json"));
@@ -112,7 +111,8 @@ public class QuestionCommunicationTest {
         //Invalid lecture id - send 400
         //  (treat "incorrectModkey" as invalid UUID to test BAD REQUEST)
         mockServer.when(request().withMethod("GET").withPath("/api/question/fetch")
-                .withQueryStringParameter("lid", incorrectModkey.toString()))
+                .withQueryStringParameters(new Parameter("lid", incorrectModkey.toString()),
+                        new Parameter("firstTime", "true")))
                 .respond(HttpResponse.response().withStatusCode(400));
     }
 
@@ -333,27 +333,8 @@ public class QuestionCommunicationTest {
         return sb.toString();
     }
 
-
-    /**
-     * Starts mock server.
-     */
-    @BeforeAll
-    public static void startServer() {
+    private static void startServer() {
         mockServer = ClientAndServer.startClientAndServer(8080);
-        User.setUid();
-        userId = User.getUid();
-        goodQuestion = gson.toJson(
-                new Question(lid, "Is there anybody?",  userId));
-        normalQuestion = gson.toJson(
-                new Question(lid, "Will we get 10?",  userId));
-        badQuestion = gson.toJson(
-                new Question(lid, "F*ck",  userId));
-
-        json1 = createJson(Long.parseLong(qid1), modkey, "Edited", userId);
-        json2 = createJson(Long.parseLong(qid2), lid, "Edited question", userId);
-        json3 = createJson(Long.parseLong(qid3), incorrectModkey, "Edited by ...", userId);
-        json4 = createJson(666, modkey, "Edited or not", userId);
-
         createExpectationsForAsking();
         createExpectationsForFetching();
         createExpectationsForUpvote();
@@ -362,13 +343,33 @@ public class QuestionCommunicationTest {
         createExpectationsForModDelete();
         createExpectationsForEdit();
         createExpectationsForSetStatus();
+    }
+
+
+    /**
+     * Starts mock server.
+     */
+    @BeforeAll
+    public static void setUp() {
+        User.setUid();
+        startServer();
+
+        userId = User.getUid();
+        goodQuestion = gson.toJson(new Question(lid, "Is there anybody?", userId));
+        normalQuestion = gson.toJson(new Question(lid, "Will we get 10?", userId));
+        badQuestion = gson.toJson(new Question(lid, "F*ck",  userId));
+
+        json1 = createJson(Long.parseLong(qid1), modkey, "Edited", userId);
+        json2 = createJson(Long.parseLong(qid2), lid, "Edited question", userId);
+        json3 = createJson(Long.parseLong(qid3), incorrectModkey, "Edited by ...", userId);
+        json4 = createJson(666, modkey, "Edited or not", userId);
 
         try {
             mockedAlertController = Mockito.mockStatic(AlertController.class);
             mockedAlertController.when(() -> AlertController.alertError(any(String.class),
                     any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
         } catch (Exception e) {
-            System.out.println("Caught exception!");
+            System.out.println();
         }
     }
 
@@ -431,7 +432,7 @@ public class QuestionCommunicationTest {
     public void fetchQuestionsCurrentSuccessfulTest() {
         Lecture.setCurrent(new Lecture(lid,
                 modkey, "HCI", "Not Sebastian"));
-        List<Question> questions = QuestionCommunication.fetchQuestions();
+        List<Question> questions = QuestionCommunication.fetchQuestions(true);
 
         assertNotNull(questions);
         assertEquals(2, questions.size());
@@ -457,14 +458,14 @@ public class QuestionCommunicationTest {
     @Test
     public void fetchQuestionsCurrentNoLectureExistsTest() {
         Lecture.setCurrent(null);
-        assertNull(QuestionCommunication.fetchQuestions());
+        assertNull(QuestionCommunication.fetchQuestions(true));
     }
 
     @Test
     public void fetchQuestionsNotFoundTest() {
         Lecture.setCurrent(new Lecture(modkey,
                 modkey, "Welcome to OOPP", "Sander"));
-        assertEquals(new ArrayList<Question>(), QuestionCommunication.fetchQuestions());
+        assertEquals(new ArrayList<Question>(), QuestionCommunication.fetchQuestions(true));
     }
 
     @Test
@@ -472,7 +473,7 @@ public class QuestionCommunicationTest {
         mockServer.stop();
         Lecture.setCurrent(new Lecture(lid,
                 modkey, "empty", "placeholder"));
-        assertNull(QuestionCommunication.fetchQuestions());
+        assertNull(QuestionCommunication.fetchQuestions(true));
 
         startServer();
     }
@@ -481,7 +482,7 @@ public class QuestionCommunicationTest {
     public void fetchQuestionsInvalidLectureIdTest() {
         Lecture.setCurrent(new Lecture(incorrectModkey,
                 modkey, "*", "Anonymous"));
-        assertNull(QuestionCommunication.fetchQuestions());
+        assertNull(QuestionCommunication.fetchQuestions(true));
     }
 
     /**

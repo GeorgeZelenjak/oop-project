@@ -2,4 +2,6 @@ As a lecturer/moderator, you have a lot of functionality when it comes to effici
 
 -> You can disable all unnecessary buttons by clicking the cyan "Lecturer Mode" button on the left sidebar. This action will enable the lecturer mode for you and will hide all buttons, so that you only see the questions students ask and their number of upvotes. In this mode you can also mark a question as answered and delete it. All other functionalities will be disabled.
 
+-> When lecturer mode is activated, lecturers/moderators will only see unanswered questions, which are sorted by their number of upvotes. Disabling the lecturer mode will reset these filters.
+
 -> To re-enable all hidden buttons, press on the "Lecturer Mode" button again.

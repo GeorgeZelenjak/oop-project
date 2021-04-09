@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 import nl.tudelft.oopp.livechat.data.Question;
 import nl.tudelft.oopp.livechat.data.User;
@@ -48,7 +49,11 @@ public class CellUserController implements Initializable {
     @FXML
     private Text answerText;
 
+    @FXML
+    private FlowPane flowPane;
+
     private Question question;
+
 
 
     /**
@@ -76,6 +81,7 @@ public class CellUserController implements Initializable {
      * @param content the question content
      */
     public void setContent(String content) {
+        //questionText.wrappingWidthProperty().bind(flowPane.widthProperty());
         questionText.setText(content);
     }
 
@@ -140,7 +146,6 @@ public class CellUserController implements Initializable {
             } else {
                 User.getUpvotedQuestionIds().add(question.getId());
             }
-            System.out.println(question.getVotes());
         });
     }
 

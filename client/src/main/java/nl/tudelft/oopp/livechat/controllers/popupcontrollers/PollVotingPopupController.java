@@ -31,8 +31,6 @@ public class PollVotingPopupController implements Initializable {
 
     private List<PollOptionVote> list;
 
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         questionText.setText(PollAndOptions.getCurrent().getPoll().getQuestionText());
@@ -44,12 +42,13 @@ public class PollVotingPopupController implements Initializable {
 
     }
 
+    /**
+     * Sets list view as in editing.
+     */
     private void setListViewAsInEditing() {
-
         observableList.setAll(list);
         votingListView.setItems(observableList);
 
-        //Setup cellFactory
         votingListView.setCellFactory(
                 new Callback<ListView<PollOptionVote>, ListCell<PollOptionVote>>() {
                     @Override
@@ -60,5 +59,4 @@ public class PollVotingPopupController implements Initializable {
         votingListView.getItems().clear();
         votingListView.getItems().addAll(list);
     }
-
 }

@@ -5,19 +5,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
-import nl.tudelft.oopp.livechat.exceptions.InvalidModkeyException;
-import nl.tudelft.oopp.livechat.exceptions.LectureException;
-import nl.tudelft.oopp.livechat.exceptions.QuestionException;
-import nl.tudelft.oopp.livechat.exceptions.UserException;
+import nl.tudelft.oopp.livechat.exceptions.*;
 import nl.tudelft.oopp.livechat.services.QuestionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
-/**
- * Class for the Question controller.
- */
+
 @RestController
 @RequestMapping("/api/question")
 public class QuestionController {
@@ -43,9 +41,44 @@ public class QuestionController {
      * @return the list of questions associated with a particular lecture, or empty list
      */
     @GetMapping("/fetch")
-    public List<QuestionEntity> fetchQuestions(@RequestParam UUID lid) {
-        return questionService.getQuestionsByLectureId(lid);
+    public DeferredResult<List<QuestionEntity>> fetchQuestions(@RequestParam UUID lid,
+                                                               @RequestParam boolean firstTime)
+            throws LectureNotFoundException {
+        if (!questionService.lectureExists(lid)) {
+            throw new LectureNotFoundException();
+        }
+        long timeOutInMilliSec = 30 * 1000L;
+        DeferredResult<List<QuestionEntity>> deferredResult =
+                new DeferredResult<>(timeOutInMilliSec);
+        CompletableFuture<Void> future;
+        if (firstTime) {
+            deferredResult.setResult(questionService.getQuestionsByLectureId(lid));
+            return deferredResult;
+        } else {
+            future = CompletableFuture.runAsync(() -> {
+                long startTime = System.currentTimeMillis();
+                while (true) {
+                    if (questionService.wasLectureChanged(lid)) {
+                        deferredResult.setResult(questionService.getQuestionsByLectureId(lid));
+                        break;
+                    } else if (System.currentTimeMillis() - startTime >= timeOutInMilliSec + 5000) {
+                        deferredResult.setErrorResult(
+                                ResponseEntity.status(HttpStatus.GONE)
+                                        .body("Thread killed himself for too much time passing"));
+                        break;
+                    }
+                }
+            });
+        }
+        deferredResult.onTimeout(() -> {
+            future.cancel(true);
+            deferredResult.setErrorResult(ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+                                .body("Request timeout occurred."));
+            }
+        );
+        return deferredResult;
     }
+
 
     /**
      * POST Endpoint to ask a question and store it in the database.
@@ -155,6 +188,18 @@ public class QuestionController {
     }
 
     /**
+     * Exception handler for invalid JSONs.
+     * @param exception exception that has occurred
+     * @return response body with 400 and 'Don't do this' message
+     */
+    @ExceptionHandler(QuestionFrequencyTooFastException.class)
+    @ResponseStatus(HttpStatus.TOO_EARLY)
+    private ResponseEntity<Object> tooEarly(QuestionFrequencyTooFastException exception) {
+        return ResponseEntity.status(HttpStatus.TOO_EARLY)
+                .body("Not enough time has passed between questions\n" + exception.getMessage());
+    }
+
+    /**
      * Exception handler for invalid uuids.
      * @param exception exception that has occurred
      * @return response body with 400 and 'Don't do this' message
@@ -192,4 +237,5 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Missing parameter");
     }
+
 }

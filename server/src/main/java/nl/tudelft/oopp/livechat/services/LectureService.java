@@ -8,9 +8,6 @@ import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import org.springframework.stereotype.Service;
 
 
-/**
- * Class for the Lecture service.
- */
 @Service
 public class LectureService {
 
@@ -36,14 +33,7 @@ public class LectureService {
      */
     public LectureEntity getLectureByIdNoModkey(UUID id) throws LectureException {
         LectureEntity toSend = lectureRepository.findLectureEntityByUuid(id);
-        if (toSend == null) {
-            throw new LectureNotFoundException();
-        }
-
-        //check if lecture has started
-        if (toSend.getStartTime().compareTo(new Timestamp(System.currentTimeMillis())) >= 0) {
-            throw new LectureNotStartedException();
-        }
+        if (toSend == null) throw new LectureNotFoundException();
         toSend.setModkey(null);
         return toSend;
     }
@@ -131,6 +121,32 @@ public class LectureService {
         if (l == null) {
             throw new LectureNotFoundException();
         } else if (l.getModkey().equals(modkey)) {
+            return 0;
+        }
+        throw new InvalidModkeyException();
+    }
+
+    /**
+     * Sets the frequency of asking questions of the lecture.
+     * @param id the id of the lecture
+     * @param modkey the moderator key
+     * @param frequency the frequency of asking questions
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
+     */
+    public int setFrequency(UUID id, UUID modkey, int frequency)
+            throws LectureException, InvalidModkeyException {
+        if (frequency < 0 || frequency > 300) {
+            throw new LectureInvalidFrequencyException();
+        }
+        LectureEntity lecture = lectureRepository.findLectureEntityByUuid(id);
+        if (lecture == null) {
+            throw new LectureNotFoundException();
+        }
+        if (lecture.getModkey().equals(modkey)) {
+            lecture.setFrequency(frequency);
+            lectureRepository.save(lecture);
             return 0;
         }
         throw new InvalidModkeyException();

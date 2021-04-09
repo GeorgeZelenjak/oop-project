@@ -14,9 +14,31 @@ public class PercentageCalculatorTest {
 
     @Test
     public void differentSpeedTest() {
-        double expected = Math.round((3 + 10.0 / 3.0) * 100) / 100;
+        double expected = Math.round((3 + 10.0 / 3.0) * 100) / 100.0;
         double result = PercentageCalculator.determineNewStartCoordinates(3, 8, 3, 6);
-        result = Math.round(result * 100) / 100;
+        result = Math.round(result * 100) / 100.0;
         assertEquals(expected, result);
+    }
+
+    @Test
+    public void calculatePercentageWholeZeroTest() {
+        assertEquals(0, PercentageCalculator.calculatePercentage(0, 42));
+    }
+
+    @Test
+    public void calculatePercentageFractionZeroTest() {
+        assertEquals(0, PercentageCalculator.calculatePercentage(42, 0));
+    }
+
+    @Test
+    public void calculatePercentageThirdTest() {
+        double third = 1.0 / 3;
+        assertEquals(third, PercentageCalculator.calculatePercentage(3, 1));
+    }
+
+    @Test
+    public void calculatePercentageHalfTest() {
+        double third = 1.0 / 2;
+        assertEquals(third, PercentageCalculator.calculatePercentage(2, 1));
     }
 }

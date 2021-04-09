@@ -4,9 +4,7 @@ import javafx.scene.control.ListCell;
 import nl.tudelft.oopp.livechat.controllers.cellcontrollers.CellUserController;
 import nl.tudelft.oopp.livechat.data.Question;
 
-/**
- * Class that customizes the question cell for the user.
- */
+
 public class QuestionCellUser extends ListCell<Question> {
 
     /**

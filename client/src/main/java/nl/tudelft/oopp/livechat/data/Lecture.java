@@ -6,9 +6,6 @@ import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Lecture class.
- */
 public class Lecture {
 
     @Expose(serialize = true, deserialize = true)
@@ -30,11 +27,11 @@ public class Lecture {
     private int slowerCount;
 
     @Expose(serialize = true, deserialize = true)
-    private int frequency;
+    private int frequency = 60;
 
     @Expose(serialize = true, deserialize = true)
     //@JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss")
-    private Timestamp startTime;
+    private final Timestamp startTime = new Timestamp(System.currentTimeMillis());
 
     @Expose(serialize = true, deserialize = true)
     private boolean open = true;
@@ -57,8 +54,6 @@ public class Lecture {
         this.creatorName = creatorName;
         this.fasterCount = 0;
         this.slowerCount = 0;
-        this.frequency = 60;        //seconds
-        this.startTime = new Timestamp(System.currentTimeMillis());
     }
 
     /**

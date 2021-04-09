@@ -9,9 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Class for Lecture tests.
- */
+
 public class LectureTest {
 
     private static Lecture lecture;

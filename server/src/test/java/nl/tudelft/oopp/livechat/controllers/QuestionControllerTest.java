@@ -1,19 +1,10 @@
 package nl.tudelft.oopp.livechat.controllers;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.UUID;
-
 import nl.tudelft.oopp.livechat.entities.LectureEntity;
 import nl.tudelft.oopp.livechat.entities.QuestionEntity;
 import nl.tudelft.oopp.livechat.entities.UserEntity;
@@ -23,11 +14,30 @@ import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
 import nl.tudelft.oopp.livechat.services.LectureService;
 import nl.tudelft.oopp.livechat.services.QuestionService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockAsyncContext;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import javax.servlet.AsyncContext;
+import javax.servlet.AsyncListener;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 /**
@@ -158,11 +168,20 @@ class QuestionControllerTest {
      * @return list of question entities associated with the lecture
      * @throws Exception if something goes wrong
      */
-    List<QuestionEntity> getQuestions(String lectureId) throws Exception {
+    List<QuestionEntity> getQuestions(String lectureId, boolean firstTime) throws Exception {
+        MvcResult mvcResult = this.mockMvc
+                .perform(get("/api/question/fetch?lid=" + lectureId + "&firstTime=" + firstTime))
+                .andExpect(MockMvcResultMatchers.request().asyncStarted())
+                .andReturn();
+        AsyncContext context = mvcResult.getRequest().getAsyncContext();
+        if (context == null) return  null;
+        context.setTimeout(10000);
+
         String listLectureString = this.mockMvc
-                .perform(get("/api/question/fetch?lid=" + lectureId))
+                .perform(asyncDispatch(mvcResult))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
+
         List<QuestionEntity> list = objectMapper.readValue(listLectureString,
                 new TypeReference<>(){});
         int pos = 0;
@@ -279,7 +298,7 @@ class QuestionControllerTest {
                         .characterEncoding("utf-8"))
                         .andExpect(status().isForbidden())
                         .andReturn().getResponse().getErrorMessage();
-        assertEquals("This user is banned", result);
+        assertEquals("You are banned", result);
 
         //check if there are no questions with the id of q2
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
@@ -299,16 +318,88 @@ class QuestionControllerTest {
     }
 
     @Test
+    public void askQuestionTooEarlyExceptionTest() throws Exception {
+        lectureEntity1.setFrequency(300);
+        lectureRepository.save(lectureEntity1);
+        user1.setLastQuestion(new Timestamp(System.currentTimeMillis()));
+        userRepository.save(user1);
+
+        String response = this.mockMvc
+                .perform(post("/api/question/ask")
+                        .contentType(APPLICATION_JSON)
+                        .content(createQuestionJson(q1))
+                        .characterEncoding("utf-8"))
+                .andExpect(status().isTooEarly())
+                .andReturn().getResponse().getContentAsString();
+        System.out.println(response);
+        assertTrue(response.contains("Not enough time has passed between questions"));
+
+        lectureEntity1.setFrequency(0);
+        lectureRepository.save(lectureEntity1);
+        user1.setLastQuestion(null);
+        userRepository.save(user1);
+    }
+
+    @Test
     void fetchQuestionsTest() throws Exception {
-        List<QuestionEntity> listLecture1 = getQuestions(lectureEntity1.getUuid().toString());
-        List<QuestionEntity> listLecture2 = getQuestions(lectureEntity2.getUuid().toString());
+        user2.setAllowed(true);
+        userRepository.save(user2);
+
+        List<QuestionEntity> listLecture1 = getQuestions(lectureEntity1.getUuid().toString(), true);
+        List<QuestionEntity> listLecture2 = getQuestions(lectureEntity2.getUuid().toString(), true);
 
         assertEquals(1, listLecture1.size());
         assertEquals(1, listLecture2.size());
 
         assertEquals(q1.getId(), listLecture1.get(0).getId());
         assertEquals(q2.getId(), listLecture2.get(0).getId());
+
+
+        user2.setAllowed(false);
+        userRepository.save(user2);
     }
+
+    @Test
+    void fetchQuestionsNotFirstTimeTest() throws Exception {
+        LectureEntity lectureEntity = new LectureEntity();
+        lectureRepository.save(lectureEntity);
+
+        MvcResult mvcResult = mockMvc.perform(get("/api/question/fetch?lid="
+                + lectureEntity.getUuid() + "&firstTime=false"))
+                .andExpect(MockMvcResultMatchers.request().asyncStarted())
+                .andReturn();
+
+        MockAsyncContext ctx = (MockAsyncContext) mvcResult.getRequest().getAsyncContext();
+        assert ctx != null;
+        for (AsyncListener listener : ctx.getListeners()) {
+            listener.onTimeout(null);
+        }
+        mockMvc.perform(asyncDispatch(mvcResult))
+                .andExpect(status().isRequestTimeout())
+                .andExpect(content().string("Request timeout occurred."));
+
+        lectureRepository.deleteById(lectureEntity.getUuid());
+    }
+
+    @Test
+    void fetchQuestionsTooMuchTimeThreadKilledTest() throws Exception {
+        LectureEntity lectureEntity = new LectureEntity();
+        lectureRepository.save(lectureEntity);
+
+        MvcResult mvcResult = mockMvc.perform(get("/api/question/fetch?lid="
+                + lectureEntity.getUuid() + "&firstTime=false"))
+                .andExpect(MockMvcResultMatchers.request().asyncStarted())
+                .andReturn();
+
+        Objects.requireNonNull(mvcResult.getRequest().getAsyncContext()).setTimeout(40000);
+
+        mockMvc.perform(asyncDispatch(mvcResult))
+                .andExpect(status().isGone())
+                .andExpect(content().string("Thread killed himself for too much time passing"));
+
+        lectureRepository.deleteById(lectureEntity.getUuid());
+    }
+
 
     @Test
     void fetchQuestionsFakeIdTest() throws Exception {
@@ -317,11 +408,19 @@ class QuestionControllerTest {
     }
 
     @Test
+    void fetchQuestionsNoLectureTest() throws Exception {
+        String result = this.mockMvc.perform(get("/api/question/fetch?lid="
+                + UUID.randomUUID() + "&firstTime=" + true)).andExpect(status().isNotFound())
+                .andReturn().getResponse().getErrorMessage();
+        assertEquals("Lecture not found", result);
+    }
+
+    @Test
     void fetchQuestionsNoQuestionsTest() throws Exception {
         questionRepository.deleteById(q1.getId());
         questionRepository.deleteById(q2.getId());
 
-        List<QuestionEntity> listLecture = getQuestions(lectureEntity1.getUuid().toString());
+        List<QuestionEntity> listLecture = getQuestions(lectureEntity1.getUuid().toString(), false);
         assertEquals(0, listLecture.size());
     }
 
@@ -370,7 +469,8 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getErrorMessage();
         assertEquals("Wrong modkey, don't do this", result);
 
-        List<QuestionEntity> listLecture = getQuestions(lectureEntity1.getUuid().toString());
+        List<QuestionEntity> listLecture = questionRepository
+                .findAllByLectureId(lectureEntity1.getUuid());
 
         assertEquals(1, listLecture.size());
     }
@@ -442,7 +542,8 @@ class QuestionControllerTest {
         int result = editQuestion(json);
         assertEquals(0, result);
 
-        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid()
+                .toString(), false).get(0);
 
         assertNotNull(question1after);
         assertEquals(question1after.getText(), "this is the new text");
@@ -469,7 +570,8 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getErrorMessage();
         assertEquals("Wrong modkey, don't do this", result);
 
-        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        QuestionEntity question1after = questionRepository
+                .findAllByLectureId(lectureEntity1.getUuid()).get(0);
         assertNotNull(question1after);
         assertEquals(question1after.getText(),
                 "What would you do if a seagull entered in your house?");
@@ -495,7 +597,8 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getContentAsString();
         assertEquals("UUID is not in the correct format", result);
 
-        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        QuestionEntity question1after = questionRepository
+                .findAllByLectureId(lectureEntity1.getUuid()).get(0);
         assertNotNull(question1after);
         assertFalse(question1after.isEdited());
         assertEquals(question1after.getText(),
@@ -520,7 +623,8 @@ class QuestionControllerTest {
                 .andReturn().getResponse().getContentAsString();
         assertEquals("Missing parameter", result);
 
-        QuestionEntity question1after = getQuestions(lectureEntity1.getUuid().toString()).get(0);
+        QuestionEntity question1after = questionRepository
+                .findAllByLectureId(lectureEntity1.getUuid()).get(0);
         assertNotNull(question1after);
         assertFalse(question1after.isEdited());
         assertEquals(question1after.getText(),

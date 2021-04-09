@@ -1,0 +1,7 @@
+As a student, you can interact with polling questions and quizzes that the lecturers create.
+
+-> Whenever a lecturer creates a polling question or a quiz and publishes it, a pop-up will appear that will prompt you to select your answer choice. After you enter your choice, it is automatically registered.
+
+-> When the lecturer resets the voting, the pop-up will appear again, prompting you to select once again your answer choice.
+
+-> When the answering is over, lecturers can close the voting for the polling question and then release the results. You will see these results in a pop-up when they are released. If it is a polling question, you will also see the correct answers.

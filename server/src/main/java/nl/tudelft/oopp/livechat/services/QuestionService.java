@@ -1,6 +1,7 @@
 package nl.tudelft.oopp.livechat.services;
 
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -13,12 +14,10 @@ import nl.tudelft.oopp.livechat.repositories.LectureRepository;
 import nl.tudelft.oopp.livechat.repositories.QuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserQuestionRepository;
 import nl.tudelft.oopp.livechat.repositories.UserRepository;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 
-/**
- * Class for the Question service.
- */
 @Service
 public class QuestionService {
 
@@ -30,6 +29,10 @@ public class QuestionService {
 
     private final UserQuestionRepository userQuestionRepository;
 
+    private final TaskScheduler taskScheduler;
+
+    private final Set<UUID> lectureChanged = new HashSet<>();
+
     /**
      * Constructor for the question service.
      * @param questionRepository question repository
@@ -39,11 +42,13 @@ public class QuestionService {
      */
     public QuestionService(QuestionRepository questionRepository,
                            LectureRepository lectureRepository, UserRepository userRepository,
-                           UserQuestionRepository userQuestionRepository) {
+                           UserQuestionRepository userQuestionRepository,
+                           TaskScheduler taskScheduler) {
         this.questionRepository = questionRepository;
         this.lectureRepository = lectureRepository;
         this.userRepository = userRepository;
         this.userQuestionRepository = userQuestionRepository;
+        this.taskScheduler = taskScheduler;
     }
 
     /**
@@ -100,15 +105,18 @@ public class QuestionService {
         if (!userAsked.isAllowed()) {
             throw new UserBannedException();
         }
-        if (userAsked.getLastQuestion() != null
-                && System.currentTimeMillis() - userAsked.getLastQuestion().getTime()
-                < lecture.getFrequency() * 1000) {
-            throw new QuestionFrequencyTooFastException();
+        if (userAsked.getLastQuestion() != null) {
+            long passed = System.currentTimeMillis() - userAsked.getLastQuestion().getTime();
+            if (passed < lecture.getFrequency() * 1000) {
+                int left = (int) ((lecture.getFrequency() * 1000 - passed) / 1000);
+                throw new QuestionFrequencyTooFastException("Wait for " + left + " seconds more");
+            }
         }
         userAsked.setLastQuestion(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
         q.setOwnerName(userAsked.getUserName());
         questionRepository.save(q);
         userRepository.save(userAsked);
+        addLectureChanged(q.getLectureId());
         return q.getId();
     }
 
@@ -141,6 +149,7 @@ public class QuestionService {
         }
         questionRepository.deleteById(id);
         userQuestionRepository.deleteAllByQuestionId(id);
+        addLectureChanged(q.getLectureId());
         return 0;
     }
 
@@ -162,6 +171,7 @@ public class QuestionService {
         if (lecture.getModkey().equals(modkey)) {
             questionRepository.deleteById(id);
             userQuestionRepository.deleteAllByQuestionId(id);
+            addLectureChanged(q.getLectureId());
             return 0;
         }
         throw new InvalidModkeyException();
@@ -200,6 +210,7 @@ public class QuestionService {
             q.setOwnerName(user.getUserName());
             q.setEdited(true);
             questionRepository.save(q);
+            addLectureChanged(q.getLectureId());
             return 0;
         }
         throw new InvalidModkeyException();
@@ -240,6 +251,7 @@ public class QuestionService {
             userQuestionRepository.deleteAllByQuestionIdAndUserId(id, userId);
         }
         questionRepository.save(q);
+        addLectureChanged(q.getLectureId());
         return 0;
     }
 
@@ -268,6 +280,7 @@ public class QuestionService {
             q.setAnswerTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
             q.setAnswerText(answerText);
             questionRepository.save(q);
+            addLectureChanged(q.getLectureId());
             return 0;
         }
         throw new InvalidModkeyException();
@@ -300,6 +313,7 @@ public class QuestionService {
                 q.setEditorId(uid);
             }
             questionRepository.save(q);
+            addLectureChanged(q.getLectureId());
             return 0;
         }
         throw new InvalidModkeyException();
@@ -324,5 +338,54 @@ public class QuestionService {
             throw new LectureNotFoundException();
         }
         return lecture;
+    }
+
+    /**
+     * Checks if a lecture was changed
+     *     and removes its id from the changed lecture ids set if it is changed.
+     * @param lid the id of the lecture
+     * @return true if changed, false otherwise
+     */
+    public boolean wasLectureChanged(UUID lid) {
+        if (lectureChanged.contains(lid)) {
+            removeLectureChanged(lid);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the lecture exists in the repository.
+     * @param lid the id of the lecture to be checked
+     * @return true if exists, false otherwise
+     */
+    public boolean lectureExists(UUID lid) {
+        return lectureRepository.findLectureEntityByUuid(lid) != null;
+    }
+
+    /**
+     * Removes the lecture id from the changed lecture ids set.
+     * @param lid the id of the lecture
+     */
+    public void removeLectureChanged(UUID lid) {
+        taskScheduler.schedule(() ->
+                lectureChanged.remove(lid),
+                new Date(OffsetDateTime.now().plusSeconds(1).toInstant().toEpochMilli())
+        );
+    }
+
+    /**
+     * Add lecture id to the changed lecture ids set.
+     * @param lid the id of the lecture
+     */
+    public void addLectureChanged(UUID lid) {
+        if (!lectureChanged.contains(lid)) {
+            lectureChanged.add(lid);
+            return;
+        }
+        taskScheduler.schedule(() ->
+                lectureChanged.add(lid),
+                new Date(OffsetDateTime.now().plusSeconds(2).toInstant().toEpochMilli())
+        );
     }
 }

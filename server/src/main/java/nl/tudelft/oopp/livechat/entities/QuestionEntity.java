@@ -12,9 +12,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
-/**
- * The class that represents a question entity.
- */
 @Entity(name = "question")
 @Table(name = "questions")
 @DynamicUpdate
@@ -61,7 +58,7 @@ public class QuestionEntity {
     @Column(name = "editorId")
     private long editorId;
 
-    @Column(name = "ownername")
+    @Column(name = "ownername", length = 70)
     String ownerName;
 
     /**

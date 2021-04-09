@@ -3,9 +3,7 @@ package nl.tudelft.oopp.livechat.data;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Class to store together a poll and its answer options.
- */
+
 public class PollAndOptions {
     /**
      * The poll entity.

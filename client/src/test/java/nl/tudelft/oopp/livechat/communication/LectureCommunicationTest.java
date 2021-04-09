@@ -2,7 +2,7 @@ package nl.tudelft.oopp.livechat.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
@@ -13,6 +13,7 @@ import org.mockito.stubbing.Answer;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
+import org.mockserver.model.Parameter;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -23,11 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.model.HttpRequest.request;
 
-/**
- * Class for Lecture communication tests.
- */
-public class LectureCommunicationTest {
 
+public class LectureCommunicationTest {
     private static MockServerClient mockServer;
     private static String jsonLecture;
     private static String jsonUser;
@@ -217,17 +215,54 @@ public class LectureCommunicationTest {
     }
 
     /**
-     * Starts the server and assigns expectations.
+     * Create expectations for setting frequency.
      */
-    @BeforeAll
-    public static void startServer() {
-        User.setUid();
-        User.setUserName("name");
+    private static void createExpectationsForSettingFrequency() {
+        //Success
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/frequency/" + lid + "/" + modkey)
+                .withQueryStringParameter(new Parameter("frequency", "120")))
+                .respond(HttpResponse.response().withStatusCode(200)
+                .withBody("0"));
 
-        jsonLecture = createJsonLecture();
-        jsonUser = createJsonUser(User.getUid(), User.getUserName());
-        jsonBanning = createJsonForBanning(modkey);
+        //Incorrect modkey
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/frequency/" + lid + "/" + incorrectModkey)
+                .withQueryStringParameter(new Parameter("frequency", "120")))
+                .respond(HttpResponse.response().withStatusCode(401));
 
+        //Invalid lecture id
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/frequency/validUUID/" + modkey)
+                .withQueryStringParameter(new Parameter("frequency", "120")))
+                .respond(HttpResponse.response().withStatusCode(400));
+
+        //Invalid moderator key
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/frequency/" + lid + "/validModkey")
+                .withQueryStringParameter(new Parameter("frequency", "120")))
+                .respond(HttpResponse.response().withStatusCode(400));
+
+        //Incorrect lecture id
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/frequency/" + modkey + "/" + modkey)
+                .withQueryStringParameter(new Parameter("frequency", "120")))
+                .respond(HttpResponse.response().withStatusCode(404));
+
+        //Negative frequency
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/frequency/" + lid + "/" + modkey)
+                .withQueryStringParameter(new Parameter("frequency", "-3")))
+                .respond(HttpResponse.response().withStatusCode(400));
+
+        //Too large frequency
+        mockServer.when(request().withMethod("PUT")
+                .withPath("/api/frequency/" + lid + "/" + modkey)
+                .withQueryStringParameter(new Parameter("frequency", "301")))
+                .respond(HttpResponse.response().withStatusCode(400));
+    }
+
+    private static void startServer() {
         mockServer = ClientAndServer.startClientAndServer(8080);
 
         createExpectationsForCreateLecture();
@@ -236,13 +271,29 @@ public class LectureCommunicationTest {
         createExpectationsForValidateModerator();
         createExpectationsForCloseLecture();
         createExpectationsForBanning();
+        createExpectationsForSettingFrequency();
+    }
+
+    /**
+     * Starts the server and assigns expectations.
+     */
+    @BeforeAll
+    public static void setUp() {
+        User.setUid();
+        User.setUserName("name");
+
+        startServer();
+
+        jsonLecture = createJsonLecture();
+        jsonUser = createJsonUser(User.getUid(), User.getUserName());
+        jsonBanning = createJsonForBanning(modkey);
 
         try {
             mockedAlertController = Mockito.mockStatic(AlertController.class);
             mockedAlertController.when(() -> AlertController.alertError(any(String.class),
                     any(String.class))).thenAnswer((Answer<Void>) invocation -> null);
         } catch (Exception e) {
-            System.out.println("Caught exception!");
+            System.err.println("Exception caught");
         }
     }
 
@@ -350,24 +401,12 @@ public class LectureCommunicationTest {
         startServer();
     }
 
-    //TODO REMOVE THE FOLLOWING 3 TESTS WHEN WE REMOVE THE DEBUG SCENE
-
-    @Test
-    public void registerUserDebugUnsuccessfulTest() {
-        assertFalse(LectureCommunication.registerUserdebug(lid, User.getUid(), e));
-    }
-
-    @Test
-    public void registerUserDebugSuccessfulTest() {
-        assertTrue(LectureCommunication.registerUserdebug(lid, User.getUid(), User.getUserName()));
-    }
-
     @Test
     public void registerUserDebugServerRefusesTest() {
-        mockServer.stop();
-        assertFalse(LectureCommunication.registerUserdebug(lid, User.getUid(), User.getUserName()));
-
-        startServer();
+        String temp = User.getUserName();
+        User.setUserName(e);
+        assertNull(LectureCommunication.joinLectureById(lid));
+        User.setUserName(temp);
     }
 
     /**
@@ -410,8 +449,7 @@ public class LectureCommunicationTest {
 
     /**
      * Tests for closing a lecture.
-     * */
-
+     */
 
     @Test
     public void closeLectureSuccessfulTest() {
@@ -497,6 +535,67 @@ public class LectureCommunicationTest {
         Lecture.setCurrent(new Lecture());
         mockServer.stop();
         assertFalse(LectureCommunication.ban(modkey, 42,7, true));
+
+        startServer();
+    }
+
+    /**
+     * Tests for setting frequency.
+     */
+
+    @Test
+    public void setFrequencySuccessfulTest() {
+        Lecture.setCurrent(new Lecture());
+        assertTrue(LectureCommunication.setFrequency(lid, modkey, 120));
+    }
+
+    @Test
+    public void setFrequencyCurrentLectureIsNullTest() {
+        Lecture.setCurrent(null);
+        assertFalse(LectureCommunication.setFrequency(lid, modkey, 120));
+    }
+
+    @Test
+    public void setFrequencyInvalidLectureIdTest() {
+        Lecture.setCurrent(new Lecture());
+        assertFalse(LectureCommunication.setFrequency("validUUID", modkey, 120));
+    }
+
+    @Test
+    public void setFrequencyInvalidModkeyTest() {
+        Lecture.setCurrent(new Lecture());
+        assertFalse(LectureCommunication.setFrequency(lid, "validModkey", 120));
+    }
+
+    @Test
+    public void setFrequencyIncorrectModkeyTest() {
+        Lecture.setCurrent(new Lecture());
+        assertFalse(LectureCommunication.setFrequency(lid, incorrectModkey, 120));
+    }
+
+    @Test
+    public void setFrequencyLectureNotFoundTest() {
+        Lecture.setCurrent(new Lecture());
+        assertFalse(LectureCommunication.setFrequency(modkey, modkey, 120));
+    }
+
+    @Test
+    public void setFrequencyNegativeFrequencyTest() {
+        Lecture.setCurrent(new Lecture());
+        assertFalse(LectureCommunication.setFrequency(lid, modkey, -3));
+    }
+
+    @Test
+    public void setFrequencyTooLargeFrequencyTest() {
+        Lecture.setCurrent(new Lecture());
+        assertFalse(LectureCommunication.setFrequency(lid, modkey, 301));
+    }
+
+    @Test
+    public void setFrequencyServerRefusesTest() {
+        Lecture.setCurrent(new Lecture());
+        mockServer.stop();
+        assertFalse(LectureCommunication.setFrequency(lid, modkey, 120));
 
         startServer();
     }

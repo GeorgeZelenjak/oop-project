@@ -18,9 +18,7 @@ import java.util.Objects;
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.handleResponse;
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.sendAndReceive;
 
-/**
- * Class for Lecture server communication.
- */
+
 public abstract class LectureCommunication {
 
     private LectureCommunication() {
@@ -115,7 +113,6 @@ public abstract class LectureCommunication {
      */
     public static boolean closeLecture(String lectureId, String modkey) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
         HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString("");
@@ -137,7 +134,6 @@ public abstract class LectureCommunication {
      */
     public static boolean ban(String modKey, long questionToBanId, int time, boolean byIp) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 
@@ -151,10 +147,36 @@ public abstract class LectureCommunication {
         HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(json);
         String address = byIp ? ADDRESS + "/api/user/ban/ip" : ADDRESS + "/api/user/ban/id";
 
-        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(
-                URI.create(address)).setHeader("Content-Type", "application/json").build();
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(address))
+                .setHeader("Content-Type", "application/json").build();
         HttpResponse<String> response = sendAndReceive(request);
         return handleResponse(response) == 0;
+    }
+
+    /**
+     * Sends an HTTP request to ban a user by id or ip (done by moderator).
+     * @param lectureId the id of the lecture
+     * @param modkey the moderator key
+     * @param frequency the frequency of asking questions
+     * @return true if successful, false otherwise
+     */
+    public static boolean setFrequency(String lectureId, String modkey, int frequency) {
+        if (Lecture.getCurrent() == null) {
+            return false;
+        }
+
+        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString("");
+        HttpRequest request = HttpRequest.newBuilder().PUT(body).uri(URI.create(ADDRESS
+                + "/api/frequency/" + URLEncoder.encode(lectureId, StandardCharsets.UTF_8)
+                + "/" + URLEncoder.encode(modkey, StandardCharsets.UTF_8)
+                + "?frequency=" + frequency)).build();
+
+        HttpResponse<String> response = sendAndReceive(request);
+        if (handleResponse(response) == 0) {
+            Lecture.getCurrent().setFrequency(frequency);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -177,27 +199,5 @@ public abstract class LectureCommunication {
         return handleResponse(response) == 0;
     }
 
-    /**
-     * A helper method for registering user in the debug mode.
-     * @param lectureId the id of the lecture
-     * @param uid the user id
-     * @param username the username
-     * @return true if successful, false otherwise
-     */
-    public static boolean registerUserdebug(String lectureId, long uid, String username) {
-        JsonObject user = new JsonObject();
-        user.addProperty("userName", username);
-        user.addProperty("uid", uid);
-        user.addProperty("lectureId", lectureId);
-        String json = gson.toJson(user);
 
-        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(json);
-        String address = ADDRESS + "/api/user/register";
-        HttpRequest request = HttpRequest.newBuilder().POST(body)
-                .uri(URI.create(address))
-                .setHeader("Content-Type", "application/json").build();
-
-        HttpResponse<String> response = sendAndReceive(request);
-        return handleResponse(response) == 0;
-    }
 }

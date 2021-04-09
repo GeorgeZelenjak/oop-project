@@ -5,7 +5,6 @@ import nl.tudelft.oopp.livechat.data.Question;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,10 +14,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CreateFile {
-
-    private final File file;
+    private File file;
     private final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    private String pathName;
+    private Path path;
+
     /**
      * Text HighLighters.
      */
@@ -31,48 +30,62 @@ public class CreateFile {
     /**
      * Creates a new CreateFile object.
      */
-    public CreateFile(String pathName) {
-        this.pathName = pathName;
+    public CreateFile() {
+    }
 
-        Path path = Path.of(pathName);
+    /**
+     * Sets path of the CreateFile object.
+     * @param pathName the string representing a path
+     * @return true iff successfully set, false otherwise
+     */
+    public boolean setPath(String pathName) {
+        try {
+            this.path = Path.of(pathName);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
+    /**
+     * Creates a file in the set path.
+     * @return true if successfully created, false otherwise
+     */
+    public boolean createFile() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
         String timeStamp = sdf.format(timestamp);
+
         try {
             if (Files.notExists(path)) {
-                System.out.println(ANSI_RED + "No such directory!" + ANSI_RESET);
                 Files.createDirectory(path);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            return false;
         }
-        System.out.println(timeStamp);
 
         String fileName;
         if (Lecture.getCurrent() == null) {
-            fileName = "null"  + "_" + timeStamp;
+            fileName = "unnamed"  + "_" + timeStamp;
         } else {
             fileName = Lecture.getCurrent().getName() + "_" + timeStamp;
         }
 
         fileName = this.sanitizeFilename(fileName);
 
-        System.out.println(fileName);
         this.file = new File(path.toString() + "/" + fileName + ".txt");
-        this.createFile();
-
+        return this.createFileHelper();
     }
 
     /**
      * A helper method for creating file.
      */
-    private void createFile() {
+    private boolean createFileHelper() {
         try {
-            if (file.createNewFile())
-                System.out.println(ANSI_GREEN + "File created successfully" + ANSI_RESET);
-            else System.out.println(ANSI_RED + "File already exists!" + ANSI_RESET);
-        } catch (IOException e) {
-            e.printStackTrace();
+            file.createNewFile();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
         }
     }
 
@@ -81,73 +94,68 @@ public class CreateFile {
      * Main method of the class that writes all questions to file.
      * @param questions list of questions
      */
-    public void writeToFile(List<Question> questions) {
+    public boolean writeToFile(List<Question> questions) {
         try {
             PrintWriter writer = new PrintWriter(file);
 
-            List<Question> list = questions.stream().sorted((q1, q2) -> {
-                if (q1.isAnswered() && !q2.isAnswered())
+            List<Question> list = questions.stream().sorted((question1, question2) -> {
+                if (question1.isAnswered() && !question2.isAnswered())
                     return -1;
-                else if (!q1.isAnswered() && q2.isAnswered())
+                else if (!question1.isAnswered() && question2.isAnswered())
                         return 1;
                 else {
-                    return Integer.compare(q2.getVotes(), q1.getVotes());
+                    return Integer.compare(question2.getVotes(), question1.getVotes());
                 }
             }).collect(Collectors.toList());
 
-            writer.println(this.headerBuilder(list.size()));
+            headerBuilder(list.size(), writer);
 
             for (int i = 0; i < list.size(); i++) {
 
                 Question question = list.get(i);
-
-                writer.println(this.stringHelper(question));
+                questionPrinter(question, writer);
                 if (i < list.size() - 1)
                 writer.println(separatorLine);
             }
 
             writer.close();
-            System.out.println(ANSI_GREEN
-                    + "Questions written successfully to file" + ANSI_RESET);
-        } catch (FileNotFoundException e) {
-            System.out.println(ANSI_RED + "File not found!" + ANSI_RESET);
+        } catch (FileNotFoundException | NullPointerException e) {
+            return false;
         }
+        return true;
     }
 
     /**
      * Helper method that builds the String representation of a question.
      * @param question The Question Object
-     * @return the string representation
      */
-    private String stringHelper(Question question) {
-        String result = "Q: \""
-                + question.getText() + "\" asked on " + question.getTime();
+    private void questionPrinter(Question question, PrintWriter writer) {
+        writer.println("Q: \""
+                + question.getText() + "\" asked on " + question.getTime());
 
-        String answerText;
         if (question.getAnswerText() != null && !question.getAnswerText().equals(" ")) {
-            answerText = "A: -> \"" + question.getAnswerText() + "\" answered on "
-                    + question.getAnswerTime();
+            writer.println("A: -> \"" + question.getAnswerText() + "\" answered on "
+                    + question.getAnswerTime());
 
-        } else answerText = "A: -> No answer available";
+        } else writer.println("A: -> No answer available");
 
-        result += "\n" + answerText;
-        return result;
     }
 
     /**
      * Helper method that builds the header of the file.
      * @param listSize size of question size
-     * @return the string representation
      */
-    private String headerBuilder(int listSize) {
+    private void headerBuilder(int listSize, PrintWriter writer) {
 
         Lecture lecture = Lecture.getCurrent();
-        return "Lecture Name: \"" + lecture.getName() + "\""
-                + "\nResponsible Lecturer: " + lecture.getCreatorName()
-                + "\nCreation Date: " + lecture.getStartTime()
-                + "\n\nExported at: " + timestamp
-                + "\nNumber of questions: " + listSize
-                + "\n";
+        writer.println("Lecture Name: \"" + lecture.getName() + "\"");
+        writer.println("Responsible Lecturer: " + lecture.getCreatorName());
+        writer.println("Creation Date: " + lecture.getStartTime());
+        writer.println("");
+        writer.println("Exported at: " + timestamp);
+        writer.println("Number of questions: " + listSize);
+        writer.println("");
+
     }
 
     /**

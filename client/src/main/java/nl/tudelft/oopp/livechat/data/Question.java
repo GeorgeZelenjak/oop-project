@@ -3,16 +3,15 @@ package nl.tudelft.oopp.livechat.data;
 import com.google.gson.annotations.Expose;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Question class.
- */
+
 public class Question implements Comparable<Question> {
 
-    private static List<Question> currentQuestions;
+    private static List<Question> currentQuestions = new ArrayList<>();
     private static Question currentQuestion;
 
     @Expose(serialize = false, deserialize = true)

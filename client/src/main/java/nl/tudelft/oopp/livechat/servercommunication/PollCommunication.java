@@ -3,7 +3,7 @@ package nl.tudelft.oopp.livechat.servercommunication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import nl.tudelft.oopp.livechat.businesslogic.CommonCommunication;
-import nl.tudelft.oopp.livechat.controllers.AlertController;
+import nl.tudelft.oopp.livechat.controllers.gui.AlertController;
 import nl.tudelft.oopp.livechat.data.Poll;
 import nl.tudelft.oopp.livechat.data.PollAndOptions;
 import nl.tudelft.oopp.livechat.data.PollOption;
@@ -18,9 +18,7 @@ import java.util.UUID;
 
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.*;
 
-/**
- * Class for server communication related to polls.
- */
+
 public abstract class PollCommunication {
     /**
      * Gson object for parsing Json set to parse fields according to annotations

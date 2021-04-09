@@ -16,9 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 
-/**
- * Class for the Lecture controller.
- */
 @RestController
 @RequestMapping("/api")
 public class LectureController {
@@ -112,6 +109,22 @@ public class LectureController {
     public int validate(@PathVariable("modkey") UUID modkey, @PathVariable("id") UUID id)
             throws LectureException, InvalidModkeyException {
         return service.validateModerator(id, modkey);
+    }
+
+    /**
+     * PUT Endpoint to set the frequency of asking questions of the lecture.
+     * @param id the id of the lecture
+     * @param modkey the moderator key
+     * @param frequency the frequency of asking questions
+     * @return 0 if successful
+     * @throws LectureException when the lecture is not found
+     * @throws InvalidModkeyException when the moderator key is incorrect
+     */
+    @PutMapping("/frequency/{id}/{modkey}")
+    public int setFrequency(@PathVariable("id") UUID id,
+                            @PathVariable("modkey") UUID modkey, @RequestParam int frequency)
+            throws LectureException, InvalidModkeyException {
+        return service.setFrequency(id, modkey, frequency);
     }
 
     /**

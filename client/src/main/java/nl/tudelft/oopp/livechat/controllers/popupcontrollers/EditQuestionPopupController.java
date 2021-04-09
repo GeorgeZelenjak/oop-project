@@ -14,18 +14,13 @@ import nl.tudelft.oopp.livechat.servercommunication.QuestionCommunication;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * The type Edit question popup controller.
- */
+
 public class EditQuestionPopupController implements Initializable {
     @FXML
     private TextArea editQuestionTextArea;
 
     @FXML
     private Button submitEditedQuestionButton;
-
-    @FXML
-    private Button cancelButton;
 
     @FXML
     private Text questionText;
@@ -36,9 +31,8 @@ public class EditQuestionPopupController implements Initializable {
         editQuestionTextArea.setText(Question.getCurrent().getText());
     }
 
-
     /**
-     * Submit the edited question.
+     * Submits the edited question.
      */
     public void submitEditedQuestion() {
         QuestionCommunication.edit(Question.getCurrent().getId(),
@@ -47,7 +41,7 @@ public class EditQuestionPopupController implements Initializable {
     }
 
     /**
-     * Close the scene.
+     * Closes the scene.
      */
     public void closeTheScene() {
         QuestionCommunication.setStatus(Question.getCurrent().getId(),

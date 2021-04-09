@@ -14,15 +14,14 @@ import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 import static nl.tudelft.oopp.livechat.businesslogic.CommonCommunication.*;
 
-/**
- * Class for server communication related to questions.
- */
+
 public abstract class QuestionCommunication {
 
     private QuestionCommunication() {
@@ -50,7 +49,6 @@ public abstract class QuestionCommunication {
      */
     public static boolean askQuestion(long uid, UUID lectureId, String questionText) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 
@@ -64,8 +62,7 @@ public abstract class QuestionCommunication {
         if (handleResponse(response) != 0) {
             return false;
         }
-        System.out.println("The question was asked successfully! "
-                + Objects.requireNonNull(response).body());
+        Objects.requireNonNull(response).body();
         User.addQuestionId(Long.parseLong(response.body()));
         return true;
     }
@@ -75,21 +72,20 @@ public abstract class QuestionCommunication {
      * @return the list of questions related to current lecture,
      *         null if error occurs or the user is not in the lecture
      */
-    public static List<Question> fetchQuestions() {
+    public static List<Question> fetchQuestions(boolean firstTime) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return null;
         }
 
         HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(ADDRESS
                 + "/api/question/fetch?lid=" + URLEncoder.encode(Lecture.getCurrent()
-                        .getUuid().toString(), StandardCharsets.UTF_8))).build();
+                        .getUuid().toString(),
+                StandardCharsets.UTF_8) + "&firstTime=" + firstTime)).build();
         HttpResponse<String> response = sendAndReceive(request);
-        if (handleResponse(response) != 0) {
+        if (handleResponseNoAlerts(response) != 0) {
             return null;
         }
-        System.out.println("The questions were retrieved successfully! "
-                + Objects.requireNonNull(response).body());
+        Objects.requireNonNull(response).body();
         return gson.fromJson(response.body(), new TypeToken<List<Question>>(){}.getType());
     }
 
@@ -100,7 +96,6 @@ public abstract class QuestionCommunication {
      */
     public static boolean upvoteQuestion(long qid, long uid) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 
@@ -112,8 +107,7 @@ public abstract class QuestionCommunication {
 
         int result = handleResponse(response);
         if (result == 0) {
-            System.out.println("The question was upvoted/downvoted successfully! "
-                    + Objects.requireNonNull(response).body());
+            Objects.requireNonNull(response).body();
         }
         return result == 0;
     }
@@ -126,7 +120,6 @@ public abstract class QuestionCommunication {
      */
     public static boolean markedAsAnswered(long qid, UUID modkey, String answer) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
         answer = answer == null ? " " : answer;
@@ -139,8 +132,7 @@ public abstract class QuestionCommunication {
         HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
         if (result == 0) {
-            System.out.println("The question was marked as answered successfully!"
-                    + Objects.requireNonNull(response).body());
+            Objects.requireNonNull(response).body();
         }
         return result == 0;
     }
@@ -154,7 +146,6 @@ public abstract class QuestionCommunication {
      */
     public static boolean edit(long qid, UUID modKey, String newText) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!!!");
             return false;
         }
 
@@ -171,11 +162,8 @@ public abstract class QuestionCommunication {
                 "application/json").build();
 
         HttpResponse<String> response = sendAndReceive(request);
+
         int result = handleResponse(response);
-        if (result == 0) {
-            System.out.println("The question with id " + qid + " was modified successfully!");
-            System.out.println("New text: " + newText);
-        }
         return result == 0;
     }
 
@@ -187,7 +175,6 @@ public abstract class QuestionCommunication {
      */
     public static boolean deleteQuestion(long qid, long uid) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 
@@ -197,7 +184,6 @@ public abstract class QuestionCommunication {
         HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
         if (result == 0) {
-            System.out.println("The question with id " + qid + " was deleted successfully!");
             User.deleteQuestionId(qid);
         }
         return result == 0;
@@ -212,7 +198,6 @@ public abstract class QuestionCommunication {
     //TODO remove qid from user's set of questions after deletion
     public static boolean modDelete(long qid, UUID modkey) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
 
@@ -222,9 +207,7 @@ public abstract class QuestionCommunication {
 
         HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponse(response);
-        if (result == 0) {
-            System.out.println("The question with id " + qid + " was deleted successfully!");
-        }
+
         return result == 0;
     }
 
@@ -238,7 +221,6 @@ public abstract class QuestionCommunication {
      */
     public static boolean setStatus(long qid, UUID modkey, String status, long uid) {
         if (Lecture.getCurrent() == null) {
-            System.out.println("You are not connected to a lecture!");
             return false;
         }
         HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(status);
@@ -249,10 +231,7 @@ public abstract class QuestionCommunication {
 
         HttpResponse<String> response = sendAndReceive(request);
         int result = handleResponseNoAlerts(response);
-        if (result == 0) {
-            System.out.println("The question with id " + qid + " has changed status!");
-            System.out.println("New status: " + status);
-        }
+
         return result == 0;
     }
 }

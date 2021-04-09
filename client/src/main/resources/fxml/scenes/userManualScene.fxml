@@ -1,42 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="768.0" prefWidth="1080.0" stylesheets="@../../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.UserManualSceneController">
+<AnchorPane prefHeight="768.0" prefWidth="1080.0" style="-fx-background-color: #F7F7F7;" stylesheets="@../../css/Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.oopp.livechat.controllers.scenecontrollers.UserManualSceneController">
    <children>
-      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" prefHeight="34.0" prefWidth="86.0" styleClass="mainSceneButton" text="Back" />
-      <Text layoutX="357.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Help &amp; Documentation Page" textAlignment="CENTER" wrappingWidth="578.0">
-         <font>
-            <Font name="Arial Bold" size="40.0" />
-         </font>
-      </Text>
-      <Text layoutX="41.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Categories" wrappingWidth="168.419921875">
-         <font>
-            <Font name="Arial Bold" size="30.0" />
-         </font>
-      </Text>
-      <Button layoutX="29.0" layoutY="164.0" mnemonicParsing="false" onAction="#showCreateLectureText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Create a Lecture" />
-      <Button layoutX="29.0" layoutY="208.0" mnemonicParsing="false" onAction="#showJoinLectureText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Join a Lecture" />
-      <Button layoutX="29.0" layoutY="435.0" mnemonicParsing="false" onAction="#showQuestionHandlingText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Question Handling" />
-      <Button layoutX="29.0" layoutY="252.0" mnemonicParsing="false" onAction="#showShareLectureIDText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Share Lecture ID" />
-      <Button layoutX="29.0" layoutY="297.0" mnemonicParsing="false" onAction="#showAskingQuestionsText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Asking Questions" />
-      <Button layoutX="29.0" layoutY="343.0" mnemonicParsing="false" onAction="#showLecturerModeText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Lecturer Mode" />
-      <Button layoutX="29.0" layoutY="390.0" mnemonicParsing="false" onAction="#showQuestionInfoText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Question Information" />
-      <Button layoutX="29.0" layoutY="480.0" mnemonicParsing="false" onAction="#showExportingQuestionsText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Exporting Questions" />
-      <Button layoutX="29.0" layoutY="694.0" mnemonicParsing="false" onAction="#showAboutApplicationText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="About Application" />
-      <Button layoutX="29.0" layoutY="525.0" mnemonicParsing="false" onAction="#showLectureSpeedVotingText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Lecture Speed Voting" />
-      <Line endX="-100.0" endY="286.20001220703125" layoutX="360.0" layoutY="337.0" startX="-100.0" startY="-181.8000030517578" stroke="#6699ff" />
-      <StackPane fx:id="helpPane" layoutX="276.0" layoutY="109.0" prefHeight="571.0" prefWidth="740.0">
-         <children>
-            <Text fx:id="helpText" boundsType="LOGICAL_VERTICAL_CENTER" strokeType="OUTSIDE" strokeWidth="0.0" text="To display the help text, select a category on the left to view its content." textAlignment="CENTER" wrappingWidth="737.1367490291595">
+      <BorderPane prefHeight="768.0" prefWidth="1145.6" style="-fx-background-color: #F7F7F7;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <ScrollPane focusTraversable="false" style="-fx-background-color: #F7F7F7;" BorderPane.alignment="CENTER">
+               <content>
+                  <Text fx:id="helpText" boundsType="LOGICAL_VERTICAL_CENTER" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 18px;" text="To display the help text, select a category on the left to view its content." textAlignment="CENTER" wrappingWidth="759.4482421875">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </Text>
+               </content>
+               <BorderPane.margin>
+                  <Insets bottom="120.0" left="290.0" right="20.0" top="100.0" />
+               </BorderPane.margin>
+            </ScrollPane>
+         </center>
+         <top>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Help &amp; Documentation Page" textAlignment="CENTER" wrappingWidth="578.0" BorderPane.alignment="CENTER">
                <font>
-                  <Font name="Arial" size="18.0" />
+                  <Font name="Arial Bold" size="40.0" />
+               </font>
+               <BorderPane.margin>
+                  <Insets top="15.0" />
+               </BorderPane.margin>
+            </Text>
+         </top>
+      </BorderPane>
+      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" prefHeight="34.0" prefWidth="86.0" styleClass="mainSceneButton" text="Back" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
+      <AnchorPane layoutX="40.0" layoutY="108.626953125" AnchorPane.bottomAnchor="142.57304687500005" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="108.626953125">
+         <children>
+            <Text layoutX="23.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Categories" wrappingWidth="151.419921875" AnchorPane.leftAnchor="23.0" AnchorPane.topAnchor="-9.373046875">
+               <font>
+                  <Font name="Arial Bold" size="30.0" />
                </font>
             </Text>
+            <ScrollPane layoutX="5.0" layoutY="60.0" prefHeight="399.0" prefWidth="214.0" style="-fx-background-color: #F7F7F7;" AnchorPane.bottomAnchor="58.0" AnchorPane.topAnchor="60.0">
+               <content>
+                  <Group>
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#showCreateLectureText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Create a Lecture" />
+                        <Button layoutY="44.0" mnemonicParsing="false" onAction="#showJoinLectureText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Join a Lecture" />
+                        <Button layoutY="271.0" mnemonicParsing="false" onAction="#showQuestionHandlingText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Question Handling" />
+                        <Button layoutY="88.0" mnemonicParsing="false" onAction="#showShareLectureIDText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Share Lecture ID" />
+                        <Button layoutY="133.0" mnemonicParsing="false" onAction="#showAskingQuestionsText" prefHeight="34.0" prefWidth="191.0" styleClass="mainSceneButton" text="Asking Questions" />
+                        <Button layoutY="179.0" mnemonicParsing="false" onAction="#showLecturerModeText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Lecturer Mode" />
+                        <Button layoutY="226.0" mnemonicParsing="false" onAction="#showQuestionInfoText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Question Information" />
+                        <Button layoutY="316.0" mnemonicParsing="false" onAction="#showExportingQuestionsText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Exporting Questions" />
+                        <Button layoutY="361.0" mnemonicParsing="false" onAction="#showLectureSpeedVotingText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Lecture Speed Voting" />
+                        <Button fx:id="createPollsText" layoutY="406.0" mnemonicParsing="false" onAction="#showCreatePollsText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="Creating Polls/Quizzes" />
+                        <Button fx:id="createPollsText1" layoutY="450.0" mnemonicParsing="false" onAction="#showInteractingPollsText" prefHeight="30.0" prefWidth="192.0" styleClass="mainSceneButton" text="Interacting with Polls" />
+                        <Button fx:id="createPollsText11" layoutY="490.0" mnemonicParsing="false" onAction="#showBanningUsersText" prefHeight="30.0" prefWidth="192.0" styleClass="mainSceneButton" text="Banning Users" />
+                     </children>
+                  </Group>
+               </content>
+            </ScrollPane>
+            <Line endX="-100.0" endY="286.20001220703125" layoutX="323.5" layoutY="228.0730438232422" startX="-100.0" startY="-181.8000030517578" stroke="#6699ff" AnchorPane.bottomAnchor="1.226959228515625" AnchorPane.topAnchor="45.773040771484375" />
          </children>
-      </StackPane>
+      </AnchorPane>
+      <Button layoutX="29.0" layoutY="694.0" mnemonicParsing="false" onAction="#showAboutApplicationText" prefHeight="34.0" prefWidth="192.0" styleClass="mainSceneButton" text="About Application" AnchorPane.bottomAnchor="39.6" AnchorPane.leftAnchor="47.0" />
    </children>
 </AnchorPane>

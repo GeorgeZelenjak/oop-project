@@ -3,11 +3,9 @@ package nl.tudelft.oopp.livechat.controllers.cellcontrollers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import nl.tudelft.oopp.livechat.controllers.popupcontrollers.PollingManagementPopupController;
 import nl.tudelft.oopp.livechat.data.PollOption;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.PollCommunication;
@@ -58,7 +56,6 @@ public class PollVoteCellController {
      */
     public void setVoteButton() {
         answerButton.setOnAction((ActionEvent event) -> {
-            System.out.println(option.getId());
             PollCommunication.vote(User.getUid(), option.getId());
             cellAnchorPane.getScene().getWindow().hide();
         });
