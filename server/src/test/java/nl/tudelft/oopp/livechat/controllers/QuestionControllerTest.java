@@ -298,7 +298,7 @@ class QuestionControllerTest {
                         .characterEncoding("utf-8"))
                         .andExpect(status().isForbidden())
                         .andReturn().getResponse().getErrorMessage();
-        assertEquals("This user is banned", result);
+        assertEquals("You are banned", result);
 
         //check if there are no questions with the id of q2
         QuestionEntity q = questionRepository.findById(q2.getId()).orElse(null);
