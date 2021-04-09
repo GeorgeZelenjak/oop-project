@@ -24,7 +24,7 @@
                   </Group>
                </center>
             </BorderPane>
-            <Button id="leaveLecture" fx:id="leaveLecture" layoutX="6.0" layoutY="717.107421875" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../../css/Styles.css" text="Leave Lecture" AnchorPane.bottomAnchor="17.292578125" AnchorPane.leftAnchor="4.0" />
+            <Button id="leaveLecture" fx:id="leaveLecture" layoutX="15.0" layoutY="713.707421875" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" stylesheets="@../../css/Styles.css" text="Leave Lecture" AnchorPane.bottomAnchor="21.292578124999977" AnchorPane.leftAnchor="15.0" />
             <Text fx:id="lectureNameText" fill="WHITE" layoutX="6.0" layoutY="84.525390625" strokeType="OUTSIDE" strokeWidth="0.0" text="Lecture Name" textAlignment="CENTER" wrappingWidth="168.0703125" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="62.943359375">
                <font>
                   <Font name="Arial Bold" size="20.0" />
@@ -35,14 +35,8 @@
                   <Font name="Arial" size="14.0" />
                </font>
             </Text>
-            <Button id="backButton" fx:id="gobBackButton" layoutX="4.0" layoutY="675.107421875" mnemonicParsing="false" onAction="#goBackToMain" prefHeight="33.0" prefWidth="168.0" styleClass="leaveLecture" text="Back to Main Page" AnchorPane.bottomAnchor="59.292578125" AnchorPane.leftAnchor="4.0">
-               <font>
-                  <Font size="10.0" />
-               </font>
-            </Button>
          </children>
       </AnchorPane>
-      <AnchorPane prefHeight="768.0" prefWidth="1080.0" />
       <BorderPane layoutX="208.0" prefHeight="766.0" prefWidth="872.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="208.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
             <ListView fx:id="questionPaneListView" maxWidth="848.0" prefHeight="617.0" prefWidth="848.0" style="-fx-background-color: #F7F7F7;" BorderPane.alignment="CENTER" />

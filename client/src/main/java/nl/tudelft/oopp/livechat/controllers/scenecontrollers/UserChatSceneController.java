@@ -69,9 +69,6 @@ public class UserChatSceneController implements Initializable {
     private Button goToUserManualButton;
 
     @FXML
-    private Button gobBackButton;
-
-    @FXML
     private Button leaveLecture;
 
     /**
@@ -121,7 +118,6 @@ public class UserChatSceneController implements Initializable {
 
         //Tooltip
         goToUserManualButton.setTooltip(new Tooltip("Open Help & Documentation page"));
-        gobBackButton.setTooltip(new Tooltip("Go back to the main page"));
 
         leaveLecture.setTooltip(new Tooltip("Leave this lecture"));
     }
