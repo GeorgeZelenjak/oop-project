@@ -18,7 +18,7 @@ public abstract class CommonCommunication {
     /**
      * The address of the server.
      */
-    public static final String ADDRESS = "http://localhost:8080/";
+    public static final String ADDRESS = "http://localhost:8080";
 
 
     private CommonCommunication() {
