@@ -163,6 +163,7 @@ public class NavigationController {
                         "This question is already being handled, if you want you can continue");
             }
             stage.show();
+
             //Closes the entire program when the main scene is closed
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override

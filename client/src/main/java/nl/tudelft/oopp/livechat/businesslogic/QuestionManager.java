@@ -54,13 +54,10 @@ public abstract class QuestionManager {
      */
     public static List<Question> filter(boolean answered, boolean unanswered,
                                         List<Question> questions) {
-        //we don't need the answered questions, so we only retain the unanswered
         if (!answered) {
             questions =  questions.stream().filter((q)
                 -> !q.isAnswered()).collect(Collectors.toList());
         }
-        //we don't need the unanswered questions, so we only retain the answered ones
-        //      (which will return the empty list if we don't need both)
         if (!unanswered) {
             return questions.stream().filter(Question::isAnswered).collect(Collectors.toList());
         }
