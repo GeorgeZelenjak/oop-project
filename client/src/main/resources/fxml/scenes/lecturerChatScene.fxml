@@ -17,7 +17,7 @@
                      <children>
                         <Group fx:id="lecturerGroup">
                            <children>
-                              <Button fx:id="copyId" layoutY="39.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy lecture ID" />
+                              <Button fx:id="copyId" layoutY="39.0" mnemonicParsing="false" onAction="#copyLectureId" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy Lecture ID" />
                                     <Button fx:id="copyKey" mnemonicParsing="false" onAction="#copyModKey" prefHeight="33.0" prefWidth="168.0" styleClass="mainSceneButtonCopy" text="Copy Moderator Key" />
                               <Button fx:id="frequencyButton" layoutX="2.0" layoutY="153.0" mnemonicParsing="false" onAction="#setFrequency" prefHeight="32.0" prefWidth="166.0" styleClass="lectureModeButton" text="Configure Frequency">
                                  <font>
