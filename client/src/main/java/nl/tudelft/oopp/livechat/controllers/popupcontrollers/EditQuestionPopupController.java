@@ -31,9 +31,8 @@ public class EditQuestionPopupController implements Initializable {
         editQuestionTextArea.setText(Question.getCurrent().getText());
     }
 
-
     /**
-     * Submit the edited question.
+     * Submits the edited question.
      */
     public void submitEditedQuestion() {
         QuestionCommunication.edit(Question.getCurrent().getId(),
@@ -42,7 +41,7 @@ public class EditQuestionPopupController implements Initializable {
     }
 
     /**
-     * Close the scene.
+     * Closes the scene.
      */
     public void closeTheScene() {
         QuestionCommunication.setStatus(Question.getCurrent().getId(),

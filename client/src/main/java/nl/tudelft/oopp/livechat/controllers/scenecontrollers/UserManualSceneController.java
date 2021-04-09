@@ -16,127 +16,122 @@ public class UserManualSceneController {
     private Text helpText;
 
     /**
-     * Go back to the previous scene.
+     * Goes back to the previous page.
      */
     public void goBack() {
         NavigationController.getCurrent().goBack();
     }
 
-    /** Displays the Create Lecture Category.
-     *
+    /**
+     * Displays the Create Lecture category.
      */
     public void showCreateLectureText() {
         showCategoryX("client/src/main/resources/textFiles/createLecture.txt");
     }
 
-    /** Displays the Join Lecture Category.
-     *
+    /**
+     * Displays the Join Lecture category.
      */
     public void showJoinLectureText() {
         showCategoryX("client/src/main/resources/textFiles/joinLecture.txt");
     }
 
-    /** Displays the About Application Category.
-     *
+    /**
+     * Displays the About Application category.
      */
     public void showAboutApplicationText() {
         showCategoryX("client/src/main/resources/textFiles/about.txt");
     }
 
-    /** Displays the Share Lecture ID Category.
-     *
+    /**
+     * Displays the Share Lecture ID category.
      */
     public void showShareLectureIDText() {
         showCategoryX("client/src/main/resources/textFiles/shareLectureID.txt");
     }
 
-    /** Displays the Asking Questions Category.
-     *
+    /**
+     * Displays the Asking Questions category.
      */
     public void showAskingQuestionsText() {
         showCategoryX("client/src/main/resources/textFiles/askingQuestions.txt");
     }
 
-    /** Displays the Lecturer Mode Category.
-     *
+    /**
+     * Displays the Lecturer Mode category.
      */
     public void showLecturerModeText() {
         showCategoryX("client/src/main/resources/textFiles/lecturerMode.txt");
     }
 
-    /** Displays the Question Information Category.
-     *
+    /**
+     * Displays the Question Information category.
      */
     public void showQuestionInfoText() {
         showCategoryX("client/src/main/resources/textFiles/questionInfo.txt");
     }
 
-    /** Displays the Question Handling Category.
-     *
+    /**
+     * Displays the Question Handling category.
      */
     public void showQuestionHandlingText() {
         showCategoryX("client/src/main/resources/textFiles/questionHandling.txt");
     }
 
-    /** Displays the Exporting Question Category.
-     *
+    /**
+     * Displays the Exporting Question category.
      */
     public void showExportingQuestionsText() {
         showCategoryX("client/src/main/resources/textFiles/questionExporting.txt");
     }
 
-    /** Displays the Lecture Speed Voting Category.
-     *
+    /**
+     * Displays the Lecture Speed Voting category.
      */
     public void showLectureSpeedVotingText() {
         showCategoryX("client/src/main/resources/textFiles/lectureSpeedVoting.txt");
     }
 
-    /** Displays the Create Polls Category.
-     *
+    /**
+     * Displays the Create Polls category.
      */
     public void showCreatePollsText() {
         showCategoryX("client/src/main/resources/textFiles/createPolls.txt");
     }
 
-    /** Displays the Interacting With Polls Category.
-     *
+    /**
+     * Displays the Interacting With Polls category.
      */
     public void showInteractingPollsText() {
         showCategoryX("client/src/main/resources/textFiles/interactWithPolls.txt");
     }
 
-    /** Displays the Banning Users Category.
-     *
+    /**
+     * Displays the Banning Users category.
      */
     public void showBanningUsersText() {
         showCategoryX("client/src/main/resources/textFiles/banningUsers.txt");
     }
 
-    /** Helper Method that loads a File from a given path, parses it as a string and displays the
-     *      requested text of the selected help category.
-     *      This method catches an FileNotFoundException in case
-     *          the filepath is incorrect or file is not found.
-     * @param fileName - String representing the path of the text file
+    /**
+     * A helper method that loads a file from a given path, parses it as a string and displays the
+     *   requested text of the selected help category.
+     * @param fileName the path to the text file
      */
     public void showCategoryX(String fileName) {
         File file = new File(fileName);
-
         StringBuilder text = new StringBuilder();
 
         try {
             Scanner scanner = new Scanner(file);
-
             while (scanner.hasNextLine()) {
                 text.append(scanner.nextLine()).append("\n");
-
             }
-
             helpText.setText(text.toString());
             helpText.setTextAlignment(TextAlignment.JUSTIFY);
 
         } catch (FileNotFoundException e) {
-            return;
+            System.err.println("File not found");
         }
     }
 }
