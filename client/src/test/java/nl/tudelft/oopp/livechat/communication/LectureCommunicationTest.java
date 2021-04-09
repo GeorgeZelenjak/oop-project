@@ -403,10 +403,10 @@ public class LectureCommunicationTest {
 
     @Test
     public void registerUserDebugServerRefusesTest() {
-        mockServer.stop();
-        assertFalse(LectureCommunication.registerUser(lid));
-
-        startServer();
+        String temp = User.getUserName();
+        User.setUserName(e);
+        assertNull(LectureCommunication.joinLectureById(lid));
+        User.setUserName(temp);
     }
 
     /**
