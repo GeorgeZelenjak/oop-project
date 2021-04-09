@@ -199,27 +199,5 @@ public abstract class LectureCommunication {
         return handleResponse(response) == 0;
     }
 
-    /**
-     * A helper method for registering user in the debug mode.
-     * @param lectureId the id of the lecture
-     * @param uid the user id
-     * @param username the username
-     * @return true if successful, false otherwise
-     */
-    public static boolean registerUserdebug(String lectureId, long uid, String username) {
-        JsonObject user = new JsonObject();
-        user.addProperty("userName", username);
-        user.addProperty("uid", uid);
-        user.addProperty("lectureId", lectureId);
-        String json = gson.toJson(user);
 
-        HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(json);
-        String address = ADDRESS + "/api/user/register";
-        HttpRequest request = HttpRequest.newBuilder().POST(body)
-                .uri(URI.create(address))
-                .setHeader("Content-Type", "application/json").build();
-
-        HttpResponse<String> response = sendAndReceive(request);
-        return handleResponse(response) == 0;
-    }
 }
