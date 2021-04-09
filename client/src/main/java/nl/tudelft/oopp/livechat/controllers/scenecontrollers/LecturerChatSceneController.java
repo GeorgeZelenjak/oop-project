@@ -274,6 +274,11 @@ public class LecturerChatSceneController implements Initializable {
      * Set the frequency of asking questions.
      */
     public void setFrequency() {
+        Lecture lecture = LectureCommunication
+                .joinLectureById(Lecture.getCurrent().getUuid().toString());
+        if (lecture == null) return;
+        Lecture.getCurrent().setFrequency(lecture.getFrequency());
+
         int[] result = showPopup();
         if (result[1] != 1) {
             return;
@@ -307,7 +312,7 @@ public class LecturerChatSceneController implements Initializable {
      * @return res[0] is the selected frequency, res[1] if the button was submitted
      */
     private int[] showPopup() {
-        Spinner<Integer> frequency = new Spinner<>(0, 300, 60);
+        Spinner<Integer> frequency = new Spinner<>(0, 300, Lecture.getCurrent().getFrequency());
         frequency.setInitialDelay(new Duration(0));
 
         int[] result = new int[2];
@@ -336,7 +341,6 @@ public class LecturerChatSceneController implements Initializable {
      * Go to user manual.
      */
     public void goToUserManual() {
-
         NavigationController.getCurrent().goToUserManual();
     }
 
@@ -415,6 +419,7 @@ public class LecturerChatSceneController implements Initializable {
                 DirectoryChooser directoryChooser = new DirectoryChooser();
                 File selectedDirectory = directoryChooser.showDialog(
                         showLabel.getScene().getWindow());
+                if (selectedDirectory == null) return;
                 CreateFile file = new CreateFile();
 
                 if (!file.setPath(selectedDirectory.getAbsolutePath())) {
