@@ -24,38 +24,34 @@ public class MainSceneController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         goToCreateLectureButton.setTooltip(new Tooltip("Go to Create Lecture Page"));
         goToJoinLectureButton.setTooltip(new Tooltip("Go to Join Lecture Page"));
-
         goToHelpButton.setTooltip(new Tooltip("Open Help & Documentation page"));
-
     }
 
     /**
-     * Navigates to lecture creation scene.
-
+     * Navigates to the lecture creation scene.
      */
     public void goToCreateLecture() {
         NavigationController.getCurrent().goToCreateRoomScene();
     }
 
     /**
-     * Navigates to Lecture scene (for Students).
+     * Navigates to the lecture scene (for students).
      */
     public void goToLecture() {
         NavigationController.getCurrent().goToJoinLecturePage();
     }
 
     /**
-     * Go to user manual.
+     * Go to the user manual page.
      */
     public void goToUserManual() {
         NavigationController.getCurrent().goToUserManual();
     }
 
     /**
-     * Go to debug scene.
+     * Go to the debug scene.
      */
     public void goToDebug() {
         NavigationController.getCurrent().goToDebugScene();

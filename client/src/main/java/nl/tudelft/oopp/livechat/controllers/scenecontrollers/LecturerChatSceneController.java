@@ -151,7 +151,6 @@ public class LecturerChatSceneController implements Initializable {
     public void initialize(URL location, ResourceBundle resourceBundle) {
         lectureNameText.setText(Lecture.getCurrent().getName());
         userNameText.setText(User.getUserName());
-
         slowerVotesPercentLine.setEndX(fasterVotesPercentLine.getEndX());
 
         getQuestions(true);
@@ -164,21 +163,18 @@ public class LecturerChatSceneController implements Initializable {
 
         timelineFetch.setCycleCount(Animation.INDEFINITE);
         timelineFetch.play();
+        setTooltips();
         fetchingThread = new Thread(
             () -> {
                 while (Lecture.getCurrent() != null) {
                     List<Question> list = QuestionCommunication.fetchQuestions(false);
-                    if (list != null) {
-                        Question.setCurrentList(list);
-                    }
+                    if (list != null) Question.setCurrentList(list);
                 }
-            }
-                );
+            });
         fetchingThread.setDaemon(true);
         fetchingThread.start();
-        setTooltips();
-    }
 
+    }
 
     /**
      * Gets votes on lecture speed.
@@ -200,12 +196,16 @@ public class LecturerChatSceneController implements Initializable {
         LectureSpeedCommunication.resetLectureSpeed(uuid,modkey);
     }
 
+    /**
+     * Gets the questions asked in the current lecture.
+     * @param firstTime if this is asked for the first time
+     */
     private void getQuestions(boolean firstTime) {
         List<Question> list = QuestionCommunication.fetchQuestions(firstTime);
     }
 
     /**
-     * Fetches questions.
+     * Fetches questions asked in the current lecture.
      */
     public void setQuestions() {
         questions = Question.getCurrentList();
@@ -218,7 +218,7 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
-     * Displays the questions.
+     * Displays the questions asked in the current lecture.
      */
     private void displayQuestions() {
         observableList.setAll(questions);
@@ -236,7 +236,7 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
-     * Copy lecture id to clipboard.
+     * Copies lecture id to clipboard.
      */
     public void copyLectureId() {
         String myString = Lecture.getCurrent().getUuid().toString();
@@ -249,7 +249,7 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
-     * Copy moderator key to clipboard.
+     * Copies moderator key to clipboard.
      */
     public void copyModKey() {
         String myString = Lecture.getCurrent().getModkey().toString();
@@ -262,7 +262,7 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
-     * Set the frequency of asking questions.
+     * Sets the frequency of asking questions.
      */
     public void setFrequency() {
         Lecture lecture = LectureCommunication
@@ -280,7 +280,7 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
-     * Go back to main page.
+     * Goes back to the main page.
      */
     public void goBackToMain() {
         Alert alert = AlertController.createAlert(Alert.AlertType.CONFIRMATION,
@@ -329,7 +329,7 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
-     * Go to user manual.
+     * Goes to the user manual page.
      */
     public void goToUserManual() {
         NavigationController.getCurrent().goToUserManual();
@@ -337,7 +337,7 @@ public class LecturerChatSceneController implements Initializable {
 
 
     /**
-     * Close lecture.
+     * Closes the lecture.
      */
     public void closeLecture() {
         Alert alert = AlertController.createAlert(Alert.AlertType.CONFIRMATION,
@@ -357,7 +357,7 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
-     * Lecturer mode.
+     * Toggles the lecturer mode.
      */
     public void lecturerMode() {
         this.hideBottomPane.setDisable(!this.hideBottomPane.isDisabled());
@@ -376,7 +376,7 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
-     * A helper method to show only relevant questions in the lecturer mode.
+     * A helper method to show only the relevant questions in the lecturer mode.
      */
     private void updateQuestionsLecturerMode() {
         if (!this.lecturerGroup.isVisible()) {
@@ -397,7 +397,7 @@ public class LecturerChatSceneController implements Initializable {
     }
 
     /**
-     * Method that exports all Questions and answers of a lecture.
+     * Exports all questions and answers of a lecture to a file.
      */
     public void exportQuestionsAndAnswers() {
 
@@ -435,23 +435,23 @@ public class LecturerChatSceneController implements Initializable {
         });
     }
 
+    /**
+     * A helper method to adjust the lecture speed lines.
+     */
     private void adjustLectureSpeedLines() {
-        if (lectureSpeeds == null) {
-            return;
-        }
+        if (lectureSpeeds == null) return;
+
         slowerVotesPercentLine.setStartX(PercentageCalculator.determineNewStartCoordinates(
                 fasterVotesPercentLine.getStartX(), fasterVotesPercentLine.getEndX(),
                 lectureSpeeds.get(0), lectureSpeeds.get(1)));
 
         //Makes it so that if the blue line is just a dot, users do not see it
-        slowerVotesPercentLine.setVisible(slowerVotesPercentLine.getEndX()
-                != slowerVotesPercentLine.getStartX());
+        slowerVotesPercentLine.setVisible(slowerVotesPercentLine.getEndX() != slowerVotesPercentLine.getStartX());
         displayQuestions();
     }
 
-
     /**
-     * Popup polling management.
+     * A popup polling management method.
      */
     public void popupPollingManagement() {
         if (PollingManagementPopupController.getInEditingPoll() == null) {
@@ -461,8 +461,10 @@ public class LecturerChatSceneController implements Initializable {
         NavigationController.getCurrent().popupPollingManagement();
     }
 
+    /**
+     * Sets the tooltips for the current page.
+     */
     private void setTooltips() {
-        //Tooltips
         copyId.setTooltip(new Tooltip("Copy the lecture's ID to clipboard"));
         copyKey.setTooltip(new Tooltip("Copy the moderator key to clipboard"));
 
@@ -481,8 +483,10 @@ public class LecturerChatSceneController implements Initializable {
         popupVoteResults.setTooltip(new Tooltip("Create a quiz"));
     }
 
+    /**
+     * Fetches an open poll for the current lecture if this poll exists.
+     */
     private void fetchPoll() {
-
         PollAndOptions fetched = (
                 PollCommunication.fetchPollAndOptionsModerator(
                         Lecture.getCurrent().getUuid(),
@@ -493,6 +497,9 @@ public class LecturerChatSceneController implements Initializable {
         PollAndOptions.setCurrent(fetched);
     }
 
+    /**
+     * Shows the popup results.
+     */
     public void popupVoteResults() {
         NavigationController.getCurrent().popupPollResult();
     }

@@ -27,8 +27,7 @@ public class NavigationController {
 
     /**
      * Instantiates a new Navigation controller.
-     *
-     * @param main The main scene of the application
+     * @param main the main scene of the application
      */
     public NavigationController(Scene main) {
         this.main = main;
@@ -36,8 +35,7 @@ public class NavigationController {
     }
 
     /**
-     * Sets current controller.
-     *
+     * Sets the current controller.
      * @param currentController the current controller
      */
     public static void setCurrent(NavigationController currentController) {
@@ -45,8 +43,7 @@ public class NavigationController {
     }
 
     /**
-     * Gets current controller.
-     *
+     * Gets the current controller.
      * @return the current controller
      */
     public static NavigationController getCurrent() {
@@ -117,7 +114,7 @@ public class NavigationController {
             });
 
         } catch (Exception e) {
-            return;
+            System.err.println("An exception");
         }
     }
 
