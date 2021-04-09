@@ -41,9 +41,9 @@ public class LectureService {
         }
 
         //check if lecture has started
-        if (toSend.getStartTime().compareTo(new Timestamp(System.currentTimeMillis())) >= 0) {
-            throw new LectureNotStartedException();
-        }
+        //if (toSend.getStartTime().compareTo(new Timestamp(System.currentTimeMillis())) >= 0) {
+            //throw new LectureNotStartedException();
+        //}
         toSend.setModkey(null);
         return toSend;
     }

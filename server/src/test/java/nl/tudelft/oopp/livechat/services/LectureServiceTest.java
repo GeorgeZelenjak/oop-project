@@ -152,16 +152,6 @@ class LectureServiceTest {
     }
 
     @Test
-    void getLectureByIdNotStartedTest() {
-        LectureEntity lectureFuture = new LectureEntity("Names", "George",
-                new Timestamp(System.currentTimeMillis() + 0xFFFFFFL));
-        repository.save(lectureFuture);
-
-        assertThrows(LectureNotStartedException.class, () ->
-            lectureService.getLectureByIdNoModkey(lectureFuture.getUuid()));
-    }
-
-    @Test
     void setFrequencySuccessfulTest() throws Exception {
         LectureEntity lecture = new LectureEntity("Names", "Yrjö", time);
         lecture.setFrequency(42);

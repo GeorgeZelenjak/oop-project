@@ -10,6 +10,7 @@ import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
@@ -75,10 +76,8 @@ public class JoinLectureSceneController implements Initializable {
             return;
         }
         if (inputStatusUserName == -2) {
-            AlertController.alertWarning("Long name",
-                    "Your name is too long!\n(max: " + 50
-                            + " characters, you entered: "
-                            + enterNameTextField.getText().length() + ")");
+            AlertController.alertWarning("Long name", "Your name is too long!\n(max: " + 50
+                            + " characters, you entered: " + enterNameTextField.getText().length() + ")");
             return;
         }
 
@@ -86,8 +85,7 @@ public class JoinLectureSceneController implements Initializable {
         int inputStatusLectureId = InputValidator.validateLength(uuidString, 100);
 
         if (inputStatusLectureId == -1) {
-            AlertController.alertWarning("No lecture id entered",
-                    "Please enter the lecture id!");
+            AlertController.alertWarning("No lecture id entered", "Please enter the lecture id!");
             return;
         }
         if (!InputValidator.validateUUID(uuidString)) {
@@ -127,7 +125,8 @@ public class JoinLectureSceneController implements Initializable {
      * Join lecture as a student.
      */
     private void joinAsStudent() {
-        if (!Lecture.getCurrent().isOpen()) {
+        if (!Lecture.getCurrent().isOpen()
+                || Lecture.getCurrent().getStartTime().getTime() > System.currentTimeMillis()) {
             AlertController.alertInformation(
                     "Lecture not open yet!","This lecture has not started yet!");
         } else {
@@ -145,11 +144,10 @@ public class JoinLectureSceneController implements Initializable {
     private void joinAsModerator() {
         String modkeyString = modkeyTextField.getText();
 
-        int inputStatusModKey = InputValidator.validateLength(
-                modkeyTextField.getText(), 255);
+        int inputStatusModKey = InputValidator.validateLength(modkeyTextField.getText(), 255);
         if (inputStatusModKey == -1) {
-            AlertController.alertWarning(
-                    "No moderator key entered", "Please enter the moderator key!");
+            AlertController.alertWarning("No moderator key entered",
+                    "Please enter the moderator key!");
             return;
         }
         if (!InputValidator.validateUUID(modkeyString)) {
@@ -157,8 +155,8 @@ public class JoinLectureSceneController implements Initializable {
             return;
         }
 
-        if (!LectureCommunication
-                .validateModerator(enterLectureCodeTextField.getText(), modkeyString)) {
+        if (!LectureCommunication.validateModerator(enterLectureCodeTextField.getText(),
+                modkeyString)) {
             return;
         }
         Lecture.getCurrent().setModkey(UUID.fromString(modkeyString));
