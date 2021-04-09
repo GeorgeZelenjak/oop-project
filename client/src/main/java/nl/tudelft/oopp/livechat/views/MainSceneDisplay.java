@@ -34,7 +34,7 @@ public class MainSceneDisplay extends Application {
         Parent root = loader.load();
 
         primaryStage.setScene(new Scene(root));
-        primaryStage.setTitle("App name");
+        primaryStage.setTitle("WAT");
         primaryStage.getIcons().add(
                 new Image("file:client/src/main/resources/images/tudelftLogo.png"));
         primaryStage.show();

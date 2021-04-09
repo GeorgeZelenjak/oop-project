@@ -10,7 +10,7 @@
    <children>
       <BorderPane prefHeight="768.0" prefWidth="1080.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
-            <Text id="appName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="Friendly Chat" textAlignment="CENTER" wrappingWidth="426.0" BorderPane.alignment="CENTER">
+            <Text id="appName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerText" text="WAT" textAlignment="CENTER" wrappingWidth="347.0" BorderPane.alignment="CENTER">
          
       </Text>
          </top>
