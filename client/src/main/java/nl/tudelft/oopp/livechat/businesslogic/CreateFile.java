@@ -21,9 +21,6 @@ public class CreateFile {
     /**
      * Text HighLighters.
      */
-    private static final String ANSI_RESET = "\u001B[0m";
-    private static final String ANSI_RED = "\u001B[31m";
-    private static final String ANSI_GREEN = "\u001B[38;5;40m";
     private static final String separatorLine = "--------------------------------------";
 
 
