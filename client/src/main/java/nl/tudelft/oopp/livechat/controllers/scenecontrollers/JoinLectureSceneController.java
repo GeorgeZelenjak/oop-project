@@ -77,7 +77,8 @@ public class JoinLectureSceneController implements Initializable {
         }
         if (inputStatusUserName == -2) {
             AlertController.alertWarning("Long name", "Your name is too long!\n(max: " + 50
-                            + " characters, you entered: " + enterNameTextField.getText().length() + ")");
+                            + " characters, you entered: "
+                            + enterNameTextField.getText().length() + ")");
             return;
         }
 
