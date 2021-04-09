@@ -60,60 +60,6 @@ public class DebugSceneController {
      * Populate.
      */
     public void populate() {
-        User.setUserName("Stefan");
-        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
-                67, "Artjom");
 
-        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
-                26, "Codrin");
-
-        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
-                34, "Jegor");
-
-        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
-                42, "Tudor");
-
-        LectureCommunication.registerUserdebug(Lecture.getCurrent().getUuid().toString(),
-                59, "Oleg");
-
-        QuestionCommunication.askQuestion(
-                67, Lecture.getCurrent().getUuid(), "How do you do, fellow kids?");
-        QuestionCommunication.askQuestion(
-                59, Lecture.getCurrent().getUuid(),"How do you find the eigen values?");
-        QuestionCommunication.askQuestion(
-                26, Lecture.getCurrent().getUuid(),"I am confused!!!!");
-        QuestionCommunication.askQuestion(
-                42, Lecture.getCurrent().getUuid(),"We live in a soc");
-        List<Question> questions = QuestionCommunication.fetchQuestions(true);
-        assert questions != null;
-        assert questions.size() == 4;
-        QuestionCommunication.upvoteQuestion(questions.get(2).getId(),67);
-        QuestionCommunication.upvoteQuestion(questions.get(2).getId(),26);
-        QuestionCommunication.upvoteQuestion(questions.get(2).getId(),34);
-        QuestionCommunication.upvoteQuestion(questions.get(1).getId(),42);
-        QuestionCommunication.upvoteQuestion(questions.get(1).getId(),59);
-
-
-
-        LectureSpeedCommunication.voteOnLectureSpeed(
-                67,
-                Lecture.getCurrent().getUuid(),
-                "faster");
-        LectureSpeedCommunication.voteOnLectureSpeed(
-                26,
-                Lecture.getCurrent().getUuid(),
-                "faster");
-        LectureSpeedCommunication.voteOnLectureSpeed(
-                34,
-                Lecture.getCurrent().getUuid(),
-                "faster");
-        LectureSpeedCommunication.voteOnLectureSpeed(
-                42,
-                Lecture.getCurrent().getUuid(),
-                "slower");
-        LectureSpeedCommunication.voteOnLectureSpeed(
-                59,
-                Lecture.getCurrent().getUuid(),
-                "faster");
     }
 }
