@@ -446,7 +446,8 @@ public class LecturerChatSceneController implements Initializable {
                 lectureSpeeds.get(0), lectureSpeeds.get(1)));
 
         //Makes it so that if the blue line is just a dot, users do not see it
-        slowerVotesPercentLine.setVisible(slowerVotesPercentLine.getEndX() != slowerVotesPercentLine.getStartX());
+        slowerVotesPercentLine.setVisible(
+                slowerVotesPercentLine.getEndX() != slowerVotesPercentLine.getStartX());
         displayQuestions();
     }
 
