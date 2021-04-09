@@ -63,6 +63,8 @@ public class CreateLectureController implements Initializable {
         goBackButton.setTooltip(new Tooltip("Go back to previous page"));
         createLectureButton.setTooltip(new Tooltip("Creates a new lecture and "
                 + "\nnavigates to the lecture page"));
+
+        lectureSchedulingDateDatePicker.setEditable(false);
     }
 
     /**
@@ -95,100 +97,81 @@ public class CreateLectureController implements Initializable {
             return;
         }
 
+        User.setUserName(name);
+        int frequency = setFrequency();
+
         if (lectureSchedulingCheckBox.isSelected()) {
-            createLectureScheduled();
+            createLectureScheduled(name, lectureName, frequency);
             return;
         }
-        int frequency = 60;
-
-        if (questionDelay.getText() != null && questionDelay.getText().length() > 0) {
-            frequency = InputValidator.validateFrequency(questionDelay.getText());
-            if (frequency < 0) {
-                AlertController.alertError("Invalid input",
-                        "Invalid input. Please enter a positive number or zero");
-                return;
-            }
-
-        }
-        User.setUserName(name);
 
         Lecture lecture = LectureCommunication.createLecture(lectureName, name,
                         new Timestamp(System.currentTimeMillis()), frequency);
 
-        if (lecture == null) {
-            return;
-        }
+        if (lecture == null) return;
 
-        String alertText = "The lecture has been created successfully!"
-                + "\nPress OK to go to the lecture page.";
-        AlertController.alertInformation("Lecture created", alertText);
-
+        AlertController.alertInformation("Lecture created",
+                "The lecture has been created successfully!"
+                            + "\nPress OK to go to the lecture page.");
 
         Lecture.setCurrent(lecture);
         NavigationController.getCurrent().goToLecturerChatPage();
     }
 
-    private void createLectureScheduled() {
-        if (InputValidator.validateHour(lectureScheduleHourTextField.getText()) != 0
-                || InputValidator.validateMinute(lectureScheduleMinuteTextField.getText()) != 0
-                || lectureSchedulingDateDatePicker.getValue() == null)  {
+    private void createLectureScheduled(String name, String lectureName, int frequency) {
+        int hour = InputValidator.validateHour(lectureScheduleHourTextField.getText());
+        int minute = InputValidator.validateMinute(lectureScheduleMinuteTextField.getText());
+
+        if (hour < 0 || minute < 0 || lectureSchedulingDateDatePicker.getValue() == null)  {
             AlertController.alertWarning("Incorrect input", "Provided date or time is invalid!");
             return;
         }
 
-        int hour = Integer.parseInt(lectureScheduleHourTextField.getText());
-        int minute = Integer.parseInt(lectureScheduleMinuteTextField.getText());
         Timestamp timestamp = Timestamp.valueOf(lectureSchedulingDateDatePicker
                                     .getValue().atTime(hour,minute));
-        int frequency = 60;
-        try {
-            if (questionDelay.getText() != null && questionDelay.getText().length() > 0) {
-                int delay = Integer.parseInt(questionDelay.getText());
-                frequency = delay;
-            }
-        } catch (NumberFormatException e) {
-            String alert = "Invalid input. Please enter a number (in seconds) and try again.";
 
-            AlertController.alertError("Invalid input", alert);
-            return;
-        }
-        Lecture lecture = LectureCommunication
-                .createLecture(enterLectureNameTextField.getText(),
-                        enterYourNameTextField.getText(), timestamp, frequency);
+        Lecture lecture = LectureCommunication.createLecture(lectureName,
+                name, timestamp, frequency);
 
-        if (lecture == null) {
-            return;
-        }
-
+        if (lecture == null) return;
 
         String alertText = "The lecture has been scheduled successfully!"
                 + "\nPress OK to go to the lecture page.";
-        String alertText2 = "\n!!!Please copy the moderator "
-                + "key to later use it when joining as moderator!!!";
+        String alertText2 = "\n!Please copy the moderator "
+                + "key to later use it when joining as moderator!";
         AlertController.alertInformation("Creating lecture", alertText);
         AlertController.alertWarning("ModKey Warning", alertText2.toUpperCase(Locale.ROOT));
 
-        Lecture.setCurrent(lecture);
-        User.setUserName(enterYourNameTextField.getText());
-        NavigationController.getCurrent().goToLecturerChatPage();
 
+        Lecture.setCurrent(lecture);
+        NavigationController.getCurrent().goToLecturerChatPage();
+    }
+
+    private int setFrequency() {
+        int frequency = 60;
+        if (questionDelay.getText() != null && questionDelay.getText().length() > 0) {
+            frequency = InputValidator.validateFrequency(questionDelay.getText());
+            if (frequency < 0 || frequency > 300) {
+                AlertController.alertError("Invalid input", "The frequency must be a positive "
+                        + "number between 0 and 300. The default value 60 is set.\n "
+                        + "You can change it later if you wish");
+                return 60;
+            }
+        }
+        return frequency;
     }
 
     /**
      * Create lecture when you press the button.
-     *
-     * @throws IOException the io exception
      */
-    public void createLectureButton() throws IOException {
+    public void createLectureButton() {
         createLecture();
     }
 
     /**
      * Create the lecture when you press enter.
-     *
-     * @throws IOException the io exception
      */
-    public void createLectureEnter() throws IOException {
+    public void createLectureEnter() {
         createLecture();
     }
 
@@ -201,10 +184,8 @@ public class CreateLectureController implements Initializable {
 
     /**
      * Go to user manual Scene.
-     *
-     * @throws IOException the io exception
      */
-    public void goToUserManual() throws IOException {
+    public void goToUserManual() {
         NavigationController.getCurrent().goToUserManual();
     }
 

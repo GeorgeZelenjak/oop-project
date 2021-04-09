@@ -40,17 +40,18 @@ public abstract class InputValidator {
     /**
      * Validates the input for a minute.
      * @param input the input for a minute
-     * @return 0 if the number is valid, -1 if not a number, -2 if not a valid minute number
+     * @return the number of minutes if the number is valid, -1 if not a number,
+     *         -2 if not a valid minute number
      */
     public static int validateMinute(String input) {
         int minute;
         try {
             minute = Integer.parseInt(input);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             return -1;
         }
         if (minute >= 0 && minute < 60) {
-            return 0;
+            return minute;
         }
         return -2;
     }
@@ -58,17 +59,17 @@ public abstract class InputValidator {
     /**
      * Validates the input for an hour.
      * @param input the input for an hour
-     * @return 0 if the number is valid, -1 if not a number, -2 if not a valid hour number
+     * @return the number of hours if it is valid, -1 if not a number, -2 if not a valid hour number
      */
     public static int validateHour(String input) {
         int hour;
         try {
             hour = Integer.parseInt(input);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             return -1;
         }
         if (hour >= 0 && hour <= 23) {
-            return 0;
+            return hour;
         }
         return -2;
     }
