@@ -1,6 +1,5 @@
 package nl.tudelft.oopp.livechat.controllers.scenecontrollers;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Locale;
@@ -68,8 +67,7 @@ public class CreateLectureController implements Initializable {
     }
 
     /**
-     * Creates the lecture, shows alert with lecture and creator names
-     * and returns to the main scene.
+     * Creates a lecture and goes to the lecture page if everything is successful.
      */
     private void createLecture() {
         String name = enterYourNameTextField.getText();
@@ -107,7 +105,6 @@ public class CreateLectureController implements Initializable {
 
         Lecture lecture = LectureCommunication.createLecture(lectureName, name,
                         new Timestamp(System.currentTimeMillis()), frequency);
-
         if (lecture == null) return;
 
         AlertController.alertInformation("Lecture created",
@@ -118,6 +115,12 @@ public class CreateLectureController implements Initializable {
         NavigationController.getCurrent().goToLecturerChatPage();
     }
 
+    /**
+     * Creates a scheduled lecture and goes to the lecture page if everything is successful.
+     * @param name the name of the creator
+     * @param lectureName the name of the lecture
+     * @param frequency the frequency of asking questions
+     */
     private void createLectureScheduled(String name, String lectureName, int frequency) {
         int hour = InputValidator.validateHour(lectureScheduleHourTextField.getText());
         int minute = InputValidator.validateMinute(lectureScheduleMinuteTextField.getText());
@@ -132,21 +135,22 @@ public class CreateLectureController implements Initializable {
 
         Lecture lecture = LectureCommunication.createLecture(lectureName,
                 name, timestamp, frequency);
-
         if (lecture == null) return;
 
-        String alertText = "The lecture has been scheduled successfully!"
-                + "\nPress OK to go to the lecture page.";
-        String alertText2 = "\n!Please copy the moderator "
-                + "key to later use it when joining as moderator!";
-        AlertController.alertInformation("Creating lecture", alertText);
-        AlertController.alertWarning("ModKey Warning", alertText2.toUpperCase(Locale.ROOT));
-
+        AlertController.alertInformation("Lecture created", "The lecture has been scheduled"
+                + " successfully!\nPress OK to go to the lecture page.");
+        AlertController.alertWarning("ModKey Warning", "\n!Please copy the moderator "
+                + "key to later use it when joining as moderator!".toUpperCase(Locale.ROOT));
 
         Lecture.setCurrent(lecture);
         NavigationController.getCurrent().goToLecturerChatPage();
     }
 
+    /**
+     * Samples the frequency of asking questions.
+     * @return the frequency of asking questions: the selected one if it is a number
+     *      between 0 and 300, or the default value 60 if it is invalid
+     */
     private int setFrequency() {
         int frequency = 60;
         if (questionDelay.getText() != null && questionDelay.getText().length() > 0) {
@@ -162,28 +166,28 @@ public class CreateLectureController implements Initializable {
     }
 
     /**
-     * Create lecture when you press the button.
+     * Creates a lecture when the user presses the button.
      */
     public void createLectureButton() {
         createLecture();
     }
 
     /**
-     * Create the lecture when you press enter.
+     * Creates a lecture when you the user presses ENTER.
      */
     public void createLectureEnter() {
         createLecture();
     }
 
     /**
-     * Go back to previous Scene.
+     * Goes back to the previous page.
      */
     public void goBack() {
         NavigationController.getCurrent().goBack();
     }
 
     /**
-     * Go to user manual Scene.
+     * Goes to user manual page.
      */
     public void goToUserManual() {
         NavigationController.getCurrent().goToUserManual();
