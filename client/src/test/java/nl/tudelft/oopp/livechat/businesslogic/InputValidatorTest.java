@@ -55,7 +55,7 @@ public class InputValidatorTest {
 
     @Test
     public void validateMinuteSuccessfulTest() {
-        assertEquals(0, InputValidator.validateMinute("42"));
+        assertEquals(42, InputValidator.validateMinute("42"));
     }
 
 
@@ -76,7 +76,7 @@ public class InputValidatorTest {
 
     @Test
     public void validateHourSuccessfulTest() {
-        assertEquals(0, InputValidator.validateHour("0"));
+        assertEquals(0, InputValidator.validateHour("00"));
     }
 
 
