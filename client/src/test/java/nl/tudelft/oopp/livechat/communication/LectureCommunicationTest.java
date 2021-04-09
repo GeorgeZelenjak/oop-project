@@ -401,6 +401,13 @@ public class LectureCommunicationTest {
         startServer();
     }
 
+    @Test
+    public void registerUserDebugServerRefusesTest() {
+        mockServer.stop();
+        assertFalse(LectureCommunication.registerUser(lid));
+
+        startServer();
+    }
 
     /**
      * Tests for validating a moderator.
