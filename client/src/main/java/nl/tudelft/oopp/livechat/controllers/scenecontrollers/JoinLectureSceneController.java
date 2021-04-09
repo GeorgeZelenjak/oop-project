@@ -10,7 +10,6 @@ import nl.tudelft.oopp.livechat.data.Lecture;
 import nl.tudelft.oopp.livechat.data.User;
 import nl.tudelft.oopp.livechat.servercommunication.LectureCommunication;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
@@ -50,14 +49,7 @@ public class JoinLectureSceneController implements Initializable {
     }
 
     /**
-     * Toggles the visibility of the modKeyTextField.
-     */
-    public void onCheckBoxAction() {
-        modkeyTextField.setVisible(!modkeyTextField.isVisible());
-    }
-
-    /**
-     * Go to the lecture if successful.
+     * Goes to the lecture page if successful.
      */
     public void goToLecture() {
         String name = enterNameTextField.getText();
@@ -78,7 +70,7 @@ public class JoinLectureSceneController implements Initializable {
         if (inputStatusUserName == -2) {
             AlertController.alertWarning("Long name", "Your name is too long!\n(max: " + 50
                             + " characters, you entered: "
-                            + enterNameTextField.getText().length() + ")");
+                            + name.length() + ")");
             return;
         }
 
@@ -109,44 +101,32 @@ public class JoinLectureSceneController implements Initializable {
     }
 
     /**
-     * Go to lecture by pressing the button.
+     * Toggles the visibility of the modKeyTextField.
      */
-    public void goToLectureButton() {
-        goToLecture();
+    public void onCheckBoxAction() {
+        modkeyTextField.setVisible(!modkeyTextField.isVisible());
     }
 
     /**
-     * Go to lecture by pressing enter.
-     */
-    public void goToLectureEnter() {
-        goToLecture();
-    }
-
-    /**
-     * Join lecture as a student.
+     * Joins lecture as a student.
      */
     private void joinAsStudent() {
         if (!Lecture.getCurrent().isOpen()
                 || Lecture.getCurrent().getStartTime().getTime() > System.currentTimeMillis()) {
-            AlertController.alertInformation(
-                    "Lecture not open yet!","This lecture has not started yet!");
+            AlertController.alertInformation("Lecture not open yet!",
+                    "This lecture has not started yet!");
         } else {
             NavigationController.getCurrent().goToUserChatPage();
         }
     }
 
-    public void goToUserManualScene() {
-        NavigationController.getCurrent().goToUserManual();
-    }
-
     /**
-     * Join lecture as a moderator.
+     * Joins lecture as a moderator.
      */
     private void joinAsModerator() {
         String modkeyString = modkeyTextField.getText();
 
-        int inputStatusModKey = InputValidator.validateLength(modkeyTextField.getText(), 255);
-        if (inputStatusModKey == -1) {
+        if (InputValidator.validateLength(modkeyTextField.getText(), 300) < 0) {
             AlertController.alertWarning("No moderator key entered",
                     "Please enter the moderator key!");
             return;
@@ -165,10 +145,17 @@ public class JoinLectureSceneController implements Initializable {
     }
 
     /**
-     * Navigate to the previous scene.
+     * Goes to the previous scene.
      */
     public void goBack() {
         NavigationController.getCurrent().goBack();
+    }
+
+    /**
+     * Goes to the user manual page.
+     */
+    public void goToUserManualScene() {
+        NavigationController.getCurrent().goToUserManual();
     }
 
 }
