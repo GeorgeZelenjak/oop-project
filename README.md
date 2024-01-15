@@ -1,3 +1,5 @@
+# Chat Application for Online Lectures
+
 ## Description
 
 This is a chat application that can be used for online lectures. It has been developed as part of the TU Delft course CSE1105 Object-Oriented Programming Project.
